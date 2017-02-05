@@ -1,0 +1,6 @@
+type: existence
+message: "Don't start a sentence with '%s'"
+ignorecase: true
+level: error
+raw:
+  - '(?:^[^\w]+|[;-]\s)(so)'

@@ -1,0 +1,8 @@
+type: existence
+message: "'%s' - Go easy on the oughts and shoulds."
+scope: text
+level: suggestion
+ignorecase: true
+tokens:
+  - ought
+  - should

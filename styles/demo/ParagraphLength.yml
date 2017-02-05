@@ -1,0 +1,7 @@
+message: "Paragraphs should be less than 150 words"
+type: occurrence
+scope: paragraph.txt
+level: suggestion
+max: 150
+tokens:
+  - \b(\w+)\b

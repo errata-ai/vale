@@ -1,0 +1,6 @@
+StylesPath = ../../../styles
+
+[*]
+BasedOnStyles = demo
+demo.CheckSpelling = NO
+demo.CheckLinks = NO

@@ -1,0 +1,33 @@
+# Folders
+_obj
+_test
+vendor/bundle/
+bin
+tmp
+tags
+site
+target
+
+# Files
+*.o
+*.a
+*.so
+*.exe
+*.prof
+*.swp
+*~
+.bundle
+rule/rule.go
+.vagrant
+*.sublime-project
+*.sublime-workspace
+
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
+
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*

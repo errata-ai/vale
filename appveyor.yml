@@ -1,0 +1,24 @@
+image: WMF 5
+clone_folder: c:\GOPATH\src\github.com\jdkato\txtlint
+branches:
+  only:
+    - master
+environment:
+  GOPATH: c:\GOPATH
+init:
+- cmd: >-
+    set PATH=C:\Ruby22\bin;%PATH%
+
+    set PATH=C:\GOPATH\bin;%PATH%
+
+    copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
+install:
+  - bundle install
+  - cinst ansicon
+build_script:
+- cmd: >-
+    make setup
+
+    make build-win
+test_script:
+- cmd: make ci

@@ -1,0 +1,15 @@
+type: existence
+message: "'%s' - Do not be too didactic."
+scope: text
+level: warning
+ignorecase: false
+tokens:
+  - Compare
+  - Consider
+  - Expect
+  - Imagine
+  - Look at
+  - Note
+  - Prepare for
+  - Remember
+  - Take

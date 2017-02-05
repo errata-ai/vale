@@ -1,0 +1,132 @@
+package util
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+	"unicode/utf8"
+)
+
+// ExeDir is our starting location.
+var ExeDir string
+
+// FindLoc calculates the line and span of an Alert.
+func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (int, []int) {
+	var pos int
+
+	substring := s[loc[0]:loc[1]]
+	diff := loc[0] - utf8.RuneCountInString(s[:loc[0]])
+	if ext != ".html" {
+		pos = loc[0] + 1
+	} else {
+		r := regexp.MustCompile(fmt.Sprintf(`(\b%s|%s)`, substring, substring))
+		pos = r.FindAllStringIndex(ctx, 1)[0][0] + 1
+	}
+
+	counter := 0
+	lines := strings.SplitAfter(ctx, "\n")
+	for idx, l := range lines {
+		if (counter + utf8.RuneCountInString(l)) >= pos {
+			loc[0] = (pos - counter) + pad - diff
+			loc[1] = loc[0] + utf8.RuneCountInString(substring) - 1
+			return count - (len(lines) - (idx + 1)), loc
+		}
+		counter += utf8.RuneCountInString(l)
+	}
+	return count, loc
+}
+
+// PrepText prepares text for our check functions.
+func PrepText(txt string) string {
+	replacements := map[string]string{
+		"\r\n":   "\n",
+		"\u201c": `"`,
+		"\u201d": `"`,
+		"\u2018": "'",
+		"\u2019": "'",
+	}
+	for old, new := range replacements {
+		txt = strings.Replace(txt, old, new, -1)
+	}
+	return txt
+}
+
+// ExtFromSyntax takes a syntax's name (e.g., "Python") and returns its
+// extension (if found).
+func ExtFromSyntax(name string) string {
+	for r, s := range LookupSyntaxName {
+		if matched, _ := regexp.MatchString(r, name); matched {
+			return s
+		}
+	}
+	return name
+}
+
+// FormatFromExt takes a file extension and returns its [normExt, format]
+// list, if supported.
+func FormatFromExt(path string) (string, string) {
+	ext := filepath.Ext(path)
+	for r, f := range FormatByExtension {
+		m, _ := regexp.MatchString(r, ext)
+		if m {
+			return f[0], f[1]
+		}
+	}
+	return "unknown", "unknown"
+}
+
+// IsDir determines if the path given by `filename` is a directory.
+func IsDir(filename string) bool {
+	fi, err := os.Stat(filename)
+	return err == nil && fi.IsDir()
+}
+
+// FileExists determines if the path given by `filename` exists.
+func FileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil
+}
+
+// StringInSlice determines if `slice` contains the string `a`.
+func StringInSlice(a string, slice []string) bool {
+	for _, b := range slice {
+		if a == b {
+			return true
+		}
+	}
+	return false
+}
+
+// AllStringsInSlice determines if `slice` contains the `strings`.
+func AllStringsInSlice(strings []string, slice []string) bool {
+	for _, s := range strings {
+		if !StringInSlice(s, slice) {
+			return false
+		}
+	}
+	return true
+}
+
+// HasAnyPrefix determines if `text` has any prefix contained in `slice`.
+func HasAnyPrefix(text string, slice []string) bool {
+	for _, s := range slice {
+		if strings.HasPrefix(text, s) {
+			return true
+		}
+	}
+	return false
+}
+
+func CheckError(err error, context string) bool {
+	if err != nil {
+		fmt.Printf("%v (%s)\n", err, context)
+	}
+	return err == nil
+}
+
+func CheckAndClose(file *os.File) bool {
+	err := file.Close()
+	return CheckError(err, file.Name())
+}

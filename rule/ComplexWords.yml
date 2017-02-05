@@ -1,0 +1,64 @@
+type: substitution
+message: Consider using '%s' instead of '%s'
+ignorecase: true
+level: warning
+map:
+  abundance: plenty
+  accelerate: speed up
+  accentuate: stress
+  accomplish: do
+  accorded: given
+  accrue: add
+  acquiesce: agree
+  acquire: get
+  additional: more
+  adjustment: change
+  admissible: allowed
+  advantageous: helpful
+  advise: tell
+  aggregate: total
+  aircraft: plane
+  alleviate: ease
+  allocate: assign
+  alternatively: or
+  ameliorate: improve
+  anticipate: expect
+  apparent: clear
+  appreciable: many
+  ascertain: discover
+  assistance: help
+  attain: meet
+  authorize: allow
+  belated: late
+  bestow: give
+  cease: stop
+  commence: begin
+  concerning: about
+  consequently: so
+  consolidate: merge
+  constitues: forms
+  demonstrate: show
+  depart: leave
+  designate: choose
+  discontinue: stop
+  eliminate: end
+  elucidate: explain
+  employ: use
+  endeavor: try
+  enumerate: count
+  equitable: fair
+  equivalent: equal
+  exclusively: only
+  expedite: hurry
+  facilitate: ease
+  multiple: many
+  necessitate: cause
+  numerous: many
+  optimum: best
+  portion: part
+  procure: buy
+  purchase: buy
+  terminate: end
+  transmit: send
+  utilization: use
+  utilize: use

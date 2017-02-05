@@ -1,0 +1,31 @@
+type: existence
+message: "'%s' is overused."
+link: http://www.economist.com/style-guide/overused-words
+level: warning
+scope: text
+ignorecase: true
+tokens:
+  - address
+  - brits
+  - care for
+  - challenge
+  - commit to
+  - community
+  - environment
+  - famously
+  - focus
+  - historic
+  - homeland
+  - individual
+  - inform
+  - metrosexual
+  - overseas
+  - participate in
+  - process
+  - relationship
+  - resources
+  - skills
+  - supportive
+  - target
+  - transparency
+  - wannabes

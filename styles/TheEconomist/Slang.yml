@@ -1,0 +1,36 @@
+type: existence
+message: "'%s' - See section 'Journalese and slang'."
+scope: text
+level: warning
+link: http://www.economist.com/style-guide/journalese-and-slang
+ignorecase: true
+tokens:
+  - ailing
+  - Big Pharma
+  - caring
+  - crisis
+  - Ethics violations
+  - Governance
+  - gravy train
+  - guesstimate
+  - high profile
+  - highly visible
+  - hit the big time
+  - key
+  - major
+  - mandarins
+  - massive
+  - meaningful
+  - oil-rich
+  - perceptions
+  - prestigious
+  - salami tactics
+  - scantily clad
+  - schizophrenic
+  - significant
+  - the bottom line
+  - the green light
+  - the likes of
+  - the thumbs down
+  - the thumbs up
+  - too close to call

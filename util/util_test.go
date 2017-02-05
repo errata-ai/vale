@@ -1,0 +1,43 @@
+package util
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestExtFromSyntax(t *testing.T) {
+	syntaxToExt := map[string]string{
+		"Python":     ".py",
+		"C++":        ".c",
+		"Java":       ".c",
+		"JavaScript": ".c",
+		"Go":         ".c",
+	}
+	for syntax, ext := range syntaxToExt {
+		assert.Equal(t, ext, ExtFromSyntax(syntax))
+	}
+}
+
+func TestFormatFromExt(t *testing.T) {
+	extToFormat := map[string][]string{
+		".py":    {".py", "code"},
+		".cxx":   {".c", "code"},
+		".mdown": {".md", "markup"},
+	}
+	for ext, format := range extToFormat {
+		normExt, f := FormatFromExt(ext)
+		assert.Equal(t, format[0], normExt)
+		assert.Equal(t, format[1], f)
+	}
+}
+
+func TestPrepText(t *testing.T) {
+	rawToPrepped := map[string]string{
+		"foo\r\nbar":     "foo\nbar",
+		"foo\r\n\r\nbar": "foo\n\nbar",
+	}
+	for raw, prepped := range rawToPrepped {
+		assert.Equal(t, prepped, PrepText(raw))
+	}
+}

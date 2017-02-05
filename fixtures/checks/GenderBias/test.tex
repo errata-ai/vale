@@ -1,0 +1,191 @@
+\documentclass{article}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{mathrsfs}
+\usepackage{graphicx}
+\usepackage{algpseudocode}
+\usetikzlibrary{arrows,automata}
+
+\newcommand{\Lim}[1]{\raisebox{0.5ex}{\scalebox{0.8}{$\displaystyle \lim_{#1}\;$}}}
+\newcommand*\centermathcell[1]{\omit\hfil$\displaystyle#1$\hfil\ignorespaces}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass: \hmwkTitle}
+\rhead{Page \thepage}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Bio
+%
+% I'm a freshman at the University of Gender Bias where I major in manpower.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    %\ifnum#1>0
+     %   \setcounter{homeworkProblemCounter}{#1}
+    %\fi
+    \section{Problem \arabic{homeworkProblemCounter}: #1}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#1}
+\newcommand{\hmwkDueDate}{October 8, 2015}
+\newcommand{\hmwkClass}{Mth 451}
+\newcommand{\hmwkClassTime}{}
+\newcommand{\hmwkClassInstructor}{}
+\newcommand{\hmwkAuthorName}{Joseph Kato}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 10:00am}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\newenvironment{partsAl}
+    {\tikzset{every picture/.append style={enum}}\begin{enumerate}[label=\alph*.]}
+    {\end{enumerate}}
+
+\newenvironment{partsNm}
+    {\tikzset{every picture/.append style={enum}}\begin{enumerate}[label=\arabic*.]}
+    {\end{enumerate}}
+
+\newenvironment{partsRo}
+    {\tikzset{every picture/.append style={enum}}\begin{enumerate}[label=\roman*.]}
+    {\end{enumerate}}
+
+\usetikzlibrary{positioning}
+\tikzset{
+    dot/.style={draw=black, fill=white, circle, inner sep=2pt},
+    enum/.style={baseline={([yshift=-1em] current bounding box.north)}},
+    base at/.style={baseline={(#1.base)}},
+    no enum/.style={baseline=default},
+}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+\begin{homeworkProblem}[Chapter 1.3, exercise 7d]
+    Find the rate of convergence of $\Lim{h \rightarrow 0} \frac{1 - e^h}{h} = -1$
+    as $h \rightarrow 0$.\newline
+
+    \textbf{Solution}\newline
+
+    By Taylor's theorem we know that
+
+    \begin{alignat*}{2}
+        e^x &= 1 + x + \frac{x^2}{2!} +  \frac{x^3}{3!} \dots \\
+    \end{alignat*}
+
+    So,
+
+    \begin{alignat*}{2}
+        \frac{1 - e^h}{h} &= \frac{1 - 1 + h + \frac{h^2}{2!} + \frac{h^3}{3!} \dots}{h} \\
+        &= \frac{h + \frac{h^2}{2!} + \frac{h^3}{3!} \dots}{h}
+    \end{alignat*}
+
+    Thus, $\Lim{h \rightarrow 0} \frac{1 - e^h}{h} = -1$ has a rate of
+    convergence of $\mathcal{O}(h)$.
+
+    Hi guys!
+\end{homeworkProblem}
+\end{document}

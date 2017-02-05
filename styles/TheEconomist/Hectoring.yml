@@ -1,0 +1,15 @@
+type: existence
+message: "'%s' - Do not be hectoring or arrogant."
+scope: text
+level: error
+ignorecase: true
+tokens:
+  - stupid
+  - idiotic
+  - imbecile
+  - ignorant
+  - insane
+  - absurd
+  - ridiculus
+  - lunatic
+  - asinine

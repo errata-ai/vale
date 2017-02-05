@@ -1,0 +1,25 @@
+type: existence
+message: "'%s' - See section 'Horrible words'."
+link: http://www.economist.com/style-guide/horrible-words
+level: error
+ignorecase: true
+tokens:
+  - carer
+  - chattering classes
+  - facilitate
+  - famously
+  - Governance
+  - grow the business
+  - guesstimate
+  - informed
+  - leverage
+  - likely
+  - looking to
+  - materiel
+  - poster child
+  - prestigious
+  - proactive
+  - rack up
+  - savvy
+  - segue
+  - stakeholder

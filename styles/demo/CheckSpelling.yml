@@ -1,0 +1,4 @@
+type: script
+scope: text
+runtime: node
+exe: check_spelling.js

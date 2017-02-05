@@ -1,0 +1,6 @@
+type: repetition
+message: "'%s' is repeated!"
+level: error
+scope: paragraph
+tokens:
+  - '[^\s]+'
