@@ -413,6 +413,9 @@ func addSubstitutionCheck(chkName string, chkDef definition) {
 
 	replacements := []string{}
 	for regexstr, replacement := range chkDef.Map {
+		if strings.Count(regexstr, "(") != strings.Count(regexstr, "?:") {
+			continue
+		}
 		tokens += `(` + regexstr + `)|`
 		replacements = append(replacements, replacement)
 	}
