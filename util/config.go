@@ -97,7 +97,7 @@ func loadOptions() config {
 	// Global settings
 	cfg.GBaseStyles = global.Key("BasedOnStyles").Strings(",")
 	for _, k := range global.KeyStrings() {
-		if k == "BasedOnStyle" {
+		if k == "BasedOnStyles" {
 			continue
 		} else {
 			cfg.GChecks[k] = global.Key(k).MustBool(false)
