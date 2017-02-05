@@ -15,7 +15,7 @@ build:
 	go build ${LDFLAGS} -o bin/txtlint
 
 build-win:
-	go build ${LDFLAGS}
+	go build ${LDFLAGS} -o bin/txtlint.exe
 
 cross:
 	mkdir -p $(BUILD_DIR)

@@ -7,12 +7,13 @@ environment:
   GOPATH: c:\GOPATH
 init:
 - cmd: >-
-    set PATH=C:\Ruby22\bin;%PATH%
-
-    set PATH=C:\GOPATH\bin;%PATH%
+    set PATH=C:\MinGW\bin;%PATH%
 
     copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
 install:
+  - echo %PATH%
+  - echo %GOPATH%
+  - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby22\bin;%cd%\bin;%PATH%
   - bundle install
   - cinst ansicon
 build_script:
