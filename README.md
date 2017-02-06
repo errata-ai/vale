@@ -1,6 +1,6 @@
 # `txtlint`: Your Style, Our Editor
 
-[![Build Status](https://travis-ci.org/jdkato/txtlint.svg?branch=master)](https://travis-ci.org/jdkato/txtlint) [![Go Report Card](https://goreportcard.com/badge/github.com/jdkato/txtlint)](https://goreportcard.com/report/github.com/jdkato/txtlint) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+[![Build Status](https://travis-ci.org/jdkato/txtlint.svg?branch=master)](https://travis-ci.org/jdkato/txtlint) [![Build status](https://ci.appveyor.com/api/projects/status/0vo1d47jj2ja7v66/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/txtlint/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/jdkato/txtlint)](https://goreportcard.com/report/github.com/jdkato/txtlint) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
 ![demo](https://cloud.githubusercontent.com/assets/8785025/22620378/85715878-eabf-11e6-99f4-4cc275e6f95f.png)
 
