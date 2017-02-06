@@ -7,7 +7,6 @@ before_install:
   - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
   - export PATH=~/bin:"$PATH"
 install:
-  - bundle install
   - make setup
   - make build
 script:

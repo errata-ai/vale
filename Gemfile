@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'aruba'
-gem 'cucumber'
+gem 'specific_install'
+gem 'cucumber', '~> 2.3.0'
 gem 'os'

@@ -1,8 +1,5 @@
 image: WMF 5
 clone_folder: c:\GOPATH\src\github.com\jdkato\txtlint
-branches:
-  only:
-    - master
 environment:
   GOPATH: c:\GOPATH
 init:
@@ -14,7 +11,6 @@ install:
   - echo %PATH%
   - echo %GOPATH%
   - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby22\bin;%cd%\bin;%PATH%
-  - bundle install
   - cinst ansicon
 build_script:
 - cmd: >-

@@ -73,6 +73,8 @@ setup:
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
 	go get ./util ./ui ./lint
 	gometalinter --install
+	bundle install
+	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
 
 bump:
 	MAJOR=$(word 1, $(subst ., , $(CURRENT_VERSION)))

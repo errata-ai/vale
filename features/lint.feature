@@ -66,12 +66,7 @@ Feature: Lint
 
   Scenario: Lint a nonexistent file
     When I lint "null.cc"
-    Then the output should contain exactly:
-    """
-    lstat null.cc: no such file or directory
-
-    """
-    And the exit status should be 1
+    Then the exit status should be 1
 
   Scenario: Lint a Rust file
     When I lint "test.rs"
