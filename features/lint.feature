@@ -1,4 +1,16 @@
 Feature: Lint
+
+  Scenario: Lint a Plain Text file
+    When I lint "test.txt"
+    Then the output should contain exactly:
+    """
+    test.txt:1:27:txtlint.Annotations:'NOTE' left in text
+    test.txt:4:12:txtlint.Annotations:'XXX' left in text
+    test.txt:4:66:txtlint.Annotations:'TODO' left in text
+
+    """
+    And the exit status should be 0
+
   Scenario: Lint an AsciiDoc file
     When I lint "test.adoc"
     Then the output should contain exactly:

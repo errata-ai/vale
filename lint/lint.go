@@ -116,11 +116,11 @@ func (f *File) lintPlainText() {
 	var line string
 
 	inBlock := 0
-	prose := regexp.MustCompile("^([a-zA-Z_()`])")
+	bullet := regexp.MustCompile(`^(?:[*-]\s\w|\d[).]\s\w)`)
 	lines := 1
 	for f.Scanner.Scan() {
 		line = f.Scanner.Text() + "\n"
-		if prose.MatchString(line) {
+		if !bullet.MatchString(line) && line != "\n" {
 			paragraph.WriteString(line)
 			inBlock = 1
 		} else if line == "\n" && inBlock == 1 {
