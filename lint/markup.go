@@ -57,7 +57,8 @@ func (f *File) lintMarkdown() {
 	table := regexp.MustCompile(`^(\|.*\|)`)
 	HTMLStart := regexp.MustCompile(`^<[^/]+>`)
 	HTMLEnd := regexp.MustCompile(`^</.+>`)
-	heading := regexp.MustCompile(`^(?:#+\s.+|=+\s*$|-+\s*$)`)
+	hATX := regexp.MustCompile(`^#+\s.+`)
+	hSetext := regexp.MustCompile(`(?:=+\s*$|-+\s*$)`)
 	inTable := false
 	inBlock := 0
 	lines := 1
@@ -90,9 +91,7 @@ func (f *File) lintMarkdown() {
 				inTable = true
 			} else if inTable && line == "\n" && (table.MatchString(prev) || strings.Count(prev, "|") > 1) {
 				inTable = false
-			} else if heading.MatchString(line) && !inTable && prev != "\n" {
-				// We've found the start of a non-prose text section such as
-				// a table row.
+			} else if !inTable && hATX.MatchString(line) {
 				f.lintText(NewBlock("", line, "text.heading"+f.RealExt), lines+1, 0)
 			} else if prose.MatchString(line) && !inTable {
 				// We've found the start of a prose section.
@@ -114,10 +113,8 @@ func (f *File) lintMarkdown() {
 			}
 			inBlock = 0
 		} else if inBlock == 3 {
-			if heading.MatchString(line) {
-				// We've found the start of a non-prose text section such as
-				// a table row.
-				f.lintText(NewBlock("", line, "text.heading"+f.RealExt), lines+1, 0)
+			if hSetext.MatchString(line) {
+				f.lintText(NewBlock("", prev, "text.heading"+f.RealExt), lines, 0)
 				inBlock = 0
 			} else {
 				paragraph.WriteString(line)
