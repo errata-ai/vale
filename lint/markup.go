@@ -55,6 +55,9 @@ func (f *File) lintMarkdown() {
 	indentStart := regexp.MustCompile("^( ){4,}")
 	prose := regexp.MustCompile("^([a-zA-Z_()`]|" + `\*\*\w+)`)
 	table := regexp.MustCompile(`^(\|.*\|)`)
+	HTMLStart := regexp.MustCompile(`^<[^/]+>`)
+	HTMLEnd := regexp.MustCompile(`^</.+>`)
+	heading := regexp.MustCompile(`^(?:#+\s.+|=+\s*$|-+\s*$)`)
 	inTable := false
 	inBlock := 0
 	lines := 1
@@ -81,10 +84,16 @@ func (f *File) lintMarkdown() {
 				}
 			} else if indentStart.MatchString(line) {
 				inBlock = 2
-			} else if !inTable && table.MatchString(line) {
+			} else if HTMLStart.MatchString(line) {
+				inBlock = 4
+			} else if !inTable && (table.MatchString(line) || strings.Count(line, "|") > 1) {
 				inTable = true
-			} else if inTable && line == "\n" && table.MatchString(prev) {
+			} else if inTable && line == "\n" && (table.MatchString(prev) || strings.Count(prev, "|") > 1) {
 				inTable = false
+			} else if heading.MatchString(line) && !inTable && prev != "\n" {
+				// We've found the start of a non-prose text section such as
+				// a table row.
+				f.lintText(NewBlock("", line, "text.heading"+f.RealExt), lines+1, 0)
 			} else if prose.MatchString(line) && !inTable {
 				// We've found the start of a prose section.
 				paragraph.WriteString(line)
@@ -96,14 +105,23 @@ func (f *File) lintMarkdown() {
 			}
 		} else if inBlock == 1 && fencedEnd.MatchString(line) {
 			inBlock = 0
-		} else if inBlock > 1 && line == "\n" {
+		} else if inBlock == 4 && HTMLEnd.MatchString(line) {
+			inBlock = 0
+		} else if inBlock > 1 && inBlock != 4 && line == "\n" {
 			if inBlock == 3 {
 				f.lintProse("", paragraph.String(), lines, 0)
 				paragraph.Reset()
 			}
 			inBlock = 0
 		} else if inBlock == 3 {
-			paragraph.WriteString(line)
+			if heading.MatchString(line) {
+				// We've found the start of a non-prose text section such as
+				// a table row.
+				f.lintText(NewBlock("", line, "text.heading"+f.RealExt), lines+1, 0)
+				inBlock = 0
+			} else {
+				paragraph.WriteString(line)
+			}
 		}
 		lines++
 		prev = line
