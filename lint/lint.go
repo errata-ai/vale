@@ -56,9 +56,11 @@ func (l *Linter) lintFile(src string) File {
 		}
 	}
 
+	scanner := bufio.NewScanner(f)
+	scanner.Split(util.ScanLines)
 	file = File{
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
-		BaseStyles: baseStyles, Checks: checks, Scanner: bufio.NewScanner(f),
+		BaseStyles: baseStyles, Checks: checks, Scanner: scanner,
 	}
 
 	if format == "text" {
