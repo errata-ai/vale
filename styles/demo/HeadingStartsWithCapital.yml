@@ -1,0 +1,6 @@
+message: "'%s' should be capitalized"
+type: existence
+level: suggestion
+scope: heading.md
+raw:
+  - '^(?:#+\s)?[a-z]'
