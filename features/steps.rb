@@ -10,8 +10,8 @@ When(/^I lint "(.*)"$/) do |file|
   step %(I run `#{exe} #{file}`)
 end
 
-When(/^I test "(.*)"$/) do |check|
-  step %(I cd to "../../fixtures/checks/#{check}")
+When(/^I test "(.*)"$/) do |dir|
+  step %(I cd to "../../fixtures/#{dir}")
   step %(I run `#{exe} .`)
 end
 

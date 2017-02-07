@@ -1,6 +1,6 @@
 Feature: Checks
   Scenario: Annotations
-    When I test "Annotations"
+    When I test "checks/Annotations"
     Then the output should contain exactly:
     """
     test.java:2:5:txtlint.Annotations:'TODO' left in text
@@ -12,7 +12,7 @@ Feature: Checks
     """
 
   Scenario: PassiveVoice
-    When I test "PassiveVoice"
+    When I test "checks/PassiveVoice"
     Then the output should contain exactly:
     """
     test.swift:3:47:txtlint.PassiveVoice:'were eaten' is passive voice
@@ -22,7 +22,7 @@ Feature: Checks
     """
 
   Scenario: GenderBias
-    When I test "GenderBias"
+    When I test "checks/GenderBias"
     Then the output should contain exactly:
     """
     test.tex:69:9:txtlint.GenderBias:Consider using 'first-year student(s)' instead of 'freshman'
@@ -32,7 +32,7 @@ Feature: Checks
     """
 
   Scenario: Editorializing
-    When I test "Editorializing"
+    When I test "checks/Editorializing"
     Then the output should contain exactly:
     """
     test.html:9:7:txtlint.Editorializing:Consider removing 'Note that'
@@ -41,7 +41,7 @@ Feature: Checks
     """
 
   Scenario: Abbreviations
-    When I test "Abbreviations"
+    When I test "checks/Abbreviations"
     Then the output should contain exactly:
     """
     test.md:1:21:txtlint.Abbreviations:Use 'i.e.,'
@@ -51,7 +51,7 @@ Feature: Checks
     """
 
   Scenario: Repetition
-    When I test "Repetition"
+    When I test "checks/Repetition"
     Then the output should contain exactly:
     """
     text.rst:6:17:txtlint.Repetition:'as' is repeated!
@@ -62,7 +62,7 @@ Feature: Checks
     """
 
   Scenario: Redundancy
-    When I test "Redundancy"
+    When I test "checks/Redundancy"
     Then the output should contain exactly:
     """
     test.cpp:58:25:txtlint.Redundancy:'ATM machine' is redundant
@@ -72,7 +72,7 @@ Feature: Checks
     """
 
   Scenario: Uncomparables
-    When I test "Uncomparables"
+    When I test "checks/Uncomparables"
     Then the output should contain exactly:
     """
     test.adoc:1:49:txtlint.Uncomparables:'absolutely false' is not comparable
@@ -81,7 +81,7 @@ Feature: Checks
     """
 
   Scenario: Wordiness
-    When I test "Wordiness"
+    When I test "checks/Wordiness"
     Then the output should contain exactly:
     """
     test.cs:2:19:txtlint.Wordiness:Consider using 'across' instead of 'all across'
@@ -91,7 +91,7 @@ Feature: Checks
     """
 
   Scenario: ComplexWords
-    When I test "ComplexWords"
+    When I test "checks/ComplexWords"
     Then the output should contain exactly:
     """
     test.sass:4:16:txtlint.ComplexWords:Consider using 'plenty' instead of 'abundance'
@@ -100,7 +100,7 @@ Feature: Checks
     """
 
   Scenario: Hedging
-    When I test "Hedging"
+    When I test "checks/Hedging"
     Then the output should contain exactly:
     """
     test.less:9:6:txtlint.Hedging:Consider removing 'in my opinion'
@@ -110,7 +110,7 @@ Feature: Checks
     """
 
   Scenario: Litotes
-    When I test "Litotes"
+    When I test "checks/Litotes"
     Then the output should contain exactly:
     """
     test.scala:2:13:txtlint.Litotes:Consider using 'rejected' instead of 'not accepted'
