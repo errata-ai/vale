@@ -24,8 +24,9 @@ Feature: Styles
     test.html:10:27:demo.Spacing:'.M' should have one space
     test.html:10:35:demo.Hyphen:' Randomly-' doesn't need a hyphen
     test.html:12:12:demo.SentenceLength:Sentences should be less than 25 words
-    test.md:1:1:demo.HeadingStartsWithCapital:'# t' should be capitalized
-    test.md:7:1:demo.HeadingStartsWithCapital:'t' should be capitalized
+    test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
+    test.md:1:1:demo.HeadingStartsWithCapital:'# this is a heading' should be capitalized
+    test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
     test.txt:1:22:demo.CommasPerSentence:More than 3 commas!
     test.txt:1:58:demo.Spacing:'. I' should have one space
     test.txt:3:1:demo.SentenceLength:Sentences should be less than 25 words
