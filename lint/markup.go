@@ -13,8 +13,9 @@ import (
 func (f *File) lintHTML() {
 	var txt string
 	var tokt html.TokenType
-	var inBlock, shouldSkip bool
+	var inBlock, shouldSkip, isHeading bool
 
+	heading := regexp.MustCompile(`^h\d$`)
 	b, err := ioutil.ReadFile(f.Path)
 	if !util.CheckError(err, f.Path) {
 		return
@@ -35,6 +36,12 @@ func (f *File) lintHTML() {
 			inBlock = true
 		} else if shouldSkip && inBlock {
 			inBlock = false
+		} else if tokt == html.StartTagToken && heading.MatchString(txt) {
+			isHeading = true
+		} else if tokt == html.EndTagToken && isHeading {
+			isHeading = false
+		} else if tokt == html.TextToken && isHeading && !inBlock && txt != "" {
+			f.lintText(NewBlock(ctx, txt, "heading"+f.RealExt), lines, 0)
 		} else if tokt == html.TextToken && !inBlock && txt != "" {
 			f.lintProse(ctx, txt, lines, 0)
 		}
@@ -91,7 +98,7 @@ func (f *File) lintMarkdown() {
 				inTable = true
 			} else if inTable && line == "\n" && (table.MatchString(prev) || strings.Count(prev, "|") > 1) {
 				inTable = false
-			} else if !inTable && hATX.MatchString(line) {
+			} else if hATX.MatchString(line) {
 				f.lintText(NewBlock("", line, "text.heading"+f.RealExt), lines+1, 0)
 			} else if prose.MatchString(line) && !inTable {
 				// We've found the start of a prose section.
