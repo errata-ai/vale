@@ -29,9 +29,10 @@ type ruleFn func(string, *File) []Alert
 
 // A check implements a single rule.
 type check struct {
-	level int
-	rule  ruleFn
-	scope Selector
+	extends string
+	level   int
+	rule    ruleFn
+	scope   Selector
 }
 
 // A definition defines a rule from an external file.
@@ -44,6 +45,7 @@ type definition struct {
 	Map        map[string]string
 	Max        int
 	Message    string
+	Name       string
 	Negate     bool
 	Nonword    bool
 	Raw        []string
@@ -150,7 +152,7 @@ func conditional(txt string, chk definition, f *File, r []*regexp.Regexp) []Aler
 		for _, loc := range locs {
 			s := txt[loc[0]:loc[1]]
 			if !util.StringInSlice(s, f.Sequences) && !util.StringInSlice(s, chk.Exceptions) {
-				a := Alert{Check: chk.Type, Severity: chk.Level, Span: loc}
+				a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
 				a.Message = fmt.Sprintf(chk.Message, txt[loc[0]:loc[1]])
 				alerts = append(alerts, a)
 			}
@@ -164,7 +166,7 @@ func existence(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
 	locs := r.FindAllStringIndex(cleanText(f.NormedExt, txt), -1)
 	if locs != nil {
 		for _, loc := range locs {
-			a := Alert{Check: chk.Type, Severity: chk.Level, Span: loc}
+			a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
 			a.Message = fmt.Sprintf(chk.Message, txt[loc[0]:loc[1]])
 			alerts = append(alerts, a)
 		}
@@ -184,7 +186,7 @@ func occurrence(txt string, chk definition, f *File, r *regexp.Regexp, lim int) 
 		} else {
 			loc = []int{locs[0][0], locs[0][1]}
 		}
-		a := Alert{Check: chk.Type, Severity: chk.Level, Span: loc}
+		a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
 		a.Message = chk.Message
 		alerts = append(alerts, a)
 	}
@@ -204,7 +206,7 @@ func repetition(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
 		}
 		if curr == prev && curr != "" {
 			floc := []int{ploc[0], loc[1]}
-			a := Alert{Check: chk.Type, Severity: chk.Level, Span: floc}
+			a := Alert{Check: chk.Name, Severity: chk.Level, Span: floc}
 			a.Message = fmt.Sprintf(chk.Message, curr)
 			alerts = append(alerts, a)
 		}
@@ -225,7 +227,7 @@ func substitution(txt string, chk definition, f *File, r *regexp.Regexp, repl []
 		for idx, mat := range submat {
 			if mat != -1 && idx > 0 && idx%2 == 0 {
 				loc := []int{mat, submat[idx+1]}
-				a := Alert{Check: chk.Type, Severity: chk.Level, Span: loc}
+				a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
 				if strings.Count(chk.Message, "%s") == 1 {
 					a.Message = fmt.Sprintf(chk.Message, repl[(idx/2)-1])
 				} else {
@@ -257,7 +259,7 @@ func consistency(txt string, chk definition, f *File, r *regexp.Regexp, opts []s
 	}
 
 	if matches != nil && util.AllStringsInSlice(opts, f.Sequences) {
-		a := Alert{Check: chk.Type, Severity: chk.Level, Span: loc}
+		a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
 		a.Message = fmt.Sprintf(chk.Message, txt[loc[0]:loc[1]])
 		alerts = append(alerts, a)
 	}
@@ -276,7 +278,6 @@ func script(txt string, chkDef definition, exe string, f *File) []Alert {
 }
 
 func addScriptCheck(chkName string, chkDef definition) {
-	chkDef.Type = chkName
 	style := strings.Split(chkName, ".")[0]
 	exe := filepath.Join(util.Config.StylesPath, style, "scripts", chkDef.Exe)
 	if util.FileExists(exe) {
@@ -290,7 +291,6 @@ func addScriptCheck(chkName string, chkDef definition) {
 func addConsistencyCheck(chkName string, chkDef definition) {
 	var chkRE string
 
-	chkDef.Type = chkName
 	regex := ""
 	if chkDef.Ignorecase {
 		regex += ignoreCase
@@ -322,7 +322,6 @@ func addConsistencyCheck(chkName string, chkDef definition) {
 }
 
 func addExistenceCheck(chkName string, chkDef definition) {
-	chkDef.Type = chkName
 	regex := ""
 	if chkDef.Ignorecase {
 		regex += ignoreCase
@@ -346,8 +345,6 @@ func addExistenceCheck(chkName string, chkDef definition) {
 }
 
 func addRepetitionCheck(chkName string, chkDef definition) {
-	chkDef.Type = chkName
-
 	regex := ""
 	if chkDef.Ignorecase {
 		regex += ignoreCase
@@ -363,8 +360,6 @@ func addRepetitionCheck(chkName string, chkDef definition) {
 }
 
 func addOccurrenceCheck(chkName string, chkDef definition) {
-	chkDef.Type = chkName
-
 	re, err := regexp.Compile(chkDef.Tokens[0])
 	if util.CheckError(err, chkName) && chkDef.Max >= 1 {
 		fn := func(text string, file *File) []Alert {
@@ -391,7 +386,6 @@ func addConditionalCheck(chkName string, chkDef definition) {
 	}
 	expression = append(expression, re)
 
-	chkDef.Type = chkName
 	fn := func(text string, file *File) []Alert {
 		return conditional(text, chkDef, file, expression)
 	}
@@ -399,7 +393,6 @@ func addConditionalCheck(chkName string, chkDef definition) {
 }
 
 func addSubstitutionCheck(chkName string, chkDef definition) {
-	chkDef.Type = chkName
 	regex := ""
 	tokens := ""
 
@@ -432,15 +425,14 @@ func addSubstitutionCheck(chkName string, chkDef definition) {
 }
 
 func updateAllChecks(chkDef definition, fn ruleFn) {
-	chk := check{}
-	chk.rule = fn
+	chk := check{rule: fn, extends: chkDef.Type}
 	chk.level = util.LevelToInt[chkDef.Level]
 	chk.scope = Selector{Value: chkDef.Scope}
-	AllChecks[chkDef.Type] = chk
+	AllChecks[chkDef.Name] = chk
 }
 
 func addCheck(file []byte, chkName string) {
-	chkDef := definition{}
+	chkDef := definition{Name: chkName}
 	err := yaml.Unmarshal(file, &chkDef)
 	if !util.CheckError(err, chkName) {
 		return
