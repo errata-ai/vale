@@ -113,8 +113,9 @@ func init() {
 		}
 		check := strings.Split(chk, ".")
 		if !util.StringInSlice(check[0], loadedStyles) {
-			path = filepath.Join(baseDir, check[0], check[1]+".yml")
-			loadCheck(check[1], path)
+			fName := check[1] + ".yml"
+			path = filepath.Join(baseDir, check[0], fName)
+			loadCheck(fName, path)
 		}
 	}
 }
