@@ -66,8 +66,9 @@ func PrintVerboseAlerts(linted []lint.File) {
 		symbol = "\u2714"
 	}
 
-	fmt.Printf("%s %s, %s, %s\n", symbol, colorize(etotal, errorColor),
-		colorize(wtotal, warningColor), colorize(stotal, suggestionColor))
+	fmt.Printf("%s %s, %s and %s in %d files.\n", symbol,
+		colorize(etotal, errorColor), colorize(wtotal, warningColor),
+		colorize(stotal, suggestionColor), len(linted))
 }
 
 func printVerboseAlert(f lint.File) (int, int, int) {
