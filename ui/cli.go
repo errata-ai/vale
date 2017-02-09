@@ -66,9 +66,10 @@ func PrintVerboseAlerts(linted []lint.File) {
 		symbol = "\u2714"
 	}
 
-	fmt.Printf("%s %s, %s and %s in %d files.\n", symbol,
+	n := len(linted)
+	fmt.Printf("%s %s, %s and %s in %d %s.\n", symbol,
 		colorize(etotal, errorColor), colorize(wtotal, warningColor),
-		colorize(stotal, suggestionColor), len(linted))
+		colorize(stotal, suggestionColor), n, pluralize("file", n))
 }
 
 func printVerboseAlert(f lint.File) (int, int, int) {
@@ -85,7 +86,7 @@ func printVerboseAlert(f lint.File) (int, int, int) {
 	table.SetCenterSeparator("")
 	table.SetColumnSeparator("")
 	table.SetRowSeparator("")
-	table.SetAutoWrapText(util.CLConfig.Wrap)
+	table.SetAutoWrapText(!util.CLConfig.Wrap)
 
 	fmt.Printf("\n %s", colorize(f.Path, underlineColor))
 	for _, a := range alerts {

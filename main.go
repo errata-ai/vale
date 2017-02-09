@@ -30,13 +30,13 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:        "output",
-			Value:       "line",
-			Usage:       `output style ("line" or "CLI")`,
+			Value:       "CLI",
+			Usage:       `output style ("line")`,
 			Destination: &util.CLConfig.Output,
 		},
 		cli.BoolFlag{
-			Name:        "wrap",
-			Usage:       "wrap CLI output",
+			Name:        "no-wrap",
+			Usage:       "don't wrap CLI output",
 			Destination: &util.CLConfig.Wrap,
 		},
 		cli.BoolFlag{

@@ -4,6 +4,7 @@ exe = 'txtlint'
 if OS.windows?
   exe += '.exe'
 end
+exe += ' --output="line"'
 
 When(/^I lint "(.*)"$/) do |file|
   step %(I cd to "../../fixtures/formats")
