@@ -8,10 +8,23 @@ import (
 	"regexp"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/Sirupsen/logrus"
 )
 
 // ExeDir is our starting location.
 var ExeDir string
+
+// NewLogger creates and returns an instance of logrus.Logger.
+// If the `--debug` command flag was not provided, we set the level to Error.
+func NewLogger() *logrus.Logger {
+	log := logrus.New()
+	if !CLConfig.Debug {
+		log.Level = logrus.ErrorLevel
+	}
+	log.Out = os.Stdout
+	return log
+}
 
 // FindLoc calculates the line and span of an Alert.
 func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (int, []int) {
@@ -120,6 +133,7 @@ func HasAnyPrefix(text string, slice []string) bool {
 	return false
 }
 
+// CheckError prints any errors to stdout. A return value of true => no error.
 func CheckError(err error, context string) bool {
 	if err != nil {
 		fmt.Printf("%v (%s)\n", err, context)
@@ -127,6 +141,8 @@ func CheckError(err error, context string) bool {
 	return err == nil
 }
 
+// CheckAndClose closes `file` and prints any errors to stdout.
+// A return value of true => no error.
 func CheckAndClose(file *os.File) bool {
 	err := file.Close()
 	return CheckError(err, file.Name())

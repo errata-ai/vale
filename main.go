@@ -39,6 +39,11 @@ func main() {
 			Usage:       "wrap CLI output",
 			Destination: &util.CLConfig.Wrap,
 		},
+		cli.BoolFlag{
+			Name:        "debug",
+			Usage:       "print dubugging info to stdout",
+			Destination: &util.CLConfig.Debug,
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {

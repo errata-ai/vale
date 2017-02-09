@@ -71,59 +71,72 @@ func (f *File) lintMarkdown() {
 	lines := 1
 	prev := ""
 
+	log := util.NewLogger()
 	for f.Scanner.Scan() {
 		line = f.Scanner.Text() + "\n"
+		log.Info(line)
 		isMarkup = strings.HasPrefix(line, " ") || strings.HasPrefix(line, "<")
 		if inBlock == 0 {
 			if mat = fencedStart.FindStringSubmatch(line); len(mat) > 0 {
+				log.Info("^ Fenced start")
 				inBlock = 1
 				if mat[1] != "" {
-					// We've found an info string indicating a syntax.
+					log.Info("^ Found syntax; trying to lint")
 					linted, lns := f.lintCodeblock(mat[1], lines, fencedEnd)
 					f.Alerts = append(f.Alerts, linted...)
 					if lines == lns {
-						// We didn't recognize the syntax, so we're still in the block.
+						log.Info("^ Unknown syntax")
 						inBlock = 1
 					} else {
-						// lintCodeblock linted the block.
+						log.Info("^ Known syntax; linted block")
 						lines = lns
 						inBlock = 0
 					}
 				}
 			} else if indentStart.MatchString(line) {
+				log.Info("^ Indented start")
 				inBlock = 2
 			} else if HTMLStart.MatchString(line) {
+				log.Info("^ HTML start")
 				inBlock = 4
 			} else if !inTable && (table.MatchString(line) || strings.Count(line, "|") > 1) {
+				log.Info("^ Table start")
 				inTable = true
 			} else if inTable && line == "\n" && (table.MatchString(prev) || strings.Count(prev, "|") > 1) {
+				log.Info("^ Table end")
 				inTable = false
 			} else if hATX.MatchString(line) {
+				log.Info("^ Linting ATX heading")
 				f.lintText(NewBlock("", line, "text.heading"+f.RealExt), lines+1, 0)
 			} else if prose.MatchString(line) && !inTable {
-				// We've found the start of a prose section.
+				log.Info("^ Paragraph start")
 				paragraph.WriteString(line)
 				inBlock = 3
 			} else if line != "\n" && !isMarkup {
-				// We've found the start of a non-prose text section such as
-				// a table row.
+				log.Info("^ Linting single line")
 				f.lintText(NewBlock("", line, "text"+f.RealExt), lines+1, 0)
 			}
 		} else if inBlock == 1 && fencedEnd.MatchString(line) {
+			log.Info("^ Fenced end")
 			inBlock = 0
 		} else if inBlock == 4 && HTMLEnd.MatchString(line) {
+			log.Info("^ HTML end")
 			inBlock = 0
 		} else if inBlock > 1 && inBlock != 4 && line == "\n" {
+			log.Info("^ Block end")
 			if inBlock == 3 {
+				log.Info("^ Linting paragraph")
 				f.lintProse("", paragraph.String(), lines, 0)
 				paragraph.Reset()
 			}
 			inBlock = 0
 		} else if inBlock == 3 {
 			if hSetext.MatchString(line) {
-				f.lintText(NewBlock("", prev, "text.heading"+f.RealExt), lines, 0)
+				log.Info("^ Not a paragraph; linting setext heading")
+				f.lintText(NewBlock("", prev, "heading"+f.RealExt), lines, 0)
 				inBlock = 0
 			} else {
+				log.Info("^ Adding to paragraph")
 				paragraph.WriteString(line)
 			}
 		}
@@ -131,6 +144,7 @@ func (f *File) lintMarkdown() {
 		prev = line
 	}
 	if inBlock == 3 {
+		log.Info("^ Linting paragraph")
 		f.lintProse("", paragraph.String(), lines, 0)
 	}
 }
@@ -215,23 +229,28 @@ func (f *File) lintRST() {
 	indentStart := regexp.MustCompile(`^::\n$`)
 	indentEnd := regexp.MustCompile(`^\n$`)
 	highlight := regexp.MustCompile(`.. highlight:: (\w+)`)
-	prose := regexp.MustCompile("^([a-zA-Z0-9_()`]|" + `\*\*)`)
+	prose := regexp.MustCompile("^([a-zA-Z0-9_():`]|" + `\*\*)`)
 	table := regexp.MustCompile(`^(=+\s+=+\n$|\+-.+-\+)`)
+	hSetext := regexp.MustCompile(`(?:=|-|~|#)+\s*$`)
 	inBlock := 0
 	inTable := false
 	lines := 1
 	blankLines := 0
 
 	prev := ""
+	log := util.NewLogger()
 	for f.Scanner.Scan() {
 		line = f.Scanner.Text() + "\n"
+		log.Info(line)
 		isMarkup = strings.HasPrefix(line, " ") || strings.HasPrefix(line, "..")
 		if inBlock == 0 {
 			if mat = codeStart.FindStringSubmatch(line); len(mat) > 0 {
+				log.Info("^ code block")
 				inBlock = 1
 				syntax = mat[1]
 				blankLines = 1
 			} else if indentStart.MatchString(line) {
+				log.Info("^ indented block")
 				inBlock = 2
 				blankLines = 0
 			} else if mat = highlight.FindStringSubmatch(line); len(mat) > 0 {
@@ -240,43 +259,58 @@ func (f *File) lintRST() {
 				} else {
 					syntax = ""
 				}
+				log.Info("^ setting highlight to", syntax)
 			} else if !inTable && table.MatchString(line) {
+				log.Info("^ Table start")
 				inTable = true
 			} else if inTable && line == "\n" && table.MatchString(prev) {
+				log.Info("^ Table end")
 				inTable = false
 			} else if prose.MatchString(line) && !inTable {
+				log.Info("^ Paragraph start")
 				inBlock = 3
 				paragraph.WriteString(line)
 			} else if line != "\n" && !isMarkup {
+				log.Info("^ Linting single line")
 				f.lintText(NewBlock("", line, "text"+f.RealExt), lines+1, 0)
 			}
 		} else if syntax != "" && line == "\n" && inBlock > 0 && inBlock < 3 {
+			log.Info("^ Linting code")
 			linted, lns := f.lintCodeblock(syntax, lines, indentEnd)
 			f.Alerts = append(f.Alerts, linted...)
 			if inBlock == 1 {
 				syntax = ""
 			}
 			if lines != lns {
+				log.Info("^ code end")
 				lines = lns
 				inBlock = 0
 			}
 		} else if inBlock > 0 && inBlock < 3 && line == "\n" && blankLines > 0 {
+			log.Info("^ Block end")
 			inBlock = 0
-		} else if !prose.MatchString(line) {
-			if inBlock == 3 {
-				f.lintProse("", paragraph.String(), lines, 0)
-				paragraph.Reset()
-				inBlock = 0
-			} else if line == "\n" {
-				blankLines++
-			}
+		} else if inBlock == 3 && line == "\n" {
+			log.Info("^ Linting paragraph")
+			f.lintProse("", paragraph.String(), lines, 0)
+			paragraph.Reset()
+			inBlock = 0
+		} else if line == "\n" {
+			blankLines++
 		} else if inBlock == 3 {
-			paragraph.WriteString(line)
+			if hSetext.MatchString(line) {
+				f.lintText(NewBlock("", prev, "heading"+f.RealExt), lines, 0)
+				inBlock = 0
+				log.Info("^ Not a paragraph; linting setext heading")
+			} else {
+				log.Info("^ Adding to paragraph")
+				paragraph.WriteString(line)
+			}
 		}
 		lines++
 		prev = line
 	}
 	if inBlock == 3 {
+		log.Info("^ Linting paragraph")
 		f.lintProse("", paragraph.String(), lines, 0)
 	}
 }
