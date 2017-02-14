@@ -2,6 +2,7 @@
 _obj
 _test
 vendor/bundle/
+builds
 bin
 tmp
 tags
