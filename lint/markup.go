@@ -133,7 +133,8 @@ func (f *File) lintMarkdown() {
 		} else if inBlock == 3 {
 			if hSetext.MatchString(line) {
 				log.Info("^ Not a paragraph; linting setext heading")
-				f.lintText(NewBlock("", prev, "heading"+f.RealExt), lines, 0)
+				f.lintText(NewBlock("", prev, "text.heading"+f.RealExt), lines, 0)
+				paragraph.Reset()
 				inBlock = 0
 			} else {
 				log.Info("^ Adding to paragraph")
@@ -157,64 +158,94 @@ func (f *File) lintADoc() {
 
 	literal := regexp.MustCompile(`^\.\.\.\.`)
 	listing := regexp.MustCompile(`^----`)
-	code := regexp.MustCompile(`^\[\w+,(\w+)\]`)
+	code := regexp.MustCompile(`^\[\w+,\s*(\w+)\]`)
 	indentStart := regexp.MustCompile("^ +[^.]+")
 	list := regexp.MustCompile(`^\s*(\*+|\.|\-)\s.+`)
 	prose := regexp.MustCompile("^([a-zA-Z()`]|" + `\*\*\w+)`)
-	markup := []string{":", "[", "ifdef", "endif", "=====", "____", "+", "image:"}
+	markup := []string{
+		":", "[", "ifdef", "endif", "=====", "____", "+", "image:"}
+	heading := regexp.MustCompile(`^=+\s*\w*`)
+	hSetext := regexp.MustCompile(`^(?:=|-){6,}\s*$`)
 	inBlock := 0
 	lines := 1
+	prev := ""
 
+	log := util.NewLogger()
 	for f.Scanner.Scan() {
 		line = f.Scanner.Text() + "\n"
+		log.Info(line)
 		isMarkup = util.HasAnyPrefix(line, markup) || strings.Contains(line, "::")
 		if inBlock == 0 {
 			if mat = code.FindStringSubmatch(line); len(mat) > 0 {
+				log.Info("^ Code start")
 				inBlock = 1
 				syntax = mat[1]
 			} else if literal.MatchString(line) {
+				log.Info("^ Literal start")
 				inBlock = 2
 			} else if listing.MatchString(line) {
+				log.Info("^ Listing start")
 				inBlock = 3
 			} else if list.MatchString(line) && !inList {
+				log.Info("^ List start; linting line...")
 				f.lintText(NewBlock("", line, "text"+f.RealExt), lines+1, 0)
 				inList = true
 			} else if inList && line == "\n" {
+				log.Info("^ List end")
 				inList = false
 			} else if indentStart.MatchString(line) && !inList {
+				log.Info("^ Indent start")
 				inBlock = 4
+			} else if heading.MatchString(line) {
+				log.Info("^ Linting heading")
+				f.lintText(NewBlock("", line, "text.heading"+f.RealExt), lines, 0)
 			} else if prose.MatchString(line) && !isMarkup && !inList {
+				log.Info("^ Paragraph start")
 				paragraph.WriteString(line)
 				inBlock = 5
 			} else if line != "\n" && !isMarkup {
+				log.Info("^ Linting single line")
 				f.lintText(NewBlock("", line, "text"+f.RealExt), lines+1, 0)
 			}
 		} else if syntax != "" && listing.MatchString(line) && inBlock == 1 {
-			// A syntax has been set (e.g., [source,ruby]), so we can try to lint the
-			// listing block.
+			log.Info("^ Listing with syntax; trying to lint...")
 			linted, lns := f.lintCodeblock(syntax, lines, listing)
 			f.Alerts = append(f.Alerts, linted...)
 			if lines != lns {
+				log.Info("^ Listing end (from lintCode)")
 				syntax = ""
 				lines = lns
 				inBlock = 0
 			}
 		} else if inBlock == 2 && literal.MatchString(line) {
+			log.Info("^ Literal end")
 			inBlock = 0
 		} else if inBlock == 3 && listing.MatchString(line) {
+			log.Info("^ Listing end")
 			inBlock = 0
 		} else if inBlock == 4 && !strings.HasPrefix(line, " ") {
+			log.Info("^ Block end")
 			inBlock = 0
 		} else if inBlock == 5 && !prose.MatchString(line) {
-			f.lintProse("", paragraph.String(), lines, 0)
-			paragraph.Reset()
+			if hSetext.MatchString(line) {
+				f.lintText(NewBlock("", prev, "text.heading"+f.RealExt), lines, 0)
+				log.Info("^ Not a paragraph; linting setext heading")
+				paragraph.Reset()
+			} else {
+				log.Info("^ Linting paragraph")
+				f.lintProse("", paragraph.String(), lines, 0)
+				paragraph.Reset()
+			}
 			inBlock = 0
 		} else if inBlock == 5 {
+			log.Info("^ Adding to paragraph")
 			paragraph.WriteString(line)
 		}
 		lines++
+		prev = line
 	}
 	if inBlock == 5 {
+		log.Info("^ Linting paragraph")
 		f.lintProse("", paragraph.String(), lines, 0)
 	}
 }
@@ -298,9 +329,10 @@ func (f *File) lintRST() {
 			blankLines++
 		} else if inBlock == 3 {
 			if hSetext.MatchString(line) {
-				f.lintText(NewBlock("", prev, "heading"+f.RealExt), lines, 0)
+				f.lintText(NewBlock("", prev, "text.heading"+f.RealExt), lines, 0)
 				inBlock = 0
 				log.Info("^ Not a paragraph; linting setext heading")
+				paragraph.Reset()
 			} else {
 				log.Info("^ Adding to paragraph")
 				paragraph.WriteString(line)
