@@ -1,13 +1,13 @@
-# `vale`: Your Style, Our Editor
+# Vale: Your Style, Our Editor
 
 [![Build Status](https://travis-ci.org/jdkato/vale.svg?branch=master)](https://travis-ci.org/jdkato/vale) [![Build status](https://ci.appveyor.com/api/projects/status/0vo1d47jj2ja7v66/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/vale/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/jdkato/vale)](https://goreportcard.com/report/github.com/jdkato/vale) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
-![demo](https://cloud.githubusercontent.com/assets/8785025/22620378/85715878-eabf-11e6-99f4-4cc275e6f95f.png)
+![demo](https://cloud.githubusercontent.com/assets/8785025/22951386/df064226-f2bd-11e6-84e3-4cedfc098528.png)
 
-`vale` is a linter for English prose&mdash;no matter if it's plain text, markup or source-code comments. It's built around a plugin system that allows it to lint against arbitrary rules. In practice, this means that `vale` can help you adhere to entire editorial style guides or simply break writer-specific bad habits (see [Use Cases]() for more ideas).
+Vale is a linter for prose&mdash;no matter if it's plain text, markup or source-code comments. It's built around a plugin system that allows it to lint against arbitrary rules. In practice, this means that it can help you adhere to entire editorial style guides or simply break writer-specific bad habits (see [Use Cases](https://github.com/jdkato/vale/wiki/Use-Cases) for more ideas).
 
 
-Here's an example of `vale`'s versatility:
+Here's an example of Vale's versatility:
 
 ```ini
 # These options are specified in either a .vale or _vale file.
@@ -35,3 +35,7 @@ Check out [the wiki](https://github.com/jdkato/vale/wiki) to learn more!
 - [X] External checks can be written in *any* programming language
 - [X] Standalone binaries for Windows, macOS, and Linux
 - [X] Expressive, [EditorConfig-like](http://editorconfig.org/) configuration
+
+## Installation
+
+See the [project wiki](https://github.com/jdkato/vale/wiki).
