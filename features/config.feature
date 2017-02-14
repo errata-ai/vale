@@ -12,30 +12,30 @@ Feature: Config
     """
 
   Scenario: MinAlertLevel = warning
-    Given a file named ".txtlint" with:
+    Given a file named ".vale" with:
     """
     MinAlertLevel = warning
 
     [*]
-    BasedOnStyles = txtlint
+    BasedOnStyles = vale
     """
-    When I run txtlint "test.md"
+    When I run vale "test.md"
     Then the output should contain exactly:
     """
-    test.md:1:11:txtlint.Editorializing:Consider removing 'very'
+    test.md:1:11:vale.Editorializing:Consider removing 'very'
 
     """
     And the exit status should be 0
 
   Scenario: MinAlertLevel = error
-    Given a file named ".txtlint" with:
+    Given a file named ".vale" with:
     """
     MinAlertLevel = error
 
     [*]
-    BasedOnStyles = txtlint
+    BasedOnStyles = vale
     """
-    When I run txtlint "test.md"
+    When I run vale "test.md"
     Then the output should contain exactly:
     """
 
@@ -43,15 +43,15 @@ Feature: Config
     And the exit status should be 0
 
   Scenario: Ignore BasedOnStyle for formats it doesn't match
-    Given a file named ".txtlint" with:
+    Given a file named ".vale" with:
     """
     StylesPath = ../../styles/
     MinAlertLevel = warning
 
     [*.py]
-    BasedOnStyles = txtlint
+    BasedOnStyles = vale
     """
-    When I run txtlint "test.md"
+    When I run vale "test.md"
     Then the output should contain exactly:
     """
 
@@ -59,21 +59,21 @@ Feature: Config
     And the exit status should be 0
 
   Scenario: Specify BasedOnStyle on a per-syntax basis
-    Given a file named ".txtlint" with:
+    Given a file named ".vale" with:
     """
     StylesPath = ../../styles/
     MinAlertLevel = warning
 
     [*.md]
-    BasedOnStyles = txtlint
+    BasedOnStyles = vale
 
     [*.py]
     BasedOnStyles = write-good
     """
-    When I run txtlint "."
+    When I run vale "."
     Then the output should contain exactly:
     """
-    test.md:1:11:txtlint.Editorializing:Consider removing 'very'
+    test.md:1:11:vale.Editorializing:Consider removing 'very'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:37:write-good.Adverbs:'Very' - Adverbs can weaken meaning
 
@@ -81,42 +81,42 @@ Feature: Config
     And the exit status should be 0
 
   Scenario: Disable/enable checks on a per-syntax basis
-    Given a file named "_txtlint" with:
+    Given a file named "_vale" with:
     """
     StylesPath = ../../styles/
     MinAlertLevel = warning
 
     [*.md]
-    BasedOnStyles = txtlint
+    BasedOnStyles = vale
 
     [*.py]
     BasedOnStyles = write-good
     write-good.Adverbs = NO
-    txtlint.WeasalWords = YES
+    vale.WeasalWords = YES
     """
-    When I run txtlint "."
+    When I run vale "."
     Then the output should contain exactly:
     """
-    test.md:1:11:txtlint.Editorializing:Consider removing 'very'
+    test.md:1:11:vale.Editorializing:Consider removing 'very'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
 
     """
     And the exit status should be 0
 
   Scenario: Overwrite BasedOnStyle on a per-syntax basis
-    Given a file named "_txtlint" with:
+    Given a file named "_vale" with:
     """
     StylesPath = ../../styles/
     MinAlertLevel = warning
 
     [*]
-    BasedOnStyles = txtlint
+    BasedOnStyles = vale
 
     [*.py]
     BasedOnStyles = write-good
 
     """
-    When I run txtlint "test.py"
+    When I run vale "test.py"
     Then the output should contain exactly:
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
@@ -126,7 +126,7 @@ Feature: Config
     And the exit status should be 0
 
   Scenario: Load two base styles
-    Given a file named "_txtlint" with:
+    Given a file named "_vale" with:
     """
     StylesPath = ../../styles/
     MinAlertLevel = warning
@@ -135,7 +135,7 @@ Feature: Config
     BasedOnStyles = TheEconomist, write-good
 
     """
-    When I run txtlint "test.py"
+    When I run vale "test.py"
     Then the output should contain exactly:
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
@@ -146,21 +146,21 @@ Feature: Config
     And the exit status should be 0
 
   Scenario: Load individual rules
-    Given a file named "_txtlint" with:
+    Given a file named "_vale" with:
     """
     StylesPath = ../../styles/
     MinAlertLevel = warning
 
     [*]
-    BasedOnStyles = txtlint
+    BasedOnStyles = vale
     write-good.ThereIs = YES
 
     """
-    When I run txtlint "test.py"
+    When I run vale "test.py"
     Then the output should contain exactly:
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:txtlint.Editorializing:Consider removing 'Very'
+    test.py:1:37:vale.Editorializing:Consider removing 'Very'
 
     """
     And the exit status should be 0

@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/jdkato/txtlint/lint"
-	"github.com/jdkato/txtlint/util"
+	"github.com/jdkato/vale/lint"
+	"github.com/jdkato/vale/util"
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -25,10 +25,10 @@ func PrintLineAlerts(linted []lint.File) {
 
 	spaces := regexp.MustCompile(" +")
 	for _, f := range linted {
-		// If txtlint is run from a parent directory of f, we use a shorter file
-		// path -- e.g., if run from the directory 'txtlint', we use
+		// If vale is run from a parent directory of f, we use a shorter file
+		// path -- e.g., if run from the directory 'vale', we use
 		// 'testdata/test.cc: ...' instead of
-		// /Users/.../.../.../txtlint/testdata/test.cc: ...'.
+		// /Users/.../.../.../vale/testdata/test.cc: ...'.
 		if strings.Contains(f.Path, util.ExeDir) {
 			base = strings.Split(f.Path, util.ExeDir)[1]
 		} else {

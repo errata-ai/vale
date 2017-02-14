@@ -1,2 +1,2 @@
 [*]
-txtlint.Abbreviations = YES
+vale.Abbreviations = YES

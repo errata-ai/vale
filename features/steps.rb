@@ -1,6 +1,6 @@
 require 'os'
 
-exe = 'txtlint'
+exe = 'vale'
 if OS.windows?
   exe += '.exe'
 end
@@ -21,6 +21,6 @@ When(/^I apply style "(.*)"$/) do |style|
   step %(I run `#{exe} .`)
 end
 
-When(/^I run txtlint "(.*)"$/) do |file|
+When(/^I run vale "(.*)"$/) do |file|
   step %(I run `#{exe} #{file}`)
 end

@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/gobwas/glob"
-	"github.com/jdkato/txtlint/util"
+	"github.com/jdkato/vale/util"
 )
 
 // Lint src according to its format.

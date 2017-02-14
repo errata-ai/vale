@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/jdkato/txtlint/util"
+	"github.com/jdkato/vale/util"
 )
 
 // lintCode lints source code -- whether it be a markup codeblock, a complete

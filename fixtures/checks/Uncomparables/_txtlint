@@ -1,2 +1,2 @@
 [*]
-txtlint.Uncomparables = YES
+vale.Uncomparables = YES

@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/jdkato/txtlint/lint"
-	"github.com/jdkato/txtlint/util"
+	"github.com/jdkato/vale/lint"
+	"github.com/jdkato/vale/util"
 	"github.com/urfave/cli"
 )
 
@@ -17,7 +17,7 @@ var Commit string
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "txtlint"
+	app.Name = "vale"
 	// Writing specs puts me at loose ends.
 	app.Usage = "A command-line linter for prose."
 	app.Version = Version

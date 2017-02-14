@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jdkato/txtlint/util"
+	"github.com/jdkato/vale/util"
 	"gopkg.in/neurosnap/sentences.v1"
 	"gopkg.in/neurosnap/sentences.v1/english"
 )
@@ -26,7 +26,7 @@ type Alert struct {
 // A File represents a linted text file.
 type File struct {
 	Alerts     []Alert         // all alerts associated with this file
-	BaseStyles []string        // base style assigned in .txtlint
+	BaseStyles []string        // base style assigned in .vale
 	Checks     map[string]bool // syntax-specific checks assigned in .txtint
 	Counts     map[string]int  // word counts
 	Format     string          // 'code', 'markup' or 'prose'

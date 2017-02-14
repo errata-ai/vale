@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jdkato/txtlint/util"
+	"github.com/jdkato/vale/util"
 	"golang.org/x/net/html"
 )
 

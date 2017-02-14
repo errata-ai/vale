@@ -1,4 +1,4 @@
-BASE_DIR=$(shell echo $$GOPATH)/src/github.com/jdkato/txtlint
+BASE_DIR=$(shell echo $$GOPATH)/src/github.com/jdkato/vale
 BUILD_DIR=./builds
 COMMIT= `git rev-parse --short HEAD 2>/dev/null`
 
@@ -12,33 +12,33 @@ LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION) -X main.Commit=$(COMMIT)"
 all: rules build
 
 build:
-	go build ${LDFLAGS} -o bin/txtlint
+	go build ${LDFLAGS} -o bin/vale
 
 build-win:
-	go build ${LDFLAGS} -o bin/txtlint.exe
+	go build ${LDFLAGS} -o bin/vale.exe
 
 cross:
 	mkdir -p $(BUILD_DIR)
 
 	GOOS=linux GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/linux-amd64.tar.gz" ./txtlint
+	tar -czvf "$(BUILD_DIR)/linux-amd64.tar.gz" ./vale
 
 	GOOS=linux GOARCH=386 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/linux-386.tar.gz" ./txtlint
+	tar -czvf "$(BUILD_DIR)/linux-386.tar.gz" ./vale
 
 	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/darwin-amd64.tar.gz" ./txtlint
+	tar -czvf "$(BUILD_DIR)/darwin-amd64.tar.gz" ./vale
 
 	GOOS=darwin GOARCH=386 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/darwin-386.tar.gz" ./txtlint
+	tar -czvf "$(BUILD_DIR)/darwin-386.tar.gz" ./vale
 
 	GOOS=windows GOARCH=amd64 go build ${LDFLAGS}
-	zip -r "$(BUILD_DIR)/windows-amd64.zip" ./txtlint.exe
+	zip -r "$(BUILD_DIR)/windows-amd64.zip" ./vale.exe
 
 	GOOS=windows GOARCH=386 go build ${LDFLAGS}
-	zip -r "$(BUILD_DIR)/windows-386.zip" ./txtlint.exe
+	zip -r "$(BUILD_DIR)/windows-386.zip" ./vale.exe
 
-	rm -rf txtlint txtlint.exe
+	rm -rf vale vale.exe
 
 install:
 	go install ${LDFLAGS}

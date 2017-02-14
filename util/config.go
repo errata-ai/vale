@@ -17,7 +17,7 @@ var CLConfig struct {
 	Debug  bool   // (optional) Prints dubugging info to stdout
 }
 
-// Config holds our .txtlint configuration.
+// Config holds our .vale configuration.
 var Config = loadOptions()
 
 // AlertLevels holds the possible values for "level" in an external rule.
@@ -46,11 +46,11 @@ func newConfig() *config {
 	cfg.SBaseStyles = make(map[glob.Glob][]string)
 	cfg.SChecks = make(map[glob.Glob]map[string]bool)
 	cfg.MinAlertLevel = 0
-	cfg.GBaseStyles = []string{"txtlint"}
+	cfg.GBaseStyles = []string{"vale"}
 	return &cfg
 }
 
-// loadConfig loads the .txtlint file. It checks the current directory, and
+// loadConfig loads the .vale file. It checks the current directory, and
 // then the user's home directory.
 func loadConfig(names []string) (*ini.File, error) {
 	var configPath, hpath string
@@ -73,10 +73,10 @@ func loadConfig(names []string) (*ini.File, error) {
 	return iniFile, err
 }
 
-// loadOptions reads the .txtlint file.
+// loadOptions reads the .vale file.
 func loadOptions() config {
 	cfg := newConfig()
-	uCfg, err := loadConfig([]string{".txtlint", "_txtlint"})
+	uCfg, err := loadConfig([]string{".vale", "_vale"})
 	if err != nil {
 		return *cfg
 	}

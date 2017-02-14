@@ -1,2 +1,2 @@
 [*]
-txtlint.ComplexWords = YES
+vale.ComplexWords = YES

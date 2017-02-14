@@ -1,2 +1,2 @@
 [*]
-txtlint.Wordiness = YES
+vale.Wordiness = YES

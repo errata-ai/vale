@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jdkato/txtlint/rule"
-	"github.com/jdkato/txtlint/util"
+	"github.com/jdkato/vale/rule"
+	"github.com/jdkato/vale/util"
 	"gopkg.in/yaml.v2"
 )
 
@@ -90,10 +90,10 @@ func init() {
 		return
 	}
 
-	loadedStyles = append(loadedStyles, "txtlint")
+	loadedStyles = append(loadedStyles, "vale")
 	baseDir := util.Config.StylesPath
 	for _, style = range util.Config.GBaseStyles {
-		if style == "txtlint" {
+		if style == "vale" {
 			continue
 		}
 		loadExternalStyle(filepath.Join(baseDir, style))
@@ -487,6 +487,6 @@ func loadDefaultChecks() {
 		if err != nil {
 			continue
 		}
-		addCheck(b, "txtlint."+chk)
+		addCheck(b, "vale."+chk)
 	}
 }
