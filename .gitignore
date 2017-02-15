@@ -18,7 +18,6 @@ target
 *.swp
 *~
 .bundle
-rule/rule.go
 .vagrant
 *.sublime-project
 *.sublime-workspace
