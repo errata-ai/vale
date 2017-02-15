@@ -70,7 +70,7 @@ func main() {
 		}
 
 		if err == nil && hasAlerts && !util.CLConfig.NoExit {
-			err = errors.New("lint alerts found")
+			err = errors.New("")
 		}
 		return err
 	}

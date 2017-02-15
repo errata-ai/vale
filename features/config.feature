@@ -78,7 +78,7 @@ Feature: Config
     test.py:1:37:write-good.Adverbs:'Very' - Adverbs can weaken meaning
 
     """
-    And the exit status should be 0
+    And the exit status should be 1
 
   Scenario: Disable/enable checks on a per-syntax basis
     Given a file named "_vale" with:
@@ -101,7 +101,7 @@ Feature: Config
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
 
     """
-    And the exit status should be 0
+    And the exit status should be 1
 
   Scenario: Overwrite BasedOnStyle on a per-syntax basis
     Given a file named "_vale" with:
@@ -123,7 +123,7 @@ Feature: Config
     test.py:1:37:write-good.Adverbs:'Very' - Adverbs can weaken meaning
 
     """
-    And the exit status should be 0
+    And the exit status should be 1
 
   Scenario: Load two base styles
     Given a file named "_vale" with:
@@ -143,7 +143,7 @@ Feature: Config
     test.py:1:49:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'.
 
     """
-    And the exit status should be 0
+    And the exit status should be 1
 
   Scenario: Load individual rules
     Given a file named "_vale" with:
@@ -163,4 +163,4 @@ Feature: Config
     test.py:1:37:vale.Editorializing:Consider removing 'Very'
 
     """
-    And the exit status should be 0
+    And the exit status should be 1

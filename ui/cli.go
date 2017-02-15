@@ -37,11 +37,13 @@ func PrintLineAlerts(linted []lint.File) bool {
 		}
 
 		for _, a := range f.SortedAlerts() {
+			if a.Severity == "error" {
+				alertCount++
+			}
 			a.Message = strings.Replace(a.Message, "\n", "", -1)
 			a.Message = spaces.ReplaceAllString(a.Message, " ")
 			fmt.Print(fmt.Sprintf("%s:%d:%d:%s:%s\n",
 				base, a.Line, a.Span[0], a.Check, a.Message))
-			alertCount++
 		}
 	}
 	return alertCount != 0
@@ -74,7 +76,7 @@ func PrintVerboseAlerts(linted []lint.File) bool {
 		colorize(etotal, errorColor), colorize(wtotal, warningColor),
 		colorize(stotal, suggestionColor), n, pluralize("file", n))
 
-	return (errors + warnings + suggestions) != 0
+	return errors != 0
 }
 
 func printVerboseAlert(f lint.File) (int, int, int) {
