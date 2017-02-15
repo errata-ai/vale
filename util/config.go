@@ -14,7 +14,8 @@ var CLConfig struct {
 	Glob   string // (optional) specifies formats to lint (e.g., "*.{md,py}")
 	Output string // (optional) output style ("line" or "CLI")
 	Wrap   bool   // (optional) wrap output when CLI style
-	Debug  bool   // (optional) Prints dubugging info to stdout
+	Debug  bool   // (optional) prints dubugging info to stdout
+	NoExit bool   // (optional) don't return a nonzero exit code on lint errors
 }
 
 // Config holds our .vale configuration.

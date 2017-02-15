@@ -20,9 +20,10 @@ const (
 )
 
 // PrintLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
-func PrintLineAlerts(linted []lint.File) {
+func PrintLineAlerts(linted []lint.File) bool {
 	var base string
 
+	alertCount := 0
 	spaces := regexp.MustCompile(" +")
 	for _, f := range linted {
 		// If vale is run from a parent directory of f, we use a shorter file
@@ -40,12 +41,14 @@ func PrintLineAlerts(linted []lint.File) {
 			a.Message = spaces.ReplaceAllString(a.Message, " ")
 			fmt.Print(fmt.Sprintf("%s:%d:%d:%s:%s\n",
 				base, a.Line, a.Span[0], a.Check, a.Message))
+			alertCount++
 		}
 	}
+	return alertCount != 0
 }
 
 // PrintVerboseAlerts prints Alerts in verbose format.
-func PrintVerboseAlerts(linted []lint.File) {
+func PrintVerboseAlerts(linted []lint.File) bool {
 	var errors, warnings, suggestions int
 	var symbol string
 
@@ -70,6 +73,8 @@ func PrintVerboseAlerts(linted []lint.File) {
 	fmt.Printf("%s %s, %s and %s in %d %s.\n", symbol,
 		colorize(etotal, errorColor), colorize(wtotal, warningColor),
 		colorize(stotal, suggestionColor), n, pluralize("file", n))
+
+	return (errors + warnings + suggestions) != 0
 }
 
 func printVerboseAlert(f lint.File) (int, int, int) {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 
@@ -44,24 +45,33 @@ func main() {
 			Usage:       "print dubugging info to stdout",
 			Destination: &util.CLConfig.Debug,
 		},
+		cli.BoolFlag{
+			Name:        "no-exit",
+			Usage:       "don't return a nonzero exit code on lint errors",
+			Destination: &util.CLConfig.NoExit,
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {
 		var linted []lint.File
 		var err error
+		var hasAlerts bool
 
 		if c.NArg() > 0 {
 			l := new(lint.Linter)
 			linted, err = l.Lint(c.Args()[0])
 			if util.CLConfig.Output == "line" {
-				ui.PrintLineAlerts(linted)
+				hasAlerts = ui.PrintLineAlerts(linted)
 			} else {
-				ui.PrintVerboseAlerts(linted)
+				hasAlerts = ui.PrintVerboseAlerts(linted)
 			}
 		} else {
 			cli.ShowAppHelp(c)
 		}
 
+		if err == nil && hasAlerts && !util.CLConfig.NoExit {
+			err = errors.New("lint alerts found")
+		}
 		return err
 	}
 
