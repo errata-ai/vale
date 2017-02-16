@@ -27,6 +27,10 @@ Feature: Styles
     test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
     test.md:1:1:demo.HeadingStartsWithCapital:'# this is a heading' should be capitalized
     test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
+    test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
+    test.md:14:159:demo.SentenceLength:Sentences should be less than 25 words
+    test.md:16:1:demo.SentenceLength:Sentences should be less than 25 words
+    test.md:16:367:demo.SentenceLength:Sentences should be less than 25 words
     test.txt:1:22:demo.CommasPerSentence:More than 3 commas!
     test.txt:1:58:demo.Spacing:'. I' should have one space
     test.txt:3:1:demo.SentenceLength:Sentences should be less than 25 words

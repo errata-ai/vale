@@ -31,13 +31,10 @@ func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (i
 	var pos int
 
 	substring := s[loc[0]:loc[1]]
+	meta := regexp.QuoteMeta(substring)
 	diff := loc[0] - utf8.RuneCountInString(s[:loc[0]])
-	if ext != ".html" {
-		pos = loc[0] + 1
-	} else {
-		r := regexp.MustCompile(fmt.Sprintf(`(\b%s|%s)`, substring, substring))
-		pos = r.FindAllStringIndex(ctx, 1)[0][0] + 1
-	}
+	r := regexp.MustCompile(fmt.Sprintf(`(\b%s|%s)`, meta, meta))
+	pos = r.FindAllStringIndex(ctx, 1)[0][0] + 1
 
 	counter := 0
 	lines := strings.SplitAfter(ctx, "\n")

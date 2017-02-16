@@ -181,11 +181,7 @@ func occurrence(txt string, chk definition, f *File, r *regexp.Regexp, lim int) 
 	locs := r.FindAllStringIndex(cleanText(f.NormedExt, txt), -1)
 	occurrences := len(locs)
 	if occurrences > lim {
-		if len(locs) > 1 {
-			loc = []int{locs[0][0], locs[1][1]}
-		} else {
-			loc = []int{locs[0][0], locs[0][1]}
-		}
+		loc = []int{locs[0][0], locs[occurrences-1][1]}
 		a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
 		a.Message = chk.Message
 		alerts = append(alerts, a)
