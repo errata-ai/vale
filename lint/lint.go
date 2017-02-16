@@ -16,12 +16,12 @@ import (
 func (l *Linter) Lint(src string) ([]File, error) {
 	var linted []File
 
-	glob := glob.MustCompile(util.CLConfig.Glob)
+	glob, gerr := glob.Compile(util.CLConfig.Glob)
 	err := filepath.Walk(src,
 		func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {
 				return err
-			} else if glob.Match(fp) {
+			} else if gerr == nil && glob.Match(fp) {
 				linted = append(linted, l.lintFile(fp))
 			}
 			return nil
@@ -41,16 +41,18 @@ func (l *Linter) lintFile(src string) File {
 
 	ext, format := util.FormatFromExt(src)
 	baseStyles := util.Config.GBaseStyles
-	for pat, styles := range util.Config.SBaseStyles {
-		if pat.Match(src) {
+	for sec, styles := range util.Config.SBaseStyles {
+		pat, err := glob.Compile(sec)
+		if util.CheckError(err, sec) && pat.Match(src) {
 			baseStyles = styles
 			break
 		}
 	}
 
 	checks := make(map[string]bool)
-	for pat, smap := range util.Config.SChecks {
-		if pat.Match(src) {
+	for sec, smap := range util.Config.SChecks {
+		pat, err := glob.Compile(sec)
+		if util.CheckError(err, sec) && pat.Match(src) {
 			checks = smap
 			break
 		}

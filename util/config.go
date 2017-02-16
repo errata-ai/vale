@@ -4,7 +4,6 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/gobwas/glob"
 	"github.com/mitchellh/go-homedir"
 	"gopkg.in/ini.v1"
 )
@@ -32,20 +31,20 @@ var LevelToInt = map[string]int{
 }
 
 type config struct {
-	Checks        []string                      // All checks to load
-	GBaseStyles   []string                      // Global base style
-	GChecks       map[string]bool               // Global checks
-	MinAlertLevel int                           // Lowest alert level to display
-	SBaseStyles   map[glob.Glob][]string        // Syntax-specific base styles
-	SChecks       map[glob.Glob]map[string]bool // Syntax-specific checks
-	StylesPath    string                        // Directory with Rule.yml files
+	Checks        []string                   // All checks to load
+	GBaseStyles   []string                   // Global base style
+	GChecks       map[string]bool            // Global checks
+	MinAlertLevel int                        // Lowest alert level to display
+	SBaseStyles   map[string][]string        // Syntax-specific base styles
+	SChecks       map[string]map[string]bool // Syntax-specific checks
+	StylesPath    string                     // Directory with Rule.yml files
 }
 
 func newConfig() *config {
 	var cfg config
 	cfg.GChecks = make(map[string]bool)
-	cfg.SBaseStyles = make(map[glob.Glob][]string)
-	cfg.SChecks = make(map[glob.Glob]map[string]bool)
+	cfg.SBaseStyles = make(map[string][]string)
+	cfg.SChecks = make(map[string]map[string]bool)
 	cfg.MinAlertLevel = 0
 	cfg.GBaseStyles = []string{"vale"}
 	return &cfg
@@ -112,17 +111,16 @@ func loadOptions() config {
 		if sec == "*" || sec == "DEFAULT" {
 			continue
 		}
-		glob := glob.MustCompile(sec)
 		syntaxOpts := make(map[string]bool)
 		for _, k := range uCfg.Section(sec).KeyStrings() {
 			if k == "BasedOnStyles" {
-				cfg.SBaseStyles[glob] = uCfg.Section(sec).Key(k).Strings(",")
+				cfg.SBaseStyles[sec] = uCfg.Section(sec).Key(k).Strings(",")
 			} else {
 				syntaxOpts[k] = uCfg.Section(sec).Key(k).MustBool(false)
 				cfg.Checks = append(cfg.Checks, k)
 			}
 		}
-		cfg.SChecks[glob] = syntaxOpts
+		cfg.SChecks[sec] = syntaxOpts
 	}
 
 	return *cfg
