@@ -164,3 +164,23 @@ Feature: Config
 
     """
     And the exit status should be 1
+
+  Scenario: Load section with glob as name
+    Given a file named "_vale" with:
+    """
+    StylesPath = ../../styles/
+    MinAlertLevel = warning
+
+    [*.{md,py}]
+    BasedOnStyles = vale
+    write-good.ThereIs = YES
+
+    """
+    When I run vale "test.py"
+    Then the output should contain exactly:
+    """
+    test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
+    test.py:1:37:vale.Editorializing:Consider removing 'Very'
+
+    """
+    And the exit status should be 1
