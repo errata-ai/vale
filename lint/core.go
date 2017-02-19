@@ -6,8 +6,6 @@ import (
 	"strings"
 
 	"github.com/jdkato/vale/util"
-	"gopkg.in/neurosnap/sentences.v1"
-	"gopkg.in/neurosnap/sentences.v1/english"
 )
 
 // A Linter lints a File.
@@ -48,12 +46,6 @@ type Block struct {
 	Text    string   // text content
 	Scope   Selector // section selector
 }
-
-// STokenizer splits text into sentences.
-var STokenizer, _ = english.NewSentenceTokenizer(nil)
-
-// WTokenizer splits text into words.
-var WTokenizer = english.NewWordTokenizer(sentences.NewPunctStrings())
 
 // NewBlock makes a new Block with prepared text and a Selector.
 func NewBlock(ctx string, txt string, sel string) Block {

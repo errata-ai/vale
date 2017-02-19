@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gobwas/glob"
+	"github.com/jdkato/aptag/tokenize"
 	"github.com/jdkato/vale/util"
 )
 
@@ -89,18 +90,13 @@ func (l *Linter) lintFile(src string) File {
 
 func (f *File) lintProse(ctx string, txt string, lnTotal int, lnLength int) {
 	var b Block
-	if STokenizer == nil {
-		return
-	}
 	text := util.PrepText(txt)
 	senScope := "sentence" + f.RealExt
 	parScope := "paragraph" + f.RealExt
 	txtScope := "text" + f.RealExt
 	hasCtx := ctx != ""
-	paragraphs := strings.SplitAfter(text, "\n\n")
-	for _, p := range paragraphs {
-		sentences := STokenizer.Tokenize(p)
-		for _, s := range sentences {
+	for _, p := range strings.SplitAfter(text, "\n\n") {
+		for _, s := range tokenize.SentenceTokenizer(p) {
 			if hasCtx {
 				b = NewBlock(ctx, s.Text, senScope)
 			} else {
