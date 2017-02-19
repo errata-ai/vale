@@ -9,7 +9,7 @@ LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION) -X main.Commit=$(COMMIT)"
 
 .PHONY: clean test lint ci cross install bump rules setup
 
-all: rules build
+all: build
 
 build:
 	go build ${LDFLAGS} -o bin/vale
