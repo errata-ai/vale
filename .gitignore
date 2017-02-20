@@ -1,4 +1,5 @@
 # Folders
+docs/public*
 _obj
 _test
 vendor/bundle/
