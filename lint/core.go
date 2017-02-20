@@ -5,6 +5,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/jdkato/aptag"
 	"github.com/jdkato/vale/util"
 )
 
@@ -46,6 +47,8 @@ type Block struct {
 	Text    string   // text content
 	Scope   Selector // section selector
 }
+
+var apTagger *aptag.PerceptronTagger
 
 // NewBlock makes a new Block with prepared text and a Selector.
 func NewBlock(ctx string, txt string, sel string) Block {

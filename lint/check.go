@@ -10,6 +10,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/jdkato/aptag"
+	"github.com/jdkato/aptag/tokenize"
 	"github.com/jdkato/vale/rule"
 	"github.com/jdkato/vale/util"
 	"gopkg.in/yaml.v2"
@@ -79,6 +81,10 @@ var typeToFunc = map[string]func(string, definition){
 	"repetition":   addRepetitionCheck,
 	"script":       addScriptCheck,
 	"substitution": addSubstitutionCheck,
+}
+
+var subToValues = map[string][]string{
+	"$noun": {"NN", "NNS", "NNP", "NNPS"},
 }
 
 func init() {
@@ -190,21 +196,61 @@ func occurrence(txt string, chk definition, f *File, r *regexp.Regexp, lim int) 
 	return alerts
 }
 
+func tokenRepetition(txt string, chk definition, f *File, sub []string) []Alert {
+	var prev bool
+	var start string
+	var idx, count, first int
+	if apTagger == nil {
+		apTagger = aptag.NewPerceptronTagger()
+	}
+
+	alerts := []Alert{}
+	for _, tok := range apTagger.Tag(tokenize.WordTokenizer(txt)) {
+		if util.StringInSlice(tok.Tag, sub) {
+			if prev || count == 0 {
+				if count == 0 {
+					start = tok.Text
+					first = idx
+				}
+				count++
+			}
+			prev = true
+		} else {
+			prev = false
+			count = 0
+		}
+		if count > chk.Max {
+			floc := []int{first, idx + len(tok.Text)}
+			a := Alert{Check: chk.Name, Severity: chk.Level, Span: floc}
+			a.Message = fmt.Sprintf(chk.Message, start)
+			alerts = append(alerts, a)
+			count = 0
+		}
+		idx += len(tok.Text) + 1
+	}
+
+	return alerts
+}
+
 func repetition(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
 	var curr, prev string
 	var ploc []int
+	var hit bool
+	var count int
 
 	alerts := []Alert{}
 	for _, loc := range r.FindAllStringIndex(txt, -1) {
 		curr = strings.TrimSpace(txt[loc[0]:loc[1]])
-		if chk.Ignorecase {
-			curr = strings.ToLower(curr)
+		hit = curr == prev && curr != ""
+		if hit {
+			count++
 		}
-		if curr == prev && curr != "" {
+		if hit && count > chk.Max {
 			floc := []int{ploc[0], loc[1]}
 			a := Alert{Check: chk.Name, Severity: chk.Level, Span: floc}
 			a.Message = fmt.Sprintf(chk.Message, curr)
 			alerts = append(alerts, a)
+			count = 0
 		}
 		ploc = loc
 		prev = curr
@@ -341,17 +387,26 @@ func addExistenceCheck(chkName string, chkDef definition) {
 }
 
 func addRepetitionCheck(chkName string, chkDef definition) {
-	regex := ""
-	if chkDef.Ignorecase {
-		regex += ignoreCase
-	}
-	regex += `(` + strings.Join(chkDef.Tokens, "|") + `)`
-	re, err := regexp.Compile(regex)
-	if util.CheckError(err, chkName) {
-		fn := func(text string, file *File) []Alert {
-			return repetition(text, chkDef, file, re)
+	if len(chkDef.Tokens) > 0 && strings.HasPrefix(chkDef.Tokens[0], "$") {
+		if val, ok := subToValues[chkDef.Tokens[0]]; ok {
+			fn := func(text string, file *File) []Alert {
+				return tokenRepetition(text, chkDef, file, val)
+			}
+			updateAllChecks(chkDef, fn)
 		}
-		updateAllChecks(chkDef, fn)
+	} else {
+		regex := ""
+		if chkDef.Ignorecase {
+			regex += ignoreCase
+		}
+		regex += `(` + strings.Join(chkDef.Tokens, "|") + `)`
+		re, err := regexp.Compile(regex)
+		if util.CheckError(err, chkName) {
+			fn := func(text string, file *File) []Alert {
+				return repetition(text, chkDef, file, re)
+			}
+			updateAllChecks(chkDef, fn)
+		}
 	}
 }
 
