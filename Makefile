@@ -40,6 +40,9 @@ cross:
 
 	rm -rf vale vale.exe
 
+changelog:
+	github_changelog_generator
+
 install:
 	go install ${LDFLAGS}
 
