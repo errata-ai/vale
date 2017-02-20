@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/gobwas/glob"
-	"github.com/jdkato/aptag/tokenize"
+	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/vale/util"
 )
 

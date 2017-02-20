@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jdkato/aptag"
-	"github.com/jdkato/aptag/tokenize"
+	"github.com/jdkato/prose/tag"
+	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/vale/rule"
 	"github.com/jdkato/vale/util"
 	"gopkg.in/yaml.v2"
@@ -201,7 +201,7 @@ func tokenRepetition(txt string, chk definition, f *File, sub []string) []Alert 
 	var start string
 	var idx, count, first int
 	if apTagger == nil {
-		apTagger = aptag.NewPerceptronTagger()
+		apTagger = tag.NewPerceptronTagger()
 	}
 
 	alerts := []Alert{}

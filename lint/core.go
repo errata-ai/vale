@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jdkato/aptag"
+	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/vale/util"
 )
 
@@ -48,7 +48,7 @@ type Block struct {
 	Scope   Selector // section selector
 }
 
-var apTagger *aptag.PerceptronTagger
+var apTagger *tag.PerceptronTagger
 
 // NewBlock makes a new Block with prepared text and a Selector.
 func NewBlock(ctx string, txt string, sel string) Block {
