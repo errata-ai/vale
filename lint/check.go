@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/jdkato/prose/tag"
-	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/vale/rule"
 	"github.com/jdkato/vale/util"
 	"gopkg.in/yaml.v2"
@@ -205,7 +204,7 @@ func tokenRepetition(txt string, chk definition, f *File, sub []string) []Alert 
 	}
 
 	alerts := []Alert{}
-	for _, tok := range apTagger.Tag(tokenize.WordTokenizer(txt)) {
+	for _, tok := range apTagger.Tag(wordTokenizer.Tokenize(txt)) {
 		if util.StringInSlice(tok.Tag, sub) {
 			if prev || count == 0 {
 				if count == 0 {

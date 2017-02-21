@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/gobwas/glob"
-	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/vale/util"
 )
 
@@ -96,7 +95,7 @@ func (f *File) lintProse(ctx string, txt string, lnTotal int, lnLength int) {
 	txtScope := "text" + f.RealExt
 	hasCtx := ctx != ""
 	for _, p := range strings.SplitAfter(text, "\n\n") {
-		for _, s := range tokenize.SentenceTokenizer(p) {
+		for _, s := range sentenceTokenizer.RawTokenize(p) {
 			if hasCtx {
 				b = NewBlock(ctx, s.Text, senScope)
 			} else {

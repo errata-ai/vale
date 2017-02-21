@@ -6,21 +6,12 @@ import (
 	"strings"
 
 	"github.com/jdkato/prose/tag"
+	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/vale/util"
 )
 
 // A Linter lints a File.
 type Linter struct{}
-
-// An Alert represents a potential error in prose.
-type Alert struct {
-	Check    string // the name of the check
-	Line     int    // the source line
-	Link     string // reference material
-	Message  string // the output message
-	Severity string // 'suggestion', 'warning', or 'error'
-	Span     []int  // the [begin, end] location within a line
-}
 
 // A File represents a linted text file.
 type File struct {
@@ -36,6 +27,16 @@ type File struct {
 	Sequences  []string        // tracks various info (e.g., defined abbreviations)
 }
 
+// An Alert represents a potential error in prose.
+type Alert struct {
+	Check    string // the name of the check
+	Line     int    // the source line
+	Link     string // reference material
+	Message  string // the output message
+	Severity string // 'suggestion', 'warning', or 'error'
+	Span     []int  // the [begin, end] location within a line
+}
+
 // A Selector represents a named section of text.
 type Selector struct {
 	Value string // e.g., text.comment.line.py
@@ -47,8 +48,6 @@ type Block struct {
 	Text    string   // text content
 	Scope   Selector // section selector
 }
-
-var apTagger *tag.PerceptronTagger
 
 // NewBlock makes a new Block with prepared text and a Selector.
 func NewBlock(ctx string, txt string, sel string) Block {
@@ -98,3 +97,9 @@ func (f *File) SortedAlerts() []Alert {
 	sort.Sort(ByPosition(f.Alerts))
 	return f.Alerts
 }
+
+// We wait to initilize our tagger until we need it since it's slow (and we
+// may not need it).
+var apTagger *tag.PerceptronTagger
+var sentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
+var wordTokenizer = tokenize.NewTreebankWordTokenizer()
