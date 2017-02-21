@@ -74,7 +74,7 @@ setup:
 	go get -u github.com/urfave/cli
 	go get -u github.com/jteeuwen/go-bindata/...
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
-	go get ./util ./ui ./lint
+	go get ./util ./lint
 	gometalinter --install
 	bundle install
 	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
