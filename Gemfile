@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'specific_install'
+gem 'specific_install', '~> 0.3.3'
 gem 'cucumber', '~> 2.3.0'
-gem 'os'
+gem 'os', '~> 0.9.6'

@@ -25,8 +25,8 @@ PLATFORMS
 
 DEPENDENCIES
   cucumber (~> 2.3.0)
-  os
-  specific_install
+  os (~> 0.9.6)
+  specific_install (~> 0.3.3)
 
 BUNDLED WITH
    1.13.7
