@@ -12,10 +12,10 @@ LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION) -X main.Commit=$(COMMIT)"
 all: build
 
 build:
-	go build ${LDFLAGS} -o bin/vale
+	go build ${LDFLAGS} -o bin/vale ./cmd/vale
 
 build-win:
-	go build ${LDFLAGS} -o bin/vale.exe
+	go build ${LDFLAGS} -o bin/vale.exe ./cmd/vale
 
 cross:
 	mkdir -p $(BUILD_DIR)
@@ -66,7 +66,7 @@ lint:
 		--enable=vet \
 		--enable=vetshadow \
 		--deadline=1m \
-		./util ./ui ./lint
+		./util ./lint
 
 setup:
 	go get -u github.com/alecthomas/gometalinter

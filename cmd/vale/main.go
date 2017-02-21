@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/jdkato/vale/lint"
-	"github.com/jdkato/vale/ui"
 	"github.com/jdkato/vale/util"
 	"github.com/urfave/cli"
 )
@@ -61,9 +60,9 @@ func main() {
 			l := new(lint.Linter)
 			linted, err = l.Lint(c.Args()[0])
 			if util.CLConfig.Output == "line" {
-				hasAlerts = ui.PrintLineAlerts(linted)
+				hasAlerts = PrintLineAlerts(linted)
 			} else {
-				hasAlerts = ui.PrintVerboseAlerts(linted)
+				hasAlerts = PrintVerboseAlerts(linted)
 			}
 		} else {
 			cli.ShowAppHelp(c)
