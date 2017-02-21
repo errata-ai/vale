@@ -73,6 +73,8 @@ setup:
 	go get -u github.com/stretchr/testify/assert
 	go get -u github.com/urfave/cli
 	go get -u github.com/jteeuwen/go-bindata/...
+	go get -u github.com/fatih/color
+	go get -u github.com/olekukonko/tablewriter
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
 	go get ./util ./lint
 	gometalinter --install
