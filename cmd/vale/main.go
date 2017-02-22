@@ -17,6 +17,7 @@ var Version string
 var Commit string
 
 func main() {
+	var glob string
 	app := cli.NewApp()
 	app.Name = "vale"
 	app.Usage = "A command-line linter for prose."
@@ -26,7 +27,7 @@ func main() {
 			Name:        "glob",
 			Value:       "*",
 			Usage:       `a glob pattern (e.g., --glob="*.{md,txt}")`,
-			Destination: &util.CLConfig.Glob,
+			Destination: &glob,
 		},
 		cli.StringFlag{
 			Name:        "output",
@@ -58,20 +59,19 @@ func main() {
 
 		if c.NArg() > 0 {
 			l := new(lint.Linter)
-			linted, err = l.Lint(c.Args()[0])
+			linted, err = l.Lint(c.Args()[0], glob)
 			if util.CLConfig.Output == "line" {
 				hasAlerts = PrintLineAlerts(linted)
 			} else {
 				hasAlerts = PrintVerboseAlerts(linted)
 			}
-		} else {
-			cli.ShowAppHelp(c)
+			if err == nil && hasAlerts && !util.CLConfig.NoExit {
+				err = errors.New("")
+			}
+			return err
 		}
-
-		if err == nil && hasAlerts && !util.CLConfig.NoExit {
-			err = errors.New("")
-		}
-		return err
+		cli.ShowAppHelp(c)
+		return nil
 	}
 
 	util.ExeDir, _ = filepath.Abs(filepath.Dir(os.Args[0]))

@@ -13,10 +13,10 @@ import (
 )
 
 // Lint src according to its format.
-func (l *Linter) Lint(src string) ([]File, error) {
+func (l *Linter) Lint(src string, pat string) ([]File, error) {
 	var linted []File
 
-	glob, gerr := glob.Compile(util.CLConfig.Glob)
+	glob, gerr := glob.Compile(pat)
 	err := filepath.Walk(src,
 		func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {

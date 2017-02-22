@@ -10,7 +10,6 @@ import (
 
 // CLConfig holds our command-line configuration.
 var CLConfig struct {
-	Glob   string // (optional) specifies formats to lint (e.g., "*.{md,py}")
 	Output string // (optional) output style ("line" or "CLI")
 	Wrap   bool   // (optional) wrap output when CLI style
 	Debug  bool   // (optional) prints dubugging info to stdout
