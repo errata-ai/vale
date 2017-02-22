@@ -81,10 +81,6 @@ var typeToFunc = map[string]func(string, definition){
 	"substitution": addSubstitutionCheck,
 }
 
-var subToValues = map[string][]string{
-	"$noun": {"NN", "NNS", "NNP", "NNPS"},
-}
-
 func init() {
 	var style, path string
 
@@ -193,43 +189,6 @@ func occurrence(txt string, chk definition, f *File, r *regexp.Regexp, lim int) 
 
 	return alerts
 }
-
-/*
-func tokenRepetition(txt string, chk definition, f *File, sub []string) []Alert {
-	var prev bool
-	var start string
-	var idx, count, first int
-	if apTagger == nil {
-		apTagger = tag.NewPerceptronTagger()
-	}
-
-	alerts := []Alert{}
-	for _, tok := range apTagger.Tag(wordTokenizer.Tokenize(txt)) {
-		if util.StringInSlice(tok.Tag, sub) {
-			if prev || count == 0 {
-				if count == 0 {
-					start = tok.Text
-					first = idx
-				}
-				count++
-			}
-			prev = true
-		} else {
-			prev = false
-			count = 0
-		}
-		if count > chk.Max {
-			floc := []int{first, idx + len(tok.Text)}
-			a := Alert{Check: chk.Name, Severity: chk.Level, Span: floc}
-			a.Message = fmt.Sprintf(chk.Message, start)
-			alerts = append(alerts, a)
-			count = 0
-		}
-		idx += len(tok.Text) + 1
-	}
-
-	return alerts
-}*/
 
 func repetition(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
 	var curr, prev string
@@ -386,27 +345,17 @@ func addExistenceCheck(chkName string, chkDef definition) {
 }
 
 func addRepetitionCheck(chkName string, chkDef definition) {
-	if len(chkDef.Tokens) > 0 && strings.HasPrefix(chkDef.Tokens[0], "$") {
-		if _, ok := subToValues[chkDef.Tokens[0]]; ok {
-			/*
-				fn := func(text string, file *File) []Alert {
-					return tokenRepetition(text, chkDef, file, val)
-				}
-				updateAllChecks(chkDef, fn)*/
+	regex := ""
+	if chkDef.Ignorecase {
+		regex += ignoreCase
+	}
+	regex += `(` + strings.Join(chkDef.Tokens, "|") + `)`
+	re, err := regexp.Compile(regex)
+	if util.CheckError(err, chkName) {
+		fn := func(text string, file *File) []Alert {
+			return repetition(text, chkDef, file, re)
 		}
-	} else {
-		regex := ""
-		if chkDef.Ignorecase {
-			regex += ignoreCase
-		}
-		regex += `(` + strings.Join(chkDef.Tokens, "|") + `)`
-		re, err := regexp.Compile(regex)
-		if util.CheckError(err, chkName) {
-			fn := func(text string, file *File) []Alert {
-				return repetition(text, chkDef, file, re)
-			}
-			updateAllChecks(chkDef, fn)
-		}
+		updateAllChecks(chkDef, fn)
 	}
 }
 
