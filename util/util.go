@@ -27,25 +27,31 @@ func NewLogger() *logrus.Logger {
 
 // FindLoc calculates the line and span of an Alert.
 func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (int, []int) {
-	var pos int
+	var length int
 
 	substring := s[loc[0]:loc[1]]
 	meta := regexp.QuoteMeta(substring)
 	diff := loc[0] - utf8.RuneCountInString(s[:loc[0]])
 	r := regexp.MustCompile(fmt.Sprintf(`(\b%s|%s)`, meta, meta))
 	offset := len(ctx) - len(ctx[loc[0]:])
-	pos = r.FindAllStringIndex(ctx[loc[0]:], 1)[0][0] + 1 + offset
+	pos := r.FindAllStringIndex(ctx[loc[0]:], 1)[0][0] + 1 + offset
 
 	counter := 0
 	lines := strings.SplitAfter(ctx, "\n")
 	for idx, l := range lines {
-		if (counter + utf8.RuneCountInString(l)) >= pos {
+		length = utf8.RuneCountInString(l)
+		if (counter + length) >= pos {
 			loc[0] = (pos - counter) + pad - diff
 			loc[1] = loc[0] + utf8.RuneCountInString(substring) - 1
+			extent := length + pad
+			if loc[1] > extent {
+				loc[1] = extent
+			}
 			return count - (len(lines) - (idx + 1)), loc
 		}
-		counter += utf8.RuneCountInString(l)
+		counter += length
 	}
+
 	return count, loc
 }
 
