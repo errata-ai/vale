@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/jdkato/vale/lint"
+	"github.com/jdkato/vale/core"
 	"github.com/jdkato/vale/util"
 	"github.com/olekukonko/tablewriter"
 )
@@ -21,7 +21,7 @@ const (
 )
 
 // printLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
-func printLineAlerts(linted []lint.File) bool {
+func printLineAlerts(linted []core.File) bool {
 	var base string
 
 	alertCount := 0
@@ -51,9 +51,9 @@ func printLineAlerts(linted []lint.File) bool {
 }
 
 // printJSONAlerts prints Alerts in map[file.path][]Alert form.
-func printJSONAlerts(linted []lint.File) bool {
+func printJSONAlerts(linted []core.File) bool {
 	alertCount := 0
-	formatted := map[string][]lint.Alert{}
+	formatted := map[string][]core.Alert{}
 	spaces := regexp.MustCompile(" +")
 	for _, f := range linted {
 		for _, a := range f.SortedAlerts() {
@@ -75,7 +75,7 @@ func printJSONAlerts(linted []lint.File) bool {
 }
 
 // printVerboseAlerts prints Alerts in verbose format.
-func printVerboseAlerts(linted []lint.File) bool {
+func printVerboseAlerts(linted []core.File) bool {
 	var errors, warnings, suggestions int
 	var symbol string
 
@@ -104,7 +104,7 @@ func printVerboseAlerts(linted []lint.File) bool {
 	return errors != 0
 }
 
-func printVerboseAlert(f lint.File) (int, int, int) {
+func printVerboseAlert(f core.File) (int, int, int) {
 	var loc, level string
 	var errors, warnings, notifications int
 

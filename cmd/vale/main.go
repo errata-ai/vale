@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/jdkato/vale/lint"
+	"github.com/jdkato/vale/core"
 	"github.com/jdkato/vale/util"
 	"github.com/urfave/cli"
 )
@@ -53,12 +53,12 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
-		var linted []lint.File
+		var linted []core.File
 		var err error
 		var hasAlerts bool
 
 		if c.NArg() > 0 {
-			l := new(lint.Linter)
+			l := new(core.Linter)
 			linted, err = l.Lint(c.Args()[0], glob)
 			if util.CLConfig.Output == "line" {
 				hasAlerts = printLineAlerts(linted)
