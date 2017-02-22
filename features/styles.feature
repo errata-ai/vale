@@ -31,8 +31,6 @@ Feature: Styles
     test.md:14:159:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:1:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:367:demo.SentenceLength:Sentences should be less than 25 words
-    test.md:18:11:demo.NounStrings:'hospital ...'
-    test.md:20:69:demo.NounStrings:'living-quarters ...'
     test.txt:1:22:demo.CommasPerSentence:More than 3 commas!
     test.txt:1:58:demo.Spacing:'. I' should have one space
     test.txt:3:1:demo.SentenceLength:Sentences should be less than 25 words

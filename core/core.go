@@ -5,7 +5,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/vale/util"
 )
@@ -98,8 +97,4 @@ func (f *File) SortedAlerts() []Alert {
 	return f.Alerts
 }
 
-// We wait to initilize our tagger until we need it since it's slow (and we
-// may not need it).
-var apTagger *tag.PerceptronTagger
 var sentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
-var wordTokenizer = tokenize.NewTreebankWordTokenizer()

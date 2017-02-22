@@ -10,7 +10,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/vale/rule"
 	"github.com/jdkato/vale/util"
 	"gopkg.in/yaml.v2"
@@ -195,6 +194,7 @@ func occurrence(txt string, chk definition, f *File, r *regexp.Regexp, lim int) 
 	return alerts
 }
 
+/*
 func tokenRepetition(txt string, chk definition, f *File, sub []string) []Alert {
 	var prev bool
 	var start string
@@ -229,7 +229,7 @@ func tokenRepetition(txt string, chk definition, f *File, sub []string) []Alert 
 	}
 
 	return alerts
-}
+}*/
 
 func repetition(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
 	var curr, prev string
@@ -387,11 +387,12 @@ func addExistenceCheck(chkName string, chkDef definition) {
 
 func addRepetitionCheck(chkName string, chkDef definition) {
 	if len(chkDef.Tokens) > 0 && strings.HasPrefix(chkDef.Tokens[0], "$") {
-		if val, ok := subToValues[chkDef.Tokens[0]]; ok {
-			fn := func(text string, file *File) []Alert {
-				return tokenRepetition(text, chkDef, file, val)
-			}
-			updateAllChecks(chkDef, fn)
+		if _, ok := subToValues[chkDef.Tokens[0]]; ok {
+			/*
+				fn := func(text string, file *File) []Alert {
+					return tokenRepetition(text, chkDef, file, val)
+				}
+				updateAllChecks(chkDef, fn)*/
 		}
 	} else {
 		regex := ""
