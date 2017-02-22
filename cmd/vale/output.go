@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
@@ -19,8 +20,8 @@ const (
 	underlineColor                  = color.Underline
 )
 
-// PrintLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
-func PrintLineAlerts(linted []lint.File) bool {
+// printLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
+func printLineAlerts(linted []lint.File) bool {
 	var base string
 
 	alertCount := 0
@@ -49,8 +50,32 @@ func PrintLineAlerts(linted []lint.File) bool {
 	return alertCount != 0
 }
 
-// PrintVerboseAlerts prints Alerts in verbose format.
-func PrintVerboseAlerts(linted []lint.File) bool {
+// printJSONAlerts prints Alerts in map[file.path][]Alert form.
+func printJSONAlerts(linted []lint.File) bool {
+	alertCount := 0
+	formatted := map[string][]lint.Alert{}
+	spaces := regexp.MustCompile(" +")
+	for _, f := range linted {
+		for _, a := range f.SortedAlerts() {
+			if a.Severity == "error" {
+				alertCount++
+			}
+			a.Message = strings.Replace(a.Message, "\n", "", -1)
+			a.Message = spaces.ReplaceAllString(a.Message, " ")
+			formatted[f.Path] = append(formatted[f.Path], a)
+		}
+	}
+	b, err := json.MarshalIndent(formatted, "", "  ")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(string(b))
+	}
+	return alertCount != 0
+}
+
+// printVerboseAlerts prints Alerts in verbose format.
+func printVerboseAlerts(linted []lint.File) bool {
 	var errors, warnings, suggestions int
 	var symbol string
 

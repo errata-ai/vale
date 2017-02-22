@@ -32,7 +32,7 @@ func main() {
 		cli.StringFlag{
 			Name:        "output",
 			Value:       "CLI",
-			Usage:       `output style ("line")`,
+			Usage:       `output style ("line" or "JSON")`,
 			Destination: &util.CLConfig.Output,
 		},
 		cli.BoolFlag{
@@ -61,9 +61,11 @@ func main() {
 			l := new(lint.Linter)
 			linted, err = l.Lint(c.Args()[0], glob)
 			if util.CLConfig.Output == "line" {
-				hasAlerts = PrintLineAlerts(linted)
+				hasAlerts = printLineAlerts(linted)
+			} else if util.CLConfig.Output == "JSON" {
+				hasAlerts = printJSONAlerts(linted)
 			} else {
-				hasAlerts = PrintVerboseAlerts(linted)
+				hasAlerts = printVerboseAlerts(linted)
 			}
 			if err == nil && hasAlerts && !util.CLConfig.NoExit {
 				err = errors.New("")
