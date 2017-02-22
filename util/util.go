@@ -1,7 +1,6 @@
 package util
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -144,29 +143,4 @@ func CheckError(err error, context string) bool {
 func CheckAndClose(file *os.File) bool {
 	err := file.Close()
 	return CheckError(err, file.Name())
-}
-
-// ScanLines splits on CRLF, CR not followed by LF, and LF.
-// See http://stackoverflow.com/questions/41433422/read-lines-from-a-file-with-variable-line-endings-in-go
-func ScanLines(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	if atEOF && len(data) == 0 {
-		return 0, nil, nil
-	}
-	if i := bytes.IndexAny(data, "\r\n"); i >= 0 {
-		if data[i] == '\n' {
-			// We have a line terminated by single newline.
-			return i + 1, data[0:i], nil
-		}
-		advance = i + 1
-		if len(data) > i+1 && data[i+1] == '\n' {
-			advance++
-		}
-		return advance, data[0:i], nil
-	}
-	// If we're at EOF, we have a final, non-terminated line. Return it.
-	if atEOF {
-		return len(data), data, nil
-	}
-	// Request more data.
-	return 0, nil, nil
 }

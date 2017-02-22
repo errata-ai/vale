@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gobwas/glob"
+	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/vale/util"
 )
 
@@ -59,7 +60,7 @@ func (l *Linter) lintFile(src string) File {
 	}
 
 	scanner := bufio.NewScanner(f)
-	scanner.Split(util.ScanLines)
+	scanner.Split(tokenize.SplitLines)
 	file = File{
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner,
