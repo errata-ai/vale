@@ -15,6 +15,26 @@ import (
 // ExeDir is our starting location.
 var ExeDir string
 
+// FormatMessage inserts `subs` into `msg`.
+func FormatMessage(msg string, subs ...string) string {
+	n := strings.Count(msg, "%s")
+	max := len(subs)
+	found := []string{}
+	for i := 0; i < n && i < max; i++ {
+		found = append(found, subs[i])
+	}
+	return fmt.Sprintf(msg, StringsToInterface(found)...)
+}
+
+// StringsToInterface converts a slice of strings to an interface.
+func StringsToInterface(strings []string) []interface{} {
+	intf := make([]interface{}, len(strings))
+	for i, v := range strings {
+		intf[i] = v
+	}
+	return intf
+}
+
 // NewLogger creates and returns an instance of logrus.Logger.
 // If the `--debug` command flag was not provided, we set the level to Error.
 func NewLogger() *logrus.Logger {

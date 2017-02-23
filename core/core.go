@@ -28,12 +28,13 @@ type File struct {
 
 // An Alert represents a potential error in prose.
 type Alert struct {
-	Check    string // the name of the check
-	Line     int    // the source line
-	Link     string // reference material
-	Message  string // the output message
-	Severity string // 'suggestion', 'warning', or 'error'
-	Span     []int  // the [begin, end] location within a line
+	Check       string // the name of the check
+	Description string // why `Message` is meaningful
+	Line        int    // the source line
+	Link        string // reference material
+	Message     string // the output message
+	Severity    string // 'suggestion', 'warning', or 'error'
+	Span        []int  // the [begin, end] location within a line
 }
 
 // A Selector represents a named section of text.
