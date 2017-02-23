@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -23,6 +24,12 @@ func NewLogger() *logrus.Logger {
 	}
 	log.Out = os.Stdout
 	return log
+}
+
+// DumpConfig returns Vale's configuration in JSON format.
+func DumpConfig() string {
+	b, _ := json.MarshalIndent(Config, "", "  ")
+	return string(b)
 }
 
 // FindLoc calculates the line and span of an Alert.

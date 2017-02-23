@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -49,6 +50,17 @@ func main() {
 			Name:        "no-exit",
 			Usage:       "don't return a nonzero exit code on lint errors",
 			Destination: &util.CLConfig.NoExit,
+		},
+	}
+	app.Commands = []cli.Command{
+		{
+			Name:    "dump-config",
+			Aliases: []string{"dc"},
+			Usage:   "dump configuration options to stdout and exit",
+			Action: func(c *cli.Context) error {
+				fmt.Println(util.DumpConfig())
+				return nil
+			},
 		},
 	}
 
