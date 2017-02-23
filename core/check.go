@@ -43,6 +43,7 @@ type definition struct {
 	If          string
 	Ignorecase  bool
 	Level       string
+	Link        string
 	Map         map[string]string
 	Max         int
 	Message     string
@@ -141,6 +142,13 @@ func formatMessages(msg string, desc string, subs ...string) (string, string) {
 	return util.FormatMessage(msg, subs...), util.FormatMessage(desc, subs...)
 }
 
+func makeAlert(chk definition, loc []int, txt string) Alert {
+	a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc, Link: chk.Link}
+	a.Message, a.Description = formatMessages(chk.Message, chk.Description,
+		txt[loc[0]:loc[1]])
+	return a
+}
+
 func conditional(txt string, chk definition, f *File, r []*regexp.Regexp) []Alert {
 	alerts := []Alert{}
 	txt = cleanText(f.NormedExt, txt)
@@ -157,10 +165,7 @@ func conditional(txt string, chk definition, f *File, r []*regexp.Regexp) []Aler
 		for _, loc := range locs {
 			s := txt[loc[0]:loc[1]]
 			if !util.StringInSlice(s, f.Sequences) && !util.StringInSlice(s, chk.Exceptions) {
-				a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
-				a.Message, a.Description = formatMessages(chk.Message,
-					chk.Description, txt[loc[0]:loc[1]])
-				alerts = append(alerts, a)
+				alerts = append(alerts, makeAlert(chk, loc, txt))
 			}
 		}
 	}
@@ -172,10 +177,7 @@ func existence(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
 	locs := r.FindAllStringIndex(cleanText(f.NormedExt, txt), -1)
 	if locs != nil {
 		for _, loc := range locs {
-			a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
-			a.Message, a.Description = formatMessages(chk.Message,
-				chk.Description, txt[loc[0]:loc[1]])
-			alerts = append(alerts, a)
+			alerts = append(alerts, makeAlert(chk, loc, txt))
 		}
 	}
 	return alerts
@@ -189,7 +191,8 @@ func occurrence(txt string, chk definition, f *File, r *regexp.Regexp, lim int) 
 	occurrences := len(locs)
 	if occurrences > lim {
 		loc = []int{locs[0][0], locs[occurrences-1][1]}
-		a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
+		a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
+			Link: chk.Link}
 		a.Message = chk.Message
 		a.Description = chk.Description
 		alerts = append(alerts, a)
@@ -213,7 +216,8 @@ func repetition(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
 		}
 		if hit && count > chk.Max {
 			floc := []int{ploc[0], loc[1]}
-			a := Alert{Check: chk.Name, Severity: chk.Level, Span: floc}
+			a := Alert{Check: chk.Name, Severity: chk.Level, Span: floc,
+				Link: chk.Link}
 			a.Message, a.Description = formatMessages(chk.Message,
 				chk.Description, curr)
 			alerts = append(alerts, a)
@@ -236,7 +240,8 @@ func substitution(txt string, chk definition, f *File, r *regexp.Regexp, repl []
 		for idx, mat := range submat {
 			if mat != -1 && idx > 0 && idx%2 == 0 {
 				loc := []int{mat, submat[idx+1]}
-				a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
+				a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
+					Link: chk.Link}
 				a.Message, a.Description = formatMessages(chk.Message,
 					chk.Description, repl[(idx/2)-1], txt[loc[0]:loc[1]])
 				alerts = append(alerts, a)
@@ -263,10 +268,7 @@ func consistency(txt string, chk definition, f *File, r *regexp.Regexp, opts []s
 	}
 
 	if matches != nil && util.AllStringsInSlice(opts, f.Sequences) {
-		a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc}
-		a.Message, a.Description = formatMessages(chk.Message, chk.Description,
-			txt[loc[0]:loc[1]])
-		alerts = append(alerts, a)
+		alerts = append(alerts, makeAlert(chk, loc, txt))
 	}
 	return alerts
 }
