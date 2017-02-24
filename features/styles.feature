@@ -43,15 +43,15 @@ Feature: Styles
     When I apply style "TheEconomist"
     Then the output should contain exactly:
     """
-    test.css:1:32:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'.
+    test.css:1:32:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'
     test.css:12:54:TheEconomist.UnexpandedAcronyms:'ONE' has no definition
-    test.css:34:27:TheEconomist.Slang:'Big pharma' - See section 'Journalese and slang'.
+    test.css:34:27:TheEconomist.Slang:'Big pharma' - See section 'Journalese and slang'
     test.md:1:224:TheEconomist.UnexpandedAcronyms:'DAFB' has no definition
-    test.md:7:113:TheEconomist.OughtShould:'should' - Go easy on the oughts and shoulds.
+    test.md:7:113:TheEconomist.OughtShould:Go easy on the oughts and shoulds
     test.md:9:13:TheEconomist.UnexpandedAcronyms:'AAAS' has no definition
-    test.md:9:152:TheEconomist.Punctuation:Use 'eg, or ie,' instead of 'ie '.
-    test.md:11:12:TheEconomist.OverusedWords:'community' is overused.
-    test.md:11:51:TheEconomist.OughtShould:'should' - Go easy on the oughts and shoulds.
-    test.md:11:69:TheEconomist.Didactic:'Consider' - Do not be too didactic.
+    test.md:9:152:TheEconomist.Punctuation:Use 'eg, or ie,' instead of 'ie '
+    test.md:11:12:TheEconomist.OverusedWords:'community' is overused
+    test.md:11:51:TheEconomist.OughtShould:Go easy on the oughts and shoulds
+    test.md:11:69:TheEconomist.Didactic:'Consider' - Do not be too didactic
 
     """

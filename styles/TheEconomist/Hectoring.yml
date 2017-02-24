@@ -1,5 +1,7 @@
 type: existence
-message: "'%s' - Do not be hectoring or arrogant."
+message: "'%s' - Do not be hectoring or arrogant"
+description: "Those who disagree with you are not necessarily '%s.'"
+link: http://www.economist.com/styleguide/introduction
 scope: text
 level: error
 ignorecase: true

@@ -140,7 +140,7 @@ Feature: Config
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:37:write-good.Adverbs:'Very' - Adverbs can weaken meaning
-    test.py:1:49:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'.
+    test.py:1:49:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'
 
     """
     And the exit status should be 1

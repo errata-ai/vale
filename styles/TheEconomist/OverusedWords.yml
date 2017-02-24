@@ -1,5 +1,6 @@
 type: existence
-message: "'%s' is overused."
+message: "'%s' is overused"
+description: "Nothing betrays the lazy writer faster than fly-blown phrases used in the belief that they are snappy, trendy or cool."
 link: http://www.economist.com/style-guide/overused-words
 level: warning
 scope: text
