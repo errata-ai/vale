@@ -58,9 +58,9 @@ func loadConfig(names []string) (*ini.File, error) {
 	var iniFile *ini.File
 	var err error
 
-	home, _ := homedir.Dir()
+	count := 0
 	dir, _ := os.Getwd()
-	for configPath == "" {
+	for configPath == "" && count < 6 {
 		for _, name := range names {
 			loc := path.Join(dir, name)
 			if FileExists(loc) {
@@ -68,10 +68,13 @@ func loadConfig(names []string) (*ini.File, error) {
 				break
 			}
 		}
-		if dir == home {
-			break
-		}
+		count++
 		dir = filepath.Dir(dir)
+	}
+
+	home, _ := homedir.Dir()
+	if configPath == "" {
+		configPath = home
 	}
 
 	iniFile, err = ini.Load(configPath)
