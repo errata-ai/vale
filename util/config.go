@@ -1,6 +1,7 @@
 package util
 
 import (
+	"os"
 	"path"
 	"path/filepath"
 
@@ -49,23 +50,28 @@ func newConfig() *config {
 	return &cfg
 }
 
-// loadConfig loads the .vale file. It checks the current directory, and
-// then the user's home directory.
+// loadConfig loads the .vale file. It checks the current directory up to the
+// user's home directory, stopping on the first occurrence of a .vale or _vale
+// file.
 func loadConfig(names []string) (*ini.File, error) {
-	var configPath, hpath string
+	var configPath string
 	var iniFile *ini.File
 	var err error
 
 	home, _ := homedir.Dir()
-	for _, name := range names {
-		hpath = path.Join(home, name)
-		if FileExists(name) {
-			configPath = name
-			break
-		} else if FileExists(hpath) {
-			configPath = hpath
+	dir, _ := os.Getwd()
+	for configPath == "" {
+		for _, name := range names {
+			loc := path.Join(dir, name)
+			if FileExists(loc) {
+				configPath = loc
+				break
+			}
+		}
+		if dir == home {
 			break
 		}
+		dir = filepath.Dir(dir)
 	}
 
 	iniFile, err = ini.Load(configPath)
