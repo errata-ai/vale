@@ -4,6 +4,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/mitchellh/go-homedir"
 	"gopkg.in/ini.v1"
@@ -50,17 +51,32 @@ func newConfig() *config {
 	return &cfg
 }
 
+func determinePath(configPath string, keyPath string) string {
+	sep := string(filepath.Separator)
+	abs, _ := filepath.Abs(keyPath)
+	rel := strings.TrimRight(keyPath, sep)
+	if abs != rel || !strings.Contains(keyPath, sep) {
+		// The path was relative
+		return filepath.Join(configPath, keyPath)
+	}
+	return abs
+}
+
 // loadConfig loads the .vale file. It checks the current directory up to the
 // user's home directory, stopping on the first occurrence of a .vale or _vale
 // file.
-func loadConfig(names []string) (*ini.File, error) {
-	var configPath string
+func loadConfig(names []string) (*ini.File, string, error) {
+	var configPath, dir string
 	var iniFile *ini.File
 	var err error
 
 	count := 0
-	dir, _ := os.Getwd()
 	for configPath == "" && count < 6 {
+		if count == 0 {
+			dir, _ = os.Getwd()
+		} else {
+			dir = filepath.Dir(dir)
+		}
 		for _, name := range names {
 			loc := path.Join(dir, name)
 			if FileExists(loc) {
@@ -69,22 +85,19 @@ func loadConfig(names []string) (*ini.File, error) {
 			}
 		}
 		count++
-		dir = filepath.Dir(dir)
 	}
 
-	home, _ := homedir.Dir()
 	if configPath == "" {
-		configPath = home
+		configPath, _ = homedir.Dir()
 	}
-
 	iniFile, err = ini.Load(configPath)
-	return iniFile, err
+	return iniFile, dir, err
 }
 
 // loadOptions reads the .vale file.
 func loadOptions() config {
 	cfg := newConfig()
-	uCfg, err := loadConfig([]string{".vale", "_vale"})
+	uCfg, path, err := loadConfig([]string{".vale", "_vale"})
 	if err != nil {
 		return *cfg
 	}
@@ -95,8 +108,7 @@ func loadOptions() config {
 	// Default settings
 	for _, k := range core.KeyStrings() {
 		if k == "StylesPath" {
-			abs, _ := filepath.Abs(core.Key(k).MustString(""))
-			cfg.StylesPath = abs
+			cfg.StylesPath = determinePath(path, core.Key(k).MustString(""))
 		} else if k == "MinAlertLevel" {
 			level := core.Key(k).In("info", AlertLevels)
 			cfg.MinAlertLevel = LevelToInt[level]
