@@ -12,10 +12,10 @@ LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION) -X main.Commit=$(COMMIT)"
 all: build
 
 build:
-	go build ${LDFLAGS} -o bin/vale ./cmd/vale
+	go build ${LDFLAGS} -o bin/vale
 
 build-win:
-	go build ${LDFLAGS} -o bin/vale.exe ./cmd/vale
+	go build ${LDFLAGS} -o bin/vale.exe
 
 cross:
 	mkdir -p $(BUILD_DIR)
