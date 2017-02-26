@@ -1,5 +1,17 @@
 # Change Log
 
+## [v0.2.1](https://github.com/jdkato/vale/tree/v0.2.1) (2017-02-25)
+[Full Changelog](https://github.com/jdkato/vale/compare/v0.2.0...v0.2.1)
+
+**Implemented enhancements:**
+
+- Add a `description` key to rule definitions [\#14](https://github.com/jdkato/vale/issues/14)
+- Improve handling of rule citations [\#12](https://github.com/jdkato/vale/issues/12)
+
+**Fixed bugs:**
+
+- Multiline matches are handled incorrectly [\#16](https://github.com/jdkato/vale/issues/16)
+
 ## [v0.2.0](https://github.com/jdkato/vale/tree/v0.2.0) (2017-02-20)
 [Full Changelog](https://github.com/jdkato/vale/compare/v0.1.1...v0.2.0)
 
