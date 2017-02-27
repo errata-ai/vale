@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/gobwas/glob"
-	"github.com/jdkato/prose/tokenize"
-	"github.com/jdkato/vale/util"
+	"github.com/ValeLint/prose/tokenize"
+	"github.com/ValeLint/vale/util"
 )
 
 // Lint src according to its format.

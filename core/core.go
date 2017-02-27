@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jdkato/prose/tokenize"
-	"github.com/jdkato/vale/util"
+	"github.com/ValeLint/prose/tokenize"
+	"github.com/ValeLint/vale/util"
 )
 
 // A Linter lints a File.

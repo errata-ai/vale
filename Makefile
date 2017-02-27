@@ -1,4 +1,4 @@
-BASE_DIR=$(shell echo $$GOPATH)/src/github.com/jdkato/vale
+BASE_DIR=$(shell echo $$GOPATH)/src/github.com/ValeLint/vale
 BUILD_DIR=./builds
 COMMIT= `git rev-parse --short HEAD 2>/dev/null`
 
@@ -79,7 +79,7 @@ setup:
 	go get ./util ./core
 	gometalinter --install
 	bundle install
-	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
+	gem specific_install -l https://github.com/ValeLint/aruba.git -b d-win-fix
 
 bump:
 	MAJOR=$(word 1, $(subst ., , $(CURRENT_VERSION)))

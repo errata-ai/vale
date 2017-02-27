@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jdkato/vale/rule"
-	"github.com/jdkato/vale/util"
+	"github.com/ValeLint/vale/rule"
+	"github.com/ValeLint/vale/util"
 	"gopkg.in/yaml.v2"
 )
 

@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/jdkato/vale/core"
-	"github.com/jdkato/vale/util"
+	"github.com/ValeLint/vale/core"
+	"github.com/ValeLint/vale/util"
 	"github.com/olekukonko/tablewriter"
 )
 

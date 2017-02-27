@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/jdkato/vale/lint"
-	"github.com/jdkato/vale/util"
+	"github.com/ValeLint/vale/lint"
+	"github.com/ValeLint/vale/util"
 	"github.com/urfave/cli"
 )
 
