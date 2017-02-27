@@ -1,6 +1,6 @@
 # Vale: Your Style, Our Editor
 
-[![Build Status](https://travis-ci.org/jdkato/Vale.svg?branch=master)](https://travis-ci.org/jdkato/Vale) [![Build status](https://ci.appveyor.com/api/projects/status/0vo1d47jj2ja7v66/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/txtlint/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/jdkato/vale)](https://goreportcard.com/report/github.com/jdkato/vale) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+[![Build Status](https://travis-ci.org/jdkato/vale.svg?branch=master)](https://travis-ci.org/jdkato/Vale) [![Build status](https://ci.appveyor.com/api/projects/status/0vo1d47jj2ja7v66/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/txtlint/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/jdkato/vale)](https://goreportcard.com/report/github.com/jdkato/vale) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
 ![demo](https://cloud.githubusercontent.com/assets/8785025/22951386/df064226-f2bd-11e6-84e3-4cedfc098528.png)
 
@@ -32,7 +32,6 @@ Check out [the wiki](https://github.com/jdkato/vale/wiki) to learn more!
 
 - [X] Supports Markdown, reStructuredText, AsciiDoc, HTML, and source code
 - [X] Extensible without programming experience
-- [X] External checks can be written in *any* programming language
 - [X] Standalone binaries for Windows, macOS, and Linux
 - [X] Expressive, [EditorConfig-like](http://editorconfig.org/) configuration
 
