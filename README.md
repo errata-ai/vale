@@ -37,4 +37,13 @@ Check out [the wiki](https://github.com/jdkato/vale/wiki) to learn more!
 
 ## Installation
 
-See the [project wiki](https://github.com/jdkato/vale/wiki).
+**macOS**
+
+The simplest way to install is through [Homebrew](http://brew.sh):
+
+```
+brew tap jdkato/vale
+brew install vale
+```
+
+See the [project wiki](https://github.com/jdkato/vale/wiki) for other options.
