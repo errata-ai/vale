@@ -8,9 +8,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/gobwas/glob"
-	"github.com/ValeLint/prose/tokenize"
 	"github.com/ValeLint/vale/util"
+	"github.com/gobwas/glob"
+	"github.com/jdkato/prose/tokenize"
 )
 
 // Lint src according to its format.
