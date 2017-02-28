@@ -1,11 +1,10 @@
 BASE_DIR=$(shell echo $$GOPATH)/src/github.com/ValeLint/vale
 BUILD_DIR=./builds
-COMMIT= `git rev-parse --short HEAD 2>/dev/null`
 
 VERSION_FILE=$(BASE_DIR)/VERSION
 VERSION=$(shell cat $(VERSION_FILE))
 
-LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION) -X main.Commit=$(COMMIT)"
+LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
 
 .PHONY: clean test lint ci cross install bump rules setup
 
@@ -21,24 +20,24 @@ cross:
 	mkdir -p $(BUILD_DIR)
 
 	GOOS=linux GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/linux-amd64.tar.gz" ./vale
+	tar -czvf "$(BUILD_DIR)/Linux-64bit.tar.gz" ./vale
 
 	GOOS=linux GOARCH=386 go build ${LDFLAGS}
 	tar -czvf "$(BUILD_DIR)/linux-386.tar.gz" ./vale
 
 	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/darwin-amd64.tar.gz" ./vale
+	tar -czvf "$(BUILD_DIR)/macOS-64bit.tar.gz" ./vale
 
 	GOOS=darwin GOARCH=386 go build ${LDFLAGS}
 	tar -czvf "$(BUILD_DIR)/darwin-386.tar.gz" ./vale
 
 	GOOS=windows GOARCH=amd64 go build ${LDFLAGS}
-	zip -r "$(BUILD_DIR)/windows-amd64.zip" ./vale.exe
+	zip -r "$(BUILD_DIR)/Windows-64bit.zip" ./vale.exe
 
 	GOOS=windows GOARCH=386 go build ${LDFLAGS}
 	zip -r "$(BUILD_DIR)/windows-386.zip" ./vale.exe
 
-	rm -rf vale vale.exe
+	scripts/sign.sh $(BUILD_DIR)
 
 changelog:
 	github_changelog_generator

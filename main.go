@@ -14,9 +14,6 @@ import (
 // Version is set during the release build process.
 var Version string
 
-// Commit is set during the release build process.
-var Commit string
-
 func main() {
 	var glob string
 	app := cli.NewApp()
