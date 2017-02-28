@@ -37,10 +37,6 @@ Check out [the wiki](https://github.com/ValeLint/vale/wiki) to learn more!
 
 ## Installation
 
-**Windows**
-
-Download and run the Windows installer (.msi) from the [releases page](https://github.com/valelint/vale/releases).
-
 **macOS**
 
 Install through [Homebrew](http://brew.sh):
