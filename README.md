@@ -37,13 +37,21 @@ Check out [the wiki](https://github.com/ValeLint/vale/wiki) to learn more!
 
 ## Installation
 
+**Windows**
+
+Download and run the Windows installer (.msi) from the [releases page](https://github.com/valelint/vale/releases).
+
 **macOS**
 
-The simplest way to install is through [Homebrew](http://brew.sh):
+Install through [Homebrew](http://brew.sh):
 
-```
-brew tap ValeLint/vale
-brew install vale
+```bash
+$ brew tap ValeLint/vale
+$ brew install vale
 ```
 
-See the [project wiki](https://github.com/ValeLint/vale/wiki) for other options.
+**Manually install for Windows, macOS and Linux**
+
+Download and install an executable from the [releases page](https://github.com/valelint/vale/releases).
+
+See the [project wiki](https://github.com/ValeLint/vale/wiki) for more information.
