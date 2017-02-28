@@ -1,6 +1,6 @@
 # Vale: Your Style, Our Editor
 
-[![Build Status](https://travis-ci.org/ValeLint/vale.svg?branch=master)](https://travis-ci.org/ValeLint/Vale) [![Build status](https://ci.appveyor.com/api/projects/status/0vo1d47jj2ja7v66/branch/master?svg=true)](https://ci.appveyor.com/project/ValeLint/txtlint/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/ValeLint/vale)](https://goreportcard.com/report/github.com/ValeLint/vale) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+[![Build Status](https://travis-ci.org/ValeLint/vale.svg?branch=master)](https://travis-ci.org/ValeLint/vale) [![Build status](https://ci.appveyor.com/api/projects/status/0vo1d47jj2ja7v66/branch/master?svg=true)](https://ci.appveyor.com/project/ValeLint/txtlint/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/ValeLint/vale)](https://goreportcard.com/report/github.com/ValeLint/vale) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
 ![demo](https://cloud.githubusercontent.com/assets/8785025/22951386/df064226-f2bd-11e6-84e3-4cedfc098528.png)
 
