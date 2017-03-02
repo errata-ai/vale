@@ -1,8 +1,8 @@
-type: substitution
+extends: substitution
 message: Consider using '%s' instead of '%s'
 ignorecase: true
 level: error
-map:
+swap:
   (?:alumna|alumnus):          graduate
   (?:alumnae|alumni):          graduates
   (?:mother|father)land:       native land

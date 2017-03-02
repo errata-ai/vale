@@ -1,4 +1,4 @@
-type: repetition
+extends: repetition
 message: "'%s' is repeated!"
 level: error
 scope: paragraph

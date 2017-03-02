@@ -1,4 +1,4 @@
-type: existence
+extends: existence
 message: "'%s'"
 ignorecase: true
 level: warning

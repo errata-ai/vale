@@ -1,5 +1,5 @@
 message: "Don't end a sentence with '%s'"
-type: existence
+extends: existence
 level: suggestion
 scope: sentence
 raw:

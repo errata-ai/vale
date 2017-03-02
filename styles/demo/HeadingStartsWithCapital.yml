@@ -1,5 +1,5 @@
 message: "'%s' should be capitalized"
-type: existence
+extends: existence
 level: suggestion
 scope: heading
 raw:

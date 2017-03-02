@@ -1,8 +1,8 @@
-type: substitution
+extends: substitution
 message: Consider using '%s' instead of '%s'
 ignorecase: true
 level: warning
-map:
+swap:
   abundance: plenty
   accelerate: speed up
   accentuate: stress

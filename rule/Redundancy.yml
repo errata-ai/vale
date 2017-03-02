@@ -1,4 +1,4 @@
-type: existence
+extends: existence
 message: "'%s' is redundant"
 ignorecase: true
 level: error

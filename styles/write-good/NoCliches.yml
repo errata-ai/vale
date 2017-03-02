@@ -1,4 +1,4 @@
-type: existence
+extends: existence
 message: "'%s' is a cliché"
 ignorecase: true
 level: warning

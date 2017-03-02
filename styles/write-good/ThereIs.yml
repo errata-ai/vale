@@ -1,4 +1,4 @@
-type: existence
+extends: existence
 message: "Don't start a sentence with '%s'"
 ignorecase: true
 level: error

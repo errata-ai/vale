@@ -1,5 +1,5 @@
 message: "'%s ...'"
-type: repetition
+extends: repetition
 scope: sentence.md
 max: 3
 tokens:

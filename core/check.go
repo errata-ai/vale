@@ -12,6 +12,7 @@ import (
 
 	"github.com/ValeLint/vale/rule"
 	"github.com/ValeLint/vale/util"
+	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v2"
 )
 
@@ -35,27 +36,71 @@ type check struct {
 	scope   Selector
 }
 
-// A definition defines a rule from an external file.
-type definition struct {
+// Definition holds the common attributes of rule definitions.
+type Definition struct {
 	Description string
-	Exceptions  []string
-	Exe         string
-	If          string
-	Ignorecase  bool
+	Extends     string
 	Level       string
 	Link        string
-	Map         map[string]string
-	Max         int
 	Message     string
 	Name        string
-	Negate      bool
-	Nonword     bool
-	Raw         []string
-	Runtime     string
 	Scope       string
-	Then        string
-	Tokens      []string
-	Type        string
+}
+
+// Existence checks for the present of Tokens.
+type Existence struct {
+	Definition `mapstructure:",squash"`
+	Ignorecase bool
+	Nonword    bool
+	Raw        []string
+	Tokens     []string
+}
+
+// Substitution switches the values of Swap for its keys.
+type Substitution struct {
+	Definition `mapstructure:",squash"`
+	Ignorecase bool
+	Nonword    bool
+	Swap       map[string]string
+}
+
+// Occurrence counts the number of times Token appears.
+type Occurrence struct {
+	Definition `mapstructure:",squash"`
+	Max        int
+	Token      string
+}
+
+// Repetition looks for repeated uses of Tokens.
+type Repetition struct {
+	Definition `mapstructure:",squash"`
+	Max        int
+	Ignorecase bool
+	Tokens     []string
+}
+
+// Consistency ensures that the keys and values of Either don't both exist.
+type Consistency struct {
+	Definition `mapstructure:",squash"`
+	Nonword    bool
+	Ignorecase bool
+	Either     map[string]string
+}
+
+// Conditional ensures that the present of First ensures the present of Second.
+type Conditional struct {
+	Definition `mapstructure:",squash"`
+	Ignorecase bool
+	First      string
+	Second     string
+	Exceptions []string
+}
+
+// Script runs Exe with Runtime.
+type Script struct {
+	Definition `mapstructure:",squash"`
+	Exe        string
+	Runtime    string
 }
 
 var defaultChecks = []string{
@@ -73,14 +118,15 @@ var defaultChecks = []string{
 	"Wordiness",
 }
 
-var typeToFunc = map[string]func(string, definition){
-	"conditional":  addConditionalCheck,
-	"consistency":  addConsistencyCheck,
-	"existence":    addExistenceCheck,
-	"occurrence":   addOccurrenceCheck,
-	"repetition":   addRepetitionCheck,
-	"script":       addScriptCheck,
-	"substitution": addSubstitutionCheck,
+var extensionPoints = []string{
+	"capitalization",
+	"conditional",
+	"consistency",
+	"existence",
+	"occurrence",
+	"repetition",
+	"script",
+	"substitution",
 }
 
 func init() {
@@ -142,14 +188,14 @@ func formatMessages(msg string, desc string, subs ...string) (string, string) {
 	return util.FormatMessage(msg, subs...), util.FormatMessage(desc, subs...)
 }
 
-func makeAlert(chk definition, loc []int, txt string) Alert {
+func makeAlert(chk Definition, loc []int, txt string) Alert {
 	a := Alert{Check: chk.Name, Severity: chk.Level, Span: loc, Link: chk.Link}
 	a.Message, a.Description = formatMessages(chk.Message, chk.Description,
 		txt[loc[0]:loc[1]])
 	return a
 }
 
-func conditional(txt string, chk definition, f *File, r []*regexp.Regexp) []Alert {
+func checkConditional(txt string, chk Conditional, f *File, r []*regexp.Regexp) []Alert {
 	alerts := []Alert{}
 	txt = cleanText(f.NormedExt, txt)
 
@@ -165,25 +211,25 @@ func conditional(txt string, chk definition, f *File, r []*regexp.Regexp) []Aler
 		for _, loc := range locs {
 			s := txt[loc[0]:loc[1]]
 			if !util.StringInSlice(s, f.Sequences) && !util.StringInSlice(s, chk.Exceptions) {
-				alerts = append(alerts, makeAlert(chk, loc, txt))
+				alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
 			}
 		}
 	}
 	return alerts
 }
 
-func existence(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
+func checkExistence(txt string, chk Existence, f *File, r *regexp.Regexp) []Alert {
 	alerts := []Alert{}
 	locs := r.FindAllStringIndex(cleanText(f.NormedExt, txt), -1)
 	if locs != nil {
 		for _, loc := range locs {
-			alerts = append(alerts, makeAlert(chk, loc, txt))
+			alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
 		}
 	}
 	return alerts
 }
 
-func occurrence(txt string, chk definition, f *File, r *regexp.Regexp, lim int) []Alert {
+func checkOccurrence(txt string, chk Occurrence, f *File, r *regexp.Regexp, lim int) []Alert {
 	var loc []int
 
 	alerts := []Alert{}
@@ -201,7 +247,7 @@ func occurrence(txt string, chk definition, f *File, r *regexp.Regexp, lim int) 
 	return alerts
 }
 
-func repetition(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
+func checkRepetition(txt string, chk Repetition, f *File, r *regexp.Regexp) []Alert {
 	var curr, prev string
 	var ploc []int
 	var hit bool
@@ -229,7 +275,7 @@ func repetition(txt string, chk definition, f *File, r *regexp.Regexp) []Alert {
 	return alerts
 }
 
-func substitution(txt string, chk definition, f *File, r *regexp.Regexp, repl []string) []Alert {
+func checkSubstitution(txt string, chk Substitution, f *File, r *regexp.Regexp, repl []string) []Alert {
 	alerts := []Alert{}
 	if !r.MatchString(txt) {
 		return alerts
@@ -252,7 +298,7 @@ func substitution(txt string, chk definition, f *File, r *regexp.Regexp, repl []
 	return alerts
 }
 
-func consistency(txt string, chk definition, f *File, r *regexp.Regexp, opts []string) []Alert {
+func checkConsistency(txt string, chk Consistency, f *File, r *regexp.Regexp, opts []string) []Alert {
 	alerts := []Alert{}
 	loc := []int{}
 	txt = cleanText(f.NormedExt, txt)
@@ -268,12 +314,12 @@ func consistency(txt string, chk definition, f *File, r *regexp.Regexp, opts []s
 	}
 
 	if matches != nil && util.AllStringsInSlice(opts, f.Sequences) {
-		alerts = append(alerts, makeAlert(chk, loc, txt))
+		alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
 	}
 	return alerts
 }
 
-func script(txt string, chkDef definition, exe string, f *File) []Alert {
+func checkScript(txt string, chkDef Script, exe string, f *File) []Alert {
 	alerts := []Alert{}
 	cmd := exec.Command(chkDef.Runtime, exe, txt)
 	out, err := cmd.Output()
@@ -284,18 +330,18 @@ func script(txt string, chkDef definition, exe string, f *File) []Alert {
 	return alerts
 }
 
-func addScriptCheck(chkName string, chkDef definition) {
+func addScriptCheck(chkName string, chkDef Script) {
 	style := strings.Split(chkName, ".")[0]
 	exe := filepath.Join(util.Config.StylesPath, style, "scripts", chkDef.Exe)
 	if util.FileExists(exe) {
 		fn := func(text string, file *File) []Alert {
-			return script(text, chkDef, exe, file)
+			return checkScript(text, chkDef, exe, file)
 		}
-		updateAllChecks(chkDef, fn)
+		updateAllChecks(chkDef.Definition, fn)
 	}
 }
 
-func addConsistencyCheck(chkName string, chkDef definition) {
+func addConsistencyCheck(chkName string, chkDef Consistency) {
 	var chkRE string
 
 	regex := ""
@@ -310,7 +356,7 @@ func addConsistencyCheck(chkName string, chkDef definition) {
 
 	count := 0
 	chkKey := strings.Split(chkName, ".")[1]
-	for v1, v2 := range chkDef.Map {
+	for v1, v2 := range chkDef.Either {
 		count += 2
 		subs := []string{
 			fmt.Sprintf("%s%d", chkKey, count), fmt.Sprintf("%s%d", chkKey, count+1)}
@@ -319,16 +365,16 @@ func addConsistencyCheck(chkName string, chkDef definition) {
 		chkRE = fmt.Sprintf(regex, chkRE)
 		re, err := regexp.Compile(chkRE)
 		if util.CheckError(err, chkName) {
-			chkDef.Type = chkName
+			chkDef.Extends = chkName
 			fn := func(text string, file *File) []Alert {
-				return consistency(text, chkDef, file, re, subs)
+				return checkConsistency(text, chkDef, file, re, subs)
 			}
-			updateAllChecks(chkDef, fn)
+			updateAllChecks(chkDef.Definition, fn)
 		}
 	}
 }
 
-func addExistenceCheck(chkName string, chkDef definition) {
+func addExistenceCheck(chkName string, chkDef Existence) {
 	regex := ""
 	if chkDef.Ignorecase {
 		regex += ignoreCase
@@ -345,13 +391,13 @@ func addExistenceCheck(chkName string, chkDef definition) {
 	re, err := regexp.Compile(regex)
 	if util.CheckError(err, chkName) {
 		fn := func(text string, file *File) []Alert {
-			return existence(text, chkDef, file, re)
+			return checkExistence(text, chkDef, file, re)
 		}
-		updateAllChecks(chkDef, fn)
+		updateAllChecks(chkDef.Definition, fn)
 	}
 }
 
-func addRepetitionCheck(chkName string, chkDef definition) {
+func addRepetitionCheck(chkName string, chkDef Repetition) {
 	regex := ""
 	if chkDef.Ignorecase {
 		regex += ignoreCase
@@ -360,46 +406,46 @@ func addRepetitionCheck(chkName string, chkDef definition) {
 	re, err := regexp.Compile(regex)
 	if util.CheckError(err, chkName) {
 		fn := func(text string, file *File) []Alert {
-			return repetition(text, chkDef, file, re)
+			return checkRepetition(text, chkDef, file, re)
 		}
-		updateAllChecks(chkDef, fn)
+		updateAllChecks(chkDef.Definition, fn)
 	}
 }
 
-func addOccurrenceCheck(chkName string, chkDef definition) {
-	re, err := regexp.Compile(chkDef.Tokens[0])
+func addOccurrenceCheck(chkName string, chkDef Occurrence) {
+	re, err := regexp.Compile(chkDef.Token)
 	if util.CheckError(err, chkName) && chkDef.Max >= 1 {
 		fn := func(text string, file *File) []Alert {
-			return occurrence(text, chkDef, file, re, chkDef.Max)
+			return checkOccurrence(text, chkDef, file, re, chkDef.Max)
 		}
-		updateAllChecks(chkDef, fn)
+		updateAllChecks(chkDef.Definition, fn)
 	}
 }
 
-func addConditionalCheck(chkName string, chkDef definition) {
+func addConditionalCheck(chkName string, chkDef Conditional) {
 	var re *regexp.Regexp
 	var expression []*regexp.Regexp
 	var err error
 
-	re, err = regexp.Compile(chkDef.Then)
+	re, err = regexp.Compile(chkDef.Second)
 	if !util.CheckError(err, chkName) {
 		return
 	}
 	expression = append(expression, re)
 
-	re, err = regexp.Compile(chkDef.If)
+	re, err = regexp.Compile(chkDef.First)
 	if !util.CheckError(err, chkName) {
 		return
 	}
 	expression = append(expression, re)
 
 	fn := func(text string, file *File) []Alert {
-		return conditional(text, chkDef, file, expression)
+		return checkConditional(text, chkDef, file, expression)
 	}
-	updateAllChecks(chkDef, fn)
+	updateAllChecks(chkDef.Definition, fn)
 }
 
-func addSubstitutionCheck(chkName string, chkDef definition) {
+func addSubstitutionCheck(chkName string, chkDef Substitution) {
 	regex := ""
 	tokens := ""
 
@@ -413,7 +459,7 @@ func addSubstitutionCheck(chkName string, chkDef definition) {
 	}
 
 	replacements := []string{}
-	for regexstr, replacement := range chkDef.Map {
+	for regexstr, replacement := range chkDef.Swap {
 		if strings.Count(regexstr, "(") != strings.Count(regexstr, "?:") {
 			continue
 		}
@@ -425,36 +471,83 @@ func addSubstitutionCheck(chkName string, chkDef definition) {
 	re, err := regexp.Compile(regex)
 	if util.CheckError(err, "addSubstitutionCheck") {
 		fn := func(text string, file *File) []Alert {
-			return substitution(text, chkDef, file, re, replacements)
+			return checkSubstitution(text, chkDef, file, re, replacements)
 		}
-		updateAllChecks(chkDef, fn)
+		updateAllChecks(chkDef.Definition, fn)
 	}
 }
 
-func updateAllChecks(chkDef definition, fn ruleFn) {
-	chk := check{rule: fn, extends: chkDef.Type}
+func updateAllChecks(chkDef Definition, fn ruleFn) {
+	chk := check{rule: fn, extends: chkDef.Extends}
 	chk.level = util.LevelToInt[chkDef.Level]
 	chk.scope = Selector{Value: chkDef.Scope}
 	AllChecks[chkDef.Name] = chk
 }
 
 func addCheck(file []byte, chkName string) {
-	chkDef := definition{Name: chkName}
-	err := yaml.Unmarshal(file, &chkDef)
+	var extends string
+
+	// Load the rule definition.
+	generic := map[string]interface{}{}
+	err := yaml.Unmarshal(file, &generic)
 	if !util.CheckError(err, chkName) {
 		return
 	}
 
-	if !util.StringInSlice(chkDef.Level, util.AlertLevels) {
-		chkDef.Level = "suggestion"
+	// Ensure that we're given an extension point.
+	if point, ok := generic["extends"]; !ok {
+		return
+	} else if !util.StringInSlice(point.(string), extensionPoints) {
+		return
+	} else {
+		extends = point.(string)
 	}
 
-	if chkDef.Scope == "" {
-		chkDef.Scope = "text"
+	// Set default values, if necessary.
+	generic["name"] = chkName
+	if _, ok := generic["level"]; !ok {
+		generic["level"] = "suggestion"
+	}
+	if _, ok := generic["scope"]; !ok {
+		generic["scope"] = "text"
 	}
 
-	if addCheckFunc, ok := typeToFunc[chkDef.Type]; ok {
-		addCheckFunc(chkName, chkDef)
+	// Create and add the rule.
+	if extends == "existence" {
+		def := Existence{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			addExistenceCheck(chkName, def)
+		}
+	} else if extends == "substitution" {
+		def := Substitution{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			addSubstitutionCheck(chkName, def)
+		}
+	} else if extends == "occurrence" {
+		def := Occurrence{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			addOccurrenceCheck(chkName, def)
+		}
+	} else if extends == "repetition" {
+		def := Repetition{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			addRepetitionCheck(chkName, def)
+		}
+	} else if extends == "consistency" {
+		def := Consistency{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			addConsistencyCheck(chkName, def)
+		}
+	} else if extends == "conditional" {
+		def := Conditional{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			addConditionalCheck(chkName, def)
+		}
+	} else if extends == "script" {
+		def := Script{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			addScriptCheck(chkName, def)
+		}
 	}
 }
 

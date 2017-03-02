@@ -1,4 +1,4 @@
-type: existence
+extends: existence
 message: "'%s' should have one space"
 level: warning
 scope: paragraph

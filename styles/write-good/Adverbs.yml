@@ -1,4 +1,4 @@
-type: existence
+extends: existence
 message: "'%s' - Adverbs can weaken meaning"
 ignorecase: true
 level: warning

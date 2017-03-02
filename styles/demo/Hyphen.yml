@@ -1,4 +1,4 @@
-type: existence
+extends: existence
 message: "'%s' doesn't need a hyphen"
 level: error
 scope: text.html

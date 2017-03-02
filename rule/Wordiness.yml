@@ -1,8 +1,8 @@
-type: substitution
+extends: substitution
 message: Consider using '%s' instead of '%s'
 ignorecase: true
 level: warning
-map:
+swap:
   (?:give|gave) rise to: lead to
   (?:previous|prior) to: before
   a (?:large)? majority of: most

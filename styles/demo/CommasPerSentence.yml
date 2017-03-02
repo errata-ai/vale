@@ -1,7 +1,5 @@
 message: "More than 3 commas!"
-type: occurrence
+extends: occurrence
 scope: sentence
 max: 3
-tokens:
-  - ','
-
+token: ','

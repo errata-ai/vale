@@ -1,5 +1,5 @@
 message: "'%s' left in text"
-type: existence
+extends: existence
 ignorecase: false
 level: warning
 tokens:
