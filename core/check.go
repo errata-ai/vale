@@ -314,6 +314,7 @@ func checkConsistency(txt string, chk Consistency, f *File, r *regexp.Regexp, op
 	}
 
 	if matches != nil && util.AllStringsInSlice(opts, f.Sequences) {
+		chk.Name = chk.Extends
 		alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
 	}
 	return alerts
@@ -366,6 +367,7 @@ func addConsistencyCheck(chkName string, chkDef Consistency) {
 		re, err := regexp.Compile(chkRE)
 		if util.CheckError(err, chkName) {
 			chkDef.Extends = chkName
+			chkDef.Name = fmt.Sprintf("%s.%s", chkName, v1)
 			fn := func(text string, file *File) []Alert {
 				return checkConsistency(text, chkDef, file, re, subs)
 			}
