@@ -110,7 +110,7 @@ func loadOptions() config {
 		if k == "StylesPath" {
 			cfg.StylesPath = determinePath(path, core.Key(k).MustString(""))
 		} else if k == "MinAlertLevel" {
-			level := core.Key(k).In("info", AlertLevels)
+			level := core.Key(k).In("suggestion", AlertLevels)
 			cfg.MinAlertLevel = LevelToInt[level]
 		}
 	}
