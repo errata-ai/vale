@@ -16,6 +16,7 @@ var CLConfig struct {
 	Wrap   bool   // (optional) wrap output when CLI style
 	Debug  bool   // (optional) prints dubugging info to stdout
 	NoExit bool   // (optional) don't return a nonzero exit code on lint errors
+	Sorted bool   // (optional) sort files by their name for output
 }
 
 // Config holds our .vale configuration.

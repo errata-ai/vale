@@ -61,7 +61,7 @@ Feature: Lint
     test.md:3:1:vale.Annotations:'NOTE' left in text
     test.md:32:1:vale.Annotations:'XXX' left in text
     test.md:34:29:vale.Annotations:'TODO' left in text
-    
+
     """
     And the exit status should be 0
 
@@ -76,10 +76,6 @@ Feature: Lint
 
     """
     And the exit status should be 0
-
-  Scenario: Lint a nonexistent file
-    When I lint "null.cc"
-    Then the exit status should be 1
 
   Scenario: Lint a Rust file
     When I lint "test.rs"

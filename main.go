@@ -48,6 +48,11 @@ func main() {
 			Usage:       "don't return a nonzero exit code on lint errors",
 			Destination: &util.CLConfig.NoExit,
 		},
+		cli.BoolFlag{
+			Name:        "sort",
+			Usage:       "sort files by their name in output",
+			Destination: &util.CLConfig.Sorted,
+		},
 	}
 	app.Commands = []cli.Command{
 		{

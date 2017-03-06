@@ -82,7 +82,6 @@ type ByPosition []Alert
 
 func (a ByPosition) Len() int      { return len(a) }
 func (a ByPosition) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-
 func (a ByPosition) Less(i, j int) bool {
 	ai, aj := a[i], a[j]
 
@@ -90,6 +89,16 @@ func (a ByPosition) Less(i, j int) bool {
 		return ai.Line < aj.Line
 	}
 	return ai.Span[0] < aj.Span[0]
+}
+
+// ByName sorts Files by their path.
+type ByName []File
+
+func (a ByName) Len() int      { return len(a) }
+func (a ByName) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByName) Less(i, j int) bool {
+	ai, aj := a[i], a[j]
+	return ai.Path < aj.Path
 }
 
 // SortedAlerts returns all of f's alerts sorted by line and column.

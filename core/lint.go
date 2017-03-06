@@ -3,10 +3,13 @@ package core
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
+	"sync"
 
 	"github.com/ValeLint/vale/util"
 	"github.com/gobwas/glob"
@@ -17,18 +20,64 @@ import (
 func (l *Linter) Lint(src string, pat string) ([]File, error) {
 	var linted []File
 
+	done := make(chan File)
+	defer close(done)
 	glob, gerr := glob.Compile(pat)
-	err := filepath.Walk(src,
-		func(fp string, fi os.FileInfo, err error) error {
+	if gerr != nil {
+		glob = nil
+	}
+	filesChan, errc := l.lintFiles(done, src, glob)
+	for f := range filesChan {
+		linted = append(linted, f)
+	}
+	if err := <-errc; err != nil {
+		return nil, err
+	}
+
+	if util.CLConfig.Sorted {
+		sort.Sort(ByName(linted))
+	}
+	return linted, nil
+}
+
+func (l *Linter) lintFiles(done <-chan File, root string, glob glob.Glob) (<-chan File, <-chan error) {
+	filesChan := make(chan File)
+	errc := make(chan error, 1)
+	go func() {
+		var wg sync.WaitGroup
+		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {
-				return err
-			} else if gerr == nil && glob.Match(fp) {
-				linted = append(linted, l.lintFile(fp))
+				return nil
+			} else if glob == nil || !glob.Match(fp) {
+				// The file doesn't match or the user provided a malformed glob
+				// pattern.
+				return nil
 			}
-			return nil
-		},
-	)
-	return linted, err
+			wg.Add(1)
+			go func() {
+				select {
+				case filesChan <- l.lintFile(fp):
+				case <-done:
+				}
+				wg.Done()
+			}()
+			// Abort the walk if done is closed.
+			select {
+			case <-done:
+				return errors.New("walk canceled")
+			default:
+				return nil
+			}
+		})
+		// Walk has returned, so all calls to wg.Add are done.  Start a
+		// goroutine to close c once all the sends are done.
+		go func() {
+			wg.Wait()
+			close(filesChan)
+		}()
+		errc <- err
+	}()
+	return filesChan, errc
 }
 
 func (l *Linter) lintFile(src string) File {
