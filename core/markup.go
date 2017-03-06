@@ -7,28 +7,25 @@ import (
 	"strings"
 
 	"github.com/ValeLint/vale/util"
+	"github.com/russross/blackfriday"
 	"golang.org/x/net/html"
 )
 
-func (f *File) lintHTML() {
+func lintHTMLTokens(f *File, rawBytes []byte, fBytes []byte) {
 	var txt string
 	var tokt html.TokenType
 	var inBlock, shouldSkip, isHeading bool
 
+	ctx := util.PrepText(string(rawBytes))
 	heading := regexp.MustCompile(`^h\d$`)
-	b, err := ioutil.ReadFile(f.Path)
-	if !util.CheckError(err, f.Path) {
-		return
-	}
-
-	skip := []string{"script", "style"}
-	ctx := util.PrepText(string(b))
+	skip := []string{"script", "style", "pre", "code"}
 	lines := strings.Count(ctx, "\n") + 1
-	tokens := html.NewTokenizer(strings.NewReader(ctx))
 
+	tokens := html.NewTokenizer(bytes.NewReader(fBytes))
 	for {
 		tokt = tokens.Next()
-		txt = strings.TrimSpace(tokens.Token().Data)
+		txt = util.PrepText(
+			html.UnescapeString(strings.TrimSpace(tokens.Token().Data)))
 		shouldSkip = util.StringInSlice(txt, skip)
 		if tokt == html.ErrorToken {
 			break
@@ -46,108 +43,27 @@ func (f *File) lintHTML() {
 			f.lintProse(ctx, txt, lines, 0)
 		}
 		if tokt == html.TextToken {
-			ctx = strings.Replace(ctx, txt, strings.Repeat("*", len(txt)), 1)
+			for _, s := range strings.Split(txt, "\n") {
+				ctx = strings.Replace(ctx, s, strings.Repeat("*", len(s)), 1)
+			}
 		}
 	}
 }
 
+func (f *File) lintHTML() {
+	b, err := ioutil.ReadFile(f.Path)
+	if !util.CheckError(err, f.Path) {
+		return
+	}
+	lintHTMLTokens(f, b, b)
+}
+
 func (f *File) lintMarkdown() {
-	var paragraph bytes.Buffer
-	var line string
-	var isMarkup bool
-	var mat []string
-
-	fencedStart := regexp.MustCompile("^```" + `(\w+)?`)
-	fencedEnd := regexp.MustCompile("```")
-	indentStart := regexp.MustCompile("^( ){4,}")
-	prose := regexp.MustCompile("^([a-zA-Z_()`]|" + `\*\*\w+)`)
-	table := regexp.MustCompile(`^(\|.*\|)`)
-	HTMLStart := regexp.MustCompile(`^<[^/]+>`)
-	HTMLEnd := regexp.MustCompile(`^</.+>`)
-	hATX := regexp.MustCompile(`^#+\s.+`)
-	hSetext := regexp.MustCompile(`(?:=+\s*$|-+\s*$)`)
-	inTable := false
-	inBlock := 0
-	lines := 1
-	prev := ""
-
-	log := util.NewLogger()
-	for f.Scanner.Scan() {
-		line = f.Scanner.Text() + "\n"
-		log.Info(line)
-		isMarkup = strings.HasPrefix(line, " ") || strings.HasPrefix(line, "<")
-		if inBlock == 0 {
-			if mat = fencedStart.FindStringSubmatch(line); len(mat) > 0 {
-				log.Info("^ Fenced start")
-				inBlock = 1
-				if mat[1] != "" {
-					log.Info("^ Found syntax; trying to lint")
-					linted, lns := f.lintCodeblock(mat[1], lines, fencedEnd)
-					f.Alerts = append(f.Alerts, linted...)
-					if lines == lns {
-						log.Info("^ Unknown syntax")
-						inBlock = 1
-					} else {
-						log.Info("^ Known syntax; linted block")
-						lines = lns
-						inBlock = 0
-					}
-				}
-			} else if indentStart.MatchString(line) {
-				log.Info("^ Indented start")
-				inBlock = 2
-			} else if HTMLStart.MatchString(line) {
-				log.Info("^ HTML start")
-				inBlock = 4
-			} else if !inTable && (table.MatchString(line) || strings.Count(line, "|") > 1) {
-				log.Info("^ Table start")
-				inTable = true
-			} else if inTable && line == "\n" && (table.MatchString(prev) || strings.Count(prev, "|") > 1) {
-				log.Info("^ Table end")
-				inTable = false
-			} else if hATX.MatchString(line) {
-				log.Info("^ Linting ATX heading")
-				f.lintText(NewBlock("", line, "text.heading"+f.RealExt), lines+1, 0)
-			} else if prose.MatchString(line) && !inTable {
-				log.Info("^ Paragraph start")
-				paragraph.WriteString(line)
-				inBlock = 3
-			} else if line != "\n" && !isMarkup {
-				log.Info("^ Linting single line")
-				f.lintText(NewBlock("", line, "text"+f.RealExt), lines+1, 0)
-			}
-		} else if inBlock == 1 && fencedEnd.MatchString(line) {
-			log.Info("^ Fenced end")
-			inBlock = 0
-		} else if inBlock == 4 && HTMLEnd.MatchString(line) {
-			log.Info("^ HTML end")
-			inBlock = 0
-		} else if inBlock > 1 && inBlock != 4 && line == "\n" {
-			log.Info("^ Block end")
-			if inBlock == 3 {
-				log.Info("^ Linting paragraph")
-				f.lintProse("", paragraph.String(), lines, 0)
-				paragraph.Reset()
-			}
-			inBlock = 0
-		} else if inBlock == 3 {
-			if hSetext.MatchString(line) {
-				log.Info("^ Not a paragraph; linting setext heading")
-				f.lintText(NewBlock("", prev, "text.heading"+f.RealExt), lines, 0)
-				paragraph.Reset()
-				inBlock = 0
-			} else {
-				log.Info("^ Adding to paragraph")
-				paragraph.WriteString(line)
-			}
-		}
-		lines++
-		prev = line
+	b, err := ioutil.ReadFile(f.Path)
+	if !util.CheckError(err, f.Path) {
+		return
 	}
-	if inBlock == 3 {
-		log.Info("^ Linting paragraph")
-		f.lintProse("", paragraph.String(), lines, 0)
-	}
+	lintHTMLTokens(f, b, blackfriday.MarkdownCommon(b))
 }
 
 func (f *File) lintADoc() {

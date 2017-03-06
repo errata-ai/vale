@@ -58,8 +58,8 @@ Feature: Lint
     When I lint "test.md"
     Then the output should contain exactly:
     """
-    test.md:8:5:vale.Annotations:'NOTE' left in text
-    test.md:18:4:vale.Annotations:'XXX' left in text
+    test.md:3:1:vale.Annotations:'NOTE' left in text
+    test.md:32:1:vale.Annotations:'XXX' left in text
 
     """
     And the exit status should be 0

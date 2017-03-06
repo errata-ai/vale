@@ -85,7 +85,6 @@ func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (i
 // PrepText prepares text for our check functions.
 func PrepText(txt string) string {
 	replacements := map[string]string{
-		"\r\n":   "\n",
 		"\u201c": `"`,
 		"\u201d": `"`,
 		"\u2018": "'",
@@ -94,6 +93,8 @@ func PrepText(txt string) string {
 	for old, new := range replacements {
 		txt = strings.Replace(txt, old, new, -1)
 	}
+	txt = strings.Replace(txt, "\r\n", "\n", -1)
+	txt = strings.Replace(txt, "\r", "\n", -1)
 	return txt
 }
 

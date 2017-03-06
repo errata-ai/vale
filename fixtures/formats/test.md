@@ -1,6 +1,6 @@
 ## Introduction
 
-This is a very interesting file.
+NOTE: This is a very interesting file.
 
 ```python
 def foo():
@@ -29,4 +29,4 @@ func ExtFromSyntax(name string) string {
     XXX = False
     # This is a codeblock.
 
-This is a very interesting sentence that is not in a block.
+XXX: This is a very interesting sentence that is not in a block.
