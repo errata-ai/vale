@@ -11,6 +11,21 @@ import (
 	"golang.org/x/net/html"
 )
 
+// Blackfriday configuration.
+var commonHTMLFlags = 0 | blackfriday.HTML_USE_XHTML
+var commonExtensions = 0 |
+	blackfriday.EXTENSION_NO_INTRA_EMPHASIS |
+	blackfriday.EXTENSION_TABLES |
+	blackfriday.EXTENSION_FENCED_CODE |
+	blackfriday.EXTENSION_AUTOLINK |
+	blackfriday.EXTENSION_STRIKETHROUGH |
+	blackfriday.EXTENSION_SPACE_HEADERS |
+	blackfriday.EXTENSION_HEADER_IDS |
+	blackfriday.EXTENSION_BACKSLASH_LINE_BREAK |
+	blackfriday.EXTENSION_DEFINITION_LISTS
+var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
+var options = blackfriday.Options{Extensions: commonExtensions}
+
 func lintHTMLTokens(f *File, rawBytes []byte, fBytes []byte) {
 	var txt string
 	var tokt html.TokenType
@@ -63,7 +78,7 @@ func (f *File) lintMarkdown() {
 	if !util.CheckError(err, f.Path) {
 		return
 	}
-	lintHTMLTokens(f, b, blackfriday.MarkdownCommon(b))
+	lintHTMLTokens(f, b, blackfriday.MarkdownOptions(b, renderer, options))
 }
 
 func (f *File) lintADoc() {

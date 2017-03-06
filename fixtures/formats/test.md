@@ -30,3 +30,5 @@ func ExtFromSyntax(name string) string {
     # This is a codeblock.
 
 XXX: This is a very interesting sentence that is not in a block.
+
+this sentence has -- dashes TODO: but it should still work.
