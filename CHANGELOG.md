@@ -1,5 +1,17 @@
 # Change Log
 
+## [v0.3.0](https://github.com/ValeLint/vale/tree/v0.3.0) (2017-03-06)
+[Full Changelog](https://github.com/ValeLint/vale/compare/v0.2.1...v0.3.0)
+
+**Implemented enhancements:**
+
+- Improve LaTeX support [\#11](https://github.com/ValeLint/vale/issues/11)
+- Add to Homebrew [\#6](https://github.com/ValeLint/vale/issues/6)
+
+**Closed issues:**
+
+- Use multiple check definition structs? [\#15](https://github.com/ValeLint/vale/issues/15)
+
 ## [v0.2.1](https://github.com/ValeLint/vale/tree/v0.2.1) (2017-02-25)
 [Full Changelog](https://github.com/ValeLint/vale/compare/v0.2.0...v0.2.1)
 
