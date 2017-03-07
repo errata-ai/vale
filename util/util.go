@@ -26,6 +26,11 @@ func FormatMessage(msg string, subs ...string) string {
 	return fmt.Sprintf(msg, StringsToInterface(found)...)
 }
 
+// Substitute replaces the substring `repl` with `char`s.
+func Substitute(src string, repl string, char string) string {
+	return strings.Replace(src, repl, strings.Repeat(char, len(repl)), 1)
+}
+
 // StringsToInterface converts a slice of strings to an interface.
 func StringsToInterface(strings []string) []interface{} {
 	intf := make([]interface{}, len(strings))
@@ -54,14 +59,24 @@ func DumpConfig() string {
 
 // FindLoc calculates the line and span of an Alert.
 func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (int, []int) {
-	var length int
+	var length, pos int
 
-	substring := s[loc[0]:loc[1]]
+	substring := strings.Split(s[loc[0]:loc[1]], "\n")[0]
+	subctx := ctx[loc[0]:]
 	meta := regexp.QuoteMeta(substring)
 	diff := loc[0] - utf8.RuneCountInString(s[:loc[0]])
-	r := regexp.MustCompile(fmt.Sprintf(`(\b%s|%s)`, meta, meta))
-	offset := len(ctx) - len(ctx[loc[0]:])
-	pos := r.FindAllStringIndex(ctx[loc[0]:], 1)[0][0] + 1 + offset
+	offset := len(ctx) - len(subctx)
+
+	bounded := regexp.MustCompile(fmt.Sprintf(`\b%s`, meta)).FindAllStringIndex(subctx, 1)
+	unbound := regexp.MustCompile(meta).FindAllStringIndex(subctx, 1)
+	if len(bounded) != 0 {
+		pos = bounded[0][0]
+	} else if len(unbound) != 0 {
+		pos = unbound[0][0]
+	} else {
+		return count, loc
+	}
+	pos = pos + 1 + offset
 
 	counter := 0
 	lines := strings.SplitAfter(ctx, "\n")
@@ -78,7 +93,6 @@ func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (i
 		}
 		counter += length
 	}
-
 	return count, loc
 }
 

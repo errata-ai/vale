@@ -15,6 +15,7 @@ Feature: Checks
     When I test "checks/PassiveVoice"
     Then the output should contain exactly:
     """
+    test.md:1:68:vale.PassiveVoice:'are not supported' is passive voice
     test.swift:3:47:vale.PassiveVoice:'were eaten' is passive voice
     test.swift:5:38:vale.PassiveVoice:'was faxed' is passive voice
     test.swift:12:18:vale.PassiveVoice:'were you taught' is passive voice
@@ -36,7 +37,9 @@ Feature: Checks
     Then the output should contain exactly:
     """
     test.html:9:7:vale.Editorializing:Consider removing 'Note that'
+    test.html:10:25:vale.Editorializing:Consider removing 'very'
     test.html:13:7:vale.Editorializing:Consider removing 'Notably'
+    test.md:1:24:vale.Editorializing:Consider removing 'very'
 
     """
 
@@ -54,10 +57,12 @@ Feature: Checks
     When I test "checks/Repetition"
     Then the output should contain exactly:
     """
-    text.rst:6:17:vale.Repetition:'as' is repeated!
-    text.rst:8:33:vale.Repetition:'the' is repeated!
-    text.rst:15:7:vale.Repetition:'and' is repeated!
-    text.rst:16:22:vale.Repetition:'on' is repeated!
+    text.rst:6:20:vale.Repetition:'as' is repeated!
+    text.rst:9:1:vale.Repetition:'the' is repeated!
+    text.rst:15:11:vale.Repetition:'and' is repeated!
+    text.rst:16:25:vale.Repetition:'on' is repeated!
+    text.rst:20:1:vale.Repetition:'this' is repeated!
+    text.rst:20:16:vale.Repetition:'be' is repeated!
 
     """
 

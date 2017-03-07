@@ -7,7 +7,7 @@ Feature: Styles
     test.go:4:35:write-good.TooWordy:'impacted' is too wordy
     test.go:21:27:write-good.NoCliches:'at loose ends' is a cliché
     test.go:24:40:write-good.PassiveVoice:'was killed'
-    test.go:31:6:write-good.LexicalIllusions:'the' is repeated!
+    test.go:31:10:write-good.LexicalIllusions:'the' is repeated!
     test.go:34:25:write-good.ThereIs:Don't start a sentence with '// There are'
     test.go:41:21:write-good.ThereIs:Don't start a sentence with '// There is'
     test.go:44:21:write-good.StartsWithSo:Don't start a sentence with '; so'

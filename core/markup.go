@@ -16,19 +16,14 @@ var commonHTMLFlags = 0 | blackfriday.HTML_USE_XHTML
 var commonExtensions = 0 |
 	blackfriday.EXTENSION_NO_INTRA_EMPHASIS |
 	blackfriday.EXTENSION_TABLES |
-	blackfriday.EXTENSION_FENCED_CODE |
-	blackfriday.EXTENSION_AUTOLINK |
-	blackfriday.EXTENSION_STRIKETHROUGH |
-	blackfriday.EXTENSION_SPACE_HEADERS |
-	blackfriday.EXTENSION_HEADER_IDS |
-	blackfriday.EXTENSION_BACKSLASH_LINE_BREAK |
-	blackfriday.EXTENSION_DEFINITION_LISTS
+	blackfriday.EXTENSION_FENCED_CODE
 var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
 var options = blackfriday.Options{Extensions: commonExtensions}
 
 func lintHTMLTokens(f *File, rawBytes []byte, fBytes []byte) {
 	var txt string
 	var tokt html.TokenType
+	var tok html.Token
 	var inBlock, shouldSkip, isHeading bool
 
 	ctx := util.PrepText(string(rawBytes))
@@ -39,8 +34,8 @@ func lintHTMLTokens(f *File, rawBytes []byte, fBytes []byte) {
 	tokens := html.NewTokenizer(bytes.NewReader(fBytes))
 	for {
 		tokt = tokens.Next()
-		txt = util.PrepText(
-			html.UnescapeString(strings.TrimSpace(tokens.Token().Data)))
+		tok = tokens.Token()
+		txt = util.PrepText(html.UnescapeString(strings.TrimSpace(tok.Data)))
 		shouldSkip = util.StringInSlice(txt, skip)
 		if tokt == html.ErrorToken {
 			break
@@ -57,12 +52,24 @@ func lintHTMLTokens(f *File, rawBytes []byte, fBytes []byte) {
 		} else if tokt == html.TextToken && !inBlock && txt != "" {
 			f.lintProse(ctx, txt, lines, 0)
 		}
-		if tokt == html.TextToken {
-			for _, s := range strings.Split(txt, "\n") {
-				ctx = strings.Replace(ctx, s, strings.Repeat("*", len(s)), 1)
+		ctx = updateCtx(ctx, txt, tokt, tok)
+	}
+}
+
+func updateCtx(ctx string, txt string, tokt html.TokenType, tok html.Token) string {
+	if tok.Data == "img" || tok.Data == "a" {
+		for _, a := range tok.Attr {
+			if a.Key == "alt" {
+				ctx = util.Substitute(ctx, a.Val, "*")
+				break
 			}
 		}
+	} else if tokt == html.TextToken {
+		for _, s := range strings.Split(txt, "\n") {
+			ctx = util.Substitute(ctx, s, "*")
+		}
 	}
+	return ctx
 }
 
 func (f *File) lintHTML() {

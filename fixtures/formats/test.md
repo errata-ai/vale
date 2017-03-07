@@ -32,3 +32,15 @@ func ExtFromSyntax(name string) string {
 XXX: This is a very interesting sentence that is not in a block.
 
 this sentence has -- dashes TODO: but it should still work.
+
+| TODO | XXX | FIXME |
+|:----:|:---:|:-----:|
+| one  | two | three |
+
+> **Note**: one two FIXME three.
+
+[![Boxy Monokai ★ Predawn][img-monokai]][img-monokai]
+
+is *TODO* by
+
+[img-monokai]: https://

@@ -61,6 +61,11 @@ Feature: Lint
     test.md:3:1:vale.Annotations:'NOTE' left in text
     test.md:32:1:vale.Annotations:'XXX' left in text
     test.md:34:29:vale.Annotations:'TODO' left in text
+    test.md:36:3:vale.Annotations:'TODO' left in text
+    test.md:36:10:vale.Annotations:'XXX' left in text
+    test.md:36:16:vale.Annotations:'FIXME' left in text
+    test.md:40:21:vale.Annotations:'FIXME' left in text
+    test.md:44:5:vale.Annotations:'TODO' left in text
 
     """
     And the exit status should be 0

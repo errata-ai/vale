@@ -7,9 +7,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/ValeLint/vale/core"
 	"github.com/ValeLint/vale/util"
+	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -20,12 +20,13 @@ const (
 	underlineColor                  = color.Underline
 )
 
+var spaces = regexp.MustCompile(" +")
+
 // printLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
 func printLineAlerts(linted []core.File) bool {
 	var base string
 
 	alertCount := 0
-	spaces := regexp.MustCompile(" +")
 	for _, f := range linted {
 		// If vale is run from a parent directory of f, we use a shorter file
 		// path -- e.g., if run from the directory 'vale', we use
@@ -41,8 +42,7 @@ func printLineAlerts(linted []core.File) bool {
 			if a.Severity == "error" {
 				alertCount++
 			}
-			a.Message = strings.Replace(a.Message, "\n", "", -1)
-			a.Message = spaces.ReplaceAllString(a.Message, " ")
+			a.Message = fixOutputSpacing(a.Message)
 			fmt.Print(fmt.Sprintf("%s:%d:%d:%s:%s\n",
 				base, a.Line, a.Span[0], a.Check, a.Message))
 		}
@@ -54,14 +54,12 @@ func printLineAlerts(linted []core.File) bool {
 func printJSONAlerts(linted []core.File) bool {
 	alertCount := 0
 	formatted := map[string][]core.Alert{}
-	spaces := regexp.MustCompile(" +")
 	for _, f := range linted {
 		for _, a := range f.SortedAlerts() {
 			if a.Severity == "error" {
 				alertCount++
 			}
-			a.Message = strings.Replace(a.Message, "\n", "", -1)
-			a.Message = spaces.ReplaceAllString(a.Message, " ")
+			a.Message = fixOutputSpacing(a.Message)
 			formatted[f.Path] = append(formatted[f.Path], a)
 		}
 	}
@@ -108,7 +106,6 @@ func printVerboseAlert(f core.File) (int, int, int) {
 	var loc, level string
 	var errors, warnings, notifications int
 
-	spaces := regexp.MustCompile(" +")
 	alerts := f.SortedAlerts()
 	if len(alerts) == 0 {
 		return 0, 0, 0
@@ -122,8 +119,7 @@ func printVerboseAlert(f core.File) (int, int, int) {
 
 	fmt.Printf("\n %s", colorize(f.Path, underlineColor))
 	for _, a := range alerts {
-		a.Message = strings.Replace(a.Message, "\n", "", -1)
-		a.Message = spaces.ReplaceAllString(a.Message, " ")
+		a.Message = fixOutputSpacing(a.Message)
 		if a.Severity == "suggestion" {
 			level = colorize(a.Severity, suggestionColor)
 			notifications++
@@ -152,4 +148,10 @@ func pluralize(s string, n int) string {
 		return s + "s"
 	}
 	return s
+}
+
+func fixOutputSpacing(msg string) string {
+	msg = strings.Replace(msg, "\n", " ", -1)
+	msg = spaces.ReplaceAllString(msg, " ")
+	return msg
 }
