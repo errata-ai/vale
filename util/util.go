@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -14,6 +15,17 @@ import (
 
 // ExeDir is our starting location.
 var ExeDir string
+
+// Which checks for the existence of any command in `cmds`.
+func Which(cmds []string) string {
+	for _, cmd := range cmds {
+		path, err := exec.LookPath(cmd)
+		if err == nil {
+			return path
+		}
+	}
+	return ""
+}
 
 // FormatMessage inserts `subs` into `msg`.
 func FormatMessage(msg string, subs ...string) string {

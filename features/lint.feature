@@ -7,7 +7,7 @@ Feature: Lint
     test.txt:1:27:vale.Annotations:'NOTE' left in text
     test.txt:4:12:vale.Annotations:'XXX' left in text
     test.txt:4:66:vale.Annotations:'TODO' left in text
-
+    
     """
     And the exit status should be 0
 
@@ -74,10 +74,15 @@ Feature: Lint
     When I lint "test.rst"
     Then the output should contain exactly:
     """
-    test.rst:17:9:vale.Annotations:'NOTE' left in text
-    test.rst:27:8:vale.Annotations:'XXX' left in text
-    test.rst:50:29:vale.Annotations:'TODO' left in text
+    test.rst:4:34:vale.Annotations:'XXX' left in text
+    test.rst:37:45:vale.Annotations:'TODO' left in text
     test.rst:58:1:vale.Annotations:'NOTE' left in text
+    test.rst:60:40:vale.Annotations:'TODO' left in text
+    test.rst:63:3:vale.Annotations:'TODO' left in text
+    test.rst:63:29:vale.Annotations:'XXX' left in text
+    test.rst:69:3:vale.Annotations:'FIXME' left in text
+    test.rst:75:3:vale.Annotations:'TODO' left in text
+    test.rst:75:38:vale.Annotations:'XXX' left in text
 
     """
     And the exit status should be 0

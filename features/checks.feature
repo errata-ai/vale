@@ -16,6 +16,11 @@ Feature: Checks
     Then the output should contain exactly:
     """
     test.md:1:68:vale.PassiveVoice:'are not supported' is passive voice
+    test.rst:8:51:vale.PassiveVoice:'be prompted' is passive voice
+    test.rst:9:57:vale.PassiveVoice:'is sent' is passive voice
+    test.rst:11:71:vale.PassiveVoice:'is supported' is passive voice
+    test.rst:17:51:vale.PassiveVoice:'be omitted' is passive voice
+    test.rst:23:11:vale.PassiveVoice:'be applied' is passive voice
     test.swift:3:47:vale.PassiveVoice:'were eaten' is passive voice
     test.swift:5:38:vale.PassiveVoice:'was faxed' is passive voice
     test.swift:12:18:vale.PassiveVoice:'were you taught' is passive voice
@@ -57,12 +62,12 @@ Feature: Checks
     When I test "checks/Repetition"
     Then the output should contain exactly:
     """
-    text.rst:6:20:vale.Repetition:'as' is repeated!
-    text.rst:9:1:vale.Repetition:'the' is repeated!
-    text.rst:15:11:vale.Repetition:'and' is repeated!
-    text.rst:16:25:vale.Repetition:'on' is repeated!
-    text.rst:20:1:vale.Repetition:'this' is repeated!
-    text.rst:20:16:vale.Repetition:'be' is repeated!
+    text.rst:6:17:vale.Repetition:'as' is repeated!
+    text.rst:8:33:vale.Repetition:'the' is repeated!
+    text.rst:15:7:vale.Repetition:'and' is repeated!
+    text.rst:16:22:vale.Repetition:'on' is repeated!
+    text.rst:19:1:vale.Repetition:'this' is repeated!
+    text.rst:20:13:vale.Repetition:'be' is repeated!
 
     """
 
@@ -121,5 +126,5 @@ Feature: Checks
     test.scala:2:13:vale.Litotes:Consider using 'rejected' instead of 'not accepted'
     test.scala:2:53:vale.Litotes:Consider using 'lack(s)' instead of 'not have'
     test.scala:6:32:vale.Litotes:Consider using 'large' instead of 'no small'
-
+    
     """

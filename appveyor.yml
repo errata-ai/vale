@@ -12,10 +12,10 @@ install:
   - echo %GOPATH%
   - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby22\bin;%cd%\bin;%PATH%
   - cinst ansicon
+  - pip install docutils
 build_script:
 - cmd: >-
     make setup
-
     make build-win
 test_script:
 - cmd: make ci

@@ -1,7 +1,7 @@
 Introduction
 ########################################
 
-This is a very interesting file.
+This is a very interesting file. XXX:
 
 .. code-block:: bash
 
@@ -34,7 +34,7 @@ As you can see, ``very = True``. Here is another interesting codeblock:
         return name
     }
 
-A `very` MacPorts *port* is also available:
+A `very` MacPorts *port* is also available: TODO
 
 ::
 
@@ -56,3 +56,22 @@ This is extremely important.
     printf("%s", "TODO") // TODO:
 
 NOTE: The block is over by now
+
+The |biohazard| symbol must be used on TODO containers used to dispose of medical waste.
+
++------------+------------+-----------+
+| TODO       | Header 2   | XXX       |
++============+============+===========+
+| body row 1 | column 2   | column 3  |
++------------+------------+-----------+
+| body row 2 | Cells may span columns.|
++------------+------------+-----------+
+| FIXME      | Cells may  | - Cells   |
++------------+ span rows. | - contain |
+| body row 4 |            | - blocks. |
++------------+------------+-----------+
+
+
+**TODO** this is a sentence ``TODO`` XXX.
+
+.. |biohazard| image:: biohazard.png

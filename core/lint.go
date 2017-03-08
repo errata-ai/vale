@@ -124,7 +124,11 @@ func (l *Linter) lintFile(src string) File {
 		case ".md":
 			file.lintMarkdown()
 		case ".rst":
-			file.lintRST()
+			cmd := util.Which([]string{"rst2html", "rst2html.py"})
+			runtime := util.Which([]string{"python", "py", "python.exe"})
+			if cmd != "" && runtime != "" {
+				file.lintRST(runtime, cmd)
+			}
 		case ".html":
 			file.lintHTML()
 		case ".tex":

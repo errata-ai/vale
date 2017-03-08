@@ -3,6 +3,7 @@ package core
 import (
 	"bytes"
 	"io/ioutil"
+	"os/exec"
 	"regexp"
 	"strings"
 
@@ -10,6 +11,10 @@ import (
 	"github.com/russross/blackfriday"
 	"golang.org/x/net/html"
 )
+
+// reCodeBlock is used to convert Sphinx-style code directives to the regular
+// `::` for rst2html.
+var reCodeBlock = regexp.MustCompile(`.. code(?:-block)?:: (\w+)`)
 
 // Blackfriday configuration.
 var commonHTMLFlags = 0 | blackfriday.HTML_USE_XHTML
@@ -28,7 +33,7 @@ func lintHTMLTokens(f *File, rawBytes []byte, fBytes []byte) {
 
 	ctx := util.PrepText(string(rawBytes))
 	heading := regexp.MustCompile(`^h\d$`)
-	skip := []string{"script", "style", "pre", "code"}
+	skip := []string{"script", "style", "pre", "code", "tt"}
 	lines := strings.Count(ctx, "\n") + 1
 
 	tokens := html.NewTokenizer(bytes.NewReader(fBytes))
@@ -59,9 +64,8 @@ func lintHTMLTokens(f *File, rawBytes []byte, fBytes []byte) {
 func updateCtx(ctx string, txt string, tokt html.TokenType, tok html.Token) string {
 	if tok.Data == "img" || tok.Data == "a" {
 		for _, a := range tok.Attr {
-			if a.Key == "alt" {
+			if a.Key == "alt" || a.Key == "href" {
 				ctx = util.Substitute(ctx, a.Val, "*")
-				break
 			}
 		}
 	} else if tokt == html.TextToken {
@@ -86,6 +90,21 @@ func (f *File) lintMarkdown() {
 		return
 	}
 	lintHTMLTokens(f, b, blackfriday.MarkdownOptions(b, renderer, options))
+}
+
+func (f *File) lintRST(python string, rst2html string) {
+	var out bytes.Buffer
+	b, err := ioutil.ReadFile(f.Path)
+	if !util.CheckError(err, f.Path) {
+		return
+	}
+	cmd := exec.Command(
+		python, rst2html, "--quiet", "--halt=5", "--link-stylesheet")
+	cmd.Stdin = bytes.NewReader(reCodeBlock.ReplaceAll(b, []byte("::")))
+	cmd.Stdout = &out
+	if util.CheckError(cmd.Run(), f.Path) {
+		lintHTMLTokens(f, b, out.Bytes())
+	}
 }
 
 func (f *File) lintADoc() {
@@ -183,103 +202,6 @@ func (f *File) lintADoc() {
 		prev = line
 	}
 	if inBlock == 5 {
-		log.Info("^ Linting paragraph")
-		f.lintProse("", paragraph.String(), lines, 0)
-	}
-}
-
-func (f *File) lintRST() {
-	var paragraph bytes.Buffer
-	var line, syntax string
-	var isMarkup bool
-	var mat []string
-
-	codeStart := regexp.MustCompile(`.. code(?:-block)?:: (\w+)`)
-	indentStart := regexp.MustCompile(`^::\n$`)
-	indentEnd := regexp.MustCompile(`^\n$`)
-	highlight := regexp.MustCompile(`.. highlight:: (\w+)`)
-	prose := regexp.MustCompile("^([a-zA-Z0-9_():`]|" + `\*\*)`)
-	table := regexp.MustCompile(`^(=+\s+=+\n$|\+-.+-\+)`)
-	hSetext := regexp.MustCompile(`(?:=|-|~|#)+\s*$`)
-	inBlock := 0
-	inTable := false
-	lines := 1
-	blankLines := 0
-
-	prev := ""
-	log := util.NewLogger()
-	for f.Scanner.Scan() {
-		line = f.Scanner.Text() + "\n"
-		log.Info(line)
-		isMarkup = strings.HasPrefix(line, " ") || strings.HasPrefix(line, "..")
-		if inBlock == 0 {
-			if mat = codeStart.FindStringSubmatch(line); len(mat) > 0 {
-				log.Info("^ code block")
-				inBlock = 1
-				syntax = mat[1]
-				blankLines = 1
-			} else if indentStart.MatchString(line) {
-				log.Info("^ indented block")
-				inBlock = 2
-				blankLines = 0
-			} else if mat = highlight.FindStringSubmatch(line); len(mat) > 0 {
-				if mat[1] != "none" {
-					syntax = mat[1]
-				} else {
-					syntax = ""
-				}
-				log.Info("^ setting highlight to", syntax)
-			} else if !inTable && table.MatchString(line) {
-				log.Info("^ Table start")
-				inTable = true
-			} else if inTable && line == "\n" && table.MatchString(prev) {
-				log.Info("^ Table end")
-				inTable = false
-			} else if prose.MatchString(line) && !inTable {
-				log.Info("^ Paragraph start")
-				inBlock = 3
-				paragraph.WriteString(line)
-			} else if line != "\n" && !isMarkup {
-				log.Info("^ Linting single line")
-				f.lintText(NewBlock("", line, "text"+f.RealExt), lines+1, 0)
-			}
-		} else if syntax != "" && line == "\n" && inBlock > 0 && inBlock < 3 {
-			log.Info("^ Linting code")
-			linted, lns := f.lintCodeblock(syntax, lines, indentEnd)
-			f.Alerts = append(f.Alerts, linted...)
-			if inBlock == 1 {
-				syntax = ""
-			}
-			if lines != lns {
-				log.Info("^ code end")
-				lines = lns
-				inBlock = 0
-			}
-		} else if inBlock > 0 && inBlock < 3 && line == "\n" && blankLines > 0 {
-			log.Info("^ Block end")
-			inBlock = 0
-		} else if inBlock == 3 && line == "\n" {
-			log.Info("^ Linting paragraph")
-			f.lintProse("", paragraph.String(), lines, 0)
-			paragraph.Reset()
-			inBlock = 0
-		} else if line == "\n" {
-			blankLines++
-		} else if inBlock == 3 {
-			if hSetext.MatchString(line) {
-				f.lintText(NewBlock("", prev, "text.heading"+f.RealExt), lines, 0)
-				inBlock = 0
-				log.Info("^ Not a paragraph; linting setext heading")
-				paragraph.Reset()
-			} else {
-				log.Info("^ Adding to paragraph")
-				paragraph.WriteString(line)
-			}
-		}
-		lines++
-		prev = line
-	}
-	if inBlock == 3 {
 		log.Info("^ Linting paragraph")
 		f.lintProse("", paragraph.String(), lines, 0)
 	}

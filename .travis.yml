@@ -7,6 +7,7 @@ before_install:
   - export BUNDLE_GEMFILE=$PWD/Gemfile
   - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
   - export PATH=~/bin:"$PATH"
+  - pip install --user docutils
 install:
   - make setup
   - make build
