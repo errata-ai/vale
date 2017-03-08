@@ -16,6 +16,7 @@ install:
 build_script:
 - cmd: >-
     make setup
+
     make build-win
 test_script:
 - cmd: make ci
