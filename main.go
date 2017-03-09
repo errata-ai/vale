@@ -64,6 +64,7 @@ func main() {
 
 	app.Action = func(c *cli.Context) error {
 		var linted []core.File
+		var g core.Glob
 		var err error
 		var hasAlerts bool
 

@@ -43,13 +43,19 @@ func NewBlock(ctx string, txt string, sel string) Block {
 // Lint src according to its format.
 func (l Linter) Lint(src string, pat string) ([]core.File, error) {
 	var linted []core.File
+	var negate bool
 
 	done := make(chan core.File)
 	defer close(done)
-	glob, gerr := glob.Compile(pat)
+	if strings.HasPrefix(pat, "!") {
+		pat = strings.TrimLeft(pat, "!")
+		negate = true
+	}
+	g, gerr := glob.Compile(pat)
 	if !core.CheckError(gerr, "can't compile glob!") {
 		return linted, gerr
 	}
+	glob := core.Glob{Pattern: g, Negated: negate}
 	filesChan, errc := l.lintFiles(done, src, glob)
 	for f := range filesChan {
 		linted = append(linted, f)
@@ -64,7 +70,7 @@ func (l Linter) Lint(src string, pat string) ([]core.File, error) {
 	return linted, nil
 }
 
-func (l Linter) lintFiles(done <-chan core.File, root string, glob glob.Glob) (<-chan core.File, <-chan error) {
+func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan core.File, <-chan error) {
 	filesChan := make(chan core.File)
 	errc := make(chan error, 1)
 	go func() {
@@ -72,9 +78,7 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob glob.Glob) (<
 		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {
 				return nil
-			} else if !glob.Match(fp) {
-				// The file doesn't match or the user provided a malformed glob
-				// pattern.
+			} else if glob.Pattern.Match(fp) == glob.Negated {
 				return nil
 			}
 			wg.Add(1)

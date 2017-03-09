@@ -6,9 +6,16 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/gobwas/glob"
 	"github.com/mitchellh/go-homedir"
 	"gopkg.in/ini.v1"
 )
+
+// Glob represents a glob pattern passed via `--glob`.
+type Glob struct {
+	Negated bool
+	Pattern glob.Glob
+}
 
 // CLConfig holds our command-line configuration.
 var CLConfig struct {
