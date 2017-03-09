@@ -1,22 +1,22 @@
-package core
+package lint
 
 import (
 	"bytes"
 	"fmt"
 	"regexp"
 
-	"github.com/ValeLint/vale/util"
+	"github.com/ValeLint/vale/core"
 )
 
 // lintCode lints source code -- whether it be a markup codeblock, a complete
 // file, or some other portion of text.
-func (f *File) lintCode(prev int, bail *regexp.Regexp) int {
+func (l *Linter) lintCode(f *core.File, prev int, bail *regexp.Regexp) int {
 	var line, match, txt string
 	var lnLength, padding int
 	var block bytes.Buffer
 
 	lines := prev
-	comments := util.CommentsByNormedExt[f.NormedExt]
+	comments := core.CommentsByNormedExt[f.NormedExt]
 	if len(comments) == 0 {
 		return lines
 	}
@@ -42,7 +42,7 @@ func (f *File) lintCode(prev int, bail *regexp.Regexp) int {
 				block.WriteString(line)
 				txt = block.String()
 				b := NewBlock(txt, txt, fmt.Sprintf(scope, "text.comment.block"))
-				f.lintText(b, lines+1, 0)
+				l.lintText(f, b, lines+1, 0)
 				block.Reset()
 				inBlock = false
 			} else {
@@ -54,7 +54,7 @@ func (f *File) lintCode(prev int, bail *regexp.Regexp) int {
 			// 'print("foo") # ...' will be condensed to '# ...'.
 			padding = lnLength - len(match)
 			b := NewBlock(match, match, fmt.Sprintf(scope, "text.comment.line"))
-			f.lintText(b, lines, padding-1)
+			l.lintText(f, b, lines, padding-1)
 		} else if match = blockStart.FindString(line); len(match) > 0 && !ignore {
 			// We've found the start of a block comment.
 			block.WriteString(line)
@@ -68,10 +68,10 @@ func (f *File) lintCode(prev int, bail *regexp.Regexp) int {
 
 // lintCodeblock is a wrapper around lintCode that creates a file representing
 // the block.
-func (f *File) lintCodeblock(syn string, prev int, bail *regexp.Regexp) ([]Alert, int) {
-	ext := util.ExtFromSyntax(syn)
-	file := File{Path: ext, NormedExt: ext, Scanner: f.Scanner, Checks: f.Checks,
+func (l Linter) lintCodeblock(f *core.File, syn string, prev int, bail *regexp.Regexp) ([]core.Alert, int) {
+	ext := core.ExtFromSyntax(syn)
+	file := core.File{Path: ext, NormedExt: ext, Scanner: f.Scanner, Checks: f.Checks,
 		BaseStyles: f.BaseStyles, RealExt: f.RealExt}
-	lines := file.lintCode(prev, bail)
+	lines := l.lintCode(&file, prev, bail)
 	return file.Alerts, lines
 }

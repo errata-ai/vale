@@ -1,4 +1,4 @@
-package util
+package core
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/Sirupsen/logrus"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 // ExeDir is our starting location.
@@ -50,17 +50,6 @@ func StringsToInterface(strings []string) []interface{} {
 		intf[i] = v
 	}
 	return intf
-}
-
-// NewLogger creates and returns an instance of logrus.Logger.
-// If the `--debug` command flag was not provided, we set the level to Error.
-func NewLogger() *logrus.Logger {
-	log := logrus.New()
-	if !CLConfig.Debug {
-		log.Level = logrus.ErrorLevel
-	}
-	log.Out = os.Stdout
-	return log
 }
 
 // DumpConfig returns Vale's configuration in JSON format.
@@ -191,9 +180,9 @@ func HasAnyPrefix(text string, slice []string) bool {
 }
 
 // CheckError prints any errors to stdout. A return value of true => no error.
-func CheckError(err error, context string) bool {
+func CheckError(err error, message string) bool {
 	if err != nil {
-		fmt.Printf("%v (%s)\n", err, context)
+		jww.ERROR.Println(message)
 	}
 	return err == nil
 }

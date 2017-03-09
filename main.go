@@ -7,7 +7,8 @@ import (
 	"path/filepath"
 
 	"github.com/ValeLint/vale/core"
-	"github.com/ValeLint/vale/util"
+	"github.com/ValeLint/vale/lint"
+	"github.com/ValeLint/vale/ui"
 	"github.com/urfave/cli"
 )
 
@@ -31,36 +32,31 @@ func main() {
 			Name:        "output",
 			Value:       "CLI",
 			Usage:       `output style ("line" or "JSON")`,
-			Destination: &util.CLConfig.Output,
+			Destination: &core.CLConfig.Output,
 		},
 		cli.BoolFlag{
 			Name:        "no-wrap",
 			Usage:       "don't wrap CLI output",
-			Destination: &util.CLConfig.Wrap,
-		},
-		cli.BoolFlag{
-			Name:        "debug",
-			Usage:       "print dubugging info to stdout",
-			Destination: &util.CLConfig.Debug,
+			Destination: &core.CLConfig.Wrap,
 		},
 		cli.BoolFlag{
 			Name:        "no-exit",
 			Usage:       "don't return a nonzero exit code on lint errors",
-			Destination: &util.CLConfig.NoExit,
+			Destination: &core.CLConfig.NoExit,
 		},
 		cli.BoolFlag{
 			Name:        "sort",
 			Usage:       "sort files by their name in output",
-			Destination: &util.CLConfig.Sorted,
+			Destination: &core.CLConfig.Sorted,
 		},
 	}
 	app.Commands = []cli.Command{
 		{
 			Name:    "dump-config",
 			Aliases: []string{"dc"},
-			Usage:   "dump configuration options to stdout and exit",
+			Usage:   "Dumps configuration options to stdout and exits",
 			Action: func(c *cli.Context) error {
-				fmt.Println(util.DumpConfig())
+				fmt.Println(core.DumpConfig())
 				return nil
 			},
 		},
@@ -72,16 +68,16 @@ func main() {
 		var hasAlerts bool
 
 		if c.NArg() > 0 {
-			l := new(core.Linter)
+			l := new(lint.Linter)
 			linted, err = l.Lint(c.Args()[0], glob)
-			if util.CLConfig.Output == "line" {
-				hasAlerts = printLineAlerts(linted)
-			} else if util.CLConfig.Output == "JSON" {
-				hasAlerts = printJSONAlerts(linted)
+			if core.CLConfig.Output == "line" {
+				hasAlerts = ui.PrintLineAlerts(linted)
+			} else if core.CLConfig.Output == "JSON" {
+				hasAlerts = ui.PrintJSONAlerts(linted)
 			} else {
-				hasAlerts = printVerboseAlerts(linted)
+				hasAlerts = ui.PrintVerboseAlerts(linted)
 			}
-			if err == nil && hasAlerts && !util.CLConfig.NoExit {
+			if err == nil && hasAlerts && !core.CLConfig.NoExit {
 				err = errors.New("")
 			}
 			return err
@@ -90,7 +86,7 @@ func main() {
 		return nil
 	}
 
-	util.ExeDir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
+	core.ExeDir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
 	if app.Run(os.Args) != nil {
 		os.Exit(1)
 	} else {

@@ -1,16 +1,3 @@
-package main
-
-// As a matter of fact, this sentence could be simpler.
-// Your readers will be adversely impacted by this sentence.
-import (
-	"os"
-	"path/filepath"
-
-	"github.com/ValeLint/vale/lint"
-	"github.com/ValeLint/vale/util"
-	"github.com/urfave/cli"
-)
-
 // Remarkably few developers write well.
 var Version string
 var Commit string
@@ -26,14 +13,14 @@ func main() {
 			Name:        "glob",
 			Value:       "*",
 			Usage:       `a glob pattern (e.g., --glob="*.{md,txt}")`,
-			Destination: &util.CLConfig.Glob,
+			Destination: &core.CLConfig.Glob,
 		},
 		// the the
 		cli.StringFlag{
 			Name:        "output",
 			Value:       "line", // There are uses for this construction.
 			Usage:       `output style (line or CLI)`,
-			Destination: &util.CLConfig.Output,
+			Destination: &core.CLConfig.Output,
 		},
 	}
 

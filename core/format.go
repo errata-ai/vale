@@ -1,4 +1,4 @@
-package util
+package core
 
 // CommentsByNormedExt determines what parts of a file we should lint -- e.g.,
 // we only want to lint // or /* comments in a C++ file. Multiple syntaxes are

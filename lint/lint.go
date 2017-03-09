@@ -1,9 +1,10 @@
-package core
+package lint
 
 import (
 	"bufio"
 	"bytes"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -11,20 +12,43 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ValeLint/vale/util"
+	"github.com/ValeLint/vale/check"
+	"github.com/ValeLint/vale/core"
 	"github.com/gobwas/glob"
 	"github.com/jdkato/prose/tokenize"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
-// Lint src according to its format.
-func (l *Linter) Lint(src string, pat string) ([]File, error) {
-	var linted []File
+// A Linter lints a File.
+type Linter struct{}
 
-	done := make(chan File)
+// A Block represents a section of text.
+type Block struct {
+	Context string        // parent content (if any) - e.g., paragraph -> sentence
+	Text    string        // text content
+	Scope   core.Selector // section selector
+}
+
+// NewBlock makes a new Block with prepared text and a Selector.
+func NewBlock(ctx string, txt string, sel string) Block {
+	txt = core.PrepText(txt)
+	if ctx == "" {
+		ctx = txt
+	} else {
+		ctx = core.PrepText(ctx)
+	}
+	return Block{Context: ctx, Text: txt, Scope: core.Selector{Value: sel}}
+}
+
+// Lint src according to its format.
+func (l Linter) Lint(src string, pat string) ([]core.File, error) {
+	var linted []core.File
+
+	done := make(chan core.File)
 	defer close(done)
 	glob, gerr := glob.Compile(pat)
-	if gerr != nil {
-		glob = nil
+	if !core.CheckError(gerr, "can't compile glob!") {
+		return linted, gerr
 	}
 	filesChan, errc := l.lintFiles(done, src, glob)
 	for f := range filesChan {
@@ -34,21 +58,21 @@ func (l *Linter) Lint(src string, pat string) ([]File, error) {
 		return nil, err
 	}
 
-	if util.CLConfig.Sorted {
-		sort.Sort(ByName(linted))
+	if core.CLConfig.Sorted {
+		sort.Sort(core.ByName(linted))
 	}
 	return linted, nil
 }
 
-func (l *Linter) lintFiles(done <-chan File, root string, glob glob.Glob) (<-chan File, <-chan error) {
-	filesChan := make(chan File)
+func (l Linter) lintFiles(done <-chan core.File, root string, glob glob.Glob) (<-chan core.File, <-chan error) {
+	filesChan := make(chan core.File)
 	errc := make(chan error, 1)
 	go func() {
 		var wg sync.WaitGroup
 		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {
 				return nil
-			} else if glob == nil || !glob.Match(fp) {
+			} else if !glob.Match(fp) {
 				// The file doesn't match or the user provided a malformed glob
 				// pattern.
 				return nil
@@ -80,29 +104,29 @@ func (l *Linter) lintFiles(done <-chan File, root string, glob glob.Glob) (<-cha
 	return filesChan, errc
 }
 
-func (l *Linter) lintFile(src string) File {
-	var file File
+func (l Linter) lintFile(src string) core.File {
+	var file core.File
 
 	f, err := os.Open(src)
-	if !util.CheckError(err, src) {
+	if !core.CheckError(err, src) {
 		return file
 	}
-	defer util.CheckAndClose(f)
+	defer core.CheckAndClose(f)
 
-	ext, format := util.FormatFromExt(src)
-	baseStyles := util.Config.GBaseStyles
-	for sec, styles := range util.Config.SBaseStyles {
+	ext, format := core.FormatFromExt(src)
+	baseStyles := core.Config.GBaseStyles
+	for sec, styles := range core.Config.SBaseStyles {
 		pat, err := glob.Compile(sec)
-		if util.CheckError(err, sec) && pat.Match(src) {
+		if core.CheckError(err, "can't compile glob!") && pat.Match(src) {
 			baseStyles = styles
 			break
 		}
 	}
 
 	checks := make(map[string]bool)
-	for sec, smap := range util.Config.SChecks {
+	for sec, smap := range core.Config.SChecks {
 		pat, err := glob.Compile(sec)
-		if util.CheckError(err, sec) && pat.Match(src) {
+		if core.CheckError(err, "can't compile glob!") && pat.Match(src) {
 			checks = smap
 			break
 		}
@@ -110,59 +134,62 @@ func (l *Linter) lintFile(src string) File {
 
 	scanner := bufio.NewScanner(f)
 	scanner.Split(tokenize.SplitLines)
-	file = File{
+	file = core.File{
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner,
 	}
 
 	if format == "text" {
-		file.lintPlainText()
+		l.lintPlainText(&file)
 	} else if format == "markup" {
 		switch ext {
 		case ".adoc":
-			file.lintADoc()
+			l.lintADoc(&file)
 		case ".md":
-			file.lintMarkdown()
+			l.lintMarkdown(&file)
 		case ".rst":
-			cmd := util.Which([]string{"rst2html", "rst2html.py"})
-			runtime := util.Which([]string{"python", "py", "python.exe"})
+			cmd := core.Which([]string{"rst2html", "rst2html.py"})
+			runtime := core.Which([]string{"python", "py", "python.exe"})
 			if cmd != "" && runtime != "" {
-				file.lintRST(runtime, cmd)
+				l.lintRST(&file, runtime, cmd)
+			} else {
+				jww.ERROR.Println(fmt.Sprintf(
+					"can't run rst2html: (%s, %s)!", runtime, cmd))
 			}
 		case ".html":
-			file.lintHTML()
+			l.lintHTML(&file)
 		case ".tex":
-			file.lintLines()
+			l.lintLines(&file)
 		}
 	} else if format == "code" {
-		file.lintCode(0, regexp.MustCompile(`$^`))
+		l.lintCode(&file, 0, regexp.MustCompile(`$^`))
 	}
 
 	return file
 }
 
-func (f *File) lintProse(ctx string, txt string, lnTotal int, lnLength int) {
+func (l Linter) lintProse(f *core.File, ctx string, txt string, lnTotal int, lnLength int) {
 	var b Block
-	text := util.PrepText(txt)
+	text := core.PrepText(txt)
 	senScope := "sentence" + f.RealExt
 	parScope := "paragraph" + f.RealExt
 	txtScope := "text" + f.RealExt
 	hasCtx := ctx != ""
 	for _, p := range strings.SplitAfter(text, "\n\n") {
-		for _, s := range sentenceTokenizer.RawTokenize(p) {
+		for _, s := range core.SentenceTokenizer.RawTokenize(p) {
 			if hasCtx {
 				b = NewBlock(ctx, s.Text, senScope)
 			} else {
 				b = NewBlock(p, s.Text, senScope)
 			}
-			f.lintText(b, lnTotal, lnLength)
+			l.lintText(f, b, lnTotal, lnLength)
 		}
-		f.lintText(NewBlock(ctx, p, parScope), lnTotal, lnLength)
+		l.lintText(f, NewBlock(ctx, p, parScope), lnTotal, lnLength)
 	}
-	f.lintText(NewBlock(ctx, text, txtScope), lnTotal, lnLength)
+	l.lintText(f, NewBlock(ctx, text, txtScope), lnTotal, lnLength)
 }
 
-func (f *File) lintPlainText() {
+func (l Linter) lintPlainText(f *core.File) {
 	var paragraph bytes.Buffer
 	var line string
 
@@ -175,41 +202,41 @@ func (f *File) lintPlainText() {
 			paragraph.WriteString(line)
 			inBlock = 1
 		} else if line == "\n" && inBlock == 1 {
-			f.lintProse("", paragraph.String(), lines, 0)
+			l.lintProse(f, "", paragraph.String(), lines, 0)
 			inBlock = 0
 			paragraph.Reset()
 		} else if line != "\n" {
-			f.lintText(NewBlock("", line, "text"+f.RealExt), lines+1, 0)
+			l.lintText(f, NewBlock("", line, "text"+f.RealExt), lines+1, 0)
 		}
 		lines++
 	}
 	if inBlock == 1 {
-		f.lintProse("", paragraph.String(), lines, 0)
+		l.lintProse(f, "", paragraph.String(), lines, 0)
 	}
 }
 
-func (f *File) lintLines() {
+func (l Linter) lintLines(f *core.File) {
 	var line string
 	lines := 1
 	for f.Scanner.Scan() {
 		line = f.Scanner.Text() + "\n"
-		f.lintText(NewBlock("", line, "text"+f.RealExt), lines+1, 0)
+		l.lintText(f, NewBlock("", line, "text"+f.RealExt), lines+1, 0)
 		lines++
 	}
 }
 
-func (f *File) lintText(blk Block, lines int, pad int) {
+func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 	var style string
 	var run bool
 
 	ctx := blk.Context
 	txt := blk.Text
-	min := util.Config.MinAlertLevel
-	for name, chk := range AllChecks {
+	min := core.Config.MinAlertLevel
+	for name, chk := range check.AllChecks {
 		style = strings.Split(name, ".")[0]
 		run = false
 
-		if chk.level < min || !blk.Scope.Contains(chk.scope) {
+		if chk.Level < min || !blk.Scope.Contains(chk.Scope) {
 			continue
 		}
 
@@ -222,7 +249,7 @@ func (f *File) lintText(blk Block, lines int, pad int) {
 		}
 
 		// Has the check been disabled for all extensions?
-		if val, ok := util.Config.GChecks[name]; ok && !run {
+		if val, ok := core.Config.GChecks[name]; ok && !run {
 			if !val && !run {
 				continue
 			} else if val && !run {
@@ -230,12 +257,12 @@ func (f *File) lintText(blk Block, lines int, pad int) {
 			}
 		}
 
-		if !run && !util.StringInSlice(style, f.BaseStyles) {
+		if !run && !core.StringInSlice(style, f.BaseStyles) {
 			continue
 		}
 
-		for _, a := range chk.rule(txt, f) {
-			a.Line, a.Span = util.FindLoc(lines, ctx, txt, f.NormedExt, a.Span, pad)
+		for _, a := range chk.Rule(txt, f) {
+			a.Line, a.Span = core.FindLoc(lines, ctx, txt, f.NormedExt, a.Span, pad)
 			f.Alerts = append(f.Alerts, a)
 		}
 	}

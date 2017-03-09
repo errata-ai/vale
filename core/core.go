@@ -5,12 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ValeLint/vale/util"
 	"github.com/jdkato/prose/tokenize"
 )
-
-// A Linter lints a File.
-type Linter struct{}
 
 // A File represents a linted text file.
 type File struct {
@@ -42,31 +38,13 @@ type Selector struct {
 	Value string // e.g., text.comment.line.py
 }
 
-// A Block represents a section of text.
-type Block struct {
-	Context string   // parent content (if any) - e.g., paragraph -> sentence
-	Text    string   // text content
-	Scope   Selector // section selector
-}
-
-// NewBlock makes a new Block with prepared text and a Selector.
-func NewBlock(ctx string, txt string, sel string) Block {
-	txt = util.PrepText(txt)
-	if ctx == "" {
-		ctx = txt
-	} else {
-		ctx = util.PrepText(ctx)
-	}
-	return Block{Context: ctx, Text: txt, Scope: Selector{Value: sel}}
-}
-
 // Sections splits a Selector into its parts -- e.g., text.comment.line.py ->
 // []string{"text", "comment", "line", "py"}.
 func (s Selector) Sections() []string { return strings.Split(s.Value, ".") }
 
 // Contains determines if all if sel's sections are in s.
 func (s Selector) Contains(sel Selector) bool {
-	return util.AllStringsInSlice(sel.Sections(), s.Sections())
+	return AllStringsInSlice(sel.Sections(), s.Sections())
 }
 
 // Equal determines if sel == s.
@@ -74,7 +52,7 @@ func (s Selector) Equal(sel Selector) bool { return s.Value == sel.Value }
 
 // Has determines if s has a part equal to scope.
 func (s Selector) Has(scope string) bool {
-	return util.StringInSlice(scope, s.Sections())
+	return StringInSlice(scope, s.Sections())
 }
 
 // ByPosition sorts Alerts by line and column.
@@ -107,4 +85,5 @@ func (f *File) SortedAlerts() []Alert {
 	return f.Alerts
 }
 
-var sentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
+// SentenceTokenizer splits text into sentences.
+var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()

@@ -46,7 +46,7 @@ install:
 	go install ${LDFLAGS}
 
 test:
-	go test -v ./util
+	go test -v ./core
 	cucumber
 
 ci: test lint
@@ -65,7 +65,7 @@ lint:
 		--enable=vet \
 		--enable=vetshadow \
 		--deadline=1m \
-		./util ./core
+		./core ./lint ./ui ./check
 
 setup:
 	go get -u github.com/alecthomas/gometalinter
@@ -75,7 +75,7 @@ setup:
 	go get -u github.com/fatih/color
 	go get -u github.com/olekukonko/tablewriter
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
-	go get ./util ./core
+	go get ./core ./lint ./ui ./check
 	gometalinter --install
 	bundle install
 	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix

@@ -1,4 +1,4 @@
-package main
+package ui
 
 import (
 	"encoding/json"
@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/ValeLint/vale/core"
-	"github.com/ValeLint/vale/util"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 )
@@ -22,8 +21,8 @@ const (
 
 var spaces = regexp.MustCompile(" +")
 
-// printLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
-func printLineAlerts(linted []core.File) bool {
+// PrintLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
+func PrintLineAlerts(linted []core.File) bool {
 	var base string
 
 	alertCount := 0
@@ -32,8 +31,8 @@ func printLineAlerts(linted []core.File) bool {
 		// path -- e.g., if run from the directory 'vale', we use
 		// 'testdata/test.cc: ...' instead of
 		// /Users/.../.../.../vale/testdata/test.cc: ...'.
-		if strings.Contains(f.Path, util.ExeDir) {
-			base = strings.Split(f.Path, util.ExeDir)[1]
+		if strings.Contains(f.Path, core.ExeDir) {
+			base = strings.Split(f.Path, core.ExeDir)[1]
 		} else {
 			base = f.Path
 		}
@@ -50,8 +49,8 @@ func printLineAlerts(linted []core.File) bool {
 	return alertCount != 0
 }
 
-// printJSONAlerts prints Alerts in map[file.path][]Alert form.
-func printJSONAlerts(linted []core.File) bool {
+// PrintJSONAlerts prints Alerts in map[file.path][]Alert form.
+func PrintJSONAlerts(linted []core.File) bool {
 	alertCount := 0
 	formatted := map[string][]core.Alert{}
 	for _, f := range linted {
@@ -72,8 +71,8 @@ func printJSONAlerts(linted []core.File) bool {
 	return alertCount != 0
 }
 
-// printVerboseAlerts prints Alerts in verbose format.
-func printVerboseAlerts(linted []core.File) bool {
+// PrintVerboseAlerts prints Alerts in verbose format.
+func PrintVerboseAlerts(linted []core.File) bool {
 	var errors, warnings, suggestions int
 	var symbol string
 
@@ -115,7 +114,7 @@ func printVerboseAlert(f core.File) (int, int, int) {
 	table.SetCenterSeparator("")
 	table.SetColumnSeparator("")
 	table.SetRowSeparator("")
-	table.SetAutoWrapText(!util.CLConfig.Wrap)
+	table.SetAutoWrapText(!core.CLConfig.Wrap)
 
 	fmt.Printf("\n %s", colorize(f.Path, underlineColor))
 	for _, a := range alerts {
