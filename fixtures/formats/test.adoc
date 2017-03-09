@@ -7,7 +7,8 @@ XXX = False
 # This is a codeblock.
 ....
 
-Indent the line one space to insert a code snippet
+Indent the line one space to insert a TODO code snippet
+
  XXX = False
 
 Listing block with title, no syntax highlighting:
@@ -25,7 +26,7 @@ func ExtFromSyntax(name string) string {
 }
 ----
 
-Code block with title and syntax highlighting:
+Code block with title and XXX syntax highlighting:
 
 [[app-listing]]
 [source,python]
@@ -54,3 +55,19 @@ func ExtFromSyntax(name string) string {
     return name
 }
 ----
+
+FIXME *bold phrase* TODO *XXX*
+
+
+.Table Title
+|===
+|Name of Column 1 |Name of Column 2 |XXX
+
+|Cell in column 1, TODO
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===

@@ -7,7 +7,7 @@ Feature: Lint
     test.txt:1:27:vale.Annotations:'NOTE' left in text
     test.txt:4:12:vale.Annotations:'XXX' left in text
     test.txt:4:66:vale.Annotations:'TODO' left in text
-    
+
     """
     And the exit status should be 0
 
@@ -15,9 +15,14 @@ Feature: Lint
     When I lint "test.adoc"
     Then the output should contain exactly:
     """
-    test.adoc:36:5:vale.Annotations:'NOTE' left in text
-    test.adoc:43:1:vale.Annotations:'TODO' left in text
-    test.adoc:47:4:vale.Annotations:'XXX' left in text
+    test.adoc:10:39:vale.Annotations:'TODO' left in text
+    test.adoc:29:27:vale.Annotations:'XXX' left in text
+    test.adoc:44:1:vale.Annotations:'TODO' left in text
+    test.adoc:59:1:vale.Annotations:'FIXME' left in text
+    test.adoc:59:21:vale.Annotations:'TODO' left in text
+    test.adoc:59:27:vale.Annotations:'XXX' left in text
+    test.adoc:64:38:vale.Annotations:'XXX' left in text
+    test.adoc:66:20:vale.Annotations:'TODO' left in text
 
     """
     And the exit status should be 0

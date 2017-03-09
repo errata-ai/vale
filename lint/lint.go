@@ -148,7 +148,12 @@ func (l Linter) lintFile(src string) core.File {
 	} else if format == "markup" {
 		switch ext {
 		case ".adoc":
-			l.lintADoc(&file)
+			cmd := core.Which([]string{"asciidoctor", "asciidoc"})
+			if cmd != "" {
+				l.lintADoc(&file, cmd)
+			} else {
+				jww.ERROR.Println("asciidoctor not found!")
+			}
 		case ".md":
 			l.lintMarkdown(&file)
 		case ".rst":

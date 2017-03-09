@@ -8,6 +8,7 @@ before_install:
   - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
   - export PATH=~/bin:"$PATH"
   - pip install --user docutils
+  - gem install asciidoctor
 install:
   - make setup
   - make build

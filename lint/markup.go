@@ -107,82 +107,16 @@ func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 	}
 }
 
-func (l Linter) lintADoc(f *core.File) {
-	var paragraph bytes.Buffer
-	var line, syntax string
-	var isMarkup, inList bool
-	var mat []string
-
-	literal := regexp.MustCompile(`^\.\.\.\.`)
-	listing := regexp.MustCompile(`^----`)
-	code := regexp.MustCompile(`^\[\w+,\s*(\w+)\]`)
-	indentStart := regexp.MustCompile("^ +[^.]+")
-	list := regexp.MustCompile(`^\s*(\*+|\.|\-)\s.+`)
-	prose := regexp.MustCompile("^([a-zA-Z()`]|" + `\*\*\w+)`)
-	markup := []string{
-		":", "[", "ifdef", "endif", "=====", "____", "+", "image:"}
-	heading := regexp.MustCompile(`^=+\s*\w*`)
-	hSetext := regexp.MustCompile(`^(?:=|-){6,}\s*$`)
-	inBlock := 0
-	lines := 1
-	prev := ""
-
-	for f.Scanner.Scan() {
-		line = f.Scanner.Text() + "\n"
-		isMarkup = core.HasAnyPrefix(line, markup) || strings.Contains(line, "::")
-		if inBlock == 0 {
-			if mat = code.FindStringSubmatch(line); len(mat) > 0 {
-				inBlock = 1
-				syntax = mat[1]
-			} else if literal.MatchString(line) {
-				inBlock = 2
-			} else if listing.MatchString(line) {
-				inBlock = 3
-			} else if list.MatchString(line) && !inList {
-				l.lintText(f, NewBlock("", line, "text"+f.RealExt), lines+1, 0)
-				inList = true
-			} else if inList && line == "\n" {
-				inList = false
-			} else if indentStart.MatchString(line) && !inList {
-				inBlock = 4
-			} else if heading.MatchString(line) {
-				l.lintText(f, NewBlock("", line, "text.heading"+f.RealExt), lines, 0)
-			} else if prose.MatchString(line) && !isMarkup && !inList {
-				paragraph.WriteString(line)
-				inBlock = 5
-			} else if line != "\n" && !isMarkup {
-				l.lintText(f, NewBlock("", line, "text"+f.RealExt), lines+1, 0)
-			}
-		} else if syntax != "" && listing.MatchString(line) && inBlock == 1 {
-			linted, lns := l.lintCodeblock(f, syntax, lines, listing)
-			f.Alerts = append(f.Alerts, linted...)
-			if lines != lns {
-				syntax = ""
-				lines = lns
-				inBlock = 0
-			}
-		} else if inBlock == 2 && literal.MatchString(line) {
-			inBlock = 0
-		} else if inBlock == 3 && listing.MatchString(line) {
-			inBlock = 0
-		} else if inBlock == 4 && !strings.HasPrefix(line, " ") {
-			inBlock = 0
-		} else if inBlock == 5 && !prose.MatchString(line) {
-			if hSetext.MatchString(line) {
-				l.lintText(f, NewBlock("", prev, "text.heading"+f.RealExt), lines, 0)
-				paragraph.Reset()
-			} else {
-				l.lintProse(f, "", paragraph.String(), lines, 0)
-				paragraph.Reset()
-			}
-			inBlock = 0
-		} else if inBlock == 5 {
-			paragraph.WriteString(line)
-		}
-		lines++
-		prev = line
+func (l Linter) lintADoc(f *core.File, asciidoctor string) {
+	var out bytes.Buffer
+	b, err := ioutil.ReadFile(f.Path)
+	if !core.CheckError(err, f.Path) {
+		return
 	}
-	if inBlock == 5 {
-		l.lintProse(f, "", paragraph.String(), lines, 0)
+	cmd := exec.Command(asciidoctor, "--no-header-footer", "--safe", "-")
+	cmd.Stdin = bytes.NewReader(b)
+	cmd.Stdout = &out
+	if core.CheckError(cmd.Run(), f.Path) {
+		l.lintHTMLTokens(f, b, out.Bytes())
 	}
 }
