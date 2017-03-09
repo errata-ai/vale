@@ -25,7 +25,7 @@ func main() {
 		cli.StringFlag{
 			Name:        "glob",
 			Value:       "*",
-			Usage:       `a glob pattern (e.g., --glob="*.{md,txt}")`,
+			Usage:       `a glob pattern (e.g., --glob='*.{md,txt}')`,
 			Destination: &glob,
 		},
 		cli.StringFlag{
