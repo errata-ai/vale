@@ -24,3 +24,8 @@ end
 When(/^I run vale "(.*)"$/) do |file|
   step %(I run `#{exe} #{file}`)
 end
+
+When(/^I test glob "(.*)"$/) do |glob|
+  step %(I cd to "../../fixtures/formats")
+  step %(I run `#{exe} --glob='#{glob}' .`)
+end

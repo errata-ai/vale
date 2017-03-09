@@ -184,3 +184,38 @@ Feature: Config
 
     """
     And the exit status should be 1
+
+  Scenario: Test a glob
+    When I test glob "*.{py,cc}"
+    Then the output should contain exactly:
+    """
+    test.cc:1:4:vale.Annotations:'XXX' left in text
+    test.cc:9:6:vale.Annotations:'NOTE' left in text
+    test.cc:13:6:vale.Annotations:'XXX' left in text
+    test.cc:17:5:vale.Annotations:'FIXME' left in text
+    test.cc:20:5:vale.Annotations:'XXX' left in text
+    test.cc:23:37:vale.Annotations:'XXX' left in text
+    test.py:1:3:vale.Annotations:'FIXME' left in text
+    test.py:5:5:vale.Annotations:'FIXME' left in text
+    test.py:11:3:vale.Annotations:'XXX' left in text
+    test.py:13:16:vale.Annotations:'XXX' left in text
+    test.py:14:14:vale.Annotations:'NOTE' left in text
+    test.py:17:1:vale.Annotations:'NOTE' left in text
+    test.py:23:1:vale.Annotations:'XXX' left in text
+    test.py:28:5:vale.Annotations:'NOTE' left in text
+    test.py:35:8:vale.Annotations:'NOTE' left in text
+    test.py:37:5:vale.Annotations:'TODO' left in text
+    """
+    And the exit status should be 0
+
+
+  Scenario: Test a negated glob
+    When I test glob "!*.md"
+    Then the output should not contain "md"
+    And the exit status should be 0
+
+  Scenario: Test another negated glob
+    When I test glob "!*.{md,py}"
+    Then the output should not contain "md"
+    And the output should not contain "py"
+    And the exit status should be 0
