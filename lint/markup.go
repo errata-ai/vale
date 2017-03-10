@@ -14,7 +14,7 @@ import (
 
 // reCodeBlock is used to convert Sphinx-style code directives to the regular
 // `::` for rst2html.
-var reCodeBlock = regexp.MustCompile(`.. code(?:-block)?:: (\w+)`)
+var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (\w+)`)
 
 // Blackfriday configuration.
 var commonHTMLFlags = 0 | blackfriday.HTML_USE_XHTML
