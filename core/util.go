@@ -113,17 +113,6 @@ func PrepText(txt string) string {
 	return txt
 }
 
-// ExtFromSyntax takes a syntax's name (e.g., "Python") and returns its
-// extension (if found).
-func ExtFromSyntax(name string) string {
-	for r, s := range LookupSyntaxName {
-		if matched, _ := regexp.MatchString(r, name); matched {
-			return s
-		}
-	}
-	return name
-}
-
 // FormatFromExt takes a file extension and returns its [normExt, format]
 // list, if supported.
 func FormatFromExt(path string) (string, string) {

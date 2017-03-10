@@ -52,29 +52,6 @@ var CommentsByNormedExt = map[string]map[string]string{
 	},
 }
 
-// MatchIgnoreByByExtension maps an inline ignore pattern to its format
-// (such as `foo` in Markdown).
-var MatchIgnoreByByExtension = map[string]string{
-	".md":   "`([^`]+)`",
-	".rst":  "``([^`]+)``|:.+:`[^`]+`",
-	".adoc": "`([^`]+)`",
-}
-
-// LookupSyntaxName associates a syntax name with an extension used to get its
-// comment delimiters from CommentsByNormedExt. An example use case is Markdown
-// codeblocks: given a syntax (e.g., ```python), we use this to get its
-// associated comments.
-var LookupSyntaxName = map[string]string{
-	`(?:(?i)C|C\+\+|C#|Java|JavaScript|js|Swift|Go|sass|less|scala)$`: ".c",
-	`(?:(?i)lua)$`:        ".lua",
-	`(?:(?i)PHP)$`:        ".php",
-	`(?:(?i)Python|py)$`:  ".py",
-	`(?:(?i)R|perl)$`:     ".r",
-	`(?:(?i)Rust)$`:       ".rs",
-	`(?:(?i)Haskell|hs)$`: ".hs",
-	`(?:(?i)Ruby|rb)$`:    ".rb",
-}
-
 // FormatByExtension associates a file extension with its "normed" extension
 // and its format (markup, code or text).
 var FormatByExtension = map[string][]string{

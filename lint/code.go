@@ -10,12 +10,12 @@ import (
 
 // lintCode lints source code -- whether it be a markup codeblock, a complete
 // file, or some other portion of text.
-func (l *Linter) lintCode(f *core.File, prev int, bail *regexp.Regexp) int {
+func (l *Linter) lintCode(f *core.File) int {
 	var line, match, txt string
 	var lnLength, padding int
 	var block bytes.Buffer
 
-	lines := prev
+	lines := 0
 	comments := core.CommentsByNormedExt[f.NormedExt]
 	if len(comments) == 0 {
 		return lines
@@ -32,10 +32,7 @@ func (l *Linter) lintCode(f *core.File, prev int, bail *regexp.Regexp) int {
 		line = f.Scanner.Text() + "\n"
 		lnLength = len(line)
 		lines++
-		if bail.MatchString(line) {
-			// We've encountered the end of a specified block (e.g., ``` for Markdown).
-			return lines
-		} else if inBlock {
+		if inBlock {
 			// We're in a block comment.
 			if match = blockEnd.FindString(line); len(match) > 0 {
 				// We've found the end of the block.
@@ -64,14 +61,4 @@ func (l *Linter) lintCode(f *core.File, prev int, bail *regexp.Regexp) int {
 		}
 	}
 	return lines
-}
-
-// lintCodeblock is a wrapper around lintCode that creates a file representing
-// the block.
-func (l Linter) lintCodeblock(f *core.File, syn string, prev int, bail *regexp.Regexp) ([]core.Alert, int) {
-	ext := core.ExtFromSyntax(syn)
-	file := core.File{Path: ext, NormedExt: ext, Scanner: f.Scanner, Checks: f.Checks,
-		BaseStyles: f.BaseStyles, RealExt: f.RealExt}
-	lines := l.lintCode(&file, prev, bail)
-	return file.Alerts, lines
 }

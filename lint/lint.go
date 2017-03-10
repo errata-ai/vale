@@ -171,7 +171,7 @@ func (l Linter) lintFile(src string) core.File {
 			l.lintLines(&file)
 		}
 	} else if format == "code" {
-		l.lintCode(&file, 0, regexp.MustCompile(`$^`))
+		l.lintCode(&file)
 	}
 
 	return file

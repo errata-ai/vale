@@ -66,20 +66,6 @@ func init() {
 	}
 }
 
-func cleanText(ext string, txt string) string {
-	regex := `((?:https?|ftp)://[^\s/$.?#].[^\s]*)`
-	if s, ok := core.MatchIgnoreByByExtension[ext]; ok {
-		regex += `|` + s
-	}
-
-	inline := regexp.MustCompile(regex)
-	for _, s := range inline.FindAllString(txt, -1) {
-		txt = strings.Replace(txt, s, strings.Repeat("*", len(s)), -1)
-	}
-
-	return txt
-}
-
 func checkRE(err error, rule string) bool {
 	return core.CheckError(err, fmt.Sprintf("bad regex in %s'!", rule))
 }
@@ -97,7 +83,6 @@ func makeAlert(chk Definition, loc []int, txt string) core.Alert {
 
 func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Regexp) []core.Alert {
 	alerts := []core.Alert{}
-	txt = cleanText(f.NormedExt, txt)
 
 	definitions := r[0].FindAllStringSubmatch(txt, -1)
 	for _, def := range definitions {
@@ -120,7 +105,7 @@ func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Reg
 
 func checkExistence(txt string, chk Existence, f *core.File, r *regexp.Regexp) []core.Alert {
 	alerts := []core.Alert{}
-	locs := r.FindAllStringIndex(cleanText(f.NormedExt, txt), -1)
+	locs := r.FindAllStringIndex(txt, -1)
 	if locs != nil {
 		for _, loc := range locs {
 			alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
@@ -133,7 +118,7 @@ func checkOccurrence(txt string, chk Occurrence, f *core.File, r *regexp.Regexp,
 	var loc []int
 
 	alerts := []core.Alert{}
-	locs := r.FindAllStringIndex(cleanText(f.NormedExt, txt), -1)
+	locs := r.FindAllStringIndex(txt, -1)
 	occurrences := len(locs)
 	if occurrences > lim {
 		loc = []int{locs[0][0], locs[occurrences-1][1]}
@@ -181,7 +166,6 @@ func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Reg
 		return alerts
 	}
 
-	txt = cleanText(f.NormedExt, txt)
 	for _, submat := range r.FindAllStringSubmatchIndex(txt, -1) {
 		for idx, mat := range submat {
 			if mat != -1 && idx > 0 && idx%2 == 0 {
@@ -201,7 +185,6 @@ func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Reg
 func checkConsistency(txt string, chk Consistency, f *core.File, r *regexp.Regexp, opts []string) []core.Alert {
 	alerts := []core.Alert{}
 	loc := []int{}
-	txt = cleanText(f.NormedExt, txt)
 
 	matches := r.FindAllStringSubmatchIndex(txt, -1)
 	for _, submat := range matches {

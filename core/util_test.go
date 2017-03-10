@@ -6,19 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExtFromSyntax(t *testing.T) {
-	syntaxToExt := map[string]string{
-		"Python":     ".py",
-		"C++":        ".c",
-		"Java":       ".c",
-		"JavaScript": ".c",
-		"Go":         ".c",
-	}
-	for syntax, ext := range syntaxToExt {
-		assert.Equal(t, ext, ExtFromSyntax(syntax))
-	}
-}
-
 func TestFormatFromExt(t *testing.T) {
 	extToFormat := map[string][]string{
 		".py":    {".py", "code"},
