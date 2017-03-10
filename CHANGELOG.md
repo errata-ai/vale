@@ -1,5 +1,17 @@
 # Change Log
 
+## [v0.3.1](https://github.com/ValeLint/vale/tree/v0.3.1) (2017-03-10)
+[Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.0...v0.3.1)
+
+**Implemented enhancements:**
+
+- Process files concurrently [\#21](https://github.com/ValeLint/vale/issues/21)
+- Improved reStructuredText and AsciiDoc support [\#19](https://github.com/ValeLint/vale/issues/19)
+
+**Closed issues:**
+
+- Improve error reporting [\#22](https://github.com/ValeLint/vale/issues/22)
+
 ## [v0.3.0](https://github.com/ValeLint/vale/tree/v0.3.0) (2017-03-06)
 [Full Changelog](https://github.com/ValeLint/vale/compare/v0.2.1...v0.3.0)
 
