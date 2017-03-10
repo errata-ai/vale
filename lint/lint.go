@@ -143,38 +143,46 @@ func (l Linter) lintFile(src string) core.File {
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner,
 	}
 
-	if format == "text" {
-		l.lintPlainText(&file)
-	} else if format == "markup" {
-		switch ext {
+	l.lintFormat(&file)
+	return file
+}
+
+func (l Linter) lintFormat(file *core.File) {
+	if file.Format == "text" {
+		l.lintPlainText(file)
+	} else if file.Format == "markup" {
+		switch file.NormedExt {
 		case ".adoc":
 			cmd := core.Which([]string{"asciidoctor", "asciidoc"})
 			if cmd != "" {
-				l.lintADoc(&file, cmd)
+				l.lintADoc(file, cmd)
 			} else {
 				jww.ERROR.Println("asciidoctor not found!")
 			}
 		case ".md":
-			l.lintMarkdown(&file)
+			l.lintMarkdown(file)
 		case ".rst":
 			cmd := core.Which([]string{"rst2html", "rst2html.py"})
 			runtime := core.Which([]string{"python", "py", "python.exe"})
 			if cmd != "" && runtime != "" {
-				l.lintRST(&file, runtime, cmd)
+				l.lintRST(file, runtime, cmd)
 			} else {
 				jww.ERROR.Println(fmt.Sprintf(
 					"can't run rst2html: (%s, %s)!", runtime, cmd))
 			}
 		case ".html":
-			l.lintHTML(&file)
+			l.lintHTML(file)
 		case ".tex":
-			l.lintLines(&file)
+			cmd := core.Which([]string{"pandoc"})
+			if cmd != "" {
+				l.lintLaTeX(file, cmd)
+			} else {
+				jww.ERROR.Println("pandoc not found!")
+			}
 		}
-	} else if format == "code" {
-		l.lintCode(&file)
+	} else if file.Format == "code" {
+		l.lintCode(file)
 	}
-
-	return file
 }
 
 func (l Linter) lintProse(f *core.File, ctx string, txt string, lnTotal int, lnLength int) {

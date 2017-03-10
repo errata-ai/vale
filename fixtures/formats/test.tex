@@ -1,0 +1,268 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{amssymb}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage{enumerate}
+\usepackage{paralist}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+%\usepackage[]{algorithm2e}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+% EDITED: \chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\chead{\hmwkClass: \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\renewcommand*{\theenumi}{\alph{enumi}.}
+\renewcommand*{\labelenumi}{\theenumi~}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Exercise {#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Exercise {#1} (continued)}{Exercise {#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Exercise {#1} (continued)}{Exercise {#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Exercise \arabic{#1}}{}\nobreak{}
+}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \nobreak\extramarks{Page \thepage}{}\nobreak{}
+    \section{Exercise {#1}}
+    %\enterProblemHeader{#1}
+}{
+    %\exitProblemHeader{#1}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Set Theory Drill Assignment}
+\newcommand{\hmwkDueDate}{\today}
+\newcommand{\hmwkClass}{CS 251}
+\newcommand{\hmwkClassTime}{}
+\newcommand{\hmwkClassInstructor}{}
+\newcommand{\hmwkAuthorName}{Joseph Kato}
+
+\algnewcommand\True{\textbf{true}\space}
+\algnewcommand\False{\textbf{false}\space}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}{\hmwkDueDate}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+%\maketitle
+%\pagebreak
+
+\begin{homeworkProblem}[6.1.1]
+    In each of (a)-(f), answer the following questions: Is A $\subseteq$ B? Is
+    B $\subseteq$ A? Is either A or B a proper subset of the other? \textbf{XXX}
+
+    \begin{enumerate}[a.]
+        \item A = \{2, \{2\}, $(\sqrt{2})^2$\}, B = \{2, \{2\}, \{\{2\}\}\}
+        \item A = \{3, $\sqrt{5^2 - 4^2}$, 24 \(mod\) 7\}, B = \{8 \(mod\) 5\}
+        \item A = \{\{1, 2\}, \{2, 3\}\}, B = \{1, 2, 3\}
+        \item A = \{a, b, c\}, B = \{\{a\}, \{b\}, \{c\}\}
+        \item A = \{$\sqrt{16}$, \{4\}\}, B = \{4\}
+        \item A = \{$x \in \mathbb{R} ~\mid~ cos(x) \in \mathbb{Z}$\},
+              B = \{$x \in \mathbb{R} ~\mid~ sin(x) \in \mathbb{Z}$\}
+    \end{enumerate}
+
+    \textbf{Solution}
+
+    \begin{enumerate}[a.]
+        \item A $\subseteq$ B because every element in A is in B
+        (note: $(\sqrt{2})^2$ = 2), but B $\nsubseteq$ A because \{\{2\}\}
+        $\in$ B and \{\{2\}\} $\notin$ A. Because A $\subseteq$ B and
+        B $\nsubseteq$ A, A is a proper subset of B.
+        \item A = \{3, $\sqrt{5^2 - 4^2}$, 24 \(mod\) 7\} = \{3, 3, 3\} = \{3\}
+        and B = \{8 \(mod\) 5\} = \{3\}. So, A $\subseteq$ B and B $\subseteq$
+        A, but neither is a proper subset of the other.
+        \item A $\nsubseteq$ B because \{1, 2\} $\in$ A and \{1, 2\} $\notin$ B,
+        and B $\nsubseteq$ A because 1 $\in$ B and 1 $\notin$ A. Neither is a
+        proper subset of the other.
+        \item A $\nsubseteq$ B because a $\in$ A and a $\notin$ B,
+        and B $\nsubseteq$ A because \{a\} $\in$ B and \{a\} $\notin$ A. Neither
+        is a proper subset of the other.
+        \item A = \{$\sqrt{16}$, \{4\}\} = \{4, \{4\}\}. So, A $\nsubseteq$ B
+        because \{4\} $\in$ A and \{4\} $\notin$ B, but B $\subseteq$ A. B is
+        also a proper subset of A FIXME because A $\nsubseteq$ B.
+        \item A $\subseteq$ B and B $\subseteq$ A, but neither is a proper
+        subset of the other.
+    \end{enumerate}
+
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[6.1.18]
+    \begin{inparaenum}
+        \item\label{q1a} Is the number 0 in $\emptyset$? ~~~
+        \item\label{q1b} Is $\emptyset$ = \{$\emptyset$\}? ~~~
+        \item\label{q1b} Is $\emptyset \in$ \{$\emptyset$\}? ~~~
+        \item\label{q1b} Is $\emptyset \in \emptyset$? ~~~
+    \end{inparaenum}\newline
+
+    \textbf{Solution}
+
+    \begin{enumerate}[a.]
+        \item No, since by defintion $\emptyset$ has no elements, 0 is not
+        in $\emptyset$.
+        \item No, $\emptyset$ is the empty set and \{$\emptyset$\} is a set
+        with a single element.
+        \item Yes, $\emptyset \in$ \{$\emptyset$\}.
+        \item No, since by defintion $\emptyset$ has no elements, $\emptyset \notin \emptyset$.
+    \end{enumerate}
+\end{homeworkProblem}
+
+\pagebreak
+
+\begin{homeworkProblem}[6.1.23]
+    Let $V_{i}$ = $\left( x \in \mathbb{R} ~\mid~ \frac{-1}{i} \leq x \leq \frac{1}{i} \right)$
+    = $\left[ \frac{-1}{i}, \frac{1}{i} \right]$ for all possible integers \(i\). \newline
+
+    \begin{inparaenum}
+        \item\label{q1a} $\bigcup \limits_{i=1}^4 V_{i}$ =? ~~~
+        \item\label{q1b} $\bigcap \limits_{i=1}^4 V_{i}$ =? ~~~
+        \item\label{q1b} Are $V_{1}, V_{2}, V_{3}...$ mutually disjoint? ~~~
+        \item\label{q1b} $\bigcup \limits_{i=1}^n V_{i}$ =? ~~~
+        \item\label{q1b} $\bigcap \limits_{i=1}^n V_{i}$ =? ~~~
+        \item\label{q1b} $\bigcup \limits_{i=1}^\infty V_{i}$ =? ~~~
+        ~~\item\label{q1b} $\bigcap \limits_{i=1}^\infty V_{i}$ =? ~~~
+    \end{inparaenum}\newline
+
+    \textbf{Solution}\newline
+
+    \begin{inparaenum}
+        \item\label{q1a} $\bigcup \limits_{i=1}^4 V_{i}$ = $\left[-1, 1\right]$~~~
+        \item\label{q1a} $\bigcap \limits_{i=1}^4 V_{i}$ = $\left[\frac{-1}{4}, \frac{1}{4}\right]$~~~
+        \item\label{q1a} No, $V_{1}, V_{2}, V_{3}...$ are not mutually disjoint. \newline
+        \item\label{q1a} $\bigcup \limits_{i=1}^n V_{i}$ = $\left[-n, n\right]$.~
+        \item\label{q1a} $\bigcap \limits_{i=1}^n V_{i}$ = $\left[\frac{-1}{n}, \frac{1}{n}\right]$.~
+        ~\item\label{q1a} $\bigcup \limits_{i=1}^\infty V_{i}$ = $\left[-1, 1\right]$. ~~
+        \item\label{q1a} $\bigcap \limits_{i=1}^\infty V_{i}$ = \{0\}. ~~~
+    \end{inparaenum}\newline
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[6.1.38]
+    Write an algorithm to determine whether a given element \(x\) belongs to a
+    given set, which is TODO represented as an array a[1], a[2], ..., a[n].\newline
+
+    \textbf{Solution}\newline
+
+    \textbf{\textcolor{blue}{Input:}} x, a[1], a[2], ..., a[n] [\(a~one-dimensional~array\)]\newline
+    \\
+    \textbf{\textcolor{blue}{Algorithm Body: }}\newline
+
+    \begin{algorithmic}
+    \State $i := 1, found :=$ \False
+    \While {$\left(i \leq n~and~found = \False\right)$}
+        \If {$a[i] = x$}
+            \State $found :=$ \True
+        \EndIf
+        \State $i := i + 1$
+    \EndWhile\newline
+    \end{algorithmic}
+    \textbf{\textcolor{blue}{Output: found [a boolean]}}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[6.2.39]
+    For all integers $n \geq 1$, if $A_{1}, A_{2}, A_{3}$, ... and B are any sets,
+    then \newline
+
+    $\bigcap \limits_{i=1}^n \left(A_{i} - B \right)$ = $\left(\bigcap \limits_{i=1}^n A_{i} \right) - B$
+    \newline
+
+    \textbf{Solution}\newline
+
+
+\end{homeworkProblem}
+
+\end{document}
