@@ -182,6 +182,8 @@ func (l Linter) lintFormat(file *core.File) {
 		}
 	} else if file.Format == "code" {
 		l.lintCode(file)
+	} else {
+		l.lintLines(file)
 	}
 }
 

@@ -1,4 +1,4 @@
 StylesPath = ../../../styles
 
-[*]
+[*.{cc}]
 BasedOnStyles = write-good

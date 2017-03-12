@@ -1,5 +1,15 @@
 Feature: Lint
 
+  Scenario: Lint a JSON file
+    When I lint "test.json"
+    Then the output should contain exactly:
+    """
+    test.json:9:10:vale.Annotations:'XXX' left in text
+    test.json:12:19:vale.Annotations:'TODO' left in text
+
+    """
+    And the exit status should be 0
+
   Scenario: Lint a Plain Text file
     When I lint "test.txt"
     Then the output should contain exactly:
