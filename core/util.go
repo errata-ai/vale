@@ -68,10 +68,14 @@ func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (i
 	diff := loc[0] - utf8.RuneCountInString(s[:loc[0]])
 	offset := len(ctx) - len(subctx)
 
-	bounded := regexp.MustCompile(fmt.Sprintf(`\b%s`, meta)).FindAllStringIndex(subctx, 1)
+	bounded := regexp.MustCompile(
+		fmt.Sprintf(`(?:\b|_)%s(?:\b|_)`, meta)).FindAllStringIndex(subctx, 1)
 	unbound := regexp.MustCompile(meta).FindAllStringIndex(subctx, 1)
 	if len(bounded) != 0 {
 		pos = bounded[0][0]
+		if strings.HasPrefix(ctx[pos:], "_") {
+			pos++
+		}
 	} else if len(unbound) != 0 {
 		pos = unbound[0][0]
 	} else {

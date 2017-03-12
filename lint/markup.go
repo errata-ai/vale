@@ -138,12 +138,17 @@ func (l Linter) lintLaTeX(f *core.File, pandoc string) {
 	if !core.CheckError(err, f.Path) {
 		return
 	}
+
 	start := bytes.Index(b, []byte(`\begin{document}`))
-	lines := bytes.Count(b[:start], []byte("\n"))
+	lines := 0
+	if start >= 0 {
+		lines = bytes.Count(b[:start], []byte("\n"))
+		b = b[start:]
+	}
 
 	cmd := exec.Command(pandoc, "--listings", "--latexmathml", f.Path)
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run(), f.Path) {
-		l.lintHTMLTokens(f, b[start:], out.Bytes(), lines)
+		l.lintHTMLTokens(f, b, out.Bytes(), lines)
 	}
 }

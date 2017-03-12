@@ -56,7 +56,7 @@ func ExtFromSyntax(name string) string {
 }
 ----
 
-FIXME *bold phrase* TODO *XXX*
+FIXME *bold phrase* TODO _XXX_
 
 
 .Table Title
