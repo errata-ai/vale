@@ -24,7 +24,8 @@ Feature: Checks
     test.swift:3:47:vale.PassiveVoice:'were eaten' is passive voice
     test.swift:5:38:vale.PassiveVoice:'was faxed' is passive voice
     test.swift:12:18:vale.PassiveVoice:'were you taught' is passive voice
-
+    test.tex:4:13:vale.PassiveVoice:'be a pointed' is passive voice
+    
     """
 
   Scenario: GenderBias

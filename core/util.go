@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"unicode/utf8"
 
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -65,7 +64,6 @@ func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (i
 	substring := strings.Split(s[loc[0]:loc[1]], "\n")[0]
 	subctx := ctx[loc[0]:]
 	meta := regexp.QuoteMeta(substring)
-	diff := loc[0] - utf8.RuneCountInString(s[:loc[0]])
 	offset := len(ctx) - len(subctx)
 
 	bounded := regexp.MustCompile(
@@ -86,10 +84,10 @@ func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (i
 	counter := 0
 	lines := strings.SplitAfter(ctx, "\n")
 	for idx, l := range lines {
-		length = utf8.RuneCountInString(l)
+		length = len(l)
 		if (counter + length) >= pos {
-			loc[0] = (pos - counter) + pad - diff
-			loc[1] = loc[0] + utf8.RuneCountInString(substring) - 1
+			loc[0] = (pos - counter) + pad
+			loc[1] = loc[0] + len(substring) - 1
 			extent := length + pad
 			if loc[1] > extent {
 				loc[1] = extent
@@ -108,6 +106,8 @@ func PrepText(txt string) string {
 		"\u201d": `"`,
 		"\u2018": "'",
 		"\u2019": "'",
+		"\u2013": "-",
+		"\u2014": "-",
 	}
 	for old, new := range replacements {
 		txt = strings.Replace(txt, old, new, -1)

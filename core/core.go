@@ -33,6 +33,13 @@ type Alert struct {
 	Span        []int  // the [begin, end] location within a line
 }
 
+func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
+	a.Line, a.Span = FindLoc(lines, ctx, txt, f.NormedExt, a.Span, pad)
+	if a.Span[0] > 0 {
+		f.Alerts = append(f.Alerts, a)
+	}
+}
+
 // A Selector represents a named section of text.
 type Selector struct {
 	Value string // e.g., text.comment.line.py

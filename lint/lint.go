@@ -269,11 +269,10 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 
 		// Has the check been disabled for all extensions?
 		if val, ok := core.Config.GChecks[name]; ok && !run {
-			if !val && !run {
+			if !val {
 				continue
-			} else if val && !run {
-				run = true
 			}
+			run = true
 		}
 
 		if !run && !core.StringInSlice(style, f.BaseStyles) {
@@ -281,8 +280,7 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 		}
 
 		for _, a := range chk.Rule(txt, f) {
-			a.Line, a.Span = core.FindLoc(lines, ctx, txt, f.NormedExt, a.Span, pad)
-			f.Alerts = append(f.Alerts, a)
+			f.AddAlert(a, ctx, txt, lines, pad)
 		}
 	}
 }
