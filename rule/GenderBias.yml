@@ -13,8 +13,8 @@ swap:
   camera(?:m[ae]n|wom[ae]n):   camera operator(s)
   chair(?:m[ae]n|wom[ae]n):    chair(s)
   congress(?:m[ae]n|wom[ae]n): member(s) of congress
-  door(?:m[ae]|wom[ae]n):      convierge(s)
-  draft(?:m[ae]n|wom[ae]n):    drafter(s)
+  door(?:m[ae]n|wom[ae]n):     concierge(s)
+  drafts(?:m[ae]n|wom[ae]n):   drafter(s)
   fire(?:m[ae]n|wom[ae]n):     firefighter(s)
   fisher(?:m[ae]n|wom[ae]n):   fisher(s)
   fresh(?:m[ae]n|wom[ae]n):    first-year student(s)

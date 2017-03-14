@@ -46,7 +46,7 @@ install:
 	go install ${LDFLAGS}
 
 test:
-	go test -v ./core
+	go test -v ./core ./lint
 	cucumber
 
 ci: test lint
