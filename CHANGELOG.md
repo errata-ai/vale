@@ -1,12 +1,23 @@
 # Change Log
 
+## [v0.3.2](https://github.com/ValeLint/vale/tree/v0.3.2) (2017-03-14)
+[Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.1...v0.3.2)
+
+**Implemented enhancements:**
+
+- Support for linting json and yaml content.  [\#24](https://github.com/ValeLint/vale/issues/24)
+- Improve markup processing [\#19](https://github.com/ValeLint/vale/issues/19)
+- Create a Windows installer [\#7](https://github.com/ValeLint/vale/issues/7)
+
 ## [v0.3.1](https://github.com/ValeLint/vale/tree/v0.3.1) (2017-03-10)
 [Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.0...v0.3.1)
 
 **Implemented enhancements:**
 
 - Process files concurrently [\#21](https://github.com/ValeLint/vale/issues/21)
-- Improved reStructuredText and AsciiDoc support [\#19](https://github.com/ValeLint/vale/issues/19)
+- Improve test coverage [\#4](https://github.com/ValeLint/vale/issues/4)
+- Replace Cucumber/Aruba with pure Go tests [\#3](https://github.com/ValeLint/vale/issues/3)
+- Port codetype [\#2](https://github.com/ValeLint/vale/issues/2)
 
 **Closed issues:**
 
