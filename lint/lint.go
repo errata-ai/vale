@@ -31,11 +31,8 @@ type Block struct {
 
 // NewBlock makes a new Block with prepared text and a Selector.
 func NewBlock(ctx string, txt string, sel string) Block {
-	txt = core.PrepText(txt)
 	if ctx == "" {
 		ctx = txt
-	} else {
-		ctx = core.PrepText(ctx)
 	}
 	return Block{Context: ctx, Text: txt, Scope: core.Selector{Value: sel}}
 }
@@ -249,7 +246,7 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 	var run bool
 
 	ctx := blk.Context
-	txt := blk.Text
+	txt := core.PrepText(blk.Text)
 	min := core.Config.MinAlertLevel
 	f.ChkToCtx = make(map[string]string)
 	for name, chk := range check.AllChecks {
