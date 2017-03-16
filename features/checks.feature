@@ -16,6 +16,11 @@ Feature: Checks
     Then the output should contain exactly:
     """
     test.md:1:68:vale.PassiveVoice:'are not supported' is passive voice
+    test.md:7:88:vale.PassiveVoice:'been implemented' is passive voice
+    test.md:7:169:vale.PassiveVoice:'been partially implemented' is passive voice
+    test.md:7:221:vale.PassiveVoice:'been implemented' is passive voice
+    test.md:7:266:vale.PassiveVoice:'be mixed' is passive voice
+    test.md:7:371:vale.PassiveVoice:'are covered' is passive voice
     test.rst:8:51:vale.PassiveVoice:'be prompted' is passive voice
     test.rst:9:57:vale.PassiveVoice:'is sent' is passive voice
     test.rst:11:71:vale.PassiveVoice:'is supported' is passive voice
@@ -25,7 +30,7 @@ Feature: Checks
     test.swift:5:38:vale.PassiveVoice:'was faxed' is passive voice
     test.swift:12:18:vale.PassiveVoice:'were you taught' is passive voice
     test.tex:4:13:vale.PassiveVoice:'be a pointed' is passive voice
-    
+
     """
 
   Scenario: GenderBias
