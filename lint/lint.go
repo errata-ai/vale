@@ -251,6 +251,7 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 	ctx := blk.Context
 	txt := blk.Text
 	min := core.Config.MinAlertLevel
+	f.ChkToCtx = make(map[string]string)
 	for name, chk := range check.AllChecks {
 		style = strings.Split(name, ".")[0]
 		run = false

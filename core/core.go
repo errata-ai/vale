@@ -13,13 +13,14 @@ type File struct {
 	Alerts     []Alert         // all alerts associated with this file
 	BaseStyles []string        // base style assigned in .vale
 	Checks     map[string]bool // syntax-specific checks assigned in .txtint
-	Counts     map[string]int  // word counts
-	Format     string          // 'code', 'markup' or 'prose'
-	NormedExt  string          // the normalized extension (see util/format.go)
-	Path       string          // the full path
-	RealExt    string          // actual file extension
-	Scanner    *bufio.Scanner  // used by lintXXX functions
-	Sequences  []string        // tracks various info (e.g., defined abbreviations)
+	ChkToCtx   map[string]string
+	Counts     map[string]int // word counts
+	Format     string         // 'code', 'markup' or 'prose'
+	NormedExt  string         // the normalized extension (see util/format.go)
+	Path       string         // the full path
+	RealExt    string         // actual file extension
+	Scanner    *bufio.Scanner // used by lintXXX functions
+	Sequences  []string       // tracks various info (e.g., defined abbreviations)
 }
 
 // An Alert represents a potential error in prose.
@@ -31,14 +32,6 @@ type Alert struct {
 	Message     string // the output message
 	Severity    string // 'suggestion', 'warning', or 'error'
 	Span        []int  // the [begin, end] location within a line
-}
-
-// AddAlert calculates the in-text location of an Alert and adds it to a File.
-func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
-	a.Line, a.Span = FindLoc(lines, ctx, txt, a.Span, pad)
-	if a.Span[0] > 0 {
-		f.Alerts = append(f.Alerts, a)
-	}
 }
 
 // A Selector represents a named section of text.
@@ -91,6 +84,19 @@ func (a ByName) Less(i, j int) bool {
 func (f *File) SortedAlerts() []Alert {
 	sort.Sort(ByPosition(f.Alerts))
 	return f.Alerts
+}
+
+// AddAlert calculates the in-text location of an Alert and adds it to a File.
+func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
+	substring := strings.Split(txt[a.Span[0]:a.Span[1]], "\n")[0]
+	if old, ok := f.ChkToCtx[a.Check]; ok {
+		ctx = old
+	}
+	a.Line, a.Span = FindLoc(lines, ctx, txt, a.Span, pad)
+	if a.Span[0] > 0 {
+		f.Alerts = append(f.Alerts, a)
+	}
+	f.ChkToCtx[a.Check] = Substitute(ctx, substring, "*")
 }
 
 // SentenceTokenizer splits text into sentences.
