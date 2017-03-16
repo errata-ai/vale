@@ -58,7 +58,7 @@ func DumpConfig() string {
 }
 
 // FindLoc calculates the line and span of an Alert.
-func FindLoc(count int, ctx string, s string, ext string, loc []int, pad int) (int, []int) {
+func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
 	var length, pos int
 
 	substring := strings.Split(s[loc[0]:loc[1]], "\n")[0]
