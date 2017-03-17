@@ -41,7 +41,7 @@ func (l Linter) lintHTMLTokens(f *core.File, rawBytes []byte, fBytes []byte, off
 	for {
 		tokt = tokens.Next()
 		tok = tokens.Token()
-		txt = html.UnescapeString(strings.TrimSpace(tok.Data))
+		txt = core.PrepText(html.UnescapeString(strings.TrimSpace(tok.Data)))
 		skip = core.StringInSlice(txt, skipTags) || core.StringInSlice(attr, skipClasses)
 		if tokt == html.ErrorToken {
 			break
@@ -79,7 +79,7 @@ func updateCtx(ctx string, txt string, tokt html.TokenType, tok html.Token) stri
 				ctx = core.Substitute(ctx, a.Val, "*")
 			}
 		}
-	} else if tokt == html.TextToken {
+	} else if tokt == html.TextToken && txt != "" {
 		for _, s := range strings.Split(txt, "\n") {
 			ctx = core.Substitute(ctx, s, "*")
 		}
