@@ -66,7 +66,7 @@ func isNested(substring string, ctx string) bool {
 func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
 	var length int
 
-	substring := strings.Split(s[loc[0]:loc[1]], "\n")[0]
+	substring := s[loc[0]:loc[1]]
 	pos := strings.Index(ctx, substring) + 1
 
 	// We don't want to match, for example, "very" in "everyday."

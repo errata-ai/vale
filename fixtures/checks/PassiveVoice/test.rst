@@ -20,5 +20,4 @@ with `authentication`_:
 Default behaviour
 -----------------
 
-1. should be
-   applied.
+1. should be applied.

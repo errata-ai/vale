@@ -15,7 +15,6 @@ Feature: Checks
     When I test "checks/PassiveVoice"
     Then the output should contain exactly:
     """
-    test.md:1:68:vale.PassiveVoice:'are not supported' is passive voice
     test.md:7:88:vale.PassiveVoice:'been implemented' is passive voice
     test.md:7:169:vale.PassiveVoice:'been partially implemented' is passive voice
     test.md:7:221:vale.PassiveVoice:'been implemented' is passive voice
@@ -23,7 +22,6 @@ Feature: Checks
     test.md:7:371:vale.PassiveVoice:'are covered' is passive voice
     test.rst:8:51:vale.PassiveVoice:'be prompted' is passive voice
     test.rst:9:57:vale.PassiveVoice:'is sent' is passive voice
-    test.rst:11:71:vale.PassiveVoice:'is supported' is passive voice
     test.rst:17:51:vale.PassiveVoice:'be omitted' is passive voice
     test.rst:23:11:vale.PassiveVoice:'be applied' is passive voice
     test.swift:3:47:vale.PassiveVoice:'were eaten' is passive voice
@@ -104,6 +102,7 @@ Feature: Checks
     test.cs:2:19:vale.Wordiness:Consider using 'across' instead of 'all across'
     test.cs:10:4:vale.Wordiness:Consider using 'most' instead of 'A large majority of'
     test.cs:10:45:vale.Wordiness:Consider using 'time' instead of 'time period'
+    test.rst:3:1:vale.Wordiness:Consider using 'some' instead of 'some of the'
 
     """
 
