@@ -89,7 +89,7 @@ func updateCtx(ctx string, txt string, tokt html.TokenType, tok html.Token) stri
 				ctx = core.Substitute(ctx, a.Val, "*")
 			}
 		}
-	} else if tokt == html.TextToken && txt != "" {
+	} else if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
 		for _, s := range strings.Split(txt, "\n") {
 			ctx = core.Substitute(ctx, s, "*")
 		}
