@@ -1,6 +1,7 @@
 package lint
 
 import (
+	"path/filepath"
 	"regexp"
 	"testing"
 
@@ -40,5 +41,27 @@ func TestGenderBias(t *testing.T) {
 		for _, match := range matches {
 			assert.Equal(t, true, regex.MatchString(match))
 		}
+	}
+}
+
+func BenchmarkLintRST(b *testing.B) {
+	path, err := filepath.Abs("../fixtures/benchmarks/bench.rst")
+	if err != nil {
+		panic(err)
+	}
+	l := new(Linter)
+	for n := 0; n < b.N; n++ {
+		_, _ = l.Lint(path, "*")
+	}
+}
+
+func BenchmarkLintMD(b *testing.B) {
+	path, err := filepath.Abs("../fixtures/benchmarks/bench.md")
+	if err != nil {
+		panic(err)
+	}
+	l := new(Linter)
+	for n := 0; n < b.N; n++ {
+		_, _ = l.Lint(path, "*")
 	}
 }

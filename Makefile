@@ -6,7 +6,7 @@ VERSION=$(shell cat $(VERSION_FILE))
 
 LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
 
-.PHONY: clean test lint ci cross install bump rules setup
+.PHONY: clean test lint ci cross install bump rules setup bench
 
 all: build
 
@@ -48,6 +48,9 @@ install:
 test:
 	go test -v ./core ./lint
 	cucumber
+
+bench:
+	go test -bench=. ./lint
 
 ci: test lint
 
