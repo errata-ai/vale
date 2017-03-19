@@ -146,7 +146,7 @@ func (l Linter) lintFormat(file *core.File) {
 	if file.Format == "markup" && !core.CLConfig.Simple {
 		switch file.NormedExt {
 		case ".adoc":
-			cmd := core.Which([]string{"asciidoctor", "asciidoc"})
+			cmd := core.Which([]string{"asciidoctor"})
 			if cmd != "" {
 				l.lintADoc(file, cmd)
 			} else {

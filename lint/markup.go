@@ -12,6 +12,8 @@ import (
 	"golang.org/x/net/html"
 )
 
+// reStructuredText configuration.
+//
 // reCodeBlock is used to convert Sphinx-style code directives to the regular
 // `::` for rst2html.
 var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (\w+)`)
@@ -25,6 +27,15 @@ var rstArgs = []string{
 	"--no-section-numbering",
 }
 
+// AsciiDoc configuration.
+var adocArgs = []string{
+	"--no-header-footer", // We don't want extra content in the HTML.
+	"--quiet",            // We don't want stdout being filled with messages.
+	"--safe-mode",        // This disables `includes`, which we don't want
+	"secure",
+	"-", // Use stdin
+}
+
 // Blackfriday configuration.
 var commonHTMLFlags = 0 | blackfriday.HTML_USE_XHTML
 var commonExtensions = 0 |
@@ -34,6 +45,7 @@ var commonExtensions = 0 |
 var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
 var options = blackfriday.Options{Extensions: commonExtensions}
 
+// HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
 var skipTags = []string{"script", "style", "pre", "code", "tt"}
 var skipClasses = []string{}
@@ -133,7 +145,7 @@ func (l Linter) lintADoc(f *core.File, asciidoctor string) {
 	if !core.CheckError(err, f.Path) {
 		return
 	}
-	cmd := exec.Command(asciidoctor, "--no-header-footer", "--safe", "-")
+	cmd := exec.Command(asciidoctor, adocArgs...)
 	cmd.Stdin = bytes.NewReader(b)
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run(), f.Path) {
