@@ -44,8 +44,8 @@ func TestGenderBias(t *testing.T) {
 	}
 }
 
-func BenchmarkLintRST(b *testing.B) {
-	path, err := filepath.Abs("../fixtures/benchmarks/bench.rst")
+func benchmarkLint(path string, b *testing.B) {
+	path, err := filepath.Abs(path)
 	if err != nil {
 		panic(err)
 	}
@@ -55,13 +55,10 @@ func BenchmarkLintRST(b *testing.B) {
 	}
 }
 
+func BenchmarkLintRST(b *testing.B) {
+	benchmarkLint("../fixtures/benchmarks/bench.rst", b)
+}
+
 func BenchmarkLintMD(b *testing.B) {
-	path, err := filepath.Abs("../fixtures/benchmarks/bench.md")
-	if err != nil {
-		panic(err)
-	}
-	l := new(Linter)
-	for n := 0; n < b.N; n++ {
-		_, _ = l.Lint(path, "*")
-	}
+	benchmarkLint("../fixtures/benchmarks/bench.md", b)
 }
