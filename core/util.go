@@ -64,16 +64,26 @@ func isNested(substring string, ctx string) bool {
 
 // FindLoc calculates the line and span of an Alert.
 func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
-	var length int
+	var length, pos int
 
-	substring := s[loc[0]:loc[1]]
-	pos := strings.Index(ctx, substring) + 1
+	substring := strings.Split(s[loc[0]:loc[1]], "\n")[0]
+	subctx := ctx[loc[0]:]
+	meta := regexp.QuoteMeta(substring)
+	bounded := regexp.MustCompile(fmt.Sprintf(`(?:\b|_)%s(?:\b|_)`, meta))
+	offset := len(ctx) - len(subctx)
 
-	// We don't want to match, for example, "very" in "everyday."
-	offset := len(ctx) - len(ctx[loc[0]:]) - len(substring)
-	if strings.Count(s, substring) > 1 && isNested(substring, s) {
-		pos += offset
+	textPos := bounded.FindAllStringIndex(subctx, 1)
+	if len(textPos) == 0 {
+		textPos = regexp.MustCompile(meta).FindAllStringIndex(subctx, 1)
+		if len(textPos) == 0 {
+			return count, loc
+		}
 	}
+	pos = textPos[0][0]
+	if strings.HasPrefix(ctx[pos:], "_") {
+		pos++
+	}
+	pos = pos + 1 + offset
 
 	counter := 0
 	lines := strings.SplitAfter(ctx, "\n")
