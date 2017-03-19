@@ -169,13 +169,6 @@ func (l Linter) lintFormat(file *core.File) {
 			}
 		case ".html":
 			l.lintHTML(file)
-		case ".tex":
-			cmd := core.Which([]string{"pandoc"})
-			if cmd != "" {
-				l.lintLaTeX(file, cmd)
-			} else {
-				jww.ERROR.Println("pandoc not found!")
-			}
 		}
 	} else if file.Format == "code" && !core.CLConfig.Simple {
 		l.lintCode(file)

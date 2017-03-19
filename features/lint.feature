@@ -21,17 +21,6 @@ Feature: Lint
     """
     And the exit status should be 0
 
-  Scenario: Lint an LaTeX file
-    When I lint "test.tex"
-    Then the output should contain exactly:
-    """
-    test.tex:148:77:vale.Annotations:'XXX' left in text
-    test.tex:178:35:vale.Annotations:'FIXME' left in text
-    test.tex:236:25:vale.Annotations:'TODO' left in text
-
-    """
-    And the exit status should be 0
-
   Scenario: Lint an AsciiDoc file
     When I lint "test.adoc"
     Then the output should contain exactly:

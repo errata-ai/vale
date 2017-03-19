@@ -25,6 +25,10 @@ var commonExtensions = 0 |
 var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
 var options = blackfriday.Options{Extensions: commonExtensions}
 
+var heading = regexp.MustCompile(`^h\d$`)
+var skipTags = []string{"script", "style", "pre", "code", "tt"}
+var skipClasses = []string{}
+
 func (l Linter) lintHTMLTokens(f *core.File, rawBytes []byte, fBytes []byte, offset int) {
 	var txt, attr string
 	var tokt html.TokenType
@@ -32,9 +36,6 @@ func (l Linter) lintHTMLTokens(f *core.File, rawBytes []byte, fBytes []byte, off
 	var inBlock, skip, isHeading bool
 
 	ctx := core.PrepText(string(rawBytes))
-	heading := regexp.MustCompile(`^h\d$`)
-	skipTags := []string{"script", "style", "pre", "code", "tt"}
-	skipClasses := []string{"LaTeX"}
 	lines := strings.Count(ctx, "\n") + 1 + offset
 
 	tokens := html.NewTokenizer(bytes.NewReader(fBytes))
@@ -129,26 +130,5 @@ func (l Linter) lintADoc(f *core.File, asciidoctor string) {
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run(), f.Path) {
 		l.lintHTMLTokens(f, b, out.Bytes(), 0)
-	}
-}
-
-func (l Linter) lintLaTeX(f *core.File, pandoc string) {
-	var out bytes.Buffer
-	b, err := ioutil.ReadFile(f.Path)
-	if !core.CheckError(err, f.Path) {
-		return
-	}
-
-	start := bytes.Index(b, []byte(`\begin{document}`))
-	lines := 0
-	if start >= 0 {
-		lines = bytes.Count(b[:start], []byte("\n"))
-		b = b[start:]
-	}
-
-	cmd := exec.Command(pandoc, "--listings", "--latexmathml", f.Path)
-	cmd.Stdout = &out
-	if core.CheckError(cmd.Run(), f.Path) {
-		l.lintHTMLTokens(f, b, out.Bytes(), lines)
 	}
 }

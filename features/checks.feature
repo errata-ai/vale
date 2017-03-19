@@ -33,9 +33,10 @@ Feature: Checks
     When I test "checks/GenderBias"
     Then the output should contain exactly:
     """
-    test.tex:171:38:vale.GenderBias:Consider using 'human resources' instead of 'manpower'
-    test.tex:177:9:vale.GenderBias:Consider using 'first-year student(s)' instead of 'freshman'
-    test.tex:187:8:vale.GenderBias:Consider using 'everyone' instead of 'guys'
+    test.adoc:10:57:vale.GenderBias:Consider using 'first-year student(s)' instead of 'freshman'
+    test.adoc:44:34:vale.GenderBias:Consider using 'everyone' instead of 'guys'
+    test.adoc:59:32:vale.GenderBias:Consider using 'concierge(s)' instead of 'doorman'
+    test.adoc:68:2:vale.GenderBias:Consider using 'firefighter(s)' instead of 'fireman'
 
     """
 
@@ -65,7 +66,6 @@ Feature: Checks
     When I test "checks/Repetition"
     Then the output should contain exactly:
     """
-    test.tex:31:21:vale.Repetition:'not' is repeated!
     text.rst:6:17:vale.Repetition:'as' is repeated!
     text.rst:8:33:vale.Repetition:'the' is repeated!
     text.rst:15:7:vale.Repetition:'and' is repeated!
