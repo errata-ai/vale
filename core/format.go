@@ -56,7 +56,7 @@ var CommentsByNormedExt = map[string]map[string]string{
 // and its format (markup, code or text).
 var FormatByExtension = map[string][]string{
 	`\.(?:[rc]?py[3w]?|[Ss][Cc]onstruct)$`:        {".py", "code"},
-	`\.(?:adoc|asciidoc)$`:                        {".adoc", "markup"},
+	`\.(?:adoc|asciidoc|asc)$`:                    {".adoc", "markup"},
 	`\.(?:cpp|cc|c|cp|cxx|c\+\+|h|hpp|h\+\+)$`:    {".c", "code"},
 	`\.(?:cs|csx)$`:                               {".c", "code"},
 	`\.(?:css)$`:                                  {".css", "code"},
