@@ -24,6 +24,7 @@ Feature: Checks
     test.rst:11:71:vale.PassiveVoice:'is supported' is passive voice
     test.rst:17:51:vale.PassiveVoice:'be omitted' is passive voice
     test.rst:23:11:vale.PassiveVoice:'be applied' is passive voice
+    test.rst:27:1:vale.PassiveVoice:'be used' is passive voice
     test.swift:3:47:vale.PassiveVoice:'were eaten' is passive voice
     test.swift:5:38:vale.PassiveVoice:'was faxed' is passive voice
 
