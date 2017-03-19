@@ -49,6 +49,11 @@ func main() {
 			Usage:       "sort files by their name in output",
 			Destination: &core.CLConfig.Sorted,
 		},
+		cli.BoolFlag{
+			Name:        "ignore-syntax",
+			Usage:       "lint all files line-by-line",
+			Destination: &core.CLConfig.Simple,
+		},
 	}
 	app.Commands = []cli.Command{
 		{

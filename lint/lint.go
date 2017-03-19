@@ -145,9 +145,9 @@ func (l Linter) lintFile(src string) core.File {
 }
 
 func (l Linter) lintFormat(file *core.File) {
-	if file.Format == "text" {
+	if file.Format == "text" && !core.CLConfig.Simple {
 		l.lintPlainText(file)
-	} else if file.Format == "markup" {
+	} else if file.Format == "markup" && !core.CLConfig.Simple {
 		switch file.NormedExt {
 		case ".adoc":
 			cmd := core.Which([]string{"asciidoctor", "asciidoc"})
@@ -177,7 +177,7 @@ func (l Linter) lintFormat(file *core.File) {
 				jww.ERROR.Println("pandoc not found!")
 			}
 		}
-	} else if file.Format == "code" {
+	} else if file.Format == "code" && !core.CLConfig.Simple {
 		l.lintCode(file)
 	} else {
 		l.lintLines(file)

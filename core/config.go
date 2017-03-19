@@ -23,6 +23,7 @@ var CLConfig struct {
 	Wrap   bool   // (optional) wrap output when CLI style
 	NoExit bool   // (optional) don't return a nonzero exit code on lint errors
 	Sorted bool   // (optional) sort files by their name for output
+	Simple bool   // (optional) lint all files line-by-line
 }
 
 // Config holds our .vale configuration.
