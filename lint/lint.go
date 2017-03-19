@@ -2,12 +2,10 @@ package lint
 
 import (
 	"bufio"
-	"bytes"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -145,9 +143,7 @@ func (l Linter) lintFile(src string) core.File {
 }
 
 func (l Linter) lintFormat(file *core.File) {
-	if file.Format == "text" && !core.CLConfig.Simple {
-		l.lintPlainText(file)
-	} else if file.Format == "markup" && !core.CLConfig.Simple {
+	if file.Format == "markup" && !core.CLConfig.Simple {
 		switch file.NormedExt {
 		case ".adoc":
 			cmd := core.Which([]string{"asciidoctor", "asciidoc"})
@@ -196,32 +192,6 @@ func (l Linter) lintProse(f *core.File, ctx string, txt string, lnTotal int, lnL
 		l.lintText(f, NewBlock(ctx, p, parScope), lnTotal, lnLength)
 	}
 	l.lintText(f, NewBlock(ctx, text, txtScope), lnTotal, lnLength)
-}
-
-func (l Linter) lintPlainText(f *core.File) {
-	var paragraph bytes.Buffer
-	var line string
-
-	inBlock := 0
-	bullet := regexp.MustCompile(`^(?:[*-]\s\w|\d[).]\s\w)`)
-	lines := 1
-	for f.Scanner.Scan() {
-		line = f.Scanner.Text() + "\n"
-		if !bullet.MatchString(line) && line != "\n" {
-			paragraph.WriteString(line)
-			inBlock = 1
-		} else if line == "\n" && inBlock == 1 {
-			l.lintProse(f, "", paragraph.String(), lines, 0)
-			inBlock = 0
-			paragraph.Reset()
-		} else if line != "\n" {
-			l.lintText(f, NewBlock("", line, "text"+f.RealExt), lines+1, 0)
-		}
-		lines++
-	}
-	if inBlock == 1 {
-		l.lintProse(f, "", paragraph.String(), lines, 0)
-	}
 }
 
 func (l Linter) lintLines(f *core.File) {

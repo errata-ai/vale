@@ -29,13 +29,13 @@ Feature: Styles
     test.md:14:159:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:1:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:367:demo.SentenceLength:Sentences should be less than 25 words
-    test.txt:1:22:demo.CommasPerSentence:More than 3 commas!
-    test.txt:1:58:demo.Spacing:'. I' should have one space
-    test.txt:3:1:demo.SentenceLength:Sentences should be less than 25 words
-    test.txt:7:28:demo.EndingPreposition:Don't end a sentence with 'by.'
-    test.txt:11:1:demo.ParagraphLength:Paragraphs should be less than 150 words
-    test.txt:22:25:demo.Spelling:Inconsistent spelling of 'center'
-    test.txt:26:32:demo.Spelling:Inconsistent spelling of 'colour'
+    test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
+    test.rst:1:58:demo.Spacing:'. I' should have one space
+    test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
+    test.rst:7:28:demo.EndingPreposition:Don't end a sentence with 'by.'
+    test.rst:11:1:demo.ParagraphLength:Paragraphs should be less than 150 words
+    test.rst:22:25:demo.Spelling:Inconsistent spelling of 'center'
+    test.rst:26:32:demo.Spelling:Inconsistent spelling of 'colour'
 
     """
 
