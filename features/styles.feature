@@ -55,3 +55,28 @@ Feature: Styles
     test.md:11:69:TheEconomist.Didactic:'Consider' - Do not be too didactic
 
     """
+
+  Scenario: Lint against jQuery
+    When I apply style "jQuery"
+    Then the output should contain exactly:
+    """
+    test.adoc:5:25:jQuery.Semicolons:Avoid using semicolons
+    test.adoc:20:1:jQuery.OxfordCommna:Use the Oxford comma in a list of three or more items
+    test.md:7:10:jQuery.SentenceLength:Keep sentences short and to the point
+    test.md:7:88:jQuery.PassiveVoice:"been implemented" is passive voice
+    test.md:7:221:jQuery.PassiveVoice:"been implemented" is passive voice
+    test.md:7:266:jQuery.PassiveVoice:"be mixed" is passive voice
+    test.md:7:371:jQuery.PassiveVoice:"are covered" is passive voice
+    test.md:7:399:jQuery.SentenceLength:Keep sentences short and to the point
+    test.rs:5:34:jQuery.Pronouns:Avoid using "we"
+    test.rs:9:36:jQuery.Punctuation:Use 'i.e.'
+    test.rs:9:52:jQuery.PassiveVoice:"be linted" is passive voice
+    test.rs:13:24:jQuery.Numbers:Spell out numbers below 10 and use numerals for numbers 10 and above
+    test.rst:8:51:jQuery.PassiveVoice:"be prompted" is passive voice
+    test.rst:9:57:jQuery.PassiveVoice:"is sent" is passive voice
+    test.rst:11:71:jQuery.PassiveVoice:"is supported" is passive voice
+    test.rst:17:51:jQuery.PassiveVoice:"be omitted" is passive voice
+    test.rst:23:11:jQuery.PassiveVoice:"be applied" is passive voice
+    test.rst:27:1:jQuery.PassiveVoice:"be used" is passive voice
+
+    """

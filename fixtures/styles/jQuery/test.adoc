@@ -1,0 +1,20 @@
+Indent the line one space to insert a TODO code snippet
+
+ XXX = False
+
+Listing block with title; no syntax highlighting:
+
+.Gemfile.lock
+----
+// XXX: fix this relatively soon.
+func ExtFromSyntax(name string) string {
+    for XXX, relatively := range LookupSyntaxName {
+        if matched, _ := regexp.MatchString(r, name); matched {
+            return s
+        }
+    }
+    return name
+}
+----
+
+Red, blue, green and orange are colors.

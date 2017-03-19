@@ -1,0 +1,15 @@
+extends: existence
+message: 'Avoid using "%s"'
+link: https://contribute.jquery.org/style-guide/prose/#spelling
+scope: text
+level: error
+tokens:
+  - I
+  - me
+  - us
+  - our
+  - we
+  - him
+  - her
+  - she
+  - he

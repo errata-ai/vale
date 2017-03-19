@@ -1,0 +1,8 @@
+extends: existence
+message: "Avoid using semicolons"
+link: https://contribute.jquery.org/style-guide/prose/#spelling
+scope: text
+level: error
+nonword: true
+tokens:
+  - ;
