@@ -57,11 +57,6 @@ func DumpConfig() string {
 	return string(b)
 }
 
-func isNested(substring string, ctx string) bool {
-	s := fmt.Sprintf(`(?:\b|_)%s(?:\b|_)`, regexp.QuoteMeta(substring))
-	return len(regexp.MustCompile(s).FindAllString(ctx, -1)) < 2
-}
-
 // FindLoc calculates the line and span of an Alert.
 func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
 	var length, pos int
