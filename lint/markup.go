@@ -15,6 +15,15 @@ import (
 // reCodeBlock is used to convert Sphinx-style code directives to the regular
 // `::` for rst2html.
 var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (\w+)`)
+var rstArgs = []string{
+	"--quiet",             // We don't want stdout being filled with messages.
+	"--halt=5",            // We only want to fail when absolutely necessary.
+	"--link-stylesheet",   // We don't need the stylesheet
+	"--no-file-insertion", // We don't want extra content in the HTML.
+	"--no-toc-backlinks",  // We don't want extra links or numbering.
+	"--no-footnote-backlinks",
+	"--no-section-numbering",
+}
 
 // Blackfriday configuration.
 var commonHTMLFlags = 0 | blackfriday.HTML_USE_XHTML
@@ -110,8 +119,7 @@ func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 	if !core.CheckError(err, f.Path) {
 		return
 	}
-	cmd := exec.Command(
-		python, rst2html, "--quiet", "--halt=5", "--link-stylesheet")
+	cmd := exec.Command(python, append([]string{rst2html}, rstArgs...)...)
 	cmd.Stdin = bytes.NewReader(reCodeBlock.ReplaceAll(b, []byte("::")))
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run(), f.Path) {
