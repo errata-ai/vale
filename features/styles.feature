@@ -61,7 +61,7 @@ Feature: Styles
     Then the output should contain exactly:
     """
     test.adoc:5:25:jQuery.Semicolons:Avoid using semicolons
-    test.adoc:20:1:jQuery.OxfordCommna:Use the Oxford comma in a list of three or more items
+    test.adoc:20:1:jQuery.OxfordComma:Use the Oxford comma in a list of three or more items
     test.md:7:10:jQuery.SentenceLength:Keep sentences short and to the point
     test.md:7:88:jQuery.PassiveVoice:"been implemented" is passive voice
     test.md:7:221:jQuery.PassiveVoice:"been implemented" is passive voice
@@ -87,12 +87,12 @@ Feature: Styles
     """
     test.md:3:245:Homebrew.Spacing:'. I' should have one space.
     test.md:3:259:Homebrew.Terms:Use 'repository' instead of 'repo'.
-    test.md:3:329:Homebrew.OxfordCommna:No Oxford commas!
+    test.md:3:329:Homebrew.OxfordComma:No Oxford commas!
     test.md:3:401:Homebrew.Terms:Use 'RuboCop' instead of 'Rubocop'.
     test.md:15:16:Homebrew.FixedWidth:' brew ' should be in fixed width font.
     test.md:15:49:Homebrew.Abbreviations:Use 'e.g.'
     test.md:15:68:Homebrew.FixedWidth:' homebrew-science ' should be in fixed width font.
     test.md:15:117:Homebrew.Pronouns:Avoid gender-specific language when not necessary.
     test.rst:11:19:Homebrew.FixedWidth:' git ' should be in fixed width font.
-    
+
     """
