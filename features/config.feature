@@ -114,7 +114,6 @@ Feature: Config
 
     [*.py]
     BasedOnStyles = write-good
-
     """
     When I run vale "test.py"
     Then the output should contain exactly:
@@ -133,7 +132,6 @@ Feature: Config
 
     [*]
     BasedOnStyles = TheEconomist, write-good
-
     """
     When I run vale "test.py"
     Then the output should contain exactly:
@@ -154,7 +152,6 @@ Feature: Config
     [*]
     BasedOnStyles = vale
     write-good.ThereIs = YES
-
     """
     When I run vale "test.py"
     Then the output should contain exactly:
@@ -174,7 +171,6 @@ Feature: Config
     [*.{md,py}]
     BasedOnStyles = vale
     write-good.ThereIs = YES
-
     """
     When I run vale "test.py"
     Then the output should contain exactly:
@@ -219,3 +215,36 @@ Feature: Config
     Then the output should not contain "md"
     And the output should not contain "py"
     And the exit status should be 0
+
+  Scenario: Change a built-in rule's level
+    Given a file named ".vale" with:
+    """
+    MinAlertLevel = error
+
+    [*]
+    vale.Editorializing = error
+    """
+    When I run vale "test.md"
+    Then the output should contain exactly:
+    """
+    test.md:1:11:vale.Editorializing:Consider removing 'very'
+
+    """
+    And the exit status should be 1
+
+  Scenario: Change an external rule's level
+    Given a file named "_vale" with:
+    """
+    StylesPath = ../../styles/
+    MinAlertLevel = error
+
+    [*.{md,py}]
+    write-good.Adverbs = error
+    """
+    When I run vale "test.py"
+    Then the output should contain exactly:
+    """
+    test.py:1:37:write-good.Adverbs:'Very' - Adverbs can weaken meaning
+
+    """
+    And the exit status should be 1

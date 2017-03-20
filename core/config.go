@@ -47,6 +47,7 @@ type config struct {
 	SBaseStyles   map[string][]string        // Syntax-specific base styles
 	SChecks       map[string]map[string]bool // Syntax-specific checks
 	StylesPath    string                     // Directory with Rule.yml files
+	RuleToLevel   map[string]string
 }
 
 func newConfig() *config {
@@ -56,6 +57,7 @@ func newConfig() *config {
 	cfg.SChecks = make(map[string]map[string]bool)
 	cfg.MinAlertLevel = 0
 	cfg.GBaseStyles = []string{"vale"}
+	cfg.RuleToLevel = make(map[string]string)
 	return &cfg
 }
 
@@ -68,6 +70,16 @@ func determinePath(configPath string, keyPath string) string {
 		return filepath.Join(configPath, keyPath)
 	}
 	return abs
+}
+
+func validateLevel(key string, val string, cfg *config) bool {
+	options := []string{"YES", "suggestion", "warning", "error"}
+	if val == "NO" || !StringInSlice(val, options) {
+		return false
+	} else if val != "YES" {
+		cfg.RuleToLevel[key] = val
+	}
+	return true
 }
 
 // loadConfig loads the .vale file. It checks the current directory up to the
@@ -129,7 +141,7 @@ func loadOptions() config {
 		if k == "BasedOnStyles" {
 			continue
 		} else {
-			cfg.GChecks[k] = global.Key(k).MustBool(false)
+			cfg.GChecks[k] = validateLevel(k, global.Key(k).String(), cfg)
 			cfg.Checks = append(cfg.Checks, k)
 		}
 	}
@@ -144,7 +156,7 @@ func loadOptions() config {
 			if k == "BasedOnStyles" {
 				cfg.SBaseStyles[sec] = uCfg.Section(sec).Key(k).Strings(",")
 			} else {
-				syntaxOpts[k] = uCfg.Section(sec).Key(k).MustBool(false)
+				syntaxOpts[k] = validateLevel(k, uCfg.Section(sec).Key(k).String(), cfg)
 				cfg.Checks = append(cfg.Checks, k)
 			}
 		}

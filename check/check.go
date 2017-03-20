@@ -371,35 +371,7 @@ func updateAllChecks(chkDef Definition, fn ruleFn) {
 	AllChecks[chkDef.Name] = chk
 }
 
-func addCheck(file []byte, chkName string) {
-	var extends string
-
-	// Load the rule definition.
-	generic := map[string]interface{}{}
-	err := yaml.Unmarshal(file, &generic)
-	if !core.CheckError(err, fmt.Sprintf("unable to read %s!", chkName)) {
-		return
-	}
-
-	// Ensure that we're given an extension point.
-	if point, ok := generic["extends"]; !ok {
-		return
-	} else if !core.StringInSlice(point.(string), extensionPoints) {
-		return
-	} else {
-		extends = point.(string)
-	}
-
-	// Set default values, if necessary.
-	generic["name"] = chkName
-	if _, ok := generic["level"]; !ok {
-		generic["level"] = "suggestion"
-	}
-	if _, ok := generic["scope"]; !ok {
-		generic["scope"] = "text"
-	}
-
-	// Create and add the rule.
+func makeCheck(generic map[string]interface{}, extends string, chkName string) {
 	if extends == "existence" {
 		def := Existence{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
@@ -436,6 +408,39 @@ func addCheck(file []byte, chkName string) {
 			addScriptCheck(chkName, def)
 		}
 	}
+}
+
+func addCheck(file []byte, chkName string) {
+	var extends string
+
+	// Load the rule definition.
+	generic := map[string]interface{}{}
+	err := yaml.Unmarshal(file, &generic)
+	if !core.CheckError(err, fmt.Sprintf("unable to read %s!", chkName)) {
+		return
+	}
+
+	// Ensure that we're given an extension point.
+	if point, ok := generic["extends"]; !ok {
+		return
+	} else if !core.StringInSlice(point.(string), extensionPoints) {
+		return
+	} else {
+		extends = point.(string)
+	}
+
+	// Set default values, if necessary.
+	generic["name"] = chkName
+	if level, ok := core.Config.RuleToLevel[chkName]; ok {
+		generic["level"] = level
+	} else if _, ok := generic["level"]; !ok {
+		generic["level"] = "suggestion"
+	}
+	if _, ok := generic["scope"]; !ok {
+		generic["scope"] = "text"
+	}
+
+	makeCheck(generic, extends, chkName)
 }
 
 func loadExternalStyle(path string) {
