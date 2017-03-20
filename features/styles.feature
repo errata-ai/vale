@@ -89,9 +89,10 @@ Feature: Styles
     test.md:3:259:Homebrew.Terms:Use 'repository' instead of 'repo'.
     test.md:3:329:Homebrew.OxfordCommna:No Oxford commas!
     test.md:3:401:Homebrew.Terms:Use 'RuboCop' instead of 'Rubocop'.
-    test.md:15:17:Homebrew.FixedWidth:'brew ' should be in fixed width font.
+    test.md:15:16:Homebrew.FixedWidth:' brew ' should be in fixed width font.
     test.md:15:49:Homebrew.Abbreviations:Use 'e.g.'
-    test.md:15:69:Homebrew.FixedWidth:'homebrew-science' should be in fixed width font.
+    test.md:15:68:Homebrew.FixedWidth:' homebrew-science ' should be in fixed width font.
     test.md:15:117:Homebrew.Pronouns:Avoid gender-specific language when not necessary.
-
+    test.rst:11:19:Homebrew.FixedWidth:' git ' should be in fixed width font.
+    
     """

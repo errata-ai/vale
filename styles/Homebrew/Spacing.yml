@@ -5,5 +5,4 @@ level: error
 scope: paragraph
 nonword: true
 tokens:
-  - '[.?!][A-Z]'
   - '[.?!] {2,}[A-Z]'
