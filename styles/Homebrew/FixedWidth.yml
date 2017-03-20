@@ -1,0 +1,15 @@
+extends: existence
+message: "'%s' should be in fixed width font."
+link: 'https://github.com/Homebrew/brew/blob/master/docs/Prose-Style-Guidelines.md#typographical-conventions'
+scope: text
+level: warning
+raw:
+  - '\b(?:git|brew)\s|'
+tokens:
+  - homebrew-core
+  - homebrew-science
+  - homebrew-php
+  - homebrew-dupes
+  - homebrew-tex
+  - homebrew-nginx
+  - homebrew-apache

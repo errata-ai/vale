@@ -80,3 +80,18 @@ Feature: Styles
     test.rst:27:1:jQuery.PassiveVoice:"be used" is passive voice
 
     """
+
+  Scenario: Lint against Homebrew
+    When I apply style "Homebrew"
+    Then the output should contain exactly:
+    """
+    test.md:3:245:Homebrew.Spacing:'. I' should have one space.
+    test.md:3:259:Homebrew.Terms:Use 'repository' instead of 'repo'.
+    test.md:3:329:Homebrew.OxfordCommna:No Oxford commas!
+    test.md:3:401:Homebrew.Terms:Use 'RuboCop' instead of 'Rubocop'.
+    test.md:15:17:Homebrew.FixedWidth:'brew ' should be in fixed width font.
+    test.md:15:49:Homebrew.Abbreviations:Use 'e.g.'
+    test.md:15:69:Homebrew.FixedWidth:'homebrew-science' should be in fixed width font.
+    test.md:15:117:Homebrew.Pronouns:Avoid gender-specific language when not necessary.
+
+    """
