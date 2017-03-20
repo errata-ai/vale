@@ -1,5 +1,18 @@
 # Change Log
 
+## [v0.3.3](https://github.com/ValeLint/vale/tree/v0.3.3) (2017-03-20)
+[Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.2...v0.3.3)
+
+**Implemented enhancements:**
+
+- Create a website [\#5](https://github.com/ValeLint/vale/issues/5)
+
+**Closed issues:**
+
+- Linux should not install to home dir [\#17](https://github.com/ValeLint/vale/issues/17)
+
+Also removes experimental support for LaTeX.
+
 ## [v0.3.2](https://github.com/ValeLint/vale/tree/v0.3.2) (2017-03-14)
 [Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.1...v0.3.2)
 
