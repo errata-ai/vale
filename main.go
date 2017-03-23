@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/ValeLint/vale/check"
 	"github.com/ValeLint/vale/core"
 	"github.com/ValeLint/vale/lint"
 	"github.com/ValeLint/vale/ui"
@@ -62,6 +63,20 @@ func main() {
 			Usage:   "Dumps configuration options to stdout and exits",
 			Action: func(c *cli.Context) error {
 				fmt.Println(core.DumpConfig())
+				return nil
+			},
+		},
+		{
+			Name:  "new",
+			Usage: "Generates a template for the given extension point",
+			Action: func(c *cli.Context) error {
+				name := c.Args().First()
+				template := check.GetTemplate(name)
+				if template != "" {
+					fmt.Println(template)
+				} else {
+					fmt.Println(fmt.Sprintf("'%s' is not a check!", name))
+				}
 				return nil
 			},
 		},
