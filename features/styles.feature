@@ -29,6 +29,9 @@ Feature: Styles
     test.md:14:159:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:1:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:367:demo.SentenceLength:Sentences should be less than 25 words
+    test.md:22:21:demo.Abbreviations:Use 'i.e.,'
+    test.md:22:66:demo.Abbreviations:Use 'a.m. or p.m.'
+    test.md:22:94:demo.Abbreviations:Use 'midnight or noon'
     test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
     test.rst:1:58:demo.Spacing:'. I' should have one space
     test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words

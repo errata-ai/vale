@@ -53,16 +53,6 @@ Feature: Checks
 
     """
 
-  Scenario: Abbreviations
-    When I test "checks/Abbreviations"
-    Then the output should contain exactly:
-    """
-    test.md:1:21:vale.Abbreviations:Use 'i.e.,'
-    test.md:1:66:vale.Abbreviations:Use 'a.m. or p.m.'
-    test.md:1:94:vale.Abbreviations:Use 'midnight or noon'
-
-    """
-
   Scenario: Repetition
     When I test "checks/Repetition"
     Then the output should contain exactly:

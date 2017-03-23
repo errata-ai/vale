@@ -82,7 +82,6 @@ type Script struct {
 }
 
 var defaultChecks = []string{
-	"Abbreviations",
 	"Annotations",
 	"ComplexWords",
 	"Editorializing",
