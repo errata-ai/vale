@@ -38,13 +38,13 @@ func FormatMessage(msg string, subs ...string) string {
 }
 
 // Substitute replaces the substring `sub` with a string of asterisks.
-func Substitute(src string, sub string) string {
+func Substitute(src string, sub string) (string, bool) {
 	idx := strings.Index(src, sub)
 	if idx < 0 {
-		return src
+		return src, false
 	}
 	count := len(sub)
-	return src[:idx] + strings.Repeat("*", count) + src[idx+count:]
+	return src[:idx] + strings.Repeat("*", count) + src[idx+count:], true
 }
 
 // StringsToInterface converts a slice of strings to an interface.
