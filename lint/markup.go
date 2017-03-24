@@ -99,7 +99,7 @@ func clearElements(ctx string, tok html.Token) string {
 	if tok.Data == "img" || tok.Data == "a" {
 		for _, a := range tok.Attr {
 			if a.Key == "alt" || a.Key == "href" {
-				ctx = updateCtx(ctx, a.Key, html.TextToken)
+				ctx = updateCtx(ctx, a.Val, html.TextToken)
 			}
 		}
 	}
