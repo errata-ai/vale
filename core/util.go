@@ -37,9 +37,14 @@ func FormatMessage(msg string, subs ...string) string {
 	return fmt.Sprintf(msg, StringsToInterface(found)...)
 }
 
-// Substitute replaces the substring `repl` with `char`s.
-func Substitute(src string, repl string, char string) string {
-	return strings.Replace(src, repl, strings.Repeat(char, len(repl)), 1)
+// Substitute replaces the substring `sub` with a string of asterisks.
+func Substitute(src string, sub string) string {
+	idx := strings.Index(src, sub)
+	if idx < 0 {
+		return src
+	}
+	count := len(sub)
+	return src[:idx] + strings.Repeat("*", count) + src[idx+count:]
 }
 
 // StringsToInterface converts a slice of strings to an interface.
@@ -57,28 +62,35 @@ func DumpConfig() string {
 	return string(b)
 }
 
-// FindLoc calculates the line and span of an Alert.
-func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
-	var length, pos int
-
-	substring := strings.Split(s[loc[0]:loc[1]], "\n")[0]
-	subctx := ctx[loc[0]:]
-	meta := regexp.QuoteMeta(substring)
-	bounded := regexp.MustCompile(fmt.Sprintf(`(?:\b|_)%s(?:\b|_)`, meta))
-	offset := len(ctx) - len(subctx)
-
-	textPos := bounded.FindAllStringIndex(subctx, 1)
-	if len(textPos) == 0 {
-		textPos = regexp.MustCompile(meta).FindAllStringIndex(subctx, 1)
-		if len(textPos) == 0 {
-			return count, loc
+// initialPosition calculates the position of a match (given by the location in
+// the reference document, `loc`) in the source document (`ctx`).
+func initialPosition(ctx string, substring string, loc []int) int {
+	if strings.Count(ctx, substring) > 1 {
+		// If there's more than one, we take the first bounded option.
+		// For example, given that we're looking for "very", "every" => nested
+		// and " very " => bounded.
+		subctx := ctx[loc[0]:]
+		pat := fmt.Sprintf(`(?:\b|_)%s(?:\b|_)`, regexp.QuoteMeta(substring))
+		sloc := regexp.MustCompile(pat).FindStringIndex(subctx)
+		if len(sloc) > 0 {
+			pos := sloc[0]
+			if strings.HasPrefix(ctx[pos:], "_") {
+				pos++ // We don't want to include the underscore boundary.
+			}
+			return pos + (len(ctx) - len(subctx)) + 1
 		}
 	}
-	pos = textPos[0][0]
-	if strings.HasPrefix(ctx[pos:], "_") {
-		pos++
-	}
-	pos = pos + 1 + offset
+	// If there's only one option or no bounded option, we take the first
+	// occurrence of `substring`.
+	return strings.Index(ctx, substring) + 1
+}
+
+// FindLoc calculates the line and span of an Alert.
+func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
+	var length int
+
+	substring := strings.Split(s[loc[0]:loc[1]], "\n")[0]
+	pos := initialPosition(ctx, substring, loc)
 
 	counter := 0
 	lines := strings.SplitAfter(ctx, "\n")
@@ -95,6 +107,7 @@ func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
 		}
 		counter += length
 	}
+
 	return count, loc
 }
 

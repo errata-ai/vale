@@ -94,7 +94,7 @@ func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
 	}
 	a.Line, a.Span = FindLoc(lines, ctx, txt, a.Span, pad)
 	if a.Span[0] > 0 {
-		f.ChkToCtx[a.Check] = Substitute(ctx, substring, "*")
+		f.ChkToCtx[a.Check] = Substitute(ctx, substring)
 		f.Alerts = append(f.Alerts, a)
 	}
 }

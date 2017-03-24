@@ -81,7 +81,8 @@ func (l Linter) lintHTMLTokens(f *core.File, rawBytes []byte, fBytes []byte, off
 			l.lintProse(f, ctx, txt, lines, 0)
 		}
 		attr = getAttribute(tok, "class")
-		ctx = updateCtx(ctx, txt, tokt, tok)
+		ctx = clearElements(ctx, tok)
+		ctx = updateCtx(ctx, txt, tokt)
 	}
 }
 
@@ -94,16 +95,21 @@ func getAttribute(tok html.Token, key string) string {
 	return ""
 }
 
-func updateCtx(ctx string, txt string, tokt html.TokenType, tok html.Token) string {
+func clearElements(ctx string, tok html.Token) string {
 	if tok.Data == "img" || tok.Data == "a" {
 		for _, a := range tok.Attr {
 			if a.Key == "alt" || a.Key == "href" {
-				ctx = core.Substitute(ctx, a.Val, "*")
+				ctx = core.Substitute(ctx, a.Val)
 			}
 		}
-	} else if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
+	}
+	return ctx
+}
+
+func updateCtx(ctx string, txt string, tokt html.TokenType) string {
+	if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
 		for _, s := range strings.Split(txt, "\n") {
-			ctx = core.Substitute(ctx, s, "*")
+			ctx = core.Substitute(ctx, s)
 		}
 	}
 	return ctx
