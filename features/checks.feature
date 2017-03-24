@@ -8,7 +8,6 @@ Feature: Checks
     test.java:6:31:vale.Annotations:'XXX' left in text
     test.java:10:8:vale.Annotations:'NOTE' left in text
     test.java:13:12:vale.Annotations:'FIXME' left in text
-
     """
 
   Scenario: PassiveVoice
@@ -30,7 +29,6 @@ Feature: Checks
     test.rst:27:1:vale.PassiveVoice:'be used' is passive voice
     test.swift:3:47:vale.PassiveVoice:'were eaten' is passive voice
     test.swift:5:38:vale.PassiveVoice:'was faxed' is passive voice
-
     """
 
   Scenario: GenderBias
@@ -41,7 +39,6 @@ Feature: Checks
     test.adoc:44:34:vale.GenderBias:Consider using 'everyone' instead of 'guys'
     test.adoc:59:32:vale.GenderBias:Consider using 'concierge(s)' instead of 'doorman'
     test.adoc:68:2:vale.GenderBias:Consider using 'firefighter(s)' instead of 'fireman'
-
     """
 
   Scenario: Editorializing
@@ -53,7 +50,6 @@ Feature: Checks
     test.html:13:7:vale.Editorializing:Consider removing 'Notably'
     test.md:1:24:vale.Editorializing:Consider removing 'very'
     test.rst:5:1:vale.Editorializing:Consider removing 'very'
-
     """
 
   Scenario: Repetition
@@ -66,7 +62,6 @@ Feature: Checks
     text.rst:16:22:vale.Repetition:'on' is repeated!
     text.rst:19:1:vale.Repetition:'this' is repeated!
     text.rst:20:13:vale.Repetition:'be' is repeated!
-
     """
 
   Scenario: Redundancy
@@ -76,7 +71,6 @@ Feature: Checks
     test.cpp:58:25:vale.Redundancy:'ATM machine' is redundant
     test.cpp:66:51:vale.Redundancy:'free gift' is redundant
     test.cpp:90:14:vale.Redundancy:'completely destroyed' is redundant
-
     """
 
   Scenario: Uncomparables
@@ -85,7 +79,6 @@ Feature: Checks
     """
     test.adoc:1:49:vale.Uncomparables:'absolutely false' is not comparable
     test.adoc:10:15:vale.Uncomparables:'very unique' is not comparable
-
     """
 
   Scenario: Wordiness
@@ -96,7 +89,6 @@ Feature: Checks
     test.cs:10:4:vale.Wordiness:Consider using 'most' instead of 'A large majority of'
     test.cs:10:45:vale.Wordiness:Consider using 'time' instead of 'time period'
     test.rst:3:1:vale.Wordiness:Consider using 'some' instead of 'some of the'
-
     """
 
   Scenario: ComplexWords
@@ -105,7 +97,6 @@ Feature: Checks
     """
     test.sass:4:16:vale.ComplexWords:Consider using 'plenty' instead of 'abundance'
     test.sass:5:13:vale.ComplexWords:Consider using 'use' instead of 'utilize'
-
     """
 
   Scenario: Hedging
@@ -115,7 +106,6 @@ Feature: Checks
     test.less:9:6:vale.Hedging:Consider removing 'in my opinion'
     test.less:9:29:vale.Hedging:Consider removing 'probably'
     test.less:12:41:vale.Hedging:Consider removing 'As far as I know'
-
     """
 
   Scenario: Litotes
@@ -125,5 +115,4 @@ Feature: Checks
     test.scala:2:13:vale.Litotes:Consider using 'rejected' instead of 'not accepted'
     test.scala:2:53:vale.Litotes:Consider using 'lack(s)' instead of 'not have'
     test.scala:6:32:vale.Litotes:Consider using 'large' instead of 'no small'
-
     """

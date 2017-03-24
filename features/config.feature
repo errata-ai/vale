@@ -23,7 +23,6 @@ Feature: Config
     Then the output should contain exactly:
     """
     test.md:1:11:vale.Editorializing:Consider removing 'very'
-
     """
     And the exit status should be 0
 
@@ -38,7 +37,6 @@ Feature: Config
     When I run vale "test.md"
     Then the output should contain exactly:
     """
-
     """
     And the exit status should be 0
 
@@ -54,7 +52,6 @@ Feature: Config
     When I run vale "test.md"
     Then the output should contain exactly:
     """
-
     """
     And the exit status should be 0
 
@@ -76,7 +73,6 @@ Feature: Config
     test.md:1:11:vale.Editorializing:Consider removing 'very'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:37:write-good.Adverbs:'Very' - Adverbs can weaken meaning
-
     """
     And the exit status should be 1
 
@@ -99,7 +95,6 @@ Feature: Config
     """
     test.md:1:11:vale.Editorializing:Consider removing 'very'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-
     """
     And the exit status should be 1
 
@@ -120,7 +115,6 @@ Feature: Config
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:37:write-good.Adverbs:'Very' - Adverbs can weaken meaning
-
     """
     And the exit status should be 1
 
@@ -139,7 +133,6 @@ Feature: Config
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:37:write-good.Adverbs:'Very' - Adverbs can weaken meaning
     test.py:1:49:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'
-
     """
     And the exit status should be 1
 
@@ -158,7 +151,6 @@ Feature: Config
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:37:vale.Editorializing:Consider removing 'Very'
-
     """
     And the exit status should be 1
 
@@ -177,7 +169,6 @@ Feature: Config
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:37:vale.Editorializing:Consider removing 'Very'
-
     """
     And the exit status should be 1
 
@@ -228,7 +219,6 @@ Feature: Config
     Then the output should contain exactly:
     """
     test.md:1:11:vale.Editorializing:Consider removing 'very'
-
     """
     And the exit status should be 1
 
@@ -245,6 +235,5 @@ Feature: Config
     Then the output should contain exactly:
     """
     test.py:1:37:write-good.Adverbs:'Very' - Adverbs can weaken meaning
-
     """
     And the exit status should be 1

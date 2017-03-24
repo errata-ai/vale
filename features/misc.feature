@@ -14,7 +14,6 @@ Feature: Misc
     CR.md:32:11:vale.Editorializing:Consider removing 'very'
     CRLF.md:3:11:vale.Editorializing:Consider removing 'very'
     CRLF.md:32:11:vale.Editorializing:Consider removing 'very'
-
     """
 
   Scenario: Duplicate matches
@@ -25,5 +24,4 @@ Feature: Misc
     test.md:1:15:vale.Editorializing:Consider removing 'very'
     test.md:1:39:vale.Wordiness:Consider using 'all' instead of 'all of'
     test.md:1:59:vale.Wordiness:Consider using 'all' instead of 'all of'
-
     """

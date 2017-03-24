@@ -10,7 +10,6 @@ Feature: Styles
     test.cc:28:21:write-good.ThereIs:Don't start a sentence with '// There is'
     test.cc:31:21:write-good.StartsWithSo:Don't start a sentence with '; so'
     test.cc:34:14:write-good.StartsWithSo:Don't start a sentence with '// So'
-
     """
 
   Scenario: Lint against demo
@@ -39,7 +38,6 @@ Feature: Styles
     test.rst:11:1:demo.ParagraphLength:Paragraphs should be less than 150 words
     test.rst:22:25:demo.Spelling:Inconsistent spelling of 'center'
     test.rst:26:32:demo.Spelling:Inconsistent spelling of 'colour'
-
     """
 
   Scenario: Lint against The Economist's style guide
@@ -56,7 +54,6 @@ Feature: Styles
     test.md:11:12:TheEconomist.OverusedWords:'community' is overused
     test.md:11:51:TheEconomist.OughtShould:Go easy on the oughts and shoulds
     test.md:11:69:TheEconomist.Didactic:'Consider' - Do not be too didactic
-
     """
 
   Scenario: Lint against jQuery
@@ -81,7 +78,6 @@ Feature: Styles
     test.rst:17:51:jQuery.PassiveVoice:"be omitted" is passive voice
     test.rst:23:11:jQuery.PassiveVoice:"be applied" is passive voice
     test.rst:27:1:jQuery.PassiveVoice:"be used" is passive voice
-
     """
 
   Scenario: Lint against Homebrew
@@ -97,5 +93,4 @@ Feature: Styles
     test.md:15:68:Homebrew.FixedWidth:' homebrew-science ' should be in fixed width font.
     test.md:15:117:Homebrew.Pronouns:Avoid gender-specific language when not necessary.
     test.rst:11:19:Homebrew.FixedWidth:' git ' should be in fixed width font.
-
     """

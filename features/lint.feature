@@ -6,7 +6,6 @@ Feature: Lint
     """
     test.json:9:10:vale.Annotations:'XXX' left in text
     test.json:12:19:vale.Annotations:'TODO' left in text
-
     """
     And the exit status should be 0
 
@@ -17,7 +16,6 @@ Feature: Lint
     test.txt:1:27:vale.Annotations:'NOTE' left in text
     test.txt:4:12:vale.Annotations:'XXX' left in text
     test.txt:4:66:vale.Annotations:'TODO' left in text
-
     """
     And the exit status should be 0
 
@@ -33,7 +31,6 @@ Feature: Lint
     test.adoc:59:27:vale.Annotations:'XXX' left in text
     test.adoc:64:38:vale.Annotations:'XXX' left in text
     test.adoc:66:20:vale.Annotations:'TODO' left in text
-
     """
     And the exit status should be 0
 
@@ -51,7 +48,6 @@ Feature: Lint
     test.py:28:5:vale.Annotations:'NOTE' left in text
     test.py:35:8:vale.Annotations:'NOTE' left in text
     test.py:37:5:vale.Annotations:'TODO' left in text
-
     """
     And the exit status should be 0
 
@@ -65,7 +61,6 @@ Feature: Lint
     test.cc:17:5:vale.Annotations:'FIXME' left in text
     test.cc:20:5:vale.Annotations:'XXX' left in text
     test.cc:23:37:vale.Annotations:'XXX' left in text
-
     """
     And the exit status should be 0
 
@@ -81,7 +76,6 @@ Feature: Lint
     test.md:36:16:vale.Annotations:'FIXME' left in text
     test.md:40:21:vale.Annotations:'FIXME' left in text
     test.md:44:5:vale.Annotations:'TODO' left in text
-
     """
     And the exit status should be 0
 
@@ -98,7 +92,6 @@ Feature: Lint
     test.rst:69:3:vale.Annotations:'FIXME' left in text
     test.rst:75:3:vale.Annotations:'TODO' left in text
     test.rst:75:38:vale.Annotations:'XXX' left in text
-
     """
     And the exit status should be 0
 
@@ -111,7 +104,6 @@ Feature: Lint
     test.rs:5:17:vale.Annotations:'TODO' left in text
     test.rs:7:4:vale.Annotations:'FIXME' left in text
     test.rs:9:5:vale.Annotations:'XXX' left in text
-
     """
     And the exit status should be 0
 
@@ -121,7 +113,6 @@ Feature: Lint
     """
     test.r:1:3:vale.Annotations:'NOTE' left in text
     test.r:6:22:vale.Annotations:'XXX' left in text
-
     """
     And the exit status should be 0
 
@@ -133,7 +124,6 @@ Feature: Lint
     test.php:3:8:vale.Annotations:'NOTE' left in text
     test.php:4:8:vale.Annotations:'FIXME' left in text
     test.php:6:33:vale.Annotations:'TODO' left in text
-
     """
     And the exit status should be 0
 
@@ -146,7 +136,6 @@ Feature: Lint
     test.lua:5:7:vale.Annotations:'NOTE' left in text
     test.lua:9:6:vale.Annotations:'XXX' left in text
     test.lua:15:4:vale.Annotations:'TODO' left in text
-
     """
     And the exit status should be 0
 
@@ -158,7 +147,6 @@ Feature: Lint
     test.hs:5:6:vale.Annotations:'TODO' left in text
     test.hs:6:25:vale.Annotations:'XXX' left in text
     test.hs:11:41:vale.Annotations:'XXX' left in text
-
     """
     And the exit status should be 0
 
@@ -170,6 +158,5 @@ Feature: Lint
     test.rb:6:1:vale.Annotations:'XXX' left in text
     test.rb:9:23:vale.Annotations:'XXX' left in text
     test.rb:11:3:vale.Annotations:'TODO' left in text
-
     """
     And the exit status should be 0
