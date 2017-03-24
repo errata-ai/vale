@@ -1,0 +1,7 @@
+When using +:db/retract+, you provide be retracted. if you provide a value that isn't in storage, nothing
+will be retracted.
+
+If you +:db/noHistory+, that be _permanently deleted_.
+
+When using +:db.fn/retractEntity+, all attribute values for all the
+attributes on that entity will be retracted.

@@ -15,6 +15,9 @@ Feature: Checks
     When I test "checks/PassiveVoice"
     Then the output should contain exactly:
     """
+    test.adoc:1:39:vale.PassiveVoice:'be retracted' is passive voice
+    test.adoc:2:6:vale.PassiveVoice:'be retracted' is passive voice
+    test.adoc:7:32:vale.PassiveVoice:'be retracted' is passive voice
     test.md:7:88:vale.PassiveVoice:'been implemented' is passive voice
     test.md:7:221:vale.PassiveVoice:'been implemented' is passive voice
     test.md:7:266:vale.PassiveVoice:'be mixed' is passive voice
