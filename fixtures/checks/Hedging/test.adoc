@@ -1,0 +1,4 @@
+When using +:db/retract+, you provide probably the be value.
+
+When using +:db.fn/retractEntity+, all attribute probably values for all the
+attributes on that entity will probably, as will all +:db/ref+.

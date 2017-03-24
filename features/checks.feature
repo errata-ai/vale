@@ -103,6 +103,9 @@ Feature: Checks
     When I test "checks/Hedging"
     Then the output should contain exactly:
     """
+    test.adoc:1:39:vale.Hedging:Consider removing 'probably'
+    test.adoc:3:50:vale.Hedging:Consider removing 'probably'
+    test.adoc:4:32:vale.Hedging:Consider removing 'probably'
     test.less:9:6:vale.Hedging:Consider removing 'in my opinion'
     test.less:9:29:vale.Hedging:Consider removing 'probably'
     test.less:12:41:vale.Hedging:Consider removing 'As far as I know'
