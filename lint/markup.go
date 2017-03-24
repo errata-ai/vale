@@ -99,7 +99,7 @@ func clearElements(ctx string, tok html.Token) string {
 	if tok.Data == "img" || tok.Data == "a" {
 		for _, a := range tok.Attr {
 			if a.Key == "alt" || a.Key == "href" {
-				ctx, _ = core.Substitute(ctx, a.Val)
+				ctx = updateCtx(ctx, a.Key, html.TextToken)
 			}
 		}
 	}
@@ -109,14 +109,11 @@ func clearElements(ctx string, tok html.Token) string {
 func updateCtx(ctx string, txt string, tokt html.TokenType) string {
 	var found bool
 	if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
-		ctx, found = core.Substitute(ctx, txt)
-		if !found {
-			for _, s := range strings.Split(txt, "\n") {
-				ctx, found = core.Substitute(ctx, s)
-				if !found {
-					for _, w := range strings.Fields(s) {
-						ctx, _ = core.Substitute(ctx, w)
-					}
+		for _, s := range strings.Split(txt, "\n") {
+			ctx, found = core.Substitute(ctx, s)
+			if !found {
+				for _, w := range strings.Fields(s) {
+					ctx, _ = core.Substitute(ctx, w)
 				}
 			}
 		}
