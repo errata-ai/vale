@@ -51,6 +51,9 @@ Feature: Styles
     test.adoc:7:7:TheEconomist.Endings:avoid using 'German-style'
     test.adoc:7:43:TheEconomist.Endings:avoid using 'EU-style'
     test.adoc:8:38:TheEconomist.Endings:avoid using 'attendees'
+    test.adoc:12:5:TheEconomist.Terms:Prefer 'press' over of 'media'
+    test.adoc:12:11:TheEconomist.Terms:Prefer 'way of life' over of 'lifestyle'
+    test.adoc:12:28:TheEconomist.Terms:Prefer 'naive' over of 'simplistic'
     test.css:1:32:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'
     test.css:12:54:TheEconomist.UnexpandedAcronyms:'ONE' has no definition
     test.css:34:27:TheEconomist.Slang:'Big pharma' - See section 'Journalese and slang'

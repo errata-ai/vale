@@ -1,0 +1,11 @@
+extends: substitution
+message: Prefer '%s' over of '%s'
+level: warning
+scope: text
+ignorecase: true
+swap:
+  Lifestyle: way of life
+  media: press
+  photo: photograph
+  phone: telephone
+  simplistic: naive
