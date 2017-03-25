@@ -44,6 +44,13 @@ Feature: Styles
     When I apply style "TheEconomist"
     Then the output should contain exactly:
     """
+    test.adoc:3:1:TheEconomist.UnnecessaryWords:'There are' - See section 'Unnecessary words'
+    test.adoc:5:5:TheEconomist.Slang:'key' - See section 'Journalese and slang'
+    test.adoc:5:34:TheEconomist.OughtShould:Go easy on the oughts and shoulds
+    test.adoc:5:46:TheEconomist.UnnecessaryWords:'there is' - See section 'Unnecessary words'
+    test.adoc:7:7:TheEconomist.Endings:avoid using 'German-style'
+    test.adoc:7:43:TheEconomist.Endings:avoid using 'EU-style'
+    test.adoc:8:38:TheEconomist.Endings:avoid using 'attendees'
     test.css:1:32:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'
     test.css:12:54:TheEconomist.UnexpandedAcronyms:'ONE' has no definition
     test.css:34:27:TheEconomist.Slang:'Big pharma' - See section 'Journalese and slang'

@@ -1,0 +1,8 @@
+==== Strings
+
+There are many kinds of strings--Clojure is no exception, and despite a few
+differences, (((strings, basics of)))(((primitive data, strings))) Here are a
+few key differences we think you should know there is about.
+
+Avoid German-style supervisory boards, an EU-style rotating presidency, etc.
+Explain what you mean. There were 25 attendees.
