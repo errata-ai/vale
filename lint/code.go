@@ -3,9 +3,9 @@ package lint
 import (
 	"bytes"
 	"fmt"
-	"regexp"
 
 	"github.com/ValeLint/vale/core"
+	"matloob.io/regexp"
 )
 
 // lintCode lints source code -- whether it be a markup codeblock, a complete

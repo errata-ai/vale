@@ -6,10 +6,10 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	jww "github.com/spf13/jwalterweatherman"
+	"matloob.io/regexp"
 )
 
 // ExeDir is our starting location.

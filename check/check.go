@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/ValeLint/vale/core"
@@ -15,6 +14,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	jww "github.com/spf13/jwalterweatherman"
 	"gopkg.in/yaml.v2"
+	"matloob.io/regexp"
 )
 
 const (

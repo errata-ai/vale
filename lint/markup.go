@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"io/ioutil"
 	"os/exec"
-	"regexp"
 	"strings"
 
 	"github.com/ValeLint/vale/core"
 	"github.com/russross/blackfriday"
 	"golang.org/x/net/html"
+	"matloob.io/regexp"
 )
 
 // reStructuredText configuration.
