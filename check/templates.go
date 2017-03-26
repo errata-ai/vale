@@ -65,7 +65,7 @@ var repetitionTemplate = `extends: repetition
 message: "'%s' is repeated!"
 scope: paragraph
 ignorecase: false
-# Will flag repeated occurances of the same token (e.g., "this this").
+# Will flag repeated occurrences of the same token (e.g., "this this").
 tokens:
   - '[^\s]+'`
 
