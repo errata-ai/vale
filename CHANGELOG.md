@@ -1,5 +1,25 @@
 # Change Log
 
+## [Unreleased](https://github.com/ValeLint/vale/tree/HEAD)
+
+[Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.4...HEAD)
+
+**Fixed bugs:**
+
+- Tests? Possible issue with GenderBias [\#26](https://github.com/ValeLint/vale/issues/26)
+
+## [v0.3.4](https://github.com/ValeLint/vale/tree/v0.3.4) (2017-03-26)
+[Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.3...v0.3.4)
+
+**Implemented enhancements:**
+
+- Add basic rule template generation [\#28](https://github.com/ValeLint/vale/issues/28)
+- Support changing the severity level of built-in rules [\#18](https://github.com/ValeLint/vale/issues/18)
+
+**Closed issues:**
+
+- Possible bug [\#27](https://github.com/ValeLint/vale/issues/27)
+
 ## [v0.3.3](https://github.com/ValeLint/vale/tree/v0.3.3) (2017-03-20)
 [Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.2...v0.3.3)
 
@@ -10,8 +30,6 @@
 **Closed issues:**
 
 - Linux should not install to home dir [\#17](https://github.com/ValeLint/vale/issues/17)
-
-Also removes experimental support for LaTeX.
 
 ## [v0.3.2](https://github.com/ValeLint/vale/tree/v0.3.2) (2017-03-14)
 [Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.1...v0.3.2)
