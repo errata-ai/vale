@@ -3,4 +3,4 @@ message: "'%s' is repeated!"
 level: warning
 ignorecase: true
 tokens:
-  - '[^\s,.!?;]+'
+  - '[\w]+'

@@ -3,13 +3,32 @@ Feature: Styles
     When I apply style "write-good"
     Then the output should contain exactly:
     """
+    test.cc:1:4:write-good.WeasalWords:'Remarkably' is a weasal word!
+    test.cc:1:15:write-good.WeasalWords:'few' is a weasal word!
     test.cc:8:27:write-good.NoCliches:'at loose ends' is a cliché
     test.cc:11:40:write-good.PassiveVoice:'was killed'
     test.cc:18:6:write-good.LexicalIllusions:'the' is repeated!
     test.cc:21:25:write-good.ThereIs:Don't start a sentence with '// There are'
     test.cc:28:21:write-good.ThereIs:Don't start a sentence with '// There is'
-    test.cc:31:21:write-good.StartsWithSo:Don't start a sentence with '; so'
-    test.cc:34:14:write-good.StartsWithSo:Don't start a sentence with '// So'
+    test.cc:31:21:write-good.StartsWithSo:Don't start a sentence with '; so '
+    test.cc:34:14:write-good.StartsWithSo:Don't start a sentence with '// So '
+    test.md:1:1:write-good.WeasalWords:'Remarkably' is a weasal word!
+    test.md:1:12:write-good.WeasalWords:'few' is a weasal word!
+    test.md:3:12:write-good.PassiveVoice:'was killed'
+    test.md:5:1:write-good.LexicalIllusions:'the' is repeated!
+    test.md:7:1:write-good.LexicalIllusions:'the' is repeated!
+    test.md:10:1:write-good.LexicalIllusions:'the' is repeated!
+    test.md:14:1:write-good.StartsWithSo:Don't start a sentence with 'So '
+    test.md:23:15:write-good.StartsWithSo:Don't start a sentence with '; so '
+    test.md:25:1:write-good.ThereIs:Don't start a sentence with 'There is'
+    test.md:27:1:write-good.ThereIs:Don't start a sentence with 'There are'
+    test.md:29:18:write-good.WeasalWords:'simply' is a weasal word!
+    test.md:31:18:write-good.WeasalWords:'extremely' is a weasal word!
+    test.md:33:8:write-good.PassiveVoice:'been said'
+    test.md:33:23:write-good.WeasalWords:'few' is a weasal word!
+    test.md:35:1:write-good.TooWordy:'As a matter of fact' is too wordy
+    test.md:37:32:write-good.TooWordy:'impacted' is too wordy
+    test.md:39:23:write-good.NoCliches:'at loose ends' is a cliché
     """
 
   Scenario: Lint against demo

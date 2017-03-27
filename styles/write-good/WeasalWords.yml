@@ -1,5 +1,5 @@
 extends: existence
-message: "'%s' - Adverbs can weaken meaning"
+message: "'%s' is a weasal word!"
 ignorecase: true
 level: warning
 tokens:
@@ -66,6 +66,7 @@ tokens:
   - fiercely
   - finally
   - fondly
+  - few
   - foolishly
   - fortunately
   - frankly
@@ -145,6 +146,7 @@ tokens:
   - recently
   - recklessly
   - regularly
+  - remarkably
   - relatively
   - reluctantly
   - repeatedly
