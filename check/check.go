@@ -141,7 +141,11 @@ func checkRepetition(txt string, chk Repetition, f *core.File, r *regexp.Regexp)
 	alerts := []core.Alert{}
 	for _, loc := range r.FindAllStringIndex(txt, -1) {
 		curr = strings.TrimSpace(txt[loc[0]:loc[1]])
-		hit = curr == prev && curr != ""
+		if chk.Ignorecase {
+			hit = strings.ToLower(curr) == strings.ToLower(prev) && curr != ""
+		} else {
+			hit = curr == prev && curr != ""
+		}
 		if hit {
 			count++
 		}
