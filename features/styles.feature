@@ -128,3 +128,34 @@ Feature: Styles
     test.md:15:117:Homebrew.Pronouns:Avoid gender-specific language when not necessary.
     test.rst:11:19:Homebrew.FixedWidth:' git ' should be in fixed width font.
     """
+
+  Scenario: Lint against Joblint
+    When I apply style "Joblint"
+    Then the output should contain exactly:
+    """
+    browser.html:5:12:Joblint.TechTerms:Use 'JavaScript' instead of 'java script'
+    browser.html:5:24:Joblint.Gendered:Avoid using 'dude'
+    oh-dear.txt:4:21:Joblint.Profanity:Remove 'fucking'
+    oh-dear.txt:4:37:Joblint.TechTerms:Use 'JavaScript' instead of 'java script'
+    oh-dear.txt:4:49:Joblint.Gendered:Avoid using 'dude'
+    oh-dear.txt:4:76:Joblint.DumbTitles:Avoid using 'ninja'
+    oh-dear.txt:5:59:Joblint.Bro:Avoid using 'crush'
+    oh-dear.txt:7:13:Joblint.Profanity:Remove 'damn'
+    oh-dear.txt:7:18:Joblint.Sexualised:Avoid using 'sexy'
+    oh-dear.txt:7:49:Joblint.LegacyTech:Avoid using 'Frontpage'
+    oh-dear.txt:7:85:Joblint.DevEnv:Don't specify a development environment unless absolutely necessary.
+    oh-dear.txt:7:145:Joblint.Competitive:Avoid using 'top of your game'
+    oh-dear.txt:7:179:Joblint.Visionary:Avoid using 'enlightened'
+    oh-dear.txt:9:69:Joblint.LegacyTech:Avoid using 'VBScript'
+    oh-dear.txt:9:91:Joblint.Gendered:Avoid using 'He'
+    oh-dear.txt:9:112:Joblint.Starter:Avoid using 'hit the ground running'
+    oh-dear.txt:9:145:Joblint.Competitive:Avoid using 'cutting-edge'
+    oh-dear.txt:9:159:Joblint.Meritocracy:Reevaluate the use of 'meritocratic'
+    oh-dear.txt:11:24:Joblint.Benefits:Avoid using 'pool table'
+    oh-dear.txt:11:52:Joblint.Benefits:Avoid using 'beer'
+    oh-dear.txt:11:71:Joblint.Reassure:Avoid using 'drama-free'
+    oh-dear.txt:11:118:Joblint.DumbTitles:Avoid using 'heroic'
+    oh-dear.txt:14:21:Joblint.Hair:Avoid using 'beards'
+    realistic.txt:4:32:Joblint.TechTerms:Use 'JavaScript' instead of 'java script'
+    realistic.txt:4:44:Joblint.Gendered:Avoid using 'guy'
+    """
