@@ -1,1 +1,1 @@
-Based on Homebrew's [Prose Style Guidelines](https://github.com/Homebrew/brew/blob/master/docs/Prose-Style-Guidelines.md.)
+Based on Homebrew's [Prose Style Guidelines](http://docs.brew.sh/Prose-Style-Guidelines.html).
