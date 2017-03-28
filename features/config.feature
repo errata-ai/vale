@@ -72,7 +72,7 @@ Feature: Config
     """
     test.md:1:11:vale.Editorializing:Consider removing 'very'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.WeasalWords:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
     """
     And the exit status should be 1
 
@@ -95,7 +95,7 @@ Feature: Config
     """
     test.md:1:11:vale.Editorializing:Consider removing 'very'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.WeasalWords:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
     """
     And the exit status should be 1
 
@@ -115,7 +115,7 @@ Feature: Config
     Then the output should contain exactly:
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.WeasalWords:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
     """
     And the exit status should be 1
 
@@ -133,7 +133,7 @@ Feature: Config
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:3:TheEconomist.UnnecessaryWords:'There is' - See section 'Unnecessary words'
-    test.py:1:37:write-good.WeasalWords:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
     test.py:1:49:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'
     """
     And the exit status should be 1
@@ -231,11 +231,11 @@ Feature: Config
     MinAlertLevel = error
 
     [*.{md,py}]
-    write-good.WeasalWords = error
+    write-good.Weasal = error
     """
     When I run vale "test.py"
     Then the output should contain exactly:
     """
-    test.py:1:37:write-good.WeasalWords:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
     """
     And the exit status should be 1
