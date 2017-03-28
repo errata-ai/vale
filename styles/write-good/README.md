@@ -1,5 +1,7 @@
 Based on [write-good](https://github.com/btford/write-good).
 
+> Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.
+
 ```
 The MIT License (MIT)
 
