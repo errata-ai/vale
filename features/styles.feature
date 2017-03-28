@@ -139,6 +139,7 @@ Feature: Styles
     oh-dear.txt:4:37:Joblint.TechTerms:Use 'JavaScript' instead of 'java script'
     oh-dear.txt:4:49:Joblint.Gendered:Avoid using 'dude'
     oh-dear.txt:4:76:Joblint.DumbTitles:Avoid using 'ninja'
+    oh-dear.txt:5:19:Joblint.TechTerms:Use 'JavaScript' instead of 'javascript'
     oh-dear.txt:5:59:Joblint.Bro:Avoid using 'crush'
     oh-dear.txt:7:13:Joblint.Profanity:Remove 'damn'
     oh-dear.txt:7:18:Joblint.Sexualised:Avoid using 'sexy'
@@ -158,4 +159,5 @@ Feature: Styles
     oh-dear.txt:14:21:Joblint.Hair:Avoid using 'beards'
     realistic.txt:4:32:Joblint.TechTerms:Use 'JavaScript' instead of 'java script'
     realistic.txt:4:44:Joblint.Gendered:Avoid using 'guy'
+    realistic.txt:5:19:Joblint.TechTerms:Use 'JavaScript' instead of 'javascript'
     """
