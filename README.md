@@ -29,3 +29,18 @@ $ brew install vale
 Manually install for **Windows**, **macOS** and **Linux**
 
 Download and install an executable from the [releases page](https://github.com/valelint/vale/releases).
+
+## Usage
+
+**CLI**
+
+```shell
+$ vale README.md
+```
+
+Run `vale --help` for more information.
+
+**Integrations**
+
+- [x] [Atom](https://github.com/TimKam/atomic-vale)
+- [x] [Sublime Text](https://github.com/ValeLint/SubVale)
