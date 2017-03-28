@@ -78,6 +78,7 @@ setup:
 	go get -u github.com/jteeuwen/go-bindata/...
 	go get -u github.com/fatih/color
 	go get -u github.com/olekukonko/tablewriter
+	go get -u github.com/client9/misspell/cmd/misspell
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
 	go get ./core ./lint ./ui ./check
 	gometalinter --install
