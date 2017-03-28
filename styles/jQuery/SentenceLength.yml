@@ -1,7 +1,7 @@
 extends: occurrence
 message: 'Keep sentences short and to the point'
 link: 'https://contribute.jquery.org/style-guide/prose/#article-amp-sentence-structure'
-description: 'A good rule-of-thumb is to break up any sentence longer than 21 words into two or more seperate thoughts.'
+description: 'A good rule-of-thumb is to break up any sentence longer than 21 words into two or more separate thoughts.'
 scope: sentence
 level: warning
 max: 21

@@ -48,6 +48,7 @@ install:
 test:
 	go test -v ./core ./lint
 	cucumber
+	misspell -error rule styles
 
 bench:
 	go test -bench=. ./lint
