@@ -29,6 +29,11 @@ Feature: Styles
     test.md:35:1:write-good.TooWordy:'As a matter of fact' is too wordy
     test.md:37:32:write-good.TooWordy:'impacted' is too wordy
     test.md:39:23:write-good.Cliches:'at loose ends' is a cliché
+    test.txt:1:8:write-good.E-Prime:Avoid using "is"
+    test.txt:3:12:write-good.E-Prime:Avoid using "was"
+    test.txt:5:1:write-good.E-Prime:Avoid using "I'm"
+    test.txt:9:1:write-good.E-Prime:Avoid using "I'm"
+    test.txt:9:57:write-good.E-Prime:Avoid using "was"
     """
 
   Scenario: Lint against demo

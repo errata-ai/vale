@@ -66,6 +66,7 @@ Feature: Config
 
     [*.py]
     BasedOnStyles = write-good
+    write-good.E-Prime = NO
     """
     When I run vale "."
     Then the output should contain exactly:
@@ -87,15 +88,14 @@ Feature: Config
 
     [*.py]
     BasedOnStyles = write-good
-    write-good.Adverbs = NO
-    vale.WeasalWords = YES
+    write-good.E-Prime = NO
+    write-good.Weasal = NO
     """
     When I run vale "."
     Then the output should contain exactly:
     """
     test.md:1:11:vale.Editorializing:Consider removing 'very'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
     """
     And the exit status should be 1
 
@@ -110,6 +110,7 @@ Feature: Config
 
     [*.py]
     BasedOnStyles = write-good
+    write-good.E-Prime = NO
     """
     When I run vale "test.py"
     Then the output should contain exactly:
@@ -127,6 +128,7 @@ Feature: Config
 
     [*]
     BasedOnStyles = TheEconomist, write-good
+    write-good.E-Prime = NO
     """
     When I run vale "test.py"
     Then the output should contain exactly:
