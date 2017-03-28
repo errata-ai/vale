@@ -198,7 +198,7 @@ func (l Linter) lintLines(f *core.File) {
 	var line string
 	lines := 1
 	for f.Scanner.Scan() {
-		line = f.Scanner.Text() + "\n"
+		line = core.PrepText(f.Scanner.Text() + "\n")
 		l.lintText(f, NewBlock("", line, "text"+f.RealExt), lines+1, 0)
 		lines++
 	}
