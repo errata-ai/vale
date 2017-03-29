@@ -18,13 +18,7 @@ type Glob struct {
 }
 
 // CLConfig holds our command-line configuration.
-var CLConfig struct {
-	Output string // (optional) output style ("line" or "CLI")
-	Wrap   bool   // (optional) wrap output when CLI style
-	NoExit bool   // (optional) don't return a nonzero exit code on lint errors
-	Sorted bool   // (optional) sort files by their name for output
-	Simple bool   // (optional) lint all files line-by-line
-}
+var CLConfig = clConfig{}
 
 // Config holds our .vale configuration.
 var Config = loadOptions()
@@ -37,6 +31,14 @@ var LevelToInt = map[string]int{
 	"suggestion": 0,
 	"warning":    1,
 	"error":      2,
+}
+
+type clConfig struct {
+	Output string // (optional) output style ("line" or "CLI")
+	Wrap   bool   // (optional) wrap output when CLI style
+	NoExit bool   // (optional) don't return a nonzero exit code on lint errors
+	Sorted bool   // (optional) sort files by their name for output
+	Simple bool   // (optional) lint all files line-by-line
 }
 
 type config struct {
