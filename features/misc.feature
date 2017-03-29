@@ -16,6 +16,17 @@ Feature: Misc
     CRLF.md:32:11:vale.Editorializing:Consider removing 'very'
     """
 
+  Scenario: Unicode
+    When I test "misc/unicode"
+    Then the output should contain exactly:
+    """
+    test.py:2:27:vale.Hedging:Consider removing 'probably'
+    test.rst:1:36:vale.Annotations:'TODO' left in text
+    test.rst:2:55:vale.Hedging:Consider removing 'probably'
+    test.txt:1:36:vale.Annotations:'TODO' left in text
+    test.txt:2:55:vale.Hedging:Consider removing 'probably'
+    """
+
   Scenario: Duplicate matches
     When I run vale "test.md"
     Then the output should contain exactly:

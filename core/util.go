@@ -15,6 +15,87 @@ import (
 // ExeDir is our starting location.
 var ExeDir string
 
+// sanitizer replaces a set of unicode characters with ASCII equivalents.
+var sanitizer = strings.NewReplacer(
+	"À", "A",
+	"Á", "A",
+	"Â", "A",
+	"Ã", "A",
+	"Ä", "A",
+	"Å", "AA",
+	"Æ", "AE",
+	"Ç", "C",
+	"È", "E",
+	"É", "E",
+	"Ê", "E",
+	"Ë", "E",
+	"Ì", "I",
+	"Í", "I",
+	"Î", "I",
+	"Ï", "I",
+	"Ð", "D",
+	"Ł", "L",
+	"Ñ", "N",
+	"Ò", "O",
+	"Ó", "O",
+	"Ô", "O",
+	"Õ", "O",
+	"Ö", "O",
+	"Ø", "OE",
+	"Ù", "U",
+	"Ú", "U",
+	"Ü", "U",
+	"Û", "U",
+	"Ý", "Y",
+	"Þ", "Th",
+	"ß", "ss",
+	"à", "a",
+	"á", "a",
+	"â", "a",
+	"ã", "a",
+	"ä", "a",
+	"å", "aa",
+	"æ", "ae",
+	"ç", "c",
+	"è", "e",
+	"é", "e",
+	"ê", "e",
+	"ë", "e",
+	"ì", "i",
+	"í", "i",
+	"î", "i",
+	"ï", "i",
+	"ð", "d",
+	"ł", "l",
+	"ñ", "n",
+	"ń", "n",
+	"ò", "o",
+	"ó", "o",
+	"ô", "o",
+	"õ", "o",
+	"ō", "o",
+	"ö", "o",
+	"ø", "oe",
+	"ś", "s",
+	"ù", "u",
+	"ú", "u",
+	"û", "u",
+	"ū", "u",
+	"ü", "u",
+	"ý", "y",
+	"þ", "th",
+	"ÿ", "y",
+	"ż", "z",
+	"Œ", "OE",
+	"œ", "oe",
+	"\u201c", `"`,
+	"\u201d", `"`,
+	"\u2018", "'",
+	"\u2019", "'",
+	"\u2013", "-",
+	"\u2014", "-",
+	"\u2026", "...")
+
 // Which checks for the existence of any command in `cmds`.
 func Which(cmds []string) string {
 	for _, cmd := range cmds {
@@ -119,20 +200,9 @@ func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
 
 // PrepText prepares text for our check functions.
 func PrepText(txt string) string {
-	replacements := map[string]string{
-		"\u201c": `"`,
-		"\u201d": `"`,
-		"\u2018": "'",
-		"\u2019": "'",
-		"\u2013": "-",
-		"\u2014": "-",
-	}
-	for old, new := range replacements {
-		txt = strings.Replace(txt, old, new, -1)
-	}
 	txt = strings.Replace(txt, "\r\n", "\n", -1)
 	txt = strings.Replace(txt, "\r", "\n", -1)
-	return txt
+	return sanitizer.Replace(txt)
 }
 
 // FormatFromExt takes a file extension and returns its [normExt, format]
