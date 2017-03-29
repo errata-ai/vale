@@ -43,8 +43,13 @@ func Substitute(src string, sub string) (string, bool) {
 	if idx < 0 {
 		return src, false
 	}
-	count := len(sub)
-	return src[:idx] + strings.Repeat("*", count) + src[idx+count:], true
+	repl := strings.Map(func(r rune) rune {
+		if r != '\n' {
+			return '*'
+		}
+		return r
+	}, sub)
+	return src[:idx] + repl + src[idx+len(sub):], true
 }
 
 // StringsToInterface converts a slice of strings to an interface.

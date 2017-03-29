@@ -23,7 +23,6 @@ Feature: Checks
     test.md:7:371:vale.PassiveVoice:'are covered' is passive voice
     test.rst:8:51:vale.PassiveVoice:'be prompted' is passive voice
     test.rst:9:57:vale.PassiveVoice:'is sent' is passive voice
-    test.rst:11:71:vale.PassiveVoice:'is supported' is passive voice
     test.rst:17:51:vale.PassiveVoice:'be omitted' is passive voice
     test.rst:23:11:vale.PassiveVoice:'be applied' is passive voice
     test.rst:27:1:vale.PassiveVoice:'be used' is passive voice

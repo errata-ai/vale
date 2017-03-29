@@ -108,7 +108,6 @@ Feature: Styles
     test.rs:13:24:jQuery.Numbers:Spell out numbers below 10 and use numerals for numbers 10 and above
     test.rst:8:51:jQuery.PassiveVoice:"be prompted" is passive voice
     test.rst:9:57:jQuery.PassiveVoice:"is sent" is passive voice
-    test.rst:11:71:jQuery.PassiveVoice:"is supported" is passive voice
     test.rst:17:51:jQuery.PassiveVoice:"be omitted" is passive voice
     test.rst:23:11:jQuery.PassiveVoice:"be applied" is passive voice
     test.rst:27:1:jQuery.PassiveVoice:"be used" is passive voice
