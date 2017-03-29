@@ -88,7 +88,7 @@ func (f *File) SortedAlerts() []Alert {
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
 func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
-	substring := strings.Split(txt[a.Span[0]:a.Span[1]], "\n")[0]
+	substring := txt[a.Span[0]:a.Span[1]]
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old
 	}

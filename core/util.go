@@ -90,7 +90,7 @@ func initialPosition(ctx string, substring string, loc []int) int {
 func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
 	var length int
 
-	substring := strings.Split(s[loc[0]:loc[1]], "\n")[0]
+	substring := s[loc[0]:loc[1]]
 	pos := initialPosition(ctx, substring, loc)
 
 	counter := 0
