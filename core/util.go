@@ -65,24 +65,25 @@ func DumpConfig() string {
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).
 func initialPosition(ctx string, substring string, loc []int) int {
-	if strings.Count(ctx, substring) > 1 {
+	idx := strings.Index(ctx, substring)
+	pat := `(?:\b|_)` + regexp.QuoteMeta(substring) + `(?:\b|_)`
+	query := ctx[Max(idx-1, 0):Min(idx+len(substring), len(ctx))]
+	if match, err := regexp.MatchString(pat, query); err != nil || !match {
 		// If there's more than one, we take the first bounded option.
 		// For example, given that we're looking for "very", "every" => nested
 		// and " very " => bounded.
-		subctx := ctx[loc[0]:]
-		pat := fmt.Sprintf(`(?:\b|_)%s(?:\b|_)`, regexp.QuoteMeta(substring))
-		sloc := regexp.MustCompile(pat).FindStringIndex(subctx)
+		sloc := regexp.MustCompile(pat).FindStringIndex(ctx)
 		if len(sloc) > 0 {
 			pos := sloc[0]
 			if strings.HasPrefix(ctx[pos:], "_") {
 				pos++ // We don't want to include the underscore boundary.
 			}
-			return pos + (len(ctx) - len(subctx)) + 1
+			return pos + 1
 		}
 	}
-	// If there's only one option or no bounded option, we take the first
-	// occurrence of `substring`.
-	return strings.Index(ctx, substring) + 1
+	// If the first match is bounded or there's no bounded option, we take the
+	// first occurrence of `substring`.
+	return idx + 1
 }
 
 // FindLoc calculates the line and span of an Alert.
@@ -152,6 +153,22 @@ func IsDir(filename string) bool {
 func FileExists(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil
+}
+
+// Min returns the min of `a` and `b`.
+func Min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+// Max returns the max of `a` and `b`.
+func Max(a, b int) int {
+	if a < b {
+		return b
+	}
+	return a
 }
 
 // StringInSlice determines if `slice` contains the string `a`.
