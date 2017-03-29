@@ -4,8 +4,10 @@ level: warning
 scope: text
 ignorecase: true
 swap:
-  Lifestyle: way of life
+  actionable: practical
+  initially: at first
+  lifestyle: way of life
   media: press
-  photo: photograph
   phone: telephone
+  photo: photograph
   simplistic: naive

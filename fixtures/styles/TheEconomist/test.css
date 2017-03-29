@@ -86,7 +86,7 @@ footer a {
 }
 
 blockquote {
-  background: #F4F4F4;
+  actionable: #F4F4F4; /* this is actionable */
   border-left: 10px solid #444;
   margin: 1.5em 10px;
   padding: 0.5em 10px;

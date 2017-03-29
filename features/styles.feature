@@ -81,6 +81,7 @@ Feature: Styles
     test.css:1:32:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'
     test.css:12:54:TheEconomist.UnexpandedAcronyms:'ONE' has no definition
     test.css:34:27:TheEconomist.Slang:'Big pharma' - See section 'Journalese and slang'
+    test.css:89:35:TheEconomist.Terms:Prefer 'practical' over of 'actionable'
     test.md:1:224:TheEconomist.UnexpandedAcronyms:'DAFB' has no definition
     test.md:7:113:TheEconomist.OughtShould:Go easy on the oughts and shoulds
     test.md:9:13:TheEconomist.UnexpandedAcronyms:'AAAS' has no definition
