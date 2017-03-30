@@ -15,6 +15,15 @@ import (
 // ExeDir is our starting location.
 var ExeDir string
 
+// Stat checks if we have anything waiting in stdin.
+func Stat() bool {
+	stat, err := os.Stdin.Stat()
+	if err != nil || (stat.Mode()&os.ModeCharDevice) != 0 {
+		return false
+	}
+	return true
+}
+
 // Which checks for the existence of any command in `cmds`.
 func Which(cmds []string) string {
 	for _, cmd := range cmds {

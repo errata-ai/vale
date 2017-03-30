@@ -34,3 +34,21 @@ When(/^I test glob "(.*)"$/) do |glob|
   step %(I cd to "../../fixtures/formats")
   step %(I run `#{exe} --glob='#{glob}' .`)
 end
+
+When(/^I run cat "([^\s]+)" "([^\s]+)"$/) do |file, ext|
+  step %(I cd to "../../fixtures/formats")
+  if OS.windows?
+    step %(I run `PowerShell -Command Get-Content #{file} | #{exe} --ext='#{ext}'`)
+  else
+    step %(I run `bash -c 'cat #{file} | #{exe} --ext="#{ext}"'`)
+  end
+end
+
+When(/^I lint string "(.*)"$/) do |string|
+  step %(I cd to "../../fixtures/formats")
+  if OS.windows?
+    step %(I run `#{exe} --% #{string}`)
+  else
+    step %(I run `#{exe} #{string}`)
+  end
+end

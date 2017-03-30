@@ -2,8 +2,10 @@ package lint
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -33,6 +35,11 @@ func NewBlock(ctx string, txt string, sel string) Block {
 		ctx = txt
 	}
 	return Block{Context: ctx, Text: txt, Scope: core.Selector{Value: sel}}
+}
+
+// LintString src according to its format.
+func (l Linter) LintString(src string) ([]core.File, error) {
+	return []core.File{l.lintFile(src)}, nil
 }
 
 // Lint src according to its format.
@@ -105,14 +112,21 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 
 func (l Linter) lintFile(src string) core.File {
 	var file core.File
+	var scanner *bufio.Scanner
+	var format, ext string
+	var fbytes []byte
 
-	f, err := os.Open(src)
-	if !core.CheckError(err, src) {
-		return file
+	if core.FileExists(src) {
+		fbytes, _ = ioutil.ReadFile(src)
+		scanner = bufio.NewScanner(bytes.NewReader(fbytes))
+		ext, format = core.FormatFromExt(src)
+	} else {
+		scanner = bufio.NewScanner(strings.NewReader(src))
+		ext, format = core.FormatFromExt(core.CLConfig.InExt)
+		fbytes = []byte(src)
+		src = "<stdin>"
 	}
-	defer core.CheckAndClose(f)
 
-	ext, format := core.FormatFromExt(src)
 	baseStyles := core.Config.GBaseStyles
 	for sec, styles := range core.Config.SBaseStyles {
 		pat, err := glob.Compile(sec)
@@ -131,11 +145,10 @@ func (l Linter) lintFile(src string) core.File {
 		}
 	}
 
-	scanner := bufio.NewScanner(f)
 	scanner.Split(tokenize.SplitLines)
 	file = core.File{
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
-		BaseStyles: baseStyles, Checks: checks, Scanner: scanner,
+		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Content: fbytes,
 	}
 
 	l.lintFormat(&file)

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -34,6 +35,12 @@ func main() {
 			Value:       "CLI",
 			Usage:       `output style ("line" or "JSON")`,
 			Destination: &core.CLConfig.Output,
+		},
+		cli.StringFlag{
+			Name:        "ext",
+			Value:       ".txt",
+			Usage:       `extension to associate with stdin`,
+			Destination: &core.CLConfig.InExt,
 		},
 		cli.BoolFlag{
 			Name:        "no-wrap",
@@ -86,10 +93,25 @@ func main() {
 		var linted []core.File
 		var err error
 		var hasAlerts bool
+		var src string
 
-		if c.NArg() > 0 {
+		if c.NArg() > 0 || core.Stat() {
+			if c.NArg() > 0 {
+				src = c.Args()[0]
+			} else {
+				stdin, _ := ioutil.ReadAll(os.Stdin)
+				src = string(stdin)
+			}
+
+			// Do we a directory/file or a string?
 			l := new(lint.Linter)
-			linted, err = l.Lint(c.Args()[0], glob)
+			if core.IsDir(src) || core.FileExists(src) {
+				linted, err = l.Lint(src, glob)
+			} else {
+				linted, err = l.LintString(src)
+			}
+
+			// How should we style the output?
 			if core.CLConfig.Output == "line" {
 				hasAlerts = ui.PrintLineAlerts(linted)
 			} else if core.CLConfig.Output == "JSON" {
@@ -97,11 +119,15 @@ func main() {
 			} else {
 				hasAlerts = ui.PrintVerboseAlerts(linted)
 			}
+
+			// Should return a nonzero vale on errors?
 			if err == nil && hasAlerts && !core.CLConfig.NoExit {
 				err = errors.New("")
 			}
+
 			return err
 		}
+
 		cli.ShowAppHelp(c)
 		return nil
 	}

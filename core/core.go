@@ -10,17 +10,18 @@ import (
 
 // A File represents a linted text file.
 type File struct {
-	Alerts     []Alert         // all alerts associated with this file
-	BaseStyles []string        // base style assigned in .vale
-	Checks     map[string]bool // syntax-specific checks assigned in .txtint
-	ChkToCtx   map[string]string
-	Counts     map[string]int // word counts
-	Format     string         // 'code', 'markup' or 'prose'
-	NormedExt  string         // the normalized extension (see util/format.go)
-	Path       string         // the full path
-	RealExt    string         // actual file extension
-	Scanner    *bufio.Scanner // used by lintXXX functions
-	Sequences  []string       // tracks various info (e.g., defined abbreviations)
+	Alerts     []Alert           // all alerts associated with this file
+	BaseStyles []string          // base style assigned in .vale
+	Checks     map[string]bool   // syntax-specific checks assigned in .txtint
+	ChkToCtx   map[string]string // maps a temporary context to a particular check
+	Content    []byte            // the raw file contents
+	Counts     map[string]int    // word counts
+	Format     string            // 'code', 'markup' or 'prose'
+	NormedExt  string            // the normalized extension (see util/format.go)
+	Path       string            // the full path
+	RealExt    string            // actual file extension
+	Scanner    *bufio.Scanner    // used by lintXXX functions
+	Sequences  []string          // tracks various info (e.g., defined abbreviations)
 }
 
 // An Alert represents a potential error in prose.

@@ -39,6 +39,7 @@ type clConfig struct {
 	NoExit bool   // (optional) don't return a nonzero exit code on lint errors
 	Sorted bool   // (optional) sort files by their name for output
 	Simple bool   // (optional) lint all files line-by-line
+	InExt  string // (optional) extension to associate with stdin
 }
 
 type config struct {

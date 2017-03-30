@@ -2,7 +2,6 @@ package lint
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os/exec"
 	"strings"
 
@@ -122,45 +121,30 @@ func updateCtx(ctx string, txt string, tokt html.TokenType) string {
 }
 
 func (l Linter) lintHTML(f *core.File) {
-	b, err := ioutil.ReadFile(f.Path)
-	if !core.CheckError(err, f.Path) {
-		return
-	}
-	l.lintHTMLTokens(f, b, b, 0)
+	l.lintHTMLTokens(f, f.Content, f.Content, 0)
 }
 
 func (l Linter) lintMarkdown(f *core.File) {
-	b, err := ioutil.ReadFile(f.Path)
-	if !core.CheckError(err, f.Path) {
-		return
-	}
-	l.lintHTMLTokens(f, b, blackfriday.MarkdownOptions(b, renderer, options), 0)
+	html := blackfriday.MarkdownOptions(f.Content, renderer, options)
+	l.lintHTMLTokens(f, f.Content, html, 0)
 }
 
 func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 	var out bytes.Buffer
-	b, err := ioutil.ReadFile(f.Path)
-	if !core.CheckError(err, f.Path) {
-		return
-	}
 	cmd := exec.Command(python, append([]string{rst2html}, rstArgs...)...)
-	cmd.Stdin = bytes.NewReader(reCodeBlock.ReplaceAll(b, []byte("::")))
+	cmd.Stdin = bytes.NewReader(reCodeBlock.ReplaceAll(f.Content, []byte("::")))
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run(), f.Path) {
-		l.lintHTMLTokens(f, b, out.Bytes(), 0)
+		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
 	}
 }
 
 func (l Linter) lintADoc(f *core.File, asciidoctor string) {
 	var out bytes.Buffer
-	b, err := ioutil.ReadFile(f.Path)
-	if !core.CheckError(err, f.Path) {
-		return
-	}
 	cmd := exec.Command(asciidoctor, adocArgs...)
-	cmd.Stdin = bytes.NewReader(b)
+	cmd.Stdin = bytes.NewReader(f.Content)
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run(), f.Path) {
-		l.lintHTMLTokens(f, b, out.Bytes(), 0)
+		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
 	}
 }

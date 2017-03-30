@@ -79,6 +79,7 @@ setup:
 	go get -u github.com/fatih/color
 	go get -u github.com/olekukonko/tablewriter
 	go get -u github.com/client9/misspell/cmd/misspell
+	go get -u github.com/andrew-d/go-termutil
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
 	go get ./core ./lint ./ui ./check
 	gometalinter --install
