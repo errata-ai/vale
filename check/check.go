@@ -443,7 +443,7 @@ func addCheck(file []byte, chkName string) error {
 	if level, ok := core.Config.RuleToLevel[chkName]; ok {
 		generic["level"] = level
 	} else if _, ok := generic["level"]; !ok {
-		generic["level"] = "suggestion"
+		generic["level"] = "warning"
 	}
 	if _, ok := generic["scope"]; !ok {
 		generic["scope"] = "text"

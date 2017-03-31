@@ -58,7 +58,7 @@ func newConfig() *config {
 	cfg.GChecks = make(map[string]bool)
 	cfg.SBaseStyles = make(map[string][]string)
 	cfg.SChecks = make(map[string]map[string]bool)
-	cfg.MinAlertLevel = 0
+	cfg.MinAlertLevel = 1
 	cfg.GBaseStyles = []string{"vale"}
 	cfg.RuleToLevel = make(map[string]string)
 	return &cfg
@@ -133,7 +133,7 @@ func loadOptions() config {
 		if k == "StylesPath" {
 			cfg.StylesPath = determinePath(path, core.Key(k).MustString(""))
 		} else if k == "MinAlertLevel" {
-			level := core.Key(k).In("suggestion", AlertLevels)
+			level := core.Key(k).In("warning", AlertLevels)
 			cfg.MinAlertLevel = LevelToInt[level]
 		}
 	}
