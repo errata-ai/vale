@@ -61,7 +61,9 @@ func init() {
 		if !core.StringInSlice(check[0], loadedStyles) {
 			fName := check[1] + ".yml"
 			path = filepath.Join(baseDir, check[0], fName)
-			loadCheck(fName, path)
+			if err := loadCheck(fName, path); err != nil {
+				jww.ERROR.Printf("%s: %s", fName, err.Error())
+			}
 		}
 	}
 }
@@ -414,23 +416,26 @@ func makeCheck(generic map[string]interface{}, extends string, chkName string) {
 	}
 }
 
-func addCheck(file []byte, chkName string) {
-	var extends string
+func validateDefinition(generic map[string]interface{}, name string) error {
+	msg := name + ": %s!"
+	if point, ok := generic["extends"]; !ok {
+		return fmt.Errorf(msg, "missing extension point")
+	} else if !core.StringInSlice(point.(string), extensionPoints) {
+		return fmt.Errorf(msg, "unknown extension point")
+	} else if _, ok := generic["message"]; !ok {
+		return fmt.Errorf(msg, "missing message")
+	}
+	return nil
+}
 
+func addCheck(file []byte, chkName string) error {
 	// Load the rule definition.
 	generic := map[string]interface{}{}
 	err := yaml.Unmarshal(file, &generic)
 	if !core.CheckError(err, fmt.Sprintf("unable to read %s!", chkName)) {
-		return
-	}
-
-	// Ensure that we're given an extension point.
-	if point, ok := generic["extends"]; !ok {
-		return
-	} else if !core.StringInSlice(point.(string), extensionPoints) {
-		return
-	} else {
-		extends = point.(string)
+		return err
+	} else if defErr := validateDefinition(generic, chkName); defErr != nil {
+		return defErr
 	}
 
 	// Set default values, if necessary.
@@ -444,7 +449,8 @@ func addCheck(file []byte, chkName string) {
 		generic["scope"] = "text"
 	}
 
-	makeCheck(generic, extends, chkName)
+	makeCheck(generic, generic["extends"].(string), chkName)
+	return nil
 }
 
 func loadExternalStyle(path string) {
@@ -459,22 +465,21 @@ func loadExternalStyle(path string) {
 	core.CheckError(err, path)
 }
 
-func loadCheck(fName string, fp string) {
+func loadCheck(fName string, fp string) error {
 	if strings.HasSuffix(fName, ".yml") {
 		f, err := ioutil.ReadFile(fp)
 		if !core.CheckError(err, fmt.Sprintf("unable to read %s!", fp)) {
-			return
+			return err
 		}
 
 		style := filepath.Base(filepath.Dir(fp))
 		chkName := style + "." + strings.Split(fName, ".")[0]
 		if _, ok := AllChecks[chkName]; ok {
-			jww.WARN.Println(fmt.Sprintf("(%s): duplicate check\n", chkName))
-			return
+			return fmt.Errorf("(%s): duplicate check", chkName)
 		}
-
-		addCheck(f, chkName)
+		return addCheck(f, chkName)
 	}
+	return nil
 }
 
 func loadDefaultChecks() {

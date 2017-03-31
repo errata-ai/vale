@@ -5,6 +5,27 @@ import (
 	"testing"
 )
 
+var checktests = []struct {
+	check string
+	msg   string
+}{
+	{"NoExtends.yml", "YAML.NoExtends: missing extension point!"},
+	{"NoMsg.yml", "YAML.NoMsg: missing message!"},
+}
+
+func TestAddCheck(t *testing.T) {
+	for _, tt := range checktests {
+		path, err := filepath.Abs(filepath.Join("../fixtures/YAML", tt.check))
+		if err != nil {
+			panic(err)
+		}
+		s := loadCheck(tt.check, path)
+		if s.Error() != tt.msg {
+			t.Errorf("%q != %q", s.Error(), tt.msg)
+		}
+	}
+}
+
 var msgtests = []struct {
 	in   string
 	args []string
