@@ -1,2 +1,4 @@
+MinAlertLevel = suggestion
+
 [*]
 vale.Annotations = YES

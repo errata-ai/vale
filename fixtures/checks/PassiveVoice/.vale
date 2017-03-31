@@ -1,2 +1,2 @@
 [*]
-vale.PassiveVoice = YES
+vale.PassiveVoice = warning

@@ -1,4 +1,5 @@
 StylesPath = ../../../styles
+MinAlertLevel = suggestion
 
 [*.{cc,md}]
 BasedOnStyles = write-good

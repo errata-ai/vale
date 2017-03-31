@@ -1,4 +1,5 @@
 StylesPath = ../../../styles
+MinAlertLevel = suggestion
 
 [*]
 BasedOnStyles = demo
