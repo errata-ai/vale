@@ -134,7 +134,7 @@ func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 	cmd := exec.Command(python, append([]string{rst2html}, rstArgs...)...)
 	cmd.Stdin = bytes.NewReader(reCodeBlock.ReplaceAll(f.Content, []byte("::")))
 	cmd.Stdout = &out
-	if core.CheckError(cmd.Run(), f.Path) {
+	if core.CheckError(cmd.Run()) {
 		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
 	}
 }
@@ -144,7 +144,7 @@ func (l Linter) lintADoc(f *core.File, asciidoctor string) {
 	cmd := exec.Command(asciidoctor, adocArgs...)
 	cmd.Stdin = bytes.NewReader(f.Content)
 	cmd.Stdout = &out
-	if core.CheckError(cmd.Run(), f.Path) {
+	if core.CheckError(cmd.Run()) {
 		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
 	}
 }

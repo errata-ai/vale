@@ -54,7 +54,7 @@ func (l Linter) Lint(src string, pat string) ([]core.File, error) {
 		negate = true
 	}
 	g, gerr := glob.Compile(pat)
-	if !core.CheckError(gerr, "can't compile glob!") {
+	if !core.CheckError(gerr) {
 		return linted, gerr
 	}
 	glob := core.Glob{Pattern: g, Negated: negate}
@@ -130,7 +130,7 @@ func (l Linter) lintFile(src string) core.File {
 	baseStyles := core.Config.GBaseStyles
 	for sec, styles := range core.Config.SBaseStyles {
 		pat, err := glob.Compile(sec)
-		if core.CheckError(err, "can't compile glob!") && pat.Match(src) {
+		if core.CheckError(err) && pat.Match(src) {
 			baseStyles = styles
 			break
 		}
@@ -139,7 +139,7 @@ func (l Linter) lintFile(src string) core.File {
 	checks := make(map[string]bool)
 	for sec, smap := range core.Config.SChecks {
 		pat, err := glob.Compile(sec)
-		if core.CheckError(err, "can't compile glob!") && pat.Match(src) {
+		if core.CheckError(err) && pat.Match(src) {
 			checks = smap
 			break
 		}

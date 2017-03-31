@@ -69,7 +69,7 @@ func init() {
 }
 
 func checkRE(err error, rule string) bool {
-	return core.CheckError(err, fmt.Sprintf("bad regex in %s'!", rule))
+	return core.CheckError(err)
 }
 
 func formatMessages(msg string, desc string, subs ...string) (string, string) {
@@ -213,9 +213,9 @@ func checkScript(txt string, chkDef Script, exe string, f *core.File) []core.Ale
 	alerts := []core.Alert{}
 	cmd := exec.Command(chkDef.Runtime, exe, txt)
 	out, err := cmd.Output()
-	if core.CheckError(err, exe) {
+	if core.CheckError(err) {
 		merr := json.Unmarshal(out, &alerts)
-		core.CheckError(merr, exe)
+		core.CheckError(merr)
 	}
 	return alerts
 }
@@ -432,7 +432,7 @@ func addCheck(file []byte, chkName string) error {
 	// Load the rule definition.
 	generic := map[string]interface{}{}
 	err := yaml.Unmarshal(file, &generic)
-	if !core.CheckError(err, fmt.Sprintf("unable to read %s!", chkName)) {
+	if !core.CheckError(err) {
 		return err
 	} else if defErr := validateDefinition(generic, chkName); defErr != nil {
 		return defErr
@@ -459,16 +459,16 @@ func loadExternalStyle(path string) {
 			if err != nil || fi.IsDir() {
 				return nil
 			}
-			loadCheck(fi.Name(), fp)
+			core.CheckError(loadCheck(fi.Name(), fp))
 			return nil
 		})
-	core.CheckError(err, path)
+	core.CheckError(err)
 }
 
 func loadCheck(fName string, fp string) error {
 	if strings.HasSuffix(fName, ".yml") {
 		f, err := ioutil.ReadFile(fp)
-		if !core.CheckError(err, fmt.Sprintf("unable to read %s!", fp)) {
+		if !core.CheckError(err) {
 			return err
 		}
 
@@ -488,6 +488,6 @@ func loadDefaultChecks() {
 		if err != nil {
 			continue
 		}
-		addCheck(b, "vale."+chk)
+		core.CheckError(addCheck(b, "vale."+chk))
 	}
 }

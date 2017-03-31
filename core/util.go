@@ -203,9 +203,9 @@ func HasAnyPrefix(text string, slice []string) bool {
 }
 
 // CheckError prints any errors to stdout. A return value of true => no error.
-func CheckError(err error, message string) bool {
+func CheckError(err error) bool {
 	if err != nil {
-		jww.ERROR.Println(message)
+		jww.ERROR.Println(err.Error())
 	}
 	return err == nil
 }
@@ -214,7 +214,7 @@ func CheckError(err error, message string) bool {
 // A return value of true => no error.
 func CheckAndClose(file *os.File) bool {
 	err := file.Close()
-	return CheckError(err, file.Name())
+	return CheckError(err)
 }
 
 // sanitizer replaces a set of unicode characters with ASCII equivalents.
