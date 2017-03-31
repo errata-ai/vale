@@ -1,4 +1,0 @@
-extends: script
-scope: text
-runtime: python3
-exe: check_links.py
