@@ -46,7 +46,7 @@ install:
 	go install ${LDFLAGS}
 
 test:
-	go test -v ./core ./lint
+	go test -v ./core ./lint ./check
 	cucumber
 	misspell -error rule styles
 
