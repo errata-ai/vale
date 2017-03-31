@@ -51,7 +51,7 @@ test:
 	misspell -error rule styles
 
 bench:
-	go test -bench=. ./lint
+	go test -bench=. ./lint ./check
 
 ci: test lint
 
