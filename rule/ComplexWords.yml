@@ -1,71 +1,87 @@
 extends: substitution
-message: Consider using '%s' instead of '%s'
+message: Consider using %s instead of '%s'
 ignorecase: true
 level: warning
 swap:
-  abundance: plenty
-  accelerate: speed up
-  accentuate: stress
-  accompany: go with
-  accomplish: do
-  accorded: given
-  accrue: add
-  acquiesce: agree
-  acquire: get
-  additional: more
-  adjustment: change
-  admissible: allowed
-  advantageous: helpful
-  advise: tell
-  aggregate: total
-  aircraft: plane
-  alleviate: ease
-  allocate: assign
-  alternatively: or
-  ameliorate: improve
-  anticipate: expect
-  apparent: clear
-  appreciable: many
-  ascertain: discover
-  assistance: help
-  attain: meet
-  authorize: allow
-  belated: late
-  bestow: give
-  cease: stop
-  commence: begin
-  concerning: about
-  consequently: so
-  consolidate: merge
-  constitutes: forms
-  demonstrate: show
-  depart: leave
-  designate: choose
-  discontinue: stop
-  eliminate: end
-  elucidate: explain
-  employ: use
-  endeavor: try
-  enumerate: count
-  equitable: fair
-  equivalent: equal
-  exclusively: only
-  expedite: hurry
-  facilitate: ease
-  methodology: method
-  multiple: many
-  necessitate: cause
-  numerous: many
-  optimum: best
-  portion: part
-  possess: own
-  procure: buy
-  purchase: buy
-  relocate: move
-  solicit: request
-  state-of-the-art: latest
-  substantial: large
-  terminate: end
-  transmit: send
-  utilization: use
-  utilize: use
+  absent: "'none' or 'not here'"
+  abundance: "'plenty'"
+  accelerate: "'speed up'"
+  accentuate: "'stress'"
+  accompany: "'go with'"
+  accomplish: "'do'"
+  accorded: "'given'"
+  accrue: "'add'"
+  acquiesce: "'agree'"
+  acquire: "'get' or 'buy'"
+  additional: "'more' or 'extra'"
+  adjustment: "'change'"
+  admissible: "'allowed'"
+  advantageous: "'helpful'"
+  advise: "'tell'"
+  aggregate: "'total'"
+  aircraft: "'plane'"
+  alleviate: "'ease'"
+  allocate: "'assign' or 'divide'"
+  alternatively: "'or'"
+  alternatives: "'choices' or 'options'"
+  ameliorate: "'improve'"
+  amend: "'change'"
+  anticipate: "'expect'"
+  apparent: "'clear'"
+  appreciable: "'many'"
+  approximately: "'about'"
+  ascertain: "'discover'"
+  assistance: "'help'"
+  attain: "'meet'"
+  attempt: "'try'"
+  authorize: "'allow'"
+  belated: "'late'"
+  bestow: "'give'"
+  cease: "'stop' or 'end'"
+  collaborate: "'work together'"
+  commence: "'begin'"
+  compensate: "'pay'"
+  component: "'part'"
+  concept: "'idea'"
+  concerning: "'about'"
+  confer: "'give' or 'award'"
+  consequently: "'so'"
+  consolidate: "'merge'"
+  constitutes: "'forms'"
+  demonstrate: "'show' or 'prove'"
+  depart: "'leave'"
+  designate: "'choose'"
+  detrimental: "'bad' or 'harmful'"
+  disclose: "'share' or 'tell'"
+  discontinue: "'stop'"
+  eliminate: "'end'"
+  elucidate: "'explain'"
+  employ: "'use'"
+  enclosed: "inside or 'included'"
+  endeavor: "'try'"
+  enumerate: "'count'"
+  equitable: "'fair'"
+  equivalent: "'equal'"
+  exclusively: "'only'"
+  expedite: "'hurry'"
+  facilitate: "'ease'"
+  incorrect: "'wrong'"
+  itemized: "'listed'"
+  jeopardize: "'risk'"
+  methodology: "'method'"
+  multiple: "'many'"
+  necessitate: "'cause'"
+  numerous: "'many'"
+  optimum: "'best'"
+  portion: "'part'"
+  possess: "'own'"
+  procure: "'buy'"
+  purchase: "'buy'"
+  relocate: "'move'"
+  solicit: "'request'"
+  state-of-the-art: "'latest'"
+  substantial: "'large'"
+  terminate: "'end'"
+  transmit: "'send'"
+  utilization: "'use'"
+  utilize: "'use'"
