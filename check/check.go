@@ -12,7 +12,6 @@ import (
 	"github.com/ValeLint/vale/core"
 	"github.com/ValeLint/vale/rule"
 	"github.com/mitchellh/mapstructure"
-	jww "github.com/spf13/jwalterweatherman"
 	"gopkg.in/yaml.v2"
 	"matloob.io/regexp"
 )
@@ -61,15 +60,9 @@ func init() {
 		if !core.StringInSlice(check[0], loadedStyles) {
 			fName := check[1] + ".yml"
 			path = filepath.Join(baseDir, check[0], fName)
-			if err := loadCheck(fName, path); err != nil {
-				jww.ERROR.Printf("%s: %s", fName, err.Error())
-			}
+			core.CheckError(loadCheck(fName, path))
 		}
 	}
-}
-
-func checkRE(err error, rule string) bool {
-	return core.CheckError(err)
 }
 
 func formatMessages(msg string, desc string, subs ...string) (string, string) {
@@ -228,8 +221,6 @@ func addScriptCheck(chkName string, chkDef Script) {
 			return checkScript(text, chkDef, exe, file)
 		}
 		updateAllChecks(chkDef.Definition, fn)
-	} else {
-		jww.WARN.Println(fmt.Sprintf("script '%s' not found!", chkName))
 	}
 }
 
@@ -256,7 +247,7 @@ func addConsistencyCheck(chkName string, chkDef Consistency) {
 		chkRE = fmt.Sprintf("(?P<%s>%s)|(?P<%s>%s)", subs[0], v1, subs[1], v2)
 		chkRE = fmt.Sprintf(regex, chkRE)
 		re, err := regexp.Compile(chkRE)
-		if checkRE(err, chkName) {
+		if core.CheckError(err) {
 			chkDef.Extends = chkName
 			chkDef.Name = fmt.Sprintf("%s.%s", chkName, v1)
 			fn := func(text string, file *core.File) []core.Alert {
@@ -282,7 +273,7 @@ func addExistenceCheck(chkName string, chkDef Existence) {
 
 	regex = fmt.Sprintf(regex, strings.Join(chkDef.Tokens, "|"))
 	re, err := regexp.Compile(regex)
-	if checkRE(err, chkName) {
+	if core.CheckError(err) {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkExistence(text, chkDef, file, re)
 		}
@@ -297,7 +288,7 @@ func addRepetitionCheck(chkName string, chkDef Repetition) {
 	}
 	regex += `(` + strings.Join(chkDef.Tokens, "|") + `)`
 	re, err := regexp.Compile(regex)
-	if checkRE(err, chkName) {
+	if core.CheckError(err) {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkRepetition(text, chkDef, file, re)
 		}
@@ -307,7 +298,7 @@ func addRepetitionCheck(chkName string, chkDef Repetition) {
 
 func addOccurrenceCheck(chkName string, chkDef Occurrence) {
 	re, err := regexp.Compile(chkDef.Token)
-	if checkRE(err, chkName) && chkDef.Max >= 1 {
+	if core.CheckError(err) && chkDef.Max >= 1 {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkOccurrence(text, chkDef, file, re, chkDef.Max)
 		}
@@ -321,13 +312,13 @@ func addConditionalCheck(chkName string, chkDef Conditional) {
 	var err error
 
 	re, err = regexp.Compile(chkDef.Second)
-	if !checkRE(err, chkName) {
+	if !core.CheckError(err) {
 		return
 	}
 	expression = append(expression, re)
 
 	re, err = regexp.Compile(chkDef.First)
-	if !checkRE(err, chkName) {
+	if !core.CheckError(err) {
 		return
 	}
 	expression = append(expression, re)
@@ -362,7 +353,7 @@ func addSubstitutionCheck(chkName string, chkDef Substitution) {
 
 	regex = fmt.Sprintf(regex, strings.TrimRight(tokens, "|"))
 	re, err := regexp.Compile(regex)
-	if checkRE(err, chkName) {
+	if core.CheckError(err) {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkSubstitution(text, chkDef, file, re, replacements)
 		}

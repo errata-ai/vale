@@ -16,7 +16,6 @@ import (
 	"github.com/ValeLint/vale/core"
 	"github.com/gobwas/glob"
 	"github.com/jdkato/prose/tokenize"
-	jww "github.com/spf13/jwalterweatherman"
 )
 
 // A Linter lints a File.
@@ -163,7 +162,7 @@ func (l Linter) lintFormat(file *core.File) {
 			if cmd != "" {
 				l.lintADoc(file, cmd)
 			} else {
-				jww.ERROR.Println("asciidoctor not found!")
+				fmt.Println("asciidoctor not found!")
 			}
 		case ".md":
 			l.lintMarkdown(file)
@@ -173,8 +172,7 @@ func (l Linter) lintFormat(file *core.File) {
 			if cmd != "" && runtime != "" {
 				l.lintRST(file, runtime, cmd)
 			} else {
-				jww.ERROR.Println(fmt.Sprintf(
-					"can't run rst2html: (%s, %s)!", runtime, cmd))
+				fmt.Println(fmt.Sprintf("can't run rst2html: (%s, %s)!", runtime, cmd))
 			}
 		case ".html":
 			l.lintHTML(file)

@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	jww "github.com/spf13/jwalterweatherman"
 	"matloob.io/regexp"
 )
 
@@ -205,7 +204,7 @@ func HasAnyPrefix(text string, slice []string) bool {
 // CheckError prints any errors to stdout. A return value of true => no error.
 func CheckError(err error) bool {
 	if err != nil {
-		jww.ERROR.Println(err.Error())
+		fmt.Println(err.Error())
 	}
 	return err == nil
 }
