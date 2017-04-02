@@ -80,7 +80,7 @@ func DumpConfig() string {
 func initialPosition(ctx string, substring string, loc []int) int {
 	idx := strings.Index(ctx, substring)
 	pat := `(?:\b|_)` + regexp.QuoteMeta(substring) + `(?:\b|_)`
-	query := ctx[Max(idx-1, 0):Min(idx+len(substring), len(ctx))]
+	query := ctx[Max(idx-1, 0):Min(idx+len(substring)+1, len(ctx))]
 	if match, err := regexp.MatchString(pat, query); err != nil || !match {
 		// If there's more than one, we take the first bounded option.
 		// For example, given that we're looking for "very", "every" => nested

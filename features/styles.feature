@@ -126,6 +126,7 @@ Feature: Styles
     test.md:15:49:Homebrew.Abbreviations:Use 'e.g.'
     test.md:15:68:Homebrew.FixedWidth:' homebrew-science ' should be in fixed width font.
     test.md:15:117:Homebrew.Pronouns:Avoid gender-specific language when not necessary.
+    test.md:18:24:Homebrew.Terms:Use 'repository' instead of 'repo'.
     test.rst:11:19:Homebrew.FixedWidth:' git ' should be in fixed width font.
     """
 

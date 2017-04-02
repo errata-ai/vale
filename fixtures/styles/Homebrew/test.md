@@ -13,3 +13,7 @@ def foo():
 ```
 
 You can run the brew command to do many things (eg, `brew update`). homebrew-science is the named of a Hombrew tap. He (Max Howell) created Hombrew in 2009.
+
+* Spell out certain technical words
+  * "repository", not "repo"
+  * When abbreviating, introduce the abbreviation with the first usage in any document
