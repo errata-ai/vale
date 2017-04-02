@@ -1,12 +1,24 @@
 # Change Log
 
-## [Unreleased](https://github.com/ValeLint/vale/tree/HEAD)
+## [v0.4.0](https://github.com/ValeLint/vale/tree/v0.4.0) (2017-04-02)
+[Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.4...v0.4.0)
 
-[Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.4...HEAD)
+**Implemented enhancements:**
+
+- Improve styling of multiple options [\#37](https://github.com/ValeLint/vale/issues/37)
+- Support input from stdin [\#32](https://github.com/ValeLint/vale/issues/32)
 
 **Fixed bugs:**
 
 - Tests? Possible issue with GenderBias [\#26](https://github.com/ValeLint/vale/issues/26)
+
+**Closed issues:**
+
+- Refine built-in rules [\#30](https://github.com/ValeLint/vale/issues/30)
+
+**Merged pull requests:**
+
+- Spelling error in ridiculus [\#35](https://github.com/ValeLint/vale/pull/35) ([dsyer](https://github.com/dsyer))
 
 ## [v0.3.4](https://github.com/ValeLint/vale/tree/v0.3.4) (2017-03-26)
 [Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.3...v0.3.4)
