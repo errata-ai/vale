@@ -32,15 +32,39 @@ Download and install an executable from the [releases page](https://github.com/v
 
 ## Usage
 
-**CLI**
+Run Vale on a single file:
 
 ```shell
 $ vale README.md
 ```
 
-Run `vale --help` for more information.
+Run Vale on files matching a particular glob:
 
-**Integrations**
+```shell
+vale --glob='*.{md,rst}' directory
+```
 
-- [x] [Atom](https://github.com/TimKam/atomic-vale)
-- [x] [Sublime Text](https://github.com/ValeLint/SubVale)
+Or exclude files matching a particular glob:
+
+```shell
+vale --glob='!*.txt' directory
+```
+
+Pipe input to Vale:
+
+```shell
+echo 'this is some text' | vale 
+```
+
+Run Vale on text with an assigned syntax:
+
+```shell
+vale --ext=.md 'this is some text' 
+```
+
+See `vale --help` and [Configuration](https://valelint.github.io/config/) for more information.
+
+## Integrations
+
+- [x] [Atom: TimKam/atomic-vale](https://github.com/TimKam/atomic-vale)
+- [x] [Sublime Text: ValeLint/SubVale](https://github.com/ValeLint/SubVale)
