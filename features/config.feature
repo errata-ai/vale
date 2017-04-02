@@ -246,9 +246,9 @@ Feature: Config
     When I run cat "test.txt" ".txt"
     Then the output should contain exactly:
     """
-    <stdin>:1:27:vale.Annotations:'NOTE' left in text
-    <stdin>:4:12:vale.Annotations:'XXX' left in text
-    <stdin>:4:66:vale.Annotations:'TODO' left in text
+    stdin.txt:1:27:vale.Annotations:'NOTE' left in text
+    stdin.txt:4:12:vale.Annotations:'XXX' left in text
+    stdin.txt:4:66:vale.Annotations:'TODO' left in text
     """
     And the exit status should be 0
 
@@ -256,14 +256,14 @@ Feature: Config
     When I run cat "test.md" ".md"
     Then the output should contain exactly:
     """
-    <stdin>:3:1:vale.Annotations:'NOTE' left in text
-    <stdin>:32:1:vale.Annotations:'XXX' left in text
-    <stdin>:34:29:vale.Annotations:'TODO' left in text
-    <stdin>:36:3:vale.Annotations:'TODO' left in text
-    <stdin>:36:10:vale.Annotations:'XXX' left in text
-    <stdin>:36:16:vale.Annotations:'FIXME' left in text
-    <stdin>:40:21:vale.Annotations:'FIXME' left in text
-    <stdin>:44:5:vale.Annotations:'TODO' left in text
+    stdin.md:3:1:vale.Annotations:'NOTE' left in text
+    stdin.md:32:1:vale.Annotations:'XXX' left in text
+    stdin.md:34:29:vale.Annotations:'TODO' left in text
+    stdin.md:36:3:vale.Annotations:'TODO' left in text
+    stdin.md:36:10:vale.Annotations:'XXX' left in text
+    stdin.md:36:16:vale.Annotations:'FIXME' left in text
+    stdin.md:40:21:vale.Annotations:'FIXME' left in text
+    stdin.md:44:5:vale.Annotations:'TODO' left in text
     """
     And the exit status should be 0
 
@@ -271,15 +271,15 @@ Feature: Config
     When I run cat "test.py" ".py"
     Then the output should contain exactly:
     """
-    <stdin>:1:3:vale.Annotations:'FIXME' left in text
-    <stdin>:5:5:vale.Annotations:'FIXME' left in text
-    <stdin>:11:3:vale.Annotations:'XXX' left in text
-    <stdin>:13:16:vale.Annotations:'XXX' left in text
-    <stdin>:14:14:vale.Annotations:'NOTE' left in text
-    <stdin>:17:1:vale.Annotations:'NOTE' left in text
-    <stdin>:23:1:vale.Annotations:'XXX' left in text
-    <stdin>:28:5:vale.Annotations:'NOTE' left in text
-    <stdin>:35:8:vale.Annotations:'NOTE' left in text
-    <stdin>:37:5:vale.Annotations:'TODO' left in text
+    stdin.py:1:3:vale.Annotations:'FIXME' left in text
+    stdin.py:5:5:vale.Annotations:'FIXME' left in text
+    stdin.py:11:3:vale.Annotations:'XXX' left in text
+    stdin.py:13:16:vale.Annotations:'XXX' left in text
+    stdin.py:14:14:vale.Annotations:'NOTE' left in text
+    stdin.py:17:1:vale.Annotations:'NOTE' left in text
+    stdin.py:23:1:vale.Annotations:'XXX' left in text
+    stdin.py:28:5:vale.Annotations:'NOTE' left in text
+    stdin.py:35:8:vale.Annotations:'NOTE' left in text
+    stdin.py:37:5:vale.Annotations:'TODO' left in text
     """
     And the exit status should be 0

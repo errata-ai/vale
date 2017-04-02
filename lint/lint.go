@@ -123,7 +123,7 @@ func (l Linter) lintFile(src string) core.File {
 		scanner = bufio.NewScanner(strings.NewReader(src))
 		ext, format = core.FormatFromExt(core.CLConfig.InExt)
 		fbytes = []byte(src)
-		src = "<stdin>"
+		src = "stdin" + ext
 	}
 
 	baseStyles := core.Config.GBaseStyles
