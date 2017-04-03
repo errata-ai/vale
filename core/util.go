@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -214,6 +215,27 @@ func CheckError(err error) bool {
 func CheckAndClose(file *os.File) bool {
 	err := file.Close()
 	return CheckError(err)
+}
+
+// SplitLines splits on CRLF, CR not followed by LF, and LF.
+func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) {
+	if atEOF && len(data) == 0 {
+		return 0, nil, nil
+	}
+	if i := bytes.IndexAny(data, "\r\n"); i >= 0 {
+		if data[i] == '\n' {
+			return i + 1, data[0:i], nil
+		}
+		adv = i + 1
+		if len(data) > i+1 && data[i+1] == '\n' {
+			adv++
+		}
+		return adv, data[0:i], nil
+	}
+	if atEOF {
+		return len(data), data, nil
+	}
+	return 0, nil, nil
 }
 
 // sanitizer replaces a set of unicode characters with ASCII equivalents.

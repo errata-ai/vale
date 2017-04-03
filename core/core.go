@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jdkato/prose/tokenize"
+	"gopkg.in/neurosnap/sentences.v1/english"
 )
 
 // A File represents a linted text file.
@@ -101,4 +101,4 @@ func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
 }
 
 // SentenceTokenizer splits text into sentences.
-var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
+var SentenceTokenizer, _ = english.NewSentenceTokenizer(nil)

@@ -6,9 +6,6 @@
         "github.com/gobwas/glob": {
             "branch": "master"
         },
-        "github.com/jdkato/prose": {
-            "branch": "master"
-        },
         "github.com/mitchellh/go-homedir": {
             "branch": "master"
         },
@@ -31,6 +28,9 @@
             "branch": "master"
         },
         "gopkg.in/ini.v1": {
+            "branch": "master"
+        },
+        "gopkg.in/neurosnap/sentences.v1": {
             "branch": "master"
         },
         "gopkg.in/yaml.v2": {

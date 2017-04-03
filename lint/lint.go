@@ -15,7 +15,6 @@ import (
 	"github.com/ValeLint/vale/check"
 	"github.com/ValeLint/vale/core"
 	"github.com/gobwas/glob"
-	"github.com/jdkato/prose/tokenize"
 )
 
 // A Linter lints a File.
@@ -144,7 +143,7 @@ func (l Linter) lintFile(src string) core.File {
 		}
 	}
 
-	scanner.Split(tokenize.SplitLines)
+	scanner.Split(core.SplitLines)
 	file = core.File{
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Content: fbytes,
@@ -192,7 +191,7 @@ func (l Linter) lintProse(f *core.File, ctx string, txt string, lnTotal int, lnL
 	txtScope := "text" + f.RealExt
 	hasCtx := ctx != ""
 	for _, p := range strings.SplitAfter(text, "\n\n") {
-		for _, s := range core.SentenceTokenizer.RawTokenize(p) {
+		for _, s := range core.SentenceTokenizer.Tokenize(p) {
 			if hasCtx {
 				b = NewBlock(ctx, s.Text, senScope)
 			} else {

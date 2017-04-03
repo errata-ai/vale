@@ -1,5 +1,5 @@
 {
-    "memo": "29f68e563e3ef16afd4c6db265a8ac6f0be140c7914f002efb7b19d537071ebf",
+    "memo": "12fab323d11f34b0501ec521abd07bb523e637da5d1333465b5af060f9f473b3",
     "projects": [
         {
             "name": "github.com/davecgh/go-spew",
@@ -30,14 +30,6 @@
                 "syntax/lexer",
                 "util/runes",
                 "util/strings"
-            ]
-        },
-        {
-            "name": "github.com/jdkato/prose",
-            "branch": "master",
-            "revision": "acf07834852b4c6611dbc92a5b782d43479cdb81",
-            "packages": [
-                "tokenize"
             ]
         },
         {
