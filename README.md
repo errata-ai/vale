@@ -17,12 +17,15 @@ Check out [project website](https://valelint.github.io/) to learn more!
 
 ## Installation
 
+There are a few options to choose from:
+
 - Install through [Homebrew](http://brew.sh) on **macOS**:
 
     ```bash
     $ brew tap ValeLint/vale
     $ brew install vale
     ```
+- Install via the Windows Installer package (`.msi`) on the [releases page](https://github.com/valelint/vale/releases).
 - Manually install on **Windows**, **macOS**, or **Linux** by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
 
 ## Usage
@@ -50,13 +53,13 @@ $ vale --glob='!*.txt' directory
 Pipe input to Vale:
 
 ```shell
-$ echo 'this is some text' | vale 
+$ echo 'this is some text' | vale
 ```
 
 Run Vale on text with an assigned syntax:
 
 ```shell
-$ vale --ext=.md 'this is some text' 
+$ vale --ext=.md 'this is some text'
 ```
 
 See `vale --help` and [Configuration](https://valelint.github.io/config/) for more information.
