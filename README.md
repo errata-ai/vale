@@ -66,5 +66,18 @@ See `vale --help` and [Configuration](https://valelint.github.io/config/) for mo
 
 ## Integrations
 
-- [x] [Atom: TimKam/atomic-vale](https://github.com/TimKam/atomic-vale)
-- [x] [Sublime Text: ValeLint/SubVale](https://github.com/ValeLint/SubVale)
+- Atom&mdash;[TimKam/atomic-vale](https://github.com/TimKam/atomic-vale)
+- Sublime Text&mdash;[ValeLint/SubVale](https://github.com/ValeLint/SubVale)
+
+## Reference Styles
+
+
+|      Style     |                                                      Description                                                      | Development Status |
+|:--------------:|:---------------------------------------------------------------------------------------------------------------------:|:------:|
+|  [`write-good`](https://github.com/ValeLint/vale/tree/master/styles/write-good)  | Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.        |    :white_check_mark:    |
+|    [`Joblint`](https://github.com/ValeLint/vale/tree/master/styles/Joblint)   | Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                               |    :white_check_mark:    |
+|    [`jQuery`](https://github.com/ValeLint/vale/tree/master/styles/jQuery)    | A collection of rules based on jQuery's documentation formatting conventions and writing style.                                                                                                                      |    :construction:    |
+| [`TheEconomist`](https://github.com/ValeLint/vale/tree/master/styles/TheEconomist) |  A collection of rules based on The Economist Style Guide.                                                                                                                      |   :construction:     |
+|   [`Homebrew`](https://github.com/ValeLint/vale/tree/master/styles/Homebrew)   | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |    :construction:    |
+|   [`Middlebury`](https://github.com/ValeLint/vale/tree/master/styles/Middlebury)   | A collection of rules based on The Middlebury Editorial Style Guide |    :construction:    |
+
