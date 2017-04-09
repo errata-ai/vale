@@ -79,5 +79,6 @@ See `vale --help` and [Configuration](https://valelint.github.io/config/) for mo
 |    [`jQuery`](https://github.com/ValeLint/vale/tree/master/styles/jQuery)    | A collection of rules based on jQuery's documentation formatting conventions and writing style.                                                                                                                      |    :construction:    |
 | [`TheEconomist`](https://github.com/ValeLint/vale/tree/master/styles/TheEconomist) |  A collection of rules based on The Economist Style Guide.                                                                                                                      |   :construction:     |
 |   [`Homebrew`](https://github.com/ValeLint/vale/tree/master/styles/Homebrew)   | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |    :construction:    |
-|   [`Middlebury`](https://github.com/ValeLint/vale/tree/master/styles/Middlebury)   | A collection of rules based on The Middlebury Editorial Style Guide |    :construction:    |
+|   [`Middlebury`](https://github.com/ValeLint/vale/tree/master/styles/Middlebury)   | A collection of rules based on The Middlebury Editorial Style Guide. |    :construction:    |
 
+Feel free to submit a PR adding your own style to this list!
