@@ -73,7 +73,7 @@ See `vale --help` and [Configuration](https://valelint.github.io/config/) for mo
 
 
 |      Style     |                                                      Description                                                      | Development Status |
-|:--------------:|:---------------------------------------------------------------------------------------------------------------------:|:------:|
+|:--------------:|-----------------------------------------------------------------------------------------------------------------------|:------:|
 |  [`write-good`](https://github.com/ValeLint/vale/tree/master/styles/write-good)  | Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.        |    :white_check_mark:    |
 |    [`Joblint`](https://github.com/ValeLint/vale/tree/master/styles/Joblint)   | Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                               |    :white_check_mark:    |
 |    [`jQuery`](https://github.com/ValeLint/vale/tree/master/styles/jQuery)    | A collection of rules based on jQuery's documentation formatting conventions and writing style.                                                                                                                      |    :construction:    |
