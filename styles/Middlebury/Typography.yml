@@ -1,0 +1,10 @@
+extends: substitution
+message: '%s'
+level: error
+ignorecase: true
+nonword: true
+swap:
+  '''\d{2,}s?': 'Use a left-facing apostrophe.'
+  '\w\s?--\s?\w': 'Use an em dash.'
+  '\d-\$?\d': 'Use an en dash.'
+  '\w+-long': 'Words combined with -long should be closed.'

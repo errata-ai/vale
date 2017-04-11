@@ -162,3 +162,16 @@ Feature: Styles
     realistic.txt:4:44:Joblint.Gendered:Avoid using 'guy'
     realistic.txt:5:19:Joblint.TechTerms:Use 'JavaScript' instead of 'javascript'
     """
+
+  Scenario: Lint against Middlebury
+    When I apply style "Middlebury"
+    Then the output should contain exactly:
+    """
+    test.md:1:15:Middlebury.Typography:Use an en dash.
+    test.md:1:34:Middlebury.Typography:Use a left-facing apostrophe.
+    test.md:3:5:Middlebury.Terms:Avoid using 'oriental'
+    test.md:3:42:Middlebury.Typography:Words combined with -long should be closed.
+    test.md:3:59:Middlebury.Abbreviations:Use 'i.e.,' instead of 'i.e. '
+    test.md:5:122:Middlebury.Disabilities:Avoid using 'special needs'
+    test.md:7:21:Middlebury.Hyphens:Use 'worldwide' instead of 'world-wide'
+    """

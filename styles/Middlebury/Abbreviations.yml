@@ -1,0 +1,17 @@
+extends: substitution
+message: Use '%s' instead of '%s'
+level: error
+swap:
+  '(?:eg)': e.g.,
+  '(?:ie)': i.e.,
+  '(?:e\.g\.)\s*': e.g.,
+  '(?:i\.e\.)\s*': i.e.,
+  Ph.D.: PhD
+  B.S.: BS
+  B.A.: BA
+  M.S.: MS
+  M.A.: MA
+  M.D.: MD
+  aka: a.k.a
+  '(?i)am': a.m.
+  '(?i)pm': p.m.

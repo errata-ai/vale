@@ -1,0 +1,59 @@
+extends: conditional
+message: "'%s' has no definition"
+level: warning
+scope: text
+description: "Use full words the first time the abbreviation or acronym is used in text, and place the abbreviation or acronym in parentheses immediately following."
+link: http://www.economist.com/style-guide/abbreviations
+first: \b([A-Z]{3,5})\b
+second: (?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)
+exceptions:
+  - ABC
+  - ADD
+  - ADHD
+  - AIDS
+  - APA
+  - API
+  - CBS
+  - CIA
+  - CSI
+  - CSS
+  - CST
+  - ESPN
+  - EST
+  - FAQ
+  - FIXME
+  - GNU
+  - HIV
+  - HR
+  - HTML
+  - HTTP
+  - HTTPS
+  - JSON
+  - LAN
+  - MIT
+  - MLA
+  - MLB
+  - MTV
+  - NASA
+  - NATO
+  - NBA
+  - NBC
+  - NCAA
+  - NCAAB
+  - NCAAF
+  - NFL
+  - NHL
+  - NOTE
+  - PDF
+  - PGA
+  - PPV
+  - PST
+  - SGML
+  - SSN
+  - TNT
+  - TODO
+  - URL
+  - USA
+  - USSR
+  - XML
+  - XXX

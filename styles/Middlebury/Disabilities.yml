@@ -1,0 +1,18 @@
+extends: existence
+message: "Avoid using '%s'"
+level: warning
+description: "Avoid describing a group only by their disabilities."
+ignorecase: true
+tokens:
+  - special needs
+  - disabled
+  - blind
+  - paraplegic
+  - deaf
+  - handicapped
+  - afflicted with
+  - stricken with
+  - suffers from
+  - victim of
+  - wheelchair bound
+  - confined to a wheelchair
