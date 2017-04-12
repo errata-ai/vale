@@ -6,7 +6,7 @@ VERSION=$(shell cat $(VERSION_FILE))
 
 LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
 
-.PHONY: clean test lint ci cross install bump rules setup bench
+.PHONY: clean test lint ci cross install bump rules setup bench compare
 
 all: build
 
@@ -46,12 +46,12 @@ install:
 	go install ${LDFLAGS}
 
 test:
-	go test -v ./core ./lint ./check
+	go test -race ./core ./lint ./check
 	cucumber
 	misspell -error rule styles
 
 bench:
-	go test -bench=. ./lint ./check
+	go test -bench=. -benchmem ./core ./lint ./check 
 
 ci: test lint
 
@@ -72,6 +72,8 @@ lint:
 		./core ./lint ./ui ./check
 
 setup:
+	go get golang.org/x/perf/cmd/benchstat
+	go get golang.org/x/tools/cmd/benchcmp
 	go get -u github.com/alecthomas/gometalinter
 	go get -u github.com/jteeuwen/go-bindata/...
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
