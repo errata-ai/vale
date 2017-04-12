@@ -71,7 +71,6 @@ See `vale --help` and [Configuration](https://valelint.github.io/config/) for mo
 
 ## Reference Styles
 
-
 |      Style     |                                                      Description                                                      | Development Status |
 |:--------------:|-----------------------------------------------------------------------------------------------------------------------|:------:|
 |  [`write-good`](https://github.com/ValeLint/vale/tree/master/styles/write-good)  | Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.        |    :white_check_mark:    |
@@ -81,4 +80,20 @@ See `vale --help` and [Configuration](https://valelint.github.io/config/) for mo
 |   [`Homebrew`](https://github.com/ValeLint/vale/tree/master/styles/Homebrew)   | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |    :construction:    |
 |   [`Middlebury`](https://github.com/ValeLint/vale/tree/master/styles/Middlebury)   | A collection of rules based on The Middlebury Editorial Style Guide. |    :construction:    |
 
-Feel free to submit a PR adding your own style to this list!
+To use one of these styles, you'd copy its files onto your `StylesPath` and then specify it in your config file:
+
+```ini
+# This goes in a file named either `.vale` or `_vale`.
+
+StylesPath = path/to/some/directory
+MinAlertLevel = warning # suggestion, warning or error
+
+[*.{md,txt}] # Only Markdown and .txt files
+# List of styles to load
+BasedOnStyles = vale, Joblint
+# Style.Rule = {YES, NO, suggestion, warning, error} to 
+# enable/disable a rule or change its level.
+vale.Editorializing = NO
+```
+
+See [Configuration](https://valelint.github.io/config/) and [Styles](https://valelint.github.io/styles/) for more information.
