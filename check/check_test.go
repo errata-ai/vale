@@ -44,39 +44,3 @@ func TestFormatMessage(t *testing.T) {
 		}
 	}
 }
-
-func BenchmarkVale(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		loadDefaultChecks()
-	}
-}
-
-func BenchmarkWriteGood(b *testing.B) {
-	benchmarkExternal("../styles/write-good", b)
-}
-
-func BenchmarkJobLint(b *testing.B) {
-	benchmarkExternal("../styles/JobLint", b)
-}
-
-func BenchmarkTheEconomist(b *testing.B) {
-	benchmarkExternal("../styles/TheEconomist", b)
-}
-
-func BenchmarkHomebrew(b *testing.B) {
-	benchmarkExternal("../styles/Homebrew", b)
-}
-
-func BenchmarkMiddlebury(b *testing.B) {
-	benchmarkExternal("../styles/Middlebury", b)
-}
-
-func benchmarkExternal(path string, b *testing.B) {
-	path, err := filepath.Abs(path)
-	if err != nil {
-		panic(err)
-	}
-	for n := 0; n < b.N; n++ {
-		loadExternalStyle(path)
-	}
-}
