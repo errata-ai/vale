@@ -46,7 +46,7 @@ var options = blackfriday.Options{Extensions: commonExtensions}
 
 // HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
-var skipTags = []string{"script", "style", "pre", "code", "tt"}
+var skipTags = []string{"script", "style", "pre", "code", "tt", "figure"}
 var skipClasses = []string{}
 
 func (l Linter) lintHTMLTokens(f *core.File, rawBytes []byte, fBytes []byte, offset int) {
