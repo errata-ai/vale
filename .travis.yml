@@ -1,6 +1,5 @@
 language: go
 go:
-  - 1.6
   - 1.7
   - 1.8
 addons:
@@ -17,3 +16,5 @@ install:
   - make build
 script:
   - make test
+after_script:
+  - make compare

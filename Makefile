@@ -4,6 +4,8 @@ BUILD_DIR=./builds
 VERSION_FILE=$(BASE_DIR)/VERSION
 VERSION=$(shell cat $(VERSION_FILE))
 
+LAST_TAG=$(shell git describe --abbrev=0 --tags)
+
 LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
 
 .PHONY: clean test lint ci cross install bump rules setup bench compare
@@ -51,7 +53,14 @@ test:
 	misspell -error rule styles
 
 bench:
-	go test -bench=. -benchmem ./core ./lint ./check 
+	go test -bench=. -benchmem ./core ./lint ./check
+
+compare:
+	cd lint && \
+	benchmany -o new.txt @ && \
+	benchmany -o old.txt ${LAST_TAG} && \
+	benchcmp old.txt new.txt && \
+	benchstat old.txt new.txt
 
 ci: test lint
 
@@ -74,6 +83,7 @@ lint:
 setup:
 	go get golang.org/x/perf/cmd/benchstat
 	go get golang.org/x/tools/cmd/benchcmp
+	go get github.com/aclements/go-misc/benchmany
 	go get -u github.com/alecthomas/gometalinter
 	go get -u github.com/jteeuwen/go-bindata/...
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
