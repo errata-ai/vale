@@ -5,6 +5,7 @@ VERSION_FILE=$(BASE_DIR)/VERSION
 VERSION=$(shell cat $(VERSION_FILE))
 
 LAST_TAG=$(shell git describe --abbrev=0 --tags)
+CURR_SHA=$(shell git rev-parse --verify HEAD)
 
 LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
 
@@ -57,7 +58,7 @@ bench:
 
 compare:
 	cd lint && \
-	benchmany -o new.txt @ && \
+	benchmany -o new.txt ${CURR_SHA} && \
 	benchmany -o old.txt ${LAST_TAG} && \
 	benchcmp old.txt new.txt && \
 	benchstat old.txt new.txt

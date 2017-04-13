@@ -22,3 +22,5 @@ build_script:
     make build-win
 test_script:
 - cmd: make ci
+after_test:
+- cmd: make compare
