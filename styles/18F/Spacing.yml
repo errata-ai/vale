@@ -1,0 +1,5 @@
+extends: existence
+message: "'%s' should have one space."
+level: error
+tokens:
+  - '[.?!] {2,}[A-Z]'

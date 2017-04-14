@@ -71,14 +71,15 @@ See `vale --help` and [Configuration](https://valelint.github.io/config/) for mo
 
 ## Reference Styles
 
-|      Style     |                                                      Description                                                      | Development Status |
-|:--------------:|-----------------------------------------------------------------------------------------------------------------------|:------:|
-|  [`write-good`](https://github.com/ValeLint/vale/tree/master/styles/write-good)  | Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.        |    :white_check_mark:    |
-|    [`Joblint`](https://github.com/ValeLint/vale/tree/master/styles/Joblint)   | Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                               |    :white_check_mark:    |
-|    [`jQuery`](https://github.com/ValeLint/vale/tree/master/styles/jQuery)    | A collection of rules based on jQuery's documentation formatting conventions and writing style.                                                                                                                      |    :construction:    |
-| [`TheEconomist`](https://github.com/ValeLint/vale/tree/master/styles/TheEconomist) |  A collection of rules based on The Economist Style Guide.                                                                                                                      |   :construction:     |
-|   [`Homebrew`](https://github.com/ValeLint/vale/tree/master/styles/Homebrew)   | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |    :construction:    |
-|   [`Middlebury`](https://github.com/ValeLint/vale/tree/master/styles/Middlebury)   | A collection of rules based on The Middlebury Editorial Style Guide. |    :construction:    |
+|                                       Style                                        | Description                                                                                                           | Development Status |
+|:----------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------|:------------------:|
+|   [`write-good`](https://github.com/ValeLint/vale/tree/master/styles/write-good)   | Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.        | :white_check_mark: |
+|      [`Joblint`](https://github.com/ValeLint/vale/tree/master/styles/Joblint)      | Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                               | :white_check_mark: |
+|       [`jQuery`](https://github.com/ValeLint/vale/tree/master/styles/jQuery)       | A collection of rules based on jQuery's documentation formatting conventions and writing style.                       |   :construction:   |
+| [`TheEconomist`](https://github.com/ValeLint/vale/tree/master/styles/TheEconomist) | A collection of rules based on The Economist Style Guide.                                                             |   :construction:   |
+|     [`Homebrew`](https://github.com/ValeLint/vale/tree/master/styles/Homebrew)     | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
+|   [`Middlebury`](https://github.com/ValeLint/vale/tree/master/styles/Middlebury)   | A collection of rules based on The Middlebury Editorial Style Guide.                                                  |   :construction:   |
+|          [`18F`](https://github.com/ValeLint/vale/tree/master/styles/18F)          | Guidelines for creating plain and concise writing.                                                                    |   :construction:   |
 
 To use one of these styles, you'd copy its files onto your `StylesPath` and then specify it in your config file:
 
@@ -91,7 +92,7 @@ MinAlertLevel = warning # suggestion, warning or error
 [*.{md,txt}] # Only Markdown and .txt files
 # List of styles to load
 BasedOnStyles = vale, Joblint
-# Style.Rule = {YES, NO, suggestion, warning, error} to 
+# Style.Rule = {YES, NO, suggestion, warning, error} to
 # enable/disable a rule or change its level.
 vale.Editorializing = NO
 ```

@@ -1,0 +1,7 @@
+extends: existence
+message: 'Use the Oxford comma in a list of three or more items.'
+link: 'https://contribute.jquery.org/style-guide/prose/#grammar'
+scope: sentence
+level: warning
+tokens:
+  - '(?:[^,]+,){1,}\s\w+\sand'

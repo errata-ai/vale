@@ -1,0 +1,10 @@
+extends: substitution
+message: Prefer %s over of '%s.'
+level: warning
+ignorecase: true
+swap:
+  user testing: "'usability testing'"
+  back-end: "'back end'"
+  open-source: "'open source'"
+  dropdown: "'drop-down' or 'drop down'"
+  'citizen': "'people' or 'The public'"
