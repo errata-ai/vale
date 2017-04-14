@@ -1,4 +1,0 @@
-XXX
-FIXME
-TODO
-NOTE
