@@ -86,8 +86,7 @@ setup:
 	go get golang.org/x/tools/cmd/benchcmp
 	go get github.com/aclements/go-misc/benchmany
 	go get -u github.com/alecthomas/gometalinter
-	go get -u github.com/jteeuwen/go-bindata/...
-	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
+	go get -u github.com/jteeuwen/go-bindata/...	
 	gometalinter --install
 	bundle install
 	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
