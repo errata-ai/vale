@@ -11,6 +11,7 @@ import (
 
 	"github.com/ValeLint/vale/core"
 	"github.com/ValeLint/vale/rule"
+	"github.com/client9/misspell"
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v2"
 	"matloob.io/regexp"
@@ -213,6 +214,54 @@ func checkScript(txt string, chkDef Script, exe string, f *core.File) []core.Ale
 	return alerts
 }
 
+func checkSpelling(txt string, chk Spelling, r *misspell.Replacer, f *core.File) []core.Alert {
+	alerts := []core.Alert{}
+
+	_, changes := r.Replace(txt)
+	for _, diff := range changes {
+		offset := strings.Index(txt, diff.FullLine)
+		start := offset + diff.Column
+		loc := []int{start, start + len(diff.Original)}
+		a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
+			Link: chk.Link}
+		a.Message, a.Description = formatMessages(chk.Message,
+			chk.Description, diff.Corrected, diff.Original)
+		alerts = append(alerts, a)
+	}
+
+	return alerts
+}
+
+func addSpellingCheck(chkName string, chkDef Spelling) {
+	r := misspell.Replacer{
+		Replacements: misspell.DictMain,
+		Debug:        false,
+	}
+
+	switch strings.ToUpper(chkDef.Locale) {
+	case "":
+		// nothing
+	case "US":
+		r.AddRuleList(misspell.DictAmerican)
+	case "UK", "GB":
+		r.AddRuleList(misspell.DictBritish)
+	}
+
+	if len(chkDef.Ignore) > 0 {
+		r.RemoveRule(chkDef.Ignore)
+	}
+
+	if len(chkDef.Add) > 0 {
+		r.AddRuleList(chkDef.Add)
+	}
+
+	r.Compile()
+	fn := func(text string, file *core.File) []core.Alert {
+		return checkSpelling(text, chkDef, &r, file)
+	}
+	updateAllChecks(chkDef.Definition, fn)
+}
+
 func addScriptCheck(chkName string, chkDef Script) {
 	style := strings.Split(chkName, ".")[0]
 	exe := filepath.Join(core.Config.StylesPath, style, "scripts", chkDef.Exe)
@@ -403,6 +452,11 @@ func makeCheck(generic map[string]interface{}, extends string, chkName string) {
 		def := Script{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			addScriptCheck(chkName, def)
+		}
+	} else if extends == "spelling" {
+		def := Spelling{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			addSpellingCheck(chkName, def)
 		}
 	}
 }

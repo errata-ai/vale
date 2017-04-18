@@ -81,6 +81,14 @@ type Script struct {
 	Runtime    string
 }
 
+// Spelling checks spell checks a .
+type Spelling struct {
+	Definition `mapstructure:",squash"`
+	Locale     string
+	Ignore     []string
+	Add        []string
+}
+
 var defaultChecks = []string{
 	"Annotations",
 	"ComplexWords",
@@ -104,4 +112,5 @@ var extensionPoints = []string{
 	"repetition",
 	"script",
 	"substitution",
+	"spelling",
 }

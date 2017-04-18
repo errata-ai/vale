@@ -48,6 +48,7 @@ Feature: Styles
     test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
     test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
     test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
+    test.md:10:133:demo.CheckSpellings:Use 'ValeLint' instead of 'Valelint'
     test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
     test.md:14:159:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:1:demo.SentenceLength:Sentences should be less than 25 words
@@ -55,6 +56,8 @@ Feature: Styles
     test.md:22:21:demo.Abbreviations:Use 'i.e.,'
     test.md:22:66:demo.Abbreviations:Use 'a.m. or p.m.'
     test.md:22:94:demo.Abbreviations:Use 'midnight or noon'
+    test.md:24:4:demo.CheckSpellings:Use 'disappear' instead of 'dissapear'
+    test.md:24:43:demo.CheckSpellings:Use 'preceded' instead of 'preceeded'
     test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
     test.rst:1:58:demo.Spacing:'. I' should have one space
     test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words

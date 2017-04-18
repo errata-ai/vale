@@ -1,0 +1,11 @@
+extends: spelling
+message: "Use '%s' instead of '%s'"
+level: error
+scope: text.md
+# "US" or "UK"
+locale: US
+ignore:
+  - Something
+add:
+  - Valelint # bad
+  - ValeLint # good

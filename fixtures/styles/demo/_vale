@@ -3,5 +3,4 @@ MinAlertLevel = suggestion
 
 [*]
 BasedOnStyles = demo
-demo.CheckSpelling = NO
 demo.CheckLinks = NO

@@ -69,6 +69,16 @@ ignorecase: false
 tokens:
   - '[^\s]+'`
 
+var spellingTemplate = `extends: spelling
+message: "Use '%s' instead of '%s'"
+# "US", "UK" or omit to ignore locality differences
+locale: US
+ignore:
+  - Something # don't flag these words
+add: # Add these word pairs
+  - Valelint # bad
+  - ValeLint # good`
+
 var checkToTemplate = map[string]string{
 	"existence":    existenceTemplate,
 	"substitution": substitutionTemplate,
@@ -76,6 +86,7 @@ var checkToTemplate = map[string]string{
 	"conditional":  conditionalTemplate,
 	"consistency":  consistencyTemplate,
 	"repetition":   repetitionTemplate,
+	"spelling":     spellingTemplate,
 }
 
 // GetTemplate makes a template for the given extension point.
