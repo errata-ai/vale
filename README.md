@@ -87,13 +87,13 @@ See `vale --help` and [Configuration](https://valelint.github.io/config/) for mo
 
 |                                       Style (download)                                        | Description                                                                                                           | Development Status |
 |:----------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|:------------------:|
-|   [`write-good`](https://github.com/ValeLint/docs/raw/master/data/write-good.zip)   | Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.        | :white_check_mark: |
-|      [`Joblint`](https://github.com/ValeLint/docs/raw/master/data/Joblint.zip)      | Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                               | :white_check_mark: |
-|       [`jQuery`](https://github.com/ValeLint/docs/raw/master/data/jQuery.zip)       | A collection of rules based on jQuery's documentation formatting conventions and writing style.                       |   :construction:   |
-| [`TheEconomist`](https://github.com/ValeLint/docs/raw/master/data/TheEconomist.zip) | A collection of rules based on The Economist Style Guide.                                                             |   :construction:   |
-|     [`Homebrew`](https://github.com/ValeLint/docs/raw/master/data/Homebrew.zip)     | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
-|   [`Middlebury`](https://github.com/ValeLint/docs/raw/master/data/Middlebury.zip)   | A collection of rules based on The Middlebury Editorial Style Guide.                                                  |   :construction:   |
-|          [`18F`](https://github.com/ValeLint/docs/raw/master/data/18F.zip)          | Guidelines for creating plain and concise writing.                                                                    |   :construction:   |
+|   [`write-good`](https://github.com/ValeLint/docs/raw/master/styles/write-good.zip)   | Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.        | :white_check_mark: |
+|      [`Joblint`](https://github.com/ValeLint/docs/raw/master/styles/Joblint.zip)      | Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                               | :white_check_mark: |
+|       [`jQuery`](https://github.com/ValeLint/docs/raw/master/styles/jQuery.zip)       | A collection of rules based on jQuery's documentation formatting conventions and writing style.                       |   :construction:   |
+| [`TheEconomist`](https://github.com/ValeLint/docs/raw/master/styles/TheEconomist.zip) | A collection of rules based on The Economist Style Guide.                                                             |   :construction:   |
+|     [`Homebrew`](https://github.com/ValeLint/docs/raw/master/styles/Homebrew.zip)     | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
+|   [`Middlebury`](https://github.com/ValeLint/docs/raw/master/styles/Middlebury.zip)   | A collection of rules based on The Middlebury Editorial Style Guide.                                                  |   :construction:   |
+|          [`18F`](https://github.com/ValeLint/docs/raw/master/styles/18F.zip)          | Guidelines for creating plain and concise writing.                                                                    |   :construction:   |
 
 To use one of these styles, you'd copy its files onto your `StylesPath` and then specify it in your config file:
 
