@@ -27,11 +27,17 @@ There is also a `styles` directory that contains the source for Vale's reference
 
 ## <a name="testing"></a> Testing
 
-Vale is tested in three ways: integration tests, unit tests, and benchmarks. In fact, over half the code base is dedicated to testing.
+Vale is tested using both integration and unit tests.
 
-Integration tests are the most plentiful at the moment. They're implemented using the behavior-driven development framework [Cucumber](https://cucumber.io/). You'll find the relevant files for these tests in the `fixtures` and `features` directories.
+Integration tests are the most plentiful at the moment. They're implemented using the behavior-driven development framework [Cucumber](https://cucumber.io/). You'll find the relevant files for these tests in the `fixtures` and `features` directories. Unit tests are found in the `*_test.go` files inside the actual Go packages. 
 
-Unit tests and benchmarks are found in the `*_test.go` files inside the actual Go packages.
+We also track Vale's performance on a per-commit basis through benchmarks. On every commit, you'll see comparison against the last tagged release (over 10 runs) on CI builds:
+
+```text
+LintRST-2   1.63s ± 2%   1.65s ± 2%  +0.95%  (p=0.031 n=10+10)
+LintMD-2    1.54s ± 1%   1.54s ± 1%    ~     (p=0.604 n=10+10)
+```
+
 
 To run the tests, you'll want to invoke either `make bench` or `make ci` (see [Setting up a Development Environment]() for more information).
 
@@ -54,7 +60,7 @@ To make the contribution process as seamless as possible, we ask for the followi
 
 * Fork the project and make your changes.
 * When you’re ready to create a pull request, be sure to:
-    * Run `make lint` to check you Go code style.
+    * Run `make lint` to check your Go code style.
     * Squash your commits into a single commit. `git rebase -i`. It’s okay to force update your pull request with `git push -f`.
     * Follow the **Git Commit Message Guidelines** below.
 
