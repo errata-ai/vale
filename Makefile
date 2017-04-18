@@ -25,20 +25,20 @@ cross:
 	GOOS=linux GOARCH=amd64 go build ${LDFLAGS}
 	tar -czvf "$(BUILD_DIR)/Linux-64bit.tar.gz" ./vale
 
-	GOOS=linux GOARCH=386 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/linux-386.tar.gz" ./vale
+	# GOOS=linux GOARCH=386 go build ${LDFLAGS}
+	# tar -czvf "$(BUILD_DIR)/linux-386.tar.gz" ./vale
 
 	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS}
 	tar -czvf "$(BUILD_DIR)/macOS-64bit.tar.gz" ./vale
 
-	GOOS=darwin GOARCH=386 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/darwin-386.tar.gz" ./vale
+	# GOOS=darwin GOARCH=386 go build ${LDFLAGS}
+	# tar -czvf "$(BUILD_DIR)/darwin-386.tar.gz" ./vale
 
 	GOOS=windows GOARCH=amd64 go build ${LDFLAGS}
 	zip -r "$(BUILD_DIR)/Windows-64bit.zip" ./vale.exe
 
-	GOOS=windows GOARCH=386 go build ${LDFLAGS}
-	zip -r "$(BUILD_DIR)/windows-386.zip" ./vale.exe
+	# GOOS=windows GOARCH=386 go build ${LDFLAGS}
+	# zip -r "$(BUILD_DIR)/windows-386.zip" ./vale.exe
 
 	scripts/sign.sh $(BUILD_DIR)
 
