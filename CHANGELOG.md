@@ -1,5 +1,26 @@
 # Change Log
 
+## [v0.4.1](https://github.com/ValeLint/vale/tree/v0.4.1) (2017-04-18)
+[Full Changelog](https://github.com/ValeLint/vale/compare/v0.4.0...v0.4.1)
+
+This release includes experimental support for a `spelling` extension point:
+
+```yaml
+extends: spelling
+message: "Use '%s' instead of '%s'"
+level: error
+scope: text.md
+# "US", "UK" or omit to ignore locality differences
+locale: US
+ignore: # You can remove words to the default dictionary
+  - Something
+add: # You can add words to the default dictionary
+  - Valelint # bad
+  - ValeLint # good
+```
+
+Like the other extension points, this will intelligently ignore certain syntax constructs (e.g., code blocks, URLs, etc.)
+
 ## [v0.4.0](https://github.com/ValeLint/vale/tree/v0.4.0) (2017-04-02)
 [Full Changelog](https://github.com/ValeLint/vale/compare/v0.3.4...v0.4.0)
 
