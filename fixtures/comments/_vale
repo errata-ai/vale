@@ -1,0 +1,6 @@
+StylesPath = ../../styles
+MinAlertLevel = suggestion
+
+[*]
+BasedOnStyles = vale, demo
+demo.CheckLinks = NO

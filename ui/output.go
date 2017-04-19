@@ -22,7 +22,7 @@ const (
 var spaces = regexp.MustCompile(" +")
 
 // PrintLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
-func PrintLineAlerts(linted []core.File) bool {
+func PrintLineAlerts(linted []*core.File) bool {
 	var base string
 
 	alertCount := 0
@@ -50,7 +50,7 @@ func PrintLineAlerts(linted []core.File) bool {
 }
 
 // PrintJSONAlerts prints Alerts in map[file.path][]Alert form.
-func PrintJSONAlerts(linted []core.File) bool {
+func PrintJSONAlerts(linted []*core.File) bool {
 	alertCount := 0
 	formatted := map[string][]core.Alert{}
 	for _, f := range linted {
@@ -72,7 +72,7 @@ func PrintJSONAlerts(linted []core.File) bool {
 }
 
 // PrintVerboseAlerts prints Alerts in verbose format.
-func PrintVerboseAlerts(linted []core.File) bool {
+func PrintVerboseAlerts(linted []*core.File) bool {
 	var errors, warnings, suggestions int
 	var symbol string
 
@@ -101,7 +101,7 @@ func PrintVerboseAlerts(linted []core.File) bool {
 	return errors != 0
 }
 
-func printVerboseAlert(f core.File) (int, int, int) {
+func printVerboseAlert(f *core.File) (int, int, int) {
 	var loc, level string
 	var errors, warnings, notifications int
 

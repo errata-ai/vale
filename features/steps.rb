@@ -16,9 +16,9 @@ When(/^I test "(.*)"$/) do |dir|
   step %(I run `#{exe} .`)
 end
 
-When(/^I test rule "(.*)"$/) do |name|
-  step %(I cd to "../../fixtures/rules/#{name}")
-  step %(I run `#{exe} test.txt`)
+When(/^I test comments for "(.*)"$/) do |ext|
+  step %(I cd to "../../fixtures/comments")
+  step %(I run `#{exe} test#{ext}`)
 end
 
 When(/^I apply style "(.*)"$/) do |style|

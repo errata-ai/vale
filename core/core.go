@@ -2,8 +2,14 @@ package core
 
 import (
 	"bufio"
+	"bytes"
+	"io/ioutil"
+	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/gobwas/glob"
 
 	"gopkg.in/neurosnap/sentences.v1/english"
 )
@@ -12,7 +18,7 @@ import (
 type File struct {
 	Alerts     []Alert           // all alerts associated with this file
 	BaseStyles []string          // base style assigned in .vale
-	Checks     map[string]bool   // syntax-specific checks assigned in .txtint
+	Checks     map[string]bool   // syntax-specific checks assigned in .vale
 	ChkToCtx   map[string]string // maps a temporary context to a particular check
 	Content    []byte            // the raw file contents
 	Counts     map[string]int    // word counts
@@ -22,6 +28,8 @@ type File struct {
 	RealExt    string            // actual file extension
 	Scanner    *bufio.Scanner    // used by lintXXX functions
 	Sequences  []string          // tracks various info (e.g., defined abbreviations)
+
+	Comments map[string]bool // comment control statements
 }
 
 // An Alert represents a potential error in prose.
@@ -72,13 +80,58 @@ func (a ByPosition) Less(i, j int) bool {
 }
 
 // ByName sorts Files by their path.
-type ByName []File
+type ByName []*File
 
 func (a ByName) Len() int      { return len(a) }
 func (a ByName) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 func (a ByName) Less(i, j int) bool {
 	ai, aj := a[i], a[j]
 	return ai.Path < aj.Path
+}
+
+// NewFile initilizes a File.
+func NewFile(src string) *File {
+	var scanner *bufio.Scanner
+	var format, ext string
+	var fbytes []byte
+
+	if FileExists(src) {
+		fbytes, _ = ioutil.ReadFile(src)
+		scanner = bufio.NewScanner(bytes.NewReader(fbytes))
+		ext, format = FormatFromExt(src)
+	} else {
+		scanner = bufio.NewScanner(strings.NewReader(src))
+		ext, format = FormatFromExt(CLConfig.InExt)
+		fbytes = []byte(src)
+		src = "stdin" + ext
+	}
+
+	baseStyles := Config.GBaseStyles
+	for sec, styles := range Config.SBaseStyles {
+		pat, err := glob.Compile(sec)
+		if CheckError(err) && pat.Match(src) {
+			baseStyles = styles
+			break
+		}
+	}
+
+	checks := make(map[string]bool)
+	for sec, smap := range Config.SChecks {
+		pat, err := glob.Compile(sec)
+		if CheckError(err) && pat.Match(src) {
+			checks = smap
+			break
+		}
+	}
+
+	scanner.Split(SplitLines)
+	file := File{
+		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
+		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Content: fbytes,
+		Comments: make(map[string]bool),
+	}
+
+	return &file
 }
 
 // SortedAlerts returns all of f's alerts sorted by line and column.
@@ -97,6 +150,39 @@ func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
 	if a.Span[0] > 0 {
 		f.ChkToCtx[a.Check], _ = Substitute(ctx, substring)
 		f.Alerts = append(f.Alerts, a)
+	}
+}
+
+var commentControlRE = regexp.MustCompile(`^vale (\w+.\w+) = (YES|NO)$`)
+
+// UpdateComments sets a new status based on comment.
+func (f *File) UpdateComments(comment string) {
+	if comment == "vale off" {
+		f.Comments["off"] = true
+	} else if comment == "vale on" {
+		f.Comments["off"] = false
+	} else if commentControlRE.MatchString(comment) {
+		check := commentControlRE.FindStringSubmatch(comment)
+		if len(check) == 3 {
+			f.Comments[check[1]] = check[2] == "NO"
+		}
+	}
+}
+
+// QueryComments checks if there has been an in-text comment for this check.
+func (f *File) QueryComments(check string) bool {
+	if status, ok := f.Comments[check]; ok {
+		return status
+	}
+	return f.Comments["off"]
+}
+
+// ResetComments ...
+func (f *File) ResetComments() {
+	for check := range f.Comments {
+		if check != "off" {
+			f.Comments[check] = false
+		}
 	}
 }
 

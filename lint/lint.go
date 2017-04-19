@@ -1,11 +1,8 @@
 package lint
 
 import (
-	"bufio"
-	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -14,7 +11,6 @@ import (
 
 	"github.com/ValeLint/vale/check"
 	"github.com/ValeLint/vale/core"
-	"github.com/gobwas/glob"
 )
 
 // A Linter lints a File.
@@ -36,13 +32,13 @@ func NewBlock(ctx string, txt string, sel string) Block {
 }
 
 // LintString src according to its format.
-func (l Linter) LintString(src string) ([]core.File, error) {
-	return []core.File{l.lintFile(src)}, nil
+func (l Linter) LintString(src string) ([]*core.File, error) {
+	return []*core.File{l.lintFile(src)}, nil
 }
 
 // Lint src according to its format.
-func (l Linter) Lint(src string, pat string) ([]core.File, error) {
-	var linted []core.File
+func (l Linter) Lint(src string, pat string) ([]*core.File, error) {
+	var linted []*core.File
 
 	done := make(chan core.File)
 	defer close(done)
@@ -61,8 +57,8 @@ func (l Linter) Lint(src string, pat string) ([]core.File, error) {
 	return linted, nil
 }
 
-func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan core.File, <-chan error) {
-	filesChan := make(chan core.File)
+func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan *core.File, <-chan error) {
+	filesChan := make(chan *core.File)
 	errc := make(chan error, 1)
 	go func() {
 		var wg sync.WaitGroup
@@ -99,52 +95,8 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 	return filesChan, errc
 }
 
-func (l Linter) lintFile(src string) core.File {
-	var file core.File
-	var scanner *bufio.Scanner
-	var format, ext string
-	var fbytes []byte
-
-	if core.FileExists(src) {
-		fbytes, _ = ioutil.ReadFile(src)
-		scanner = bufio.NewScanner(bytes.NewReader(fbytes))
-		ext, format = core.FormatFromExt(src)
-	} else {
-		scanner = bufio.NewScanner(strings.NewReader(src))
-		ext, format = core.FormatFromExt(core.CLConfig.InExt)
-		fbytes = []byte(src)
-		src = "stdin" + ext
-	}
-
-	baseStyles := core.Config.GBaseStyles
-	for sec, styles := range core.Config.SBaseStyles {
-		pat, err := glob.Compile(sec)
-		if core.CheckError(err) && pat.Match(src) {
-			baseStyles = styles
-			break
-		}
-	}
-
-	checks := make(map[string]bool)
-	for sec, smap := range core.Config.SChecks {
-		pat, err := glob.Compile(sec)
-		if core.CheckError(err) && pat.Match(src) {
-			checks = smap
-			break
-		}
-	}
-
-	scanner.Split(core.SplitLines)
-	file = core.File{
-		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
-		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Content: fbytes,
-	}
-
-	l.lintFormat(&file)
-	return file
-}
-
-func (l Linter) lintFormat(file *core.File) {
+func (l Linter) lintFile(src string) *core.File {
+	file := core.NewFile(src)
 	if file.Format == "markup" && !core.CLConfig.Simple {
 		switch file.NormedExt {
 		case ".adoc":
@@ -172,6 +124,7 @@ func (l Linter) lintFormat(file *core.File) {
 	} else {
 		l.lintLines(file)
 	}
+	return file
 }
 
 func (l Linter) lintProse(f *core.File, ctx string, txt string, lnTotal int, lnLength int) {
@@ -216,6 +169,11 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 	for name, chk := range check.AllChecks {
 		style = strings.Split(name, ".")[0]
 		run = false
+
+		// It has been disabled via an in-text comment.
+		if f.QueryComments(name) {
+			continue
+		}
 
 		if chk.Level < min || !blk.Scope.Contains(chk.Scope) {
 			continue

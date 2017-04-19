@@ -19,6 +19,7 @@ var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (\w+)`)
 var rstArgs = []string{
 	"--quiet",             // We don't want stdout being filled with messages.
 	"--halt=5",            // We only want to fail when absolutely necessary.
+	"--report=5",          // don't report system messages.
 	"--link-stylesheet",   // We don't need the stylesheet
 	"--no-file-insertion", // We don't want extra content in the HTML.
 	"--no-toc-backlinks",  // We don't want extra links or numbering.
@@ -72,11 +73,13 @@ func (l Linter) lintHTMLTokens(f *core.File, rawBytes []byte, fBytes []byte, off
 			inBlock = false
 		} else if tokt == html.StartTagToken && heading.MatchString(txt) {
 			isHeading = true
+		} else if tokt == html.CommentToken {
+			f.UpdateComments(txt)
 		} else if tokt == html.EndTagToken && isHeading {
 			isHeading = false
 		} else if tokt == html.TextToken && isHeading && !inBlock && txt != "" {
 			l.lintText(f, NewBlock(ctx, txt, "heading"+f.RealExt), lines, 0)
-		} else if tokt == html.TextToken && !inBlock && !skip {
+		} else if tokt == html.TextToken && !inBlock && !skip && txt != "" {
 			l.lintProse(f, ctx, txt, lines, 0)
 		}
 		attr = getAttribute(tok, "class")

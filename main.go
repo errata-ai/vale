@@ -90,7 +90,7 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
-		var linted []core.File
+		var linted []*core.File
 		var err error
 		var hasAlerts bool
 		var src string
