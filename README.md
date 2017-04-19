@@ -15,9 +15,9 @@ Check out [project website](https://valelint.github.io/) to learn more!
 - [X] Standalone binaries for Windows, macOS, and Linux.
 - [X] Expressive, [EditorConfig-like](http://editorconfig.org/) configuration.
 
-## What can Vale do?
+## Features
 
-Vale's functionality is split into extension points (called "checks") that can customized to meet your own needs:
+Vale's functionality is split into extension points (called "checks") that can be customized to meet your own needs:
 
 - `existence` ([example](https://github.com/ValeLint/vale/blob/master/rule/Hedging.yml)): As its name implies, it looks for the existence of particular strings. This is useful if, for example, we want to discourage the use of a certain word or phrase.
 - `substitution` ([example](https://github.com/ValeLint/vale/blob/master/rule/GenderBias.yml)): This is similar to above, but it also suggestions a preferred form. For example, we'd use this if we want to suggest the use of “plenty” instead of “abundance.”
