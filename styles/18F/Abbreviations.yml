@@ -2,11 +2,12 @@ extends: substitution
 message: Use '%s' instead of '%s'
 ignorecase: false
 level: error
+nonword: true
 swap:
-  '(?:eg)': e.g.,
-  '(?:ie)': i.e.,
-  '(?:e\.g\.)\s*': e.g.,
-  '(?:i\.e\.)\s*': i.e.,
+  '\beg\b': e.g.,
+  '\bie\b': i.e.,
+  'e\.g\.': e.g.,
+  'i\.e\.': i.e.,
   '(?i)\d{1,2} ?[ap]m': a.m. or p.m.
   'D\.C\.': DC
-  'USA?': U.S.
+  '\bUSA?\b': U.S.

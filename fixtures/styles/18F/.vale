@@ -1,0 +1,4 @@
+StylesPath = ../../../styles
+
+[*]
+BasedOnStyles = 18F
