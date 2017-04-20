@@ -113,6 +113,7 @@ Feature: Styles
     test.rst:8:51:jQuery.PassiveVoice:"be prompted" is passive voice
     test.rst:9:57:jQuery.PassiveVoice:"is sent" is passive voice
     test.rst:17:51:jQuery.PassiveVoice:"be omitted" is passive voice
+    test.rst:20:9:jQuery.Spelling:Use 'behavior' instead of 'behaviour'
     test.rst:23:11:jQuery.PassiveVoice:"be applied" is passive voice
     test.rst:27:1:jQuery.PassiveVoice:"be used" is passive voice
     """
