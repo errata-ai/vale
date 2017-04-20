@@ -6,8 +6,8 @@ nonword: true
 swap:
   '\beg\b': e.g.,
   '\bie\b': i.e.,
-  'e\.g\.': e.g.,
-  'i\.e\.': i.e.,
+  'e\.g\.(?:[^,]|$)': e.g.,
+  'i\.e\.(?:[^,]|$)': i.e.,
   '(?i)\d{1,2} ?[ap]m': a.m. or p.m.
   'D\.C\.': DC
   '\bUSA?\b': U.S.
