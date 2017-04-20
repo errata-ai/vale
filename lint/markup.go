@@ -78,7 +78,7 @@ func (l Linter) lintHTMLTokens(f *core.File, rawBytes []byte, fBytes []byte, off
 		} else if tokt == html.EndTagToken && isHeading {
 			isHeading = false
 		} else if tokt == html.TextToken && isHeading && !inBlock && txt != "" {
-			l.lintText(f, NewBlock(ctx, txt, "heading"+f.RealExt), lines, 0)
+			l.lintText(f, NewBlock(ctx, txt, "text.heading"+f.RealExt), lines, 0)
 		} else if tokt == html.TextToken && !inBlock && !skip && txt != "" {
 			l.lintProse(f, ctx, txt, lines, 0)
 		}
