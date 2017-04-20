@@ -178,3 +178,14 @@ Feature: Styles
     test.md:5:122:Middlebury.Disabilities:Avoid using 'special needs'
     test.md:7:21:Middlebury.Hyphens:Use 'worldwide' instead of 'world-wide'
     """
+
+  Scenario: Lint against 18F
+    When I apply style "18F"
+    Then the output should contain exactly:
+    """
+    test.md:8:93:18F.Ages:Avoid hyphens in ages unless it clarifies the text.
+    test.md:14:16:18F.Abbreviations:Use 'DC' instead of 'D.C.'
+    test.md:17:162:18F.Terms:Prefer 'drop-down' or 'drop down' over 'dropdown.'
+    test.md:45:18:18F.Abbreviations:Use 'U.S.' instead of 'US'
+    test.md:45:26:18F.Abbreviations:Use 'U.S.' instead of 'USA'
+    """

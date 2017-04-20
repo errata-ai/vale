@@ -9,7 +9,7 @@ Below are rules for how we use common words and phrases. The bold term shows the
 - **agile**
 - **a.m.**
 - **back end**, **back end development**
-- **Congress** refers to the U.S. Senate D.C. and House of Representatives.
+- **Congress** refers to the U.S. Senate and House of Representatives.
 - **congressional** is lowercase unless part of a proper name. For example, _Congressional Record_
 - **DC**, not _D.C._
 - **digital coalition**
