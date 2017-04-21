@@ -170,11 +170,15 @@ func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Reg
 		for idx, mat := range submat {
 			if mat != -1 && idx > 0 && idx%2 == 0 {
 				loc := []int{mat, submat[idx+1]}
-				a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
-					Link: chk.Link}
-				a.Message, a.Description = formatMessages(chk.Message,
-					chk.Description, repl[(idx/2)-1], txt[loc[0]:loc[1]])
-				alerts = append(alerts, a)
+				expected := repl[(idx/2)-1]
+				observed := txt[loc[0]:loc[1]]
+				if expected != observed {
+					a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
+						Link: chk.Link}
+					a.Message, a.Description = formatMessages(chk.Message,
+						chk.Description, expected, observed)
+					alerts = append(alerts, a)
+				}
 			}
 		}
 	}
