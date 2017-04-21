@@ -50,16 +50,14 @@ var heading = regexp.MustCompile(`^h\d$`)
 var skipTags = []string{"script", "style", "pre", "code", "tt", "figure"}
 var skipClasses = []string{}
 
-func (l Linter) lintHTMLTokens(f *core.File, rawBytes []byte, fBytes []byte, offset int) {
+func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int) {
 	var txt, attr string
 	var tokt html.TokenType
 	var tok html.Token
 	var inBlock, skip, isHeading bool
 
-	ctx := core.PrepText(string(rawBytes))
-	lines := strings.Count(ctx, "\n") + 1 + offset
-
-	tokens := html.NewTokenizer(bytes.NewReader(fBytes))
+	lines := len(f.Lines) + offset
+	tokens := html.NewTokenizer(bytes.NewReader(fsrc))
 	for {
 		tokt = tokens.Next()
 		tok = tokens.Token()
@@ -124,18 +122,18 @@ func updateCtx(ctx string, txt string, tokt html.TokenType) string {
 }
 
 func (l Linter) lintHTML(f *core.File) {
-	l.lintHTMLTokens(f, f.Content, f.Content, 0)
+	l.lintHTMLTokens(f, f.Content, []byte(f.Content), 0)
 }
 
 func (l Linter) lintMarkdown(f *core.File) {
-	html := blackfriday.MarkdownOptions(f.Content, renderer, options)
+	html := blackfriday.MarkdownOptions([]byte(f.Content), renderer, options)
 	l.lintHTMLTokens(f, f.Content, html, 0)
 }
 
 func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 	var out bytes.Buffer
 	cmd := exec.Command(python, append([]string{rst2html}, rstArgs...)...)
-	cmd.Stdin = bytes.NewReader(reCodeBlock.ReplaceAll(f.Content, []byte("::")))
+	cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(f.Content, "::"))
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run()) {
 		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
@@ -145,7 +143,7 @@ func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 func (l Linter) lintADoc(f *core.File, asciidoctor string) {
 	var out bytes.Buffer
 	cmd := exec.Command(asciidoctor, adocArgs...)
-	cmd.Stdin = bytes.NewReader(f.Content)
+	cmd.Stdin = strings.NewReader(f.Content)
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run()) {
 		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)

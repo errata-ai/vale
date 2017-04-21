@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/gobwas/glob"
 
@@ -20,16 +21,16 @@ type File struct {
 	BaseStyles []string          // base style assigned in .vale
 	Checks     map[string]bool   // syntax-specific checks assigned in .vale
 	ChkToCtx   map[string]string // maps a temporary context to a particular check
-	Content    []byte            // the raw file contents
+	Comments   map[string]bool   // comment control statements
+	Content    string            // the raw file contents
 	Counts     map[string]int    // word counts
 	Format     string            // 'code', 'markup' or 'prose'
+	Lines      []string          // the File's Content split into lines
 	NormedExt  string            // the normalized extension (see util/format.go)
 	Path       string            // the full path
 	RealExt    string            // actual file extension
 	Scanner    *bufio.Scanner    // used by lintXXX functions
 	Sequences  []string          // tracks various info (e.g., defined abbreviations)
-
-	Comments map[string]bool // comment control statements
 }
 
 // An Alert represents a potential error in prose.
@@ -125,10 +126,12 @@ func NewFile(src string) *File {
 	}
 
 	scanner.Split(SplitLines)
+	content := PrepText(string(fbytes))
+	lines := strings.SplitAfter(content, "\n")
 	file := File{
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
-		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Content: fbytes,
-		Comments: make(map[string]bool),
+		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Lines: lines,
+		Comments: make(map[string]bool), Content: content,
 	}
 
 	return &file
@@ -140,13 +143,45 @@ func (f *File) SortedAlerts() []Alert {
 	return f.Alerts
 }
 
+// FindLoc calculates the line and span of an Alert.
+func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
+	var length int
+	var lines []string
+
+	substring := s[loc[0]:loc[1]]
+	pos := initialPosition(ctx, substring, loc)
+
+	if f.Format == "markup" {
+		lines = f.Lines
+	} else {
+		lines = strings.SplitAfter(ctx, "\n")
+	}
+
+	counter := 0
+	for idx, l := range lines {
+		length = utf8.RuneCountInString(l)
+		if (counter + length) >= pos {
+			loc[0] = (pos - counter) + pad
+			loc[1] = loc[0] + len(substring) - 1
+			extent := length + pad
+			if loc[1] > extent {
+				loc[1] = extent
+			}
+			return count - (len(lines) - (idx + 1)), loc
+		}
+		counter += length
+	}
+
+	return count, loc
+}
+
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
 func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
 	substring := txt[a.Span[0]:a.Span[1]]
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old
 	}
-	a.Line, a.Span = FindLoc(lines, ctx, txt, a.Span, pad)
+	a.Line, a.Span = f.FindLoc(ctx, txt, pad, lines, a.Span)
 	if a.Span[0] > 0 {
 		f.ChkToCtx[a.Check], _ = Substitute(ctx, substring)
 		f.Alerts = append(f.Alerts, a)

@@ -100,32 +100,6 @@ func initialPosition(ctx string, substring string, loc []int) int {
 	return idx + 1
 }
 
-// FindLoc calculates the line and span of an Alert.
-func FindLoc(count int, ctx string, s string, loc []int, pad int) (int, []int) {
-	var length int
-
-	substring := s[loc[0]:loc[1]]
-	pos := initialPosition(ctx, substring, loc)
-
-	counter := 0
-	lines := strings.SplitAfter(ctx, "\n")
-	for idx, l := range lines {
-		length = len(l)
-		if (counter + length) >= pos {
-			loc[0] = (pos - counter) + pad
-			loc[1] = loc[0] + len(substring) - 1
-			extent := length + pad
-			if loc[1] > extent {
-				loc[1] = extent
-			}
-			return count - (len(lines) - (idx + 1)), loc
-		}
-		counter += length
-	}
-
-	return count, loc
-}
-
 // PrepText prepares text for our check functions.
 func PrepText(txt string) string {
 	return sanitizer.Replace(txt)
