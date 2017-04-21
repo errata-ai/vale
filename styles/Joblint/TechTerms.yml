@@ -1,7 +1,7 @@
 extends: substitution
 message: Use '%s' instead of '%s'
-ignorecase: false
+ignorecase: true
 level: error
 swap:
-  'java[ -]?script|java[ -]?scripts': JavaScript
+  'java[ -]?scripts?': JavaScript
   ruby on rail: Ruby on Rails
