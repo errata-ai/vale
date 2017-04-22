@@ -1,3 +1,11 @@
+/*
+Package lint implements Vale's syntax-ware linting functionality.
+
+The package is split into core linting logic (this file), source code
+(code.go), and markup (markup.go). The general flow is to first read input into
+`Lint` (files and directories) or `LintString` (stdin) and then pass the
+processed input off to `lintFile` to choose a linter based on its format.
+*/
 package lint
 
 import (
@@ -18,7 +26,7 @@ type Linter struct{}
 
 // A Block represents a section of text.
 type Block struct {
-	Context string        // parent content (if any) - e.g., paragraph -> sentence
+	Context string        // parent content (if any) - e.g., sentence -> paragraph
 	Text    string        // text content
 	Scope   core.Selector // section selector
 }
@@ -57,6 +65,8 @@ func (l Linter) Lint(src string, pat string) ([]*core.File, error) {
 	return linted, nil
 }
 
+// lintFiles walks the `root` directory, creating a new goroutine to lint any
+// file that matches the given glob pattern.
 func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan *core.File, <-chan error) {
 	filesChan := make(chan *core.File)
 	errc := make(chan error, 1)

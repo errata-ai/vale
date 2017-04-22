@@ -17,23 +17,23 @@ import (
 // `::` for rst2html.
 var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (\w+)`)
 var rstArgs = []string{
-	"--quiet",             // We don't want stdout being filled with messages.
-	"--halt=5",            // We only want to fail when absolutely necessary.
-	"--report=5",          // Don't report system messages.
-	"--link-stylesheet",   // We don't need the stylesheet
-	"--no-file-insertion", // We don't want extra content in the HTML.
-	"--no-toc-backlinks",  // We don't want extra links or numbering.
+	"--quiet",
+	"--halt=5",
+	"--report=5",
+	"--link-stylesheet",
+	"--no-file-insertion",
+	"--no-toc-backlinks",
 	"--no-footnote-backlinks",
 	"--no-section-numbering",
 }
 
 // AsciiDoc configuration.
 var adocArgs = []string{
-	"-s",          // We don't want extra content in the HTML.
-	"--quiet",     // We don't want stdout being filled with messages.
-	"--safe-mode", // This disables `includes`, which we don't want
+	"-s",
+	"--quiet",
+	"--safe-mode",
 	"secure",
-	"-", // Use stdin
+	"-",
 }
 
 // Blackfriday configuration.
@@ -47,6 +47,8 @@ var options = blackfriday.Options{Extensions: commonExtensions}
 
 // HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
+
+// skipTags are tags that we don't want to lint.
 var skipTags = []string{"script", "style", "pre", "code", "tt", "figure"}
 var skipClasses = []string{}
 
