@@ -150,6 +150,9 @@ func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
 
 	substring := s[loc[0]:loc[1]]
 	pos := initialPosition(ctx, substring, loc)
+	if pos < 0 {
+		return pos, []int{0, 0}
+	}
 
 	if f.Format == "markup" {
 		lines = f.Lines
@@ -162,7 +165,7 @@ func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
 		length = utf8.RuneCountInString(l)
 		if (counter + length) >= pos {
 			loc[0] = (pos - counter) + pad
-			loc[1] = loc[0] + len(substring) - 1
+			loc[1] = loc[0] + utf8.RuneCountInString(substring) - 1
 			extent := length + pad
 			if loc[1] > extent {
 				loc[1] = extent
