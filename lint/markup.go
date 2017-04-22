@@ -19,7 +19,7 @@ var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (\w+)`)
 var rstArgs = []string{
 	"--quiet",             // We don't want stdout being filled with messages.
 	"--halt=5",            // We only want to fail when absolutely necessary.
-	"--report=5",          // don't report system messages.
+	"--report=5",          // Don't report system messages.
 	"--link-stylesheet",   // We don't need the stylesheet
 	"--no-file-insertion", // We don't want extra content in the HTML.
 	"--no-toc-backlinks",  // We don't want extra links or numbering.
@@ -29,9 +29,9 @@ var rstArgs = []string{
 
 // AsciiDoc configuration.
 var adocArgs = []string{
-	"--no-header-footer", // We don't want extra content in the HTML.
-	"--quiet",            // We don't want stdout being filled with messages.
-	"--safe-mode",        // This disables `includes`, which we don't want
+	"-s",          // We don't want extra content in the HTML.
+	"--quiet",     // We don't want stdout being filled with messages.
+	"--safe-mode", // This disables `includes`, which we don't want
 	"secure",
 	"-", // Use stdin
 }
