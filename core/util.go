@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"unicode/utf8"
 
 	"matloob.io/regexp"
 )
@@ -80,6 +81,9 @@ func DumpConfig() string {
 // the reference document, `loc`) in the source document (`ctx`).
 func initialPosition(ctx string, substring string, loc []int) int {
 	idx := strings.Index(ctx, substring)
+	if idx < 0 {
+		return idx
+	}
 	pat := `(?:\b|_)` + regexp.QuoteMeta(substring) + `(?:\b|_)`
 	query := ctx[Max(idx-1, 0):Min(idx+len(substring)+1, len(ctx))]
 	if match, err := regexp.MatchString(pat, query); err != nil || !match {
@@ -88,17 +92,25 @@ func initialPosition(ctx string, substring string, loc []int) int {
 		// and " very " => bounded.
 		sloc := regexp.MustCompile(pat).FindStringIndex(ctx)
 		if len(sloc) > 0 {
-			pos := sloc[0]
-			if strings.HasPrefix(ctx[pos:], "_") {
-				pos++ // We don't want to include the underscore boundary.
+			idx = sloc[0]
+			if strings.HasPrefix(ctx[idx:], "_") {
+				idx++ // We don't want to include the underscore boundary.
 			}
-			return pos + 1
 		}
 	}
 	// If the first match is bounded or there's no bounded option, we take the
 	// first occurrence of `substring`.
-	return idx + 1
+	return utf8.RuneCountInString(ctx[:idx]) + 1
 }
+
+// sanitizer replaces a set of unicode characters with ASCII equivalents.
+var sanitizer = strings.NewReplacer(
+	"\u201c", `"`,
+	"\u201d", `"`,
+	"\u2018", "'",
+	"\u2019", "'",
+	"\r\n", "\n",
+	"\r", "\n")
 
 // PrepText prepares text for our check functions.
 func PrepText(txt string) string {
@@ -211,86 +223,3 @@ func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) {
 	}
 	return 0, nil, nil
 }
-
-// sanitizer replaces a set of unicode characters with ASCII equivalents.
-var sanitizer = strings.NewReplacer(
-	"À", "A",
-	"Á", "A",
-	"Â", "A",
-	"Ã", "A",
-	"Ä", "A",
-	"Å", "AA",
-	"Æ", "AE",
-	"Ç", "C",
-	"È", "E",
-	"É", "E",
-	"Ê", "E",
-	"Ë", "E",
-	"Ì", "I",
-	"Í", "I",
-	"Î", "I",
-	"Ï", "I",
-	"Ð", "D",
-	"Ł", "L",
-	"Ñ", "N",
-	"Ò", "O",
-	"Ó", "O",
-	"Ô", "O",
-	"Õ", "O",
-	"Ö", "O",
-	"Ø", "OE",
-	"Ù", "U",
-	"Ú", "U",
-	"Ü", "U",
-	"Û", "U",
-	"Ý", "Y",
-	"Þ", "Th",
-	"ß", "ss",
-	"à", "a",
-	"á", "a",
-	"â", "a",
-	"ã", "a",
-	"ä", "a",
-	"å", "aa",
-	"æ", "ae",
-	"ç", "c",
-	"è", "e",
-	"é", "e",
-	"ê", "e",
-	"ë", "e",
-	"ì", "i",
-	"í", "i",
-	"î", "i",
-	"ï", "i",
-	"ð", "d",
-	"ł", "l",
-	"ñ", "n",
-	"ń", "n",
-	"ò", "o",
-	"ó", "o",
-	"ô", "o",
-	"õ", "o",
-	"ō", "o",
-	"ö", "o",
-	"ø", "oe",
-	"ś", "s",
-	"ù", "u",
-	"ú", "u",
-	"û", "u",
-	"ū", "u",
-	"ü", "u",
-	"ý", "y",
-	"þ", "th",
-	"ÿ", "y",
-	"ż", "z",
-	"Œ", "OE",
-	"œ", "oe",
-	"\u201c", `"`,
-	"\u201d", `"`,
-	"\u2018", "'",
-	"\u2019", "'",
-	"\u2013", "-",
-	"\u2014", "-",
-	"\u2026", "...",
-	"\r\n", "\n",
-	"\r", "\n")
