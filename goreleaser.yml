@@ -1,0 +1,26 @@
+build:
+  main: main.go
+  binary: vale
+  ldflags_template: -s -w -X main.Version={{.Version}}
+  goos:
+    - windows
+    - darwin
+    - linux
+  goarch:
+    - amd64
+archive:
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip
+  replacements:
+    amd64: 64-bit
+    darwin: macOS
+    linux: Linux
+    windows: Windows
+brew:
+  github:
+    owner: ValeLint
+    name: homebrew-vale
+  description: "A customizable, syntax-aware linter for prose."
+  homepage: "https://github.com/ValeLint/vale"
