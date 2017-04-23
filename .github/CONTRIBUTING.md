@@ -76,7 +76,16 @@ Vale follows a modified version of the [AngularJS Commit Guidelines](https://git
 <footer>
 ```
 
-with `<body>` and `<footer>` being optional.
+with `<body>` and `<footer>` being optional. `<type>` should be one of the following:
+
+- feat: A new feature
+- fix: A bug fix
+- docs: Documentation only changes (e.g., this document, the README, or source comments)
+- style: Changes that do not affect the meaning of the code (e.g., code formatting)
+- refactor: A code change that neither fixes a bug nor adds a feature
+- perf: A code change that improves performance (in this case, please include relevant benchmark(s))
+- test: Adding missing or correcting existing tests
+- chore: Changes to the build process or auxiliary tools
 
 An example would be something like:
 
