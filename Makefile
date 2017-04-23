@@ -1,9 +1,6 @@
 BASE_DIR=$(shell echo $$GOPATH)/src/github.com/ValeLint/vale
 BUILD_DIR=./builds
 
-VERSION_FILE=$(BASE_DIR)/VERSION
-VERSION=$(shell cat $(VERSION_FILE))
-
 LAST_TAG=$(shell git describe --abbrev=0 --tags)
 CURR_SHA=$(shell git rev-parse --verify HEAD)
 
