@@ -6,9 +6,14 @@ CURR_SHA=$(shell git rev-parse --verify HEAD)
 
 LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
 
-.PHONY: clean test lint ci cross install bump rules setup bench compare
+.PHONY: clean test lint ci cross install bump rules setup bench compare release
 
 all: build
+
+# make release v0.4.3
+release:
+	git tag $(tag)
+	git push origin $(tag)
 
 build:
 	go build ${LDFLAGS} -o bin/vale
