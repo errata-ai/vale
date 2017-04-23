@@ -42,9 +42,6 @@ cross:
 
 	scripts/sign.sh $(BUILD_DIR)
 
-changelog:
-	github_changelog_generator
-
 install:
 	go install ${LDFLAGS}
 

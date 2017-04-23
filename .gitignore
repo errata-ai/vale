@@ -9,6 +9,7 @@ tmp
 tags
 site
 target
+dist
 
 # Files
 *.o
