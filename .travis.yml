@@ -6,7 +6,7 @@ go:
   - 1.8
 addons:
   apt_packages:
-    - pandoc
+    - upx-ucl
 before_install:
   - export BUNDLE_GEMFILE=$PWD/Gemfile
   - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
@@ -16,7 +16,7 @@ before_install:
   - git --version
 install:
   - make setup
-  - make build
+  - make build-linux
 script:
   - make test
 after_script:

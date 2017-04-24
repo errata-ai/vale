@@ -10,7 +10,7 @@ LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
 
 all: build
 
-# make release v0.4.3
+# make release tag=v0.4.3
 release:
 	git tag $(tag)
 	git push origin $(tag)
@@ -20,6 +20,10 @@ build:
 
 build-win:
 	go build ${LDFLAGS} -o bin/vale.exe
+
+build-linux:
+	go build ${LDFLAGS} -o bin/vale
+	upx bin/vale
 
 cross:
 	mkdir -p $(BUILD_DIR)
