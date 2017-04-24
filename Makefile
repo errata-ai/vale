@@ -4,7 +4,7 @@ BUILD_DIR=./builds
 LAST_TAG=$(shell git describe --abbrev=0 --tags)
 CURR_SHA=$(shell git rev-parse --verify HEAD)
 
-LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
+LDFLAGS=-ldflags "-s -w -X main.version=$(LAST_TAG)"
 
 .PHONY: clean test lint ci cross install bump rules setup bench compare release
 
@@ -24,29 +24,6 @@ build-win:
 build-linux:
 	go build ${LDFLAGS} -o bin/vale
 	upx bin/vale
-
-cross:
-	mkdir -p $(BUILD_DIR)
-
-	GOOS=linux GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/Linux-64bit.tar.gz" ./vale
-
-	# GOOS=linux GOARCH=386 go build ${LDFLAGS}
-	# tar -czvf "$(BUILD_DIR)/linux-386.tar.gz" ./vale
-
-	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/macOS-64bit.tar.gz" ./vale
-
-	# GOOS=darwin GOARCH=386 go build ${LDFLAGS}
-	# tar -czvf "$(BUILD_DIR)/darwin-386.tar.gz" ./vale
-
-	GOOS=windows GOARCH=amd64 go build ${LDFLAGS}
-	zip -r "$(BUILD_DIR)/Windows-64bit.zip" ./vale.exe
-
-	# GOOS=windows GOARCH=386 go build ${LDFLAGS}
-	# zip -r "$(BUILD_DIR)/windows-386.zip" ./vale.exe
-
-	scripts/sign.sh $(BUILD_DIR)
 
 install:
 	go install ${LDFLAGS}
@@ -94,14 +71,6 @@ setup:
 	gometalinter --install
 	bundle install
 	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
-
-bump:
-	MAJOR=$(word 1, $(subst ., , $(CURRENT_VERSION)))
-	MINOR=$(word 2, $(subst ., , $(CURRENT_VERSION)))
-	PATCH=$(word 3, $(subst ., , $(CURRENT_VERSION)))
-	VER ?= $(MAJOR).$(MINOR).$(shell echo $$(($(PATCH)+1)))
-
-	echo $(VER) > $(VERSION_FILE)
 
 rules:
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/
