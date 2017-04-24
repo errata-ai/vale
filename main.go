@@ -14,15 +14,15 @@ import (
 	"github.com/urfave/cli"
 )
 
-// Version is set during the release build process.
-var Version string
+// version is set during the release build process.
+var version = "master"
 
 func main() {
 	var glob string
 	app := cli.NewApp()
 	app.Name = "vale"
 	app.Usage = "A command-line linter for prose."
-	app.Version = Version
+	app.Version = version
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "glob",

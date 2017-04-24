@@ -1,7 +1,6 @@
 build:
   main: main.go
   binary: vale
-  ldflags_template: -s -w -X main.Version={{.Version}}
   goos:
     - windows
     - darwin
