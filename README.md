@@ -6,7 +6,7 @@
 
 Vale is a natural language linter that supports plain text, markup (Markdown, reStructuredText, AsciiDoc, and HTML), and source code comments. Vale doesn't attempt to offer a one-size-fits-all collection of rules&mdash;instead, it strives to make customization as easy as possible.
 
-Check out [project website](https://valelint.github.io/) to learn more!
+Check out [project website](https://valelint.github.io/docs/) to learn more!
 
 ## Highlights
 
@@ -27,7 +27,7 @@ Vale's functionality is split into extension points (called "checks") that can b
 - `conditional` ([example](https://github.com/ValeLint/vale/blob/master/styles/TheEconomist/UnexpandedAcronyms.yml)): This ensures that the existence of `first` implies the existence of `second`. This is useful for things like verifying that an abbreviation has a parenthetical defintion.
 - `spelling` ([example](https://github.com/ValeLint/vale/blob/master/styles/demo/CheckSpellings.yml)): This will spell check against a large [list of words](https://github.com/client9/misspell#words) accounting for customizations (e.g., removing or adding words to the dictionary).
 
-Additionally, since Vale is “syntax aware,” you'll never have to worry about syntax-related false positives (e.g., URLs or code blocks). See [Check Types](https://valelint.github.io/styles/#check-types) for more information.
+Additionally, since Vale is “syntax aware,” you'll never have to worry about syntax-related false positives (e.g., URLs or code blocks). See [Creating a style](https://valelint.github.io/docs/styles/#creating-a-style) for more information.
 
 ## Installation
 
@@ -76,7 +76,7 @@ Run Vale on text with an assigned syntax:
 $ vale --ext=.md 'this is some text'
 ```
 
-See `vale --help` and [Configuration](https://valelint.github.io/config/) for more information.
+See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) for more information.
 
 ## Integrations
 
@@ -91,7 +91,7 @@ See `vale --help` and [Configuration](https://valelint.github.io/config/) for mo
 |        [`Joblint`](https://github.com/rowanmanning/joblint)        |      [`Joblint.zip`](https://github.com/ValeLint/docs/raw/master/styles/Joblint.zip)      |                Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                | :white_check_mark: |
 |    [`jQuery`](https://contribute.jquery.org/style-guide/prose/)    |       [`jQuery.zip`](https://github.com/ValeLint/docs/raw/master/styles/jQuery.zip)       |            A collection of rules based on jQuery's documentation formatting conventions and writing style.            |   :construction:   |
 | [`TheEconomist`](http://www.economist.com/styleguide/introduction) | [`TheEconomist.zip`](https://github.com/ValeLint/docs/raw/master/styles/TheEconomist.zip) |                               A collection of rules based on The Economist Style Guide.                               |   :construction:   |
-|   [`Homebrew`](http://docs.brew.sh/Prose-Style-Guidelines.html)    |       [`Homebrew.zip`](https://github.com/ValeLint/docs/raw/master/styles/Homebrew.zip)       | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
+|   [`Homebrew`](http://docs.brew.sh/Prose-Style-Guidelines.html)    |     [`Homebrew.zip`](https://github.com/ValeLint/docs/raw/master/styles/Homebrew.zip)     | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
 | [`Middlebury`](https://middlebury.github.io/styleguide/editorial/) |   [`Middlebury.zip`](https://github.com/ValeLint/docs/raw/master/styles/Middlebury.zip)   |                         A collection of rules based on The Middlebury Editorial Style Guide.                          |   :construction:   |
 |           [`18F`](https://pages.18f.gov/content-guide/)            |          [`18F.zip`](https://github.com/ValeLint/docs/raw/master/styles/18F.zip)          |                                  Guidelines for creating plain and concise writing.                                   |   :construction:   |
 
@@ -112,4 +112,4 @@ BasedOnStyles = vale, Joblint
 vale.Editorializing = NO
 ```
 
-See [Configuration](https://valelint.github.io/config/) and [Styles](https://valelint.github.io/styles/) for more information.
+See [Configuration](https://valelint.github.io/docs/config/) and [Styles](https://valelint.github.io/docs/styles/) for more information.
