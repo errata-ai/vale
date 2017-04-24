@@ -20,6 +20,7 @@ build:
 
 build-win:
 	go build ${LDFLAGS} -o bin/vale.exe
+	upx bin/vale.exe
 
 build-linux:
 	go build ${LDFLAGS} -o bin/vale

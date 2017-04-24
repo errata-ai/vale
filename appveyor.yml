@@ -14,7 +14,7 @@ install:
   - cinst ansicon
   - pip install docutils
   - gem install asciidoctor
-  - choco install pandoc
+  - choco install upx
 build_script:
 - cmd: >-
     make setup
