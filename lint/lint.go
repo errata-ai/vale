@@ -1,10 +1,28 @@
 /*
-Package lint implements Vale's syntax-ware linting functionality.
+Package lint implements Vale's syntax-aware linting functionality.
 
 The package is split into core linting logic (this file), source code
-(code.go), and markup (markup.go). The general flow is to first read input into
-`Lint` (files and directories) or `LintString` (stdin) and then pass the
-processed input off to `lintFile` to choose a linter based on its format.
+(code.go), and markup (markup.go). The general flow is as follows:
+
+    Lint (files and directories)     LintString (stdin)
+				       \            /
+                        \          /
+	                     +        +
+	+-------------------+ lintFile ------+|lintMarkdown|lintADoc|lintRST
+	|                    /    |   \       |            |       /
+	|					/     |    \      |           /       /
+    |				   /      |     \     |          +--------
+    |				  /       |      \    |         /
+    |                +        +       +	  +        +
+	|	          lintCode  lintLines     lintHTML
+	|			    |         |              |
+    |               |         |              +
+    |        		 \        |         lintProse
+    |                 \       |        /
+	|				   +      +       +
+	| 					   lintText
+    |   <= add Alerts{}       |
+    +-------------------------+
 */
 package lint
 

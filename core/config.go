@@ -69,7 +69,7 @@ type config struct {
 	SBaseStyles   map[string][]string        // Syntax-specific base styles
 	SChecks       map[string]map[string]bool // Syntax-specific checks
 	StylesPath    string                     // Directory with Rule.yml files
-	RuleToLevel   map[string]string
+	RuleToLevel   map[string]string          // Single-rule level changes
 }
 
 func newConfig() *config {
