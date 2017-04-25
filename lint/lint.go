@@ -5,23 +5,23 @@ The package is split into core linting logic (this file), source code
 (code.go), and markup (markup.go). The general flow is as follows:
 
     Lint (files and directories)     LintString (stdin)
-				\                   /
+                \                   /
                  lintFiles         /
                          \        /
-	                      +      +
-	+-------------------+ lintFile ------+|lintMarkdown|lintADoc|lintRST
-	|                    /    |   \       |            |       /
-	|					/     |    \      |           /       /
-    |				   /      |     \     |          +--------
-    |				  /       |      \    |         /
+                          +      +
+    +-------------------+ lintFile ------+|lintMarkdown|lintADoc|lintRST
+    |                    /    |   \       |            |       /
+    |                   /     |    \      |           /       /
+    |                  /      |     \     |          +--------
+    |                 /       |      \    |         /
     |                +        +       +	  +        +
-	|	          lintCode  lintLines     lintHTML
-	|			    |         |              |
+    |               lintCode  lintLines     lintHTML
+    |               |         |              |
     |               |         |              +
-    |        		 \        |         lintProse
+    |                \        |         lintProse
     |                 \       |        /
-	|				   +      +       +
-	| 					   lintText
+    |                  +      +       +
+    |                      lintText
     |   <= add Alerts{}       |
     +-------------------------+
 */
