@@ -10,12 +10,12 @@ The package is split into core linting logic (this file), source code
                          \        /
                           +      +
     +-------------------+ lintFile ------+|lintMarkdown|lintADoc|lintRST
-    |                    /    |   \       |            |       /
-    |                   /     |    \      |           /       /
-    |                  /      |     \     |          +--------
-    |                 /       |      \    |         /
-    |                +        +       +	  +        +
-    |               lintCode  lintLines     lintHTML
+    |                    /    |    \       |            |       /
+    |                   /     |     \      |           /       /
+    |                  /      |      \     |          +--------
+    |                 /       |       \    |         /
+    |                +        +        +   +        +
+    |               lintCode  lintLines  lintHTML
     |               |         |              |
     |               |         |              +
     |                \        |         lintProse
@@ -124,6 +124,10 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 	return filesChan, errc
 }
 
+// lintFile creates a new `File` from the path `src` and selects a linter based
+// on its format.
+//
+// TODO: remove dependencies on `asciidoctor` and `rst2html`.
 func (l Linter) lintFile(src string) *core.File {
 	file := core.NewFile(src)
 	if file.Format == "markup" && !core.CLConfig.Simple {
