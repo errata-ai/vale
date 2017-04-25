@@ -25,7 +25,8 @@ const (
 
 type ruleFn func(string, *core.File) []core.Alert
 
-func init() {
+// Load initializes AllChecks based on the user's configuration.
+func Load() {
 	var style, path string
 
 	loadedStyles := []string{}

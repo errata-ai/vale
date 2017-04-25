@@ -96,6 +96,7 @@ func main() {
 		var src string
 
 		if c.NArg() > 0 || core.Stat() {
+			check.Load() // we have input, so let's load our configuration.
 			if c.NArg() > 0 {
 				src = c.Args()[0]
 			} else {
@@ -103,8 +104,8 @@ func main() {
 				src = string(stdin)
 			}
 
-			// Do we a directory/file or a string?
 			l := new(lint.Linter)
+			// Do we a directory/file or a string?
 			if core.IsDir(src) || core.FileExists(src) {
 				linted, err = l.Lint(src, glob)
 			} else {
