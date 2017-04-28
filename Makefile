@@ -62,8 +62,7 @@ lint:
 		--deadline=1m \
 		./core ./lint ./ui ./check
 
-setup:
-	go get -u github.com/client9/misspell/cmd/misspell
+setup:	
 	go get golang.org/x/perf/cmd/benchstat
 	go get golang.org/x/tools/cmd/benchcmp
 	go get github.com/aclements/go-misc/benchmany
