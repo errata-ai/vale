@@ -1,6 +1,14 @@
 {
-    "memo": "12fab323d11f34b0501ec521abd07bb523e637da5d1333465b5af060f9f473b3",
+    "memo": "04a8d0445d7fd01bb1317e5ff579fa05d345a4f76214292644e05430f6339630",
     "projects": [
+        {
+            "name": "github.com/client9/misspell",
+            "branch": "master",
+            "revision": "d06ddd376b273047dca6e16eeeb2a2a8f9791978",
+            "packages": [
+                "."
+            ]
+        },
         {
             "name": "github.com/davecgh/go-spew",
             "version": "v1.1.0",
