@@ -78,9 +78,9 @@ func DumpConfig() string {
 	return string(b)
 }
 
-// jaroWinkler searches `ctx` line-by-line for a JaroWinkler distance score
+// JaroWinkler searches `ctx` line-by-line for a JaroWinkler distance score
 // greater than 0.80 for the string `sub`.
-func jaroWinkler(ctx, sub string) (int, string) {
+func JaroWinkler(ctx, sub string) (int, string) {
 	for _, line := range strings.Split(ctx, "\n") {
 		for _, s := range SentenceTokenizer.Tokenize(line) {
 			text := s.Text
@@ -100,7 +100,7 @@ func initialPosition(ctx string, substring string, loc []int) (int, string) {
 		// Fall back to the JaroWinkler distance. This should only happen if
 		// we're in a scope that contains inline markup (e.g., a sentence with
 		// code spans).
-		return jaroWinkler(ctx, substring)
+		return JaroWinkler(ctx, substring)
 	}
 	pat := `(?:\b|_)` + regexp.QuoteMeta(substring) + `(?:\b|_)`
 	query := ctx[Max(idx-1, 0):Min(idx+len(substring)+1, len(ctx))]

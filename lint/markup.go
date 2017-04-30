@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"os/exec"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/ValeLint/vale/core"
 	"github.com/russross/blackfriday"
@@ -84,7 +86,11 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		} else if tokt == html.TextToken {
 			queue = append(queue, txt)
 			if !inBlock {
-				if inline {
+				first, _ := utf8.DecodeRuneInString(txt)
+				// Only add a space for non-punctuation. NOTE: we may want to
+				// use JaroWinkler here (instead of later), but we'll need to
+				// store position information to avoid duplicating work.
+				if inline && !unicode.IsPunct(first) {
 					txt = " " + txt
 				}
 				buf.WriteString(txt)
