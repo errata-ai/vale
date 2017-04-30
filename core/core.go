@@ -148,9 +148,9 @@ func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
 	var length int
 	var lines []string
 
-	substring := s[loc[0]:loc[1]]
-	pos := initialPosition(ctx, substring, loc)
+	pos, substring := initialPosition(ctx, s[loc[0]:loc[1]], loc)
 	if pos < 0 {
+		// Shouldn't happen ...
 		return pos, []int{0, 0}
 	}
 

@@ -100,7 +100,7 @@ Feature: Styles
     """
     test.adoc:5:25:jQuery.Semicolons:Avoid using semicolons
     test.adoc:20:1:jQuery.OxfordComma:Use the Oxford comma in a list of three or more items
-    test.md:7:10:jQuery.SentenceLength:Keep sentences short and to the point
+    test.md:7:1:jQuery.SentenceLength:Keep sentences short and to the point
     test.md:7:88:jQuery.PassiveVoice:"been implemented" is passive voice
     test.md:7:221:jQuery.PassiveVoice:"been implemented" is passive voice
     test.md:7:266:jQuery.PassiveVoice:"be mixed" is passive voice

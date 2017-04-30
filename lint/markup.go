@@ -49,52 +49,60 @@ var options = blackfriday.Options{Extensions: commonExtensions}
 var heading = regexp.MustCompile(`^h\d$`)
 
 // skipTags are tags that we don't want to lint.
-var skipTags = []string{"script", "style", "pre", "code", "tt", "figure"}
-var skipClasses = []string{}
+var skipTags = []string{"script", "style", "pre", "figure", "code", "tt"}
+var inlineTags = []string{
+	"b", "big", "i", "small", "abbr", "acronym", "cite", "dfn", "em", "kbd",
+	"strong", "a", "br", "img", "span", "sub", "sup"}
 
 func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int) {
-	var txt, attr string
+	var txt string
 	var tokt html.TokenType
 	var tok html.Token
-	var inBlock, skip, isHeading bool
+	var inBlock, skip, inline bool
 
 	lines := len(f.Lines) + offset
+	buf := bytes.NewBufferString("")
+	queue := []string{}
+
 	tokens := html.NewTokenizer(bytes.NewReader(fsrc))
 	for {
 		tokt = tokens.Next()
 		tok = tokens.Token()
 		txt = core.PrepText(html.UnescapeString(strings.TrimSpace(tok.Data)))
-		skip = core.StringInSlice(txt, skipTags) || core.StringInSlice(attr, skipClasses)
+		skip = core.StringInSlice(txt, skipTags)
 		if tokt == html.ErrorToken {
 			break
 		} else if tokt == html.StartTagToken && skip {
 			inBlock = true
 		} else if skip && inBlock {
 			inBlock = false
-		} else if tokt == html.StartTagToken && heading.MatchString(txt) {
-			isHeading = true
+		} else if tokt == html.StartTagToken {
+			inline = core.StringInSlice(txt, inlineTags)
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
-		} else if tokt == html.EndTagToken && isHeading {
-			isHeading = false
-		} else if tokt == html.TextToken && isHeading && !inBlock && txt != "" {
-			l.lintText(f, NewBlock(ctx, txt, "text.heading"+f.RealExt), lines, 0)
-		} else if tokt == html.TextToken && !inBlock && !skip && txt != "" {
-			l.lintProse(f, ctx, txt, lines, 0)
+		} else if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
+			text := buf.String()
+			if heading.MatchString(txt) {
+				l.lintText(f, NewBlock(ctx, text, "text.heading"+f.RealExt), lines, 0)
+			} else {
+				l.lintProse(f, ctx, text, lines, 0)
+			}
+			for _, s := range queue {
+				ctx = updateCtx(ctx, s, html.TextToken)
+			}
+			queue = []string{}
+			buf.Reset()
+		} else if tokt == html.TextToken {
+			queue = append(queue, txt)
+			if !inBlock {
+				if inline {
+					txt = " " + txt
+				}
+				buf.WriteString(txt)
+			}
 		}
-		attr = getAttribute(tok, "class")
 		ctx = clearElements(ctx, tok)
-		ctx = updateCtx(ctx, txt, tokt)
 	}
-}
-
-func getAttribute(tok html.Token, key string) string {
-	for _, attr := range tok.Attr {
-		if attr.Key == key {
-			return attr.Val
-		}
-	}
-	return ""
 }
 
 func clearElements(ctx string, tok html.Token) string {

@@ -3,9 +3,9 @@ Feature: Comments
     When I test comments for ".md"
     Then the output should contain exactly:
     """
-    test.md:11:19:vale.GenderBias:Consider using 'firefighter(s)' instead of 'fireman'
-    test.md:14:19:vale.GenderBias:Consider using 'firefighter(s)' instead of 'fireman'
-    test.md:18:20:demo.EndingPreposition:Don't end a sentence with 'of.'
+    test.md:16:19:vale.GenderBias:Consider using 'firefighter(s)' instead of 'fireman'
+    test.md:20:19:vale.GenderBias:Consider using 'firefighter(s)' instead of 'fireman'
+    test.md:26:20:demo.EndingPreposition:Don't end a sentence with 'of.'
     """
 
   Scenario: reStructuredText

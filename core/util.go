@@ -10,6 +10,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/xrash/smetrics"
 	"matloob.io/regexp"
 )
 
@@ -77,12 +78,29 @@ func DumpConfig() string {
 	return string(b)
 }
 
+// jaroWinkler searches `ctx` line-by-line for a JaroWinkler distance score
+// greater than 0.80 for the string `sub`.
+func jaroWinkler(ctx, sub string) (int, string) {
+	for _, line := range strings.Split(ctx, "\n") {
+		for _, s := range SentenceTokenizer.Tokenize(line) {
+			text := s.Text
+			if smetrics.JaroWinkler(sub, text, 0.7, 4) > 0.80 {
+				return strings.Index(ctx, text) + 1, text
+			}
+		}
+	}
+	return -1, sub
+}
+
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).
-func initialPosition(ctx string, substring string, loc []int) int {
+func initialPosition(ctx string, substring string, loc []int) (int, string) {
 	idx := strings.Index(ctx, substring)
 	if idx < 0 {
-		return idx
+		// Fall back to the JaroWinkler distance. This should only happen if
+		// we're in a scope that contains inline markup (e.g., a sentence with
+		// code spans).
+		return jaroWinkler(ctx, substring)
 	}
 	pat := `(?:\b|_)` + regexp.QuoteMeta(substring) + `(?:\b|_)`
 	query := ctx[Max(idx-1, 0):Min(idx+len(substring)+1, len(ctx))]
@@ -98,9 +116,7 @@ func initialPosition(ctx string, substring string, loc []int) int {
 			}
 		}
 	}
-	// If the first match is bounded or there's no bounded option, we take the
-	// first occurrence of `substring`.
-	return utf8.RuneCountInString(ctx[:idx]) + 1
+	return utf8.RuneCountInString(ctx[:idx]) + 1, substring
 }
 
 // sanitizer replaces a set of unicode characters with ASCII equivalents.
@@ -182,6 +198,16 @@ func AllStringsInSlice(strings []string, slice []string) bool {
 func HasAnyPrefix(text string, slice []string) bool {
 	for _, s := range slice {
 		if strings.HasPrefix(text, s) {
+			return true
+		}
+	}
+	return false
+}
+
+// ContainsAny determines if `text` contains any string in `slice`.
+func ContainsAny(text string, slice []string) bool {
+	for _, s := range slice {
+		if strings.Contains(text, s) {
 			return true
 		}
 	}
