@@ -70,6 +70,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		tok = tokens.Token()
 		txt = core.PrepText(html.UnescapeString(strings.TrimSpace(tok.Data)))
 		skip = core.StringInSlice(txt, skipTags)
+
 		if tokt == html.ErrorToken {
 			break
 		} else if tokt == html.StartTagToken && skip {
@@ -80,7 +81,17 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			inline = core.StringInSlice(txt, inlineTags)
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
-		} else if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
+		} else if tokt == html.TextToken {
+			queue = append(queue, txt)
+			if !inBlock {
+				if inline {
+					txt = " " + txt
+				}
+				buf.WriteString(txt)
+			}
+		}
+
+		if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
 			text := buf.String()
 			if heading.MatchString(txt) {
 				l.lintText(f, NewBlock(ctx, text, "text.heading"+f.RealExt), lines, 0)
@@ -92,15 +103,8 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			}
 			queue = []string{}
 			buf.Reset()
-		} else if tokt == html.TextToken {
-			queue = append(queue, txt)
-			if !inBlock {
-				if inline {
-					txt = " " + txt
-				}
-				buf.WriteString(txt)
-			}
 		}
+
 		ctx = clearElements(ctx, tok)
 	}
 }
