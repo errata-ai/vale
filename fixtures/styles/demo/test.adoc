@@ -1,0 +1,1 @@
+If your docs are aimed at helping *people* code, then _probably that_ "previous developer experience" is a good way to go, preferably with details on the specific languages/environments they'll be writing about.

@@ -40,6 +40,7 @@ Feature: Styles
     When I apply style "demo"
     Then the output should contain exactly:
     """
+    test.adoc:1:1:demo.SentenceLength:Sentences should be less than 25 words
     test.html:5:43:demo.EndingPreposition:Don't end a sentence with 'by.'
     test.html:8:30:demo.CommasPerSentence:More than 3 commas!
     test.html:10:27:demo.Spacing:'.M' should have one space
@@ -52,7 +53,7 @@ Feature: Styles
     test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
     test.md:14:159:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:1:demo.SentenceLength:Sentences should be less than 25 words
-    test.md:16:367:demo.SentenceLength:Sentences should be less than 25 words
+    test.md:16:371:demo.SentenceLength:Sentences should be less than 25 words
     test.md:22:21:demo.Abbreviations:Use 'i.e.,'
     test.md:22:66:demo.Abbreviations:Use 'a.m. or p.m.'
     test.md:22:94:demo.Abbreviations:Use 'midnight or noon'
@@ -61,10 +62,10 @@ Feature: Styles
     test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
     test.rst:1:58:demo.Spacing:'. I' should have one space
     test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
-    test.rst:7:28:demo.EndingPreposition:Don't end a sentence with 'by.'
-    test.rst:11:1:demo.ParagraphLength:Paragraphs should be less than 150 words
-    test.rst:22:25:demo.Spelling:Inconsistent spelling of 'center'
-    test.rst:26:32:demo.Spelling:Inconsistent spelling of 'colour'
+    test.rst:5:28:demo.EndingPreposition:Don't end a sentence with 'by.'
+    test.rst:9:1:demo.ParagraphLength:Paragraphs should be less than 150 words
+    test.rst:20:25:demo.Spelling:Inconsistent spelling of 'center'
+    test.rst:24:32:demo.Spelling:Inconsistent spelling of 'colour'
     """
 
   Scenario: Lint against The Economist's style guide
