@@ -1,5 +1,5 @@
 {
-    "memo": "04a8d0445d7fd01bb1317e5ff579fa05d345a4f76214292644e05430f6339630",
+    "memo": "a1f783871999b686a2dc99f23a1d764033ef99bf25f8f49c073ae3b5e3df2550",
     "projects": [
         {
             "name": "github.com/client9/misspell",
@@ -124,6 +124,14 @@
             "name": "github.com/urfave/cli",
             "branch": "master",
             "revision": "9e5b04886c4bfee2ceba1465b8121057355c4e53",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/xrash/smetrics",
+            "branch": "master",
+            "revision": "a3153f7040e90324c58c6287535e26a0ac5c1cc1",
             "packages": [
                 "."
             ]
