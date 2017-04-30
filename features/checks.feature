@@ -55,6 +55,7 @@ Feature: Checks
     When I test "checks/Repetition"
     Then the output should contain exactly:
     """
+    test.tex:31:21:vale.Repetition:'not' is repeated!
     text.rst:6:17:vale.Repetition:'as' is repeated!
     text.rst:8:33:vale.Repetition:'the' is repeated!
     text.rst:15:7:vale.Repetition:'and' is repeated!

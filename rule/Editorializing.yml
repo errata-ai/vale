@@ -1,7 +1,6 @@
 extends: existence
 message: "Consider removing '%s'"
 ignorecase: true
-scope: text
 level: warning
 tokens:
   - actually
