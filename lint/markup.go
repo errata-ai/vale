@@ -174,7 +174,7 @@ func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 	cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(f.Content, "::"))
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run()) {
-		html := out.Bytes()
+		html := bytes.Replace(out.Bytes(), []byte("\r"), []byte(""), -1)
 		bodyStart := bytes.Index(html, []byte("<body>\n"))
 		if bodyStart < 0 {
 			bodyStart = -7
