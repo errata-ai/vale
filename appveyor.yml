@@ -3,24 +3,34 @@ clone_folder: c:\GOPATH\src\github.com\ValeLint\vale
 environment:
   GOPATH: c:\GOPATH
 init:
-- cmd: >-
-    set PATH=C:\MinGW\bin;%PATH%
-
-    copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
+  - cmd: set PATH=C:\MinGW\bin;%PATH%
+  - cmd: copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
 install:
-  - echo %PATH%
-  - echo %GOPATH%
-  - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby22\bin;%cd%\bin;%PATH%
+  - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby22\bin;%cd%;%PATH%
   - cinst ansicon
   - pip install docutils
   - gem install asciidoctor
   - choco install upx
+  - curl -fsSL -o C:\wix310-binaries.zip http://static.wixtoolset.org/releases/v3.10.3.3007/wix310-binaries.zip
+  - 7z x C:\wix310-binaries.zip -y -r -oC:\wix310
+  - set PATH=C:\wix310;%PATH%
+  - go get github.com/mh-cbon/go-msi
 build_script:
-- cmd: >-
-    make setup
-
-    make build-win
+  - cmd: make setup
+  - cmd: make build-win
 test_script:
-- cmd: make ci
+  - cmd: make ci
 after_test:
-- cmd: make compare
+  - cmd: make compare
+artifacts:
+  - path: '*-amd64.msi'
+    name: vale.msi
+deploy:
+  - provider: GitHub
+    artifact: vale.msi
+    auth_token:
+      secure: 'yRQKtmS08Vob2MlOvew+JQMHVkUYJijD88Eh59TBC98oxX6avivBwOWZXQMNPd1n'
+    on:
+      branch:
+        - master
+      appveyor_repo_tag: true
