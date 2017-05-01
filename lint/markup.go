@@ -65,7 +65,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	var txt string
 	var tokt html.TokenType
 	var tok html.Token
-	var inBlock, skip, inline bool
+	var inBlock, inline bool
 
 	lines := len(f.Lines) + offset
 	buf := bytes.NewBufferString("")
@@ -76,13 +76,12 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		tokt = tokens.Next()
 		tok = tokens.Token()
 		txt = html.UnescapeString(strings.TrimSpace(tok.Data))
-		skip = core.StringInSlice(txt, skipTags)
 
 		if tokt == html.ErrorToken {
 			break
-		} else if tokt == html.StartTagToken && skip {
+		} else if tokt == html.StartTagToken && core.StringInSlice(txt, skipTags) {
 			inBlock = true
-		} else if skip && inBlock {
+		} else if inBlock && core.StringInSlice(txt, skipTags) {
 			inBlock = false
 		} else if tokt == html.StartTagToken {
 			inline = core.StringInSlice(txt, inlineTags)
