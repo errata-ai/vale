@@ -21,6 +21,11 @@ When(/^I test comments for "(.*)"$/) do |ext|
   step %(I run `#{exe} test#{ext}`)
 end
 
+When(/^I test scope "(.*)"$/) do |scope|
+  step %(I cd to "../../fixtures/scopes/#{scope}")
+  step %(I run `#{exe} .`)
+end
+
 When(/^I apply style "(.*)"$/) do |style|
   step %(I cd to "../../fixtures/styles/#{style}")
   step %(I run `#{exe} .`)

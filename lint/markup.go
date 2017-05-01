@@ -57,7 +57,7 @@ var inlineTags = []string{
 	"strong", "a", "br", "img", "span", "sub", "sup"}
 var tagToScope = map[string]string{
 	"th": "text.table.heading",
-	"tr": "text.table.cell",
+	"td": "text.table.cell",
 	"li": "text.list",
 }
 
@@ -70,6 +70,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	lines := len(f.Lines) + offset
 	buf := bytes.NewBufferString("")
 	queue := []string{}
+	tagHistory := []string{}
 
 	tokens := html.NewTokenizer(bytes.NewReader(fsrc))
 	for {
@@ -85,6 +86,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			inBlock = false
 		} else if tokt == html.StartTagToken {
 			inline = core.StringInSlice(txt, inlineTags)
+			tagHistory = append(tagHistory, txt)
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
 		} else if tokt == html.TextToken {
@@ -104,12 +106,13 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
 			content := buf.String()
 			if content != "" {
-				l.lintScope(f, ctx, content, txt, lines)
+				l.lintScope(f, ctx, content, tagHistory, lines)
 			}
 			for _, s := range queue {
 				ctx = updateCtx(ctx, s, html.TextToken)
 			}
 			queue = []string{}
+			tagHistory = []string{}
 			buf.Reset()
 		}
 
@@ -117,14 +120,17 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	}
 }
 
-func (l Linter) lintScope(f *core.File, ctx, txt, tag string, lines int) {
-	if heading.MatchString(tag) {
-		l.lintText(f, NewBlock(ctx, txt, "text.heading"+f.RealExt), lines, 0)
-	} else if scope, match := tagToScope[tag]; match {
-		l.lintText(f, NewBlock(ctx, txt, scope+f.RealExt), lines, 0)
-	} else {
-		l.lintProse(f, ctx, txt, lines, 0)
+func (l Linter) lintScope(f *core.File, ctx, txt string, tags []string, lines int) {
+	for _, tag := range tags {
+		if heading.MatchString(tag) {
+			l.lintText(f, NewBlock(ctx, txt, "text.heading"+f.RealExt), lines, 0)
+			return
+		} else if scope, match := tagToScope[tag]; match {
+			l.lintText(f, NewBlock(ctx, txt, scope+f.RealExt), lines, 0)
+			return
+		}
 	}
+	l.lintProse(f, ctx, txt, lines, 0)
 }
 
 func clearElements(ctx string, tok html.Token) string {
@@ -168,7 +174,19 @@ func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 	cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(f.Content, "::"))
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run()) {
-		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
+		html := out.Bytes()
+		bodyStart := bytes.Index(html, []byte("<body>\n"))
+		if bodyStart < 0 {
+			bodyStart = -7
+		}
+		bodyEnd := bytes.Index(html, []byte("\n</body>"))
+		if bodyEnd < 0 || bodyEnd >= len(html) {
+			bodyEnd = len(html) - 1
+			if bodyEnd < 0 {
+				bodyEnd = 0
+			}
+		}
+		l.lintHTMLTokens(f, f.Content, html[bodyStart+7:bodyEnd], 0)
 	}
 }
 
