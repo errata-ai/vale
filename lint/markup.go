@@ -55,6 +55,11 @@ var skipTags = []string{"script", "style", "pre", "figure", "code", "tt"}
 var inlineTags = []string{
 	"b", "big", "i", "small", "abbr", "acronym", "cite", "dfn", "em", "kbd",
 	"strong", "a", "br", "img", "span", "sub", "sup"}
+var tagToScope = map[string]string{
+	"th": "text.table.heading",
+	"tr": "text.table.cell",
+	"li": "text.list",
+}
 
 func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int) {
 	var txt string
@@ -70,7 +75,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	for {
 		tokt = tokens.Next()
 		tok = tokens.Token()
-		txt = core.PrepText(html.UnescapeString(strings.TrimSpace(tok.Data)))
+		txt = html.UnescapeString(strings.TrimSpace(tok.Data))
 		skip = core.StringInSlice(txt, skipTags)
 
 		if tokt == html.ErrorToken {
@@ -98,11 +103,9 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		}
 
 		if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
-			text := buf.String()
-			if heading.MatchString(txt) {
-				l.lintText(f, NewBlock(ctx, text, "text.heading"+f.RealExt), lines, 0)
-			} else {
-				l.lintProse(f, ctx, text, lines, 0)
+			content := buf.String()
+			if content != "" {
+				l.lintScope(f, ctx, content, txt, lines)
 			}
 			for _, s := range queue {
 				ctx = updateCtx(ctx, s, html.TextToken)
@@ -112,6 +115,16 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		}
 
 		ctx = clearElements(ctx, tok)
+	}
+}
+
+func (l Linter) lintScope(f *core.File, ctx, txt, tag string, lines int) {
+	if heading.MatchString(tag) {
+		l.lintText(f, NewBlock(ctx, txt, "text.heading"+f.RealExt), lines, 0)
+	} else if scope, match := tagToScope[tag]; match {
+		l.lintText(f, NewBlock(ctx, txt, scope+f.RealExt), lines, 0)
+	} else {
+		l.lintProse(f, ctx, txt, lines, 0)
 	}
 }
 
