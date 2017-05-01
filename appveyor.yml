@@ -1,4 +1,5 @@
-image: WMF 5
+version: "{build}"
+os: Windows Server 2012 R2
 clone_folder: c:\GOPATH\src\github.com\ValeLint\vale
 environment:
   GOPATH: c:\GOPATH
@@ -14,7 +15,9 @@ install:
   - curl -fsSL -o C:\wix310-binaries.zip http://static.wixtoolset.org/releases/v3.10.3.3007/wix310-binaries.zip
   - 7z x C:\wix310-binaries.zip -y -r -oC:\wix310
   - set PATH=C:\wix310;%PATH%
-  - go get github.com/mh-cbon/go-msi
+  - curl -fsSL -o C:\latest.bat https://raw.githubusercontent.com/mh-cbon/latest/master/latest.bat
+  - cmd /C C:\latest.bat mh-cbon go-msi amd64
+  - set PATH=C:\Program Files\go-msi\;%PATH%
 build_script:
   - cmd: make setup
   - cmd: make build-win
@@ -23,11 +26,13 @@ test_script:
 after_test:
   - cmd: make compare
 artifacts:
-  - path: '*-amd64.msi'
+  - path: vale.msi
     name: vale.msi
 deploy:
   - provider: GitHub
     artifact: vale.msi
+    draft: false
+    prerelease: false
     auth_token:
       secure: 'yRQKtmS08Vob2MlOvew+JQMHVkUYJijD88Eh59TBC98oxX6avivBwOWZXQMNPd1n'
     on:

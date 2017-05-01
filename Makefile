@@ -21,8 +21,7 @@ build:
 build-win:
 	go build ${LDFLAGS} -o vale.exe
 	upx vale.exe
-	go-msi generate-templates --version $(LAST_TAG) --license LICENSE
-	go-msi make --msi %APPVEYOR_BUILD_FOLDER%\vale-amd64.msi --version $(LAST_TAG)
+	go-msi make --msi vale.msi --version $(LAST_TAG)
 
 build-linux:
 	go build ${LDFLAGS} -o bin/vale
