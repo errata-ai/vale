@@ -1,6 +1,6 @@
 extends: existence
 message: 'Punctuation should be inside the quotes.'
-scope: sentence
-level: warning
+level: error
+nonword: true
 tokens:
   - '"[^"]+"[.,?]'
