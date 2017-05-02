@@ -107,6 +107,12 @@ Feature: Styles
     test.md:7:266:jQuery.PassiveVoice:"be mixed" is passive voice
     test.md:7:371:jQuery.PassiveVoice:"are covered" is passive voice
     test.md:7:399:jQuery.SentenceLength:Keep sentences short and to the point
+    test.md:7:509:jQuery.UnexpandedAcronyms:'REPL' has no definition
+    test.md:9:2:jQuery.ListEnding:Missing period or comma.
+    test.md:10:3:jQuery.ListStart:Capitalize the first word in a list.
+    test.md:11:3:jQuery.ListStart:Capitalize the first word in a list.
+    test.md:13:17:jQuery.Quotes:Punctuation should be inside the quotes.
+    test.md:15:19:jQuery.Semicolons:Avoid using semicolons
     test.rs:5:34:jQuery.Pronouns:Avoid using "we"
     test.rs:9:36:jQuery.Abbreviations:Use 'i.e.'
     test.rs:9:52:jQuery.PassiveVoice:"be linted" is passive voice
@@ -115,6 +121,7 @@ Feature: Styles
     test.rst:9:57:jQuery.PassiveVoice:"is sent" is passive voice
     test.rst:17:51:jQuery.PassiveVoice:"be omitted" is passive voice
     test.rst:20:9:jQuery.Spelling:Use 'behavior' instead of 'behaviour'
+    test.rst:23:4:jQuery.ListStart:Capitalize the first word in a list.
     test.rst:23:11:jQuery.PassiveVoice:"be applied" is passive voice
     test.rst:27:1:jQuery.PassiveVoice:"be used" is passive voice
     """
