@@ -17,7 +17,7 @@ install:
   - set PATH=C:\wix310;%PATH%
   # - curl -fsSL -o C:\latest.bat https://raw.githubusercontent.com/mh-cbon/latest/master/latest.bat
   # - cmd /C C:\latest.bat mh-cbon go-msi amd64
-  - curl -fsSL -o C:\go-msi.msi https://github.com/mh-cbon/go-msi/releases/download/0.0.22/go-msi-amd64.msi
+  - curl -fsSL -o C:\go-msi.msi https://github.com/mh-cbon/go-msi/releases/download/1.0.1/go-msi-amd64.msi
   - msiexec.exe /i C:\go-msi.msi /quiet
   - set PATH=C:\Program Files\go-msi\;%PATH%
 build_script:
