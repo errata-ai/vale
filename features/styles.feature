@@ -107,8 +107,7 @@ Feature: Styles
     test.md:7:266:jQuery.PassiveVoice:"be mixed" is passive voice
     test.md:7:371:jQuery.PassiveVoice:"are covered" is passive voice
     test.md:7:399:jQuery.SentenceLength:Keep sentences short and to the point
-    test.md:7:509:jQuery.UnexpandedAcronyms:'REPL' has no definition
-    test.md:9:2:jQuery.ListEnding:Missing period or comma.
+    test.md:7:509:jQuery.UnexpandedAcronyms:'REPL' has no definition  
     test.md:10:3:jQuery.ListStart:Capitalize the first word in a list.
     test.md:11:3:jQuery.ListStart:Capitalize the first word in a list.
     test.md:13:17:jQuery.Quotes:Punctuation should be inside the quotes.
