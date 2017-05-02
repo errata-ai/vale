@@ -81,12 +81,19 @@ type Script struct {
 	Runtime    string
 }
 
-// Spelling checks spell checks a .
+// Spelling spell checks English text according to a locale.
 type Spelling struct {
 	Definition `mapstructure:",squash"`
 	Locale     string
 	Ignore     []string
 	Add        []string
+}
+
+// Capitalization checks the case of a string.
+type Capitalization struct {
+	Definition `mapstructure:",squash"`
+	Match      string
+	Check      func(string) bool
 }
 
 var defaultChecks = []string{

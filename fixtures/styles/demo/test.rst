@@ -22,3 +22,9 @@ adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
 aliqua.
 
 Red is a color. Blue is also a colour.
+
+Section Title
+=============
+
+Section title foo
+=============

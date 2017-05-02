@@ -1,5 +1,5 @@
 {
-    "memo": "a1f783871999b686a2dc99f23a1d764033ef99bf25f8f49c073ae3b5e3df2550",
+    "memo": "a4e2cf3fe5babfdc30009d3136c7a5cd4966ffce4920ecb0b3c637dfa2af453b",
     "projects": [
         {
             "name": "github.com/client9/misspell",
@@ -38,6 +38,16 @@
                 "syntax/lexer",
                 "util/runes",
                 "util/strings"
+            ]
+        },
+        {
+            "name": "github.com/jdkato/prose",
+            "branch": "master",
+            "revision": "d51cc7e53a850003161f80139b8905206f7004c7",
+            "packages": [
+                "internal/model",
+                "internal/util",
+                "transform"
             ]
         },
         {

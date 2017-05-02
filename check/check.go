@@ -237,6 +237,30 @@ func checkSpelling(txt string, chk Spelling, r *misspell.Replacer, f *core.File)
 	return alerts
 }
 
+func checkCapitalization(txt string, chk Capitalization, f *core.File) []core.Alert {
+	alerts := []core.Alert{}
+	if !chk.Check(txt) {
+		alerts = append(alerts, makeAlert(chk.Definition, []int{0, len(txt)}, txt))
+	}
+	return alerts
+}
+
+func addCapitalizationCheck(chkName string, chkDef Capitalization) {
+	if f, ok := varToFunc[chkDef.Match]; ok {
+		chkDef.Check = f
+	} else {
+		re, err := regexp.Compile(chkDef.Match)
+		if !core.CheckError(err) {
+			return
+		}
+		chkDef.Check = re.MatchString
+	}
+	fn := func(text string, file *core.File) []core.Alert {
+		return checkCapitalization(text, chkDef, file)
+	}
+	updateAllChecks(chkDef.Definition, fn)
+}
+
 func addSpellingCheck(chkName string, chkDef Spelling) {
 	r := misspell.Replacer{
 		Replacements: misspell.DictMain,
@@ -423,6 +447,7 @@ func updateAllChecks(chkDef Definition, fn ruleFn) {
 }
 
 func makeCheck(generic map[string]interface{}, extends string, chkName string) {
+	// TODO: make this less ugly ...
 	if extends == "existence" {
 		def := Existence{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
@@ -462,6 +487,11 @@ func makeCheck(generic map[string]interface{}, extends string, chkName string) {
 		def := Spelling{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			addSpellingCheck(chkName, def)
+		}
+	} else if extends == "capitalization" {
+		def := Capitalization{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			addCapitalizationCheck(chkName, def)
 		}
 	}
 }
