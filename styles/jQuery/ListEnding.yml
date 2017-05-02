@@ -1,9 +1,0 @@
-extends: existence
-message: "Missing period or comma."
-description: "Use a period at the end of each ordered list item, and a period or comma at the end of an unordered list item."
-link: https://contribute.jquery.org/style-guide/prose/#article-amp-sentence-structure
-level: warning
-scope: list
-nonword: true
-tokens:
-  - '.+[^.,]$'
