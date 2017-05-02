@@ -1,0 +1,20 @@
+image: WMF 5
+clone_folder: c:\GOPATH\src\github.com\jdkato\prose
+environment:
+  GOPATH: c:\GOPATH
+init:
+- cmd: >-
+    set PATH=C:\MinGW\bin;%PATH%
+
+    copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
+install:
+  - echo %PATH%
+  - echo %GOPATH%
+  - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby22\bin;%cd%\bin;%PATH%
+build_script:
+- cmd: >-
+    make setup
+    
+    make build-win
+test_script:
+- cmd: make ci

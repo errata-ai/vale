@@ -1,0 +1,16 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - python
+      - go
+  fixme:
+    enabled: true
+  radon:
+    enabled: true
+ratings:
+  paths:
+  - "**.py"
+  - "**.go"
+exclude_paths: []
