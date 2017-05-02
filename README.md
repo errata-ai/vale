@@ -82,6 +82,7 @@ See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) f
 
 - Atom&mdash;[TimKam/atomic-vale](https://github.com/TimKam/atomic-vale)
 - Sublime Text&mdash;[ValeLint/SubVale](https://github.com/ValeLint/SubVale)
+- Vim&mdash;via [ALE](https://github.com/w0rp/ale) (thanks to @[chew-z](https://github.com/chew-z))
 
 ## Reference Styles
 
