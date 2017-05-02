@@ -94,17 +94,17 @@ func JaroWinkler(ctx, sub string) (int, string) {
 
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).
-func initialPosition(ctx string, substring string, loc []int) (int, string) {
-	idx := strings.Index(ctx, substring)
+func initialPosition(ctx, sub string, loc []int) (int, string) {
+	idx := strings.Index(ctx, sub)
 	if idx < 0 {
 		// Fall back to the JaroWinkler distance. This should only happen if
 		// we're in a scope that contains inline markup (e.g., a sentence with
 		// code spans).
-		return JaroWinkler(ctx, substring)
+		return JaroWinkler(ctx, sub)
 	}
-	pat := `(?:\b|_)` + regexp.QuoteMeta(substring) + `(?:\b|_)`
-	query := ctx[Max(idx-1, 0):Min(idx+len(substring)+1, len(ctx))]
-	if match, err := regexp.MatchString(pat, query); err != nil || !match {
+	pat := `(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:\b|_|$)`
+	txt := strings.TrimSpace(ctx[Max(idx-1, 0):Min(idx+len(sub)+1, len(ctx))])
+	if match, err := regexp.MatchString(pat, txt); err != nil || !match {
 		// If there's more than one, we take the first bounded option.
 		// For example, given that we're looking for "very", "every" => nested
 		// and " very " => bounded.
@@ -116,7 +116,7 @@ func initialPosition(ctx string, substring string, loc []int) (int, string) {
 			}
 		}
 	}
-	return utf8.RuneCountInString(ctx[:idx]) + 1, substring
+	return utf8.RuneCountInString(ctx[:idx]) + 1, sub
 }
 
 // sanitizer replaces a set of unicode characters with ASCII equivalents.
