@@ -11,7 +11,7 @@ func lower(s string) bool { return s == strings.ToLower(s) }
 func upper(s string) bool { return s == strings.ToUpper(s) }
 
 func title(s string) bool {
-	return smetrics.Jaro(s, transform.Title(s)) > 0.95
+	return smetrics.Jaro(s, transform.Title(s)) > 0.97
 }
 
 func sentence(s string) bool {
