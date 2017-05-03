@@ -18,7 +18,7 @@ func sentence(s string) bool {
 	count := 0.0
 	words := 0.0
 	for i, w := range strings.Fields(s) {
-		if i > 0 && w == strings.Title(w) {
+		if i > 0 && w == strings.Title(strings.ToLower(w)) {
 			count++
 		}
 		words++
