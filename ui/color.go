@@ -3,7 +3,6 @@ package ui
 import (
 	"fmt"
 	"os"
-	"regexp"
 	"strings"
 
 	"github.com/ValeLint/vale/core"
@@ -16,17 +15,13 @@ const (
 	warningColor                    = color.FgYellow
 	suggestionColor                 = color.FgBlue
 	underlineColor                  = color.Underline
-)
 
-const (
 	// CONTEXT prints an alert with its surrounding text.
 	CONTEXT = iota
 
 	// VERBOSE prints an alert with its Message, Level, and Check.
 	VERBOSE
 )
-
-var spaces = regexp.MustCompile(" +")
 
 // PrintVerboseAlerts prints Alerts in verbose format.
 func PrintVerboseAlerts(linted []*core.File, option int) bool {
