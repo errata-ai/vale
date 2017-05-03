@@ -4,12 +4,16 @@ import (
 	"strings"
 
 	"github.com/jdkato/prose/transform"
+	"github.com/xrash/smetrics"
 )
 
-// TODO: maybe use some string similarity metric for title case?
-func title(s string) bool { return s == transform.Title(s) }
 func lower(s string) bool { return s == strings.ToLower(s) }
 func upper(s string) bool { return s == strings.ToUpper(s) }
+
+func title(s string) bool {
+	return smetrics.Jaro(s, transform.Title(s)) > 0.95
+}
+
 func sentence(s string) bool {
 	count := 0.0
 	words := 0.0
