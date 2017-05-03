@@ -32,7 +32,7 @@ There are a few options to choose from:
     $ brew install vale
     ```
 - A **Windows** Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
-- [Chocolatey](https://chocolatey.org/packages/vale/) on **Windows**:
+- [Chocolatey](https://chocolatey.org/packages/vale/) on **Windows** (thanks to @[Kristinita](https://github.com/Kristinita)):
     
     ```shell
     C:\> choco install vale
