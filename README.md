@@ -25,14 +25,19 @@ Additionally, since Vale is “syntax aware,” you'll never have to worry about
 
 There are a few options to choose from:
 
-- Install through [Homebrew](http://brew.sh) on **macOS**:
+- [Homebrew](http://brew.sh) on **macOS**:
 
     ```bash
     $ brew tap ValeLint/vale
     $ brew install vale
     ```
-- Install via the Windows Installer package (`.msi`) on the [releases page](https://github.com/valelint/vale/releases).
-- Manually install on **Windows**, **macOS**, or **Linux** by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
+- A **Windows** Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
+- [Chocolatey](https://chocolatey.org/packages/vale/) on **Windows**:
+    
+    ```shell
+    C:\> choco install vale
+    ```
+- Manually on **Windows**, **macOS**, and **Linux** by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
 
 ## Usage
 
