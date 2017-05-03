@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
@@ -19,65 +18,28 @@ const (
 	underlineColor                  = color.Underline
 )
 
+const (
+	// CONTEXT prints an alert with its surrounding text.
+	CONTEXT = iota
+
+	// VERBOSE prints an alert with its Message, Level, and Check.
+	VERBOSE
+)
+
 var spaces = regexp.MustCompile(" +")
 
-// PrintLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
-func PrintLineAlerts(linted []*core.File) bool {
-	var base string
-
-	alertCount := 0
-	for _, f := range linted {
-		// If vale is run from a parent directory of f, we use a shorter file
-		// path -- e.g., if run from the directory 'vale', we use
-		// 'testdata/test.cc: ...' instead of
-		// /Users/.../.../.../vale/testdata/test.cc: ...'.
-		if strings.Contains(f.Path, core.ExeDir) {
-			base = strings.Split(f.Path, core.ExeDir)[1]
-		} else {
-			base = f.Path
-		}
-
-		for _, a := range f.SortedAlerts() {
-			if a.Severity == "error" {
-				alertCount++
-			}
-			a.Message = fixOutputSpacing(a.Message)
-			fmt.Print(fmt.Sprintf("%s:%d:%d:%s:%s\n",
-				base, a.Line, a.Span[0], a.Check, a.Message))
-		}
-	}
-	return alertCount != 0
-}
-
-// PrintJSONAlerts prints Alerts in map[file.path][]Alert form.
-func PrintJSONAlerts(linted []*core.File) bool {
-	alertCount := 0
-	formatted := map[string][]core.Alert{}
-	for _, f := range linted {
-		for _, a := range f.SortedAlerts() {
-			if a.Severity == "error" {
-				alertCount++
-			}
-			a.Message = fixOutputSpacing(a.Message)
-			formatted[f.Path] = append(formatted[f.Path], a)
-		}
-	}
-	b, err := json.MarshalIndent(formatted, "", "  ")
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(string(b))
-	}
-	return alertCount != 0
-}
-
 // PrintVerboseAlerts prints Alerts in verbose format.
-func PrintVerboseAlerts(linted []*core.File) bool {
+func PrintVerboseAlerts(linted []*core.File, option int) bool {
 	var errors, warnings, suggestions int
+	var e, w, s int
 	var symbol string
 
 	for _, f := range linted {
-		e, w, s := printVerboseAlert(f)
+		if option == VERBOSE {
+			e, w, s = printVerboseAlert(f)
+		} else {
+			e, w, s = printContextAlert(f)
+		}
 		errors += e
 		warnings += w
 		suggestions += s
@@ -99,6 +61,32 @@ func PrintVerboseAlerts(linted []*core.File) bool {
 		colorize(stotal, suggestionColor), n, pluralize("file", n))
 
 	return errors != 0
+}
+
+func printContextAlert(f *core.File) (int, int, int) {
+	var errors, warnings, notifications int
+
+	alerts := f.SortedAlerts()
+	if len(alerts) == 0 {
+		return 0, 0, 0
+	}
+
+	fmt.Printf("\n%s\n", colorize(f.Path, underlineColor))
+	for _, a := range alerts {
+		if a.Severity == "suggestion" {
+			notifications++
+		} else if a.Severity == "warning" {
+			warnings++
+		} else {
+			errors++
+		}
+		output := colorizeSubString(a.Context, a.Match, color.FgRed)
+		line := colorize(fmt.Sprintf("%d", a.Line), color.FgGreen)
+		fmt.Print(fmt.Sprintf("%s:%s", line, output))
+	}
+	fmt.Print("\n")
+
+	return errors, warnings, notifications
 }
 
 func printVerboseAlert(f *core.File) (int, int, int) {
@@ -142,15 +130,10 @@ func colorize(message string, textColor color.Attribute) string {
 	return f(message)
 }
 
-func pluralize(s string, n int) string {
-	if n != 1 {
-		return s + "s"
+func colorizeSubString(src, sub string, textColor color.Attribute) string {
+	idx := strings.Index(src, sub)
+	if idx < 0 {
+		return src
 	}
-	return s
-}
-
-func fixOutputSpacing(msg string) string {
-	msg = strings.Replace(msg, "\n", " ", -1)
-	msg = spaces.ReplaceAllString(msg, " ")
-	return msg
+	return src[:idx] + colorize(sub, textColor) + src[idx+len(sub):]
 }
