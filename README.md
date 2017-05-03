@@ -17,15 +17,7 @@ Check out [project website](https://valelint.github.io/docs/) to learn more!
 
 ## Features
 
-Vale's functionality is split into extension points (called "checks") that can be customized to meet your own needs:
-
-- `existence` ([example](https://github.com/ValeLint/vale/blob/master/rule/Hedging.yml)): As its name implies, it looks for the existence of particular strings. This is useful if, for example, we want to discourage the use of a certain word or phrase.
-- `substitution` ([example](https://github.com/ValeLint/vale/blob/master/rule/GenderBias.yml)): This is similar to above, but it also suggestions a preferred form. For example, we'd use this if we want to suggest the use of “plenty” instead of “abundance.”
-- `occurrence` ([example](https://github.com/ValeLint/vale/blob/master/styles/demo/SentenceLength.yml)): This limits the number of times a particular token can appear in a given scope. For example, if we’re limiting the number of words per sentence.
-- `repetition` ([example](https://github.com/ValeLint/vale/blob/master/rule/Repetition.yml)): This checks for repeated occurrences of its tokens (e.g., lexical illusions like “the the”).
-- `consistency` ([example](https://github.com/ValeLint/vale/blob/master/styles/demo/Spelling.yml)): This will ensure that a key and its value (e.g., “advisor” and “adviser”) don’t both occur in its scope.
-- `conditional` ([example](https://github.com/ValeLint/vale/blob/master/styles/TheEconomist/UnexpandedAcronyms.yml)): This ensures that the existence of `first` implies the existence of `second`. This is useful for things like verifying that an abbreviation has a parenthetical defintion.
-- `spelling` ([example](https://github.com/ValeLint/vale/blob/master/styles/demo/CheckSpellings.yml)): This will spell check against a large [list of words](https://github.com/client9/misspell#words) accounting for customizations (e.g., removing or adding words to the dictionary).
+Vale's functionality is split into extension points (called "checks") that can be customized to perform many different kinds of tasks, including finding [insensitive words and phrases](https://github.com/ValeLint/vale/blob/master/rule/GenderBias.yml), measuring [sentence length](https://github.com/ValeLint/vale/blob/master/styles/jQuery/SentenceLength.yml), enforcing a particular [heading style](https://github.com/ValeLint/vale/blob/master/styles/18F/Titles.yml), and identifying [undefined acronyms](https://github.com/ValeLint/vale/blob/master/styles/TheEconomist/UnexpandedAcronyms.yml). See the [Style Showcase](https://valelint.github.io/docs/showcase/) for more complete examples.
 
 Additionally, since Vale is “syntax aware,” you'll never have to worry about syntax-related false positives (e.g., URLs or code blocks). See [Creating a style](https://valelint.github.io/docs/styles/#creating-a-style) for more information.
 
