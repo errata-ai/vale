@@ -1,7 +1,6 @@
 extends: existence
 message: "'%s' should be in fixed width font."
 link: 'https://github.com/Homebrew/brew/blob/master/docs/Prose-Style-Guidelines.md#typographical-conventions'
-scope: text
 level: warning
 # We don't want to match, for example, "homebrew/brew"
 raw:

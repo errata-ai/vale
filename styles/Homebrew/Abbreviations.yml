@@ -3,8 +3,9 @@ message: Use '%s'
 ignorecase: false
 link: 'https://github.com/Homebrew/brew/blob/master/docs/Prose-Style-Guidelines.md#style-and-usage'
 level: error
+nonword: true
 swap:
-  '(?:eg),?': e.g.
-  '(?:ie),?': i.e.
-  '(?:e\.g\.),\s?': e.g.
-  '(?:i\.e\.),\s?': i.e.
+  '\beg\b': e.g.
+  '\bie\b': i.e.
+  'e\.g\.,': e.g.
+  'i\.e\.,': i.e.
