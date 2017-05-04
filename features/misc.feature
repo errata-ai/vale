@@ -11,8 +11,10 @@ Feature: Misc
     Then the output should contain exactly:
     """
     CR.md:3:11:vale.Editorializing:Consider removing 'very'
+    CR.md:15:18:vale.Editorializing:Consider removing 'very'
     CR.md:32:11:vale.Editorializing:Consider removing 'very'
     CRLF.md:3:11:vale.Editorializing:Consider removing 'very'
+    CRLF.md:15:18:vale.Editorializing:Consider removing 'very'
     CRLF.md:32:11:vale.Editorializing:Consider removing 'very'
     """
 

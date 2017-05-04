@@ -51,10 +51,10 @@ var options = blackfriday.Options{Extensions: commonExtensions}
 var heading = regexp.MustCompile(`^h\d$`)
 
 // skipTags are tags that we don't want to lint.
-var skipTags = []string{"script", "style", "pre", "figure", "code", "tt"}
+var skipTags = []string{"script", "style", "pre", "figure"}
 var inlineTags = []string{
 	"b", "big", "i", "small", "abbr", "acronym", "cite", "dfn", "em", "kbd",
-	"strong", "a", "br", "img", "span", "sub", "sup"}
+	"strong", "a", "br", "img", "span", "sub", "sup", "code", "tt"}
 var tagToScope = map[string]string{
 	"th": "text.table.header",
 	"td": "text.table.cell",

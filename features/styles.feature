@@ -51,7 +51,7 @@ Feature: Styles
     test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
     test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
     test.md:10:133:demo.CheckSpellings:Use 'ValeLint' instead of 'Valelint'
-    test.md:12:44:demo.SentenceLength:Sentences should be less than 25 words
+    test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
     test.md:14:159:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:1:demo.SentenceLength:Sentences should be less than 25 words
     test.md:16:371:demo.SentenceLength:Sentences should be less than 25 words

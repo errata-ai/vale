@@ -4,4 +4,4 @@ The oriental man walked by. We went on a month-long trip (i.e. we were gone for 
 
 People with autism, Down syndrome, dyslexia, blindness, ADHD, or cystic fibrosis, for example, may be considered to have special needs.
 
-Our campus is known world-wide (`world-wide`).
+Our campus is known world-wide.
