@@ -79,12 +79,12 @@ func DumpConfig() string {
 }
 
 // JaroWinkler searches `ctx` line-by-line for a JaroWinkler distance score
-// greater than 0.80 for the string `sub`.
+// greater than 0.70 for the string `sub`.
 func JaroWinkler(ctx, sub string) (int, string) {
 	for _, line := range strings.Split(ctx, "\n") {
 		for _, s := range SentenceTokenizer.Tokenize(line) {
 			text := s.Text
-			if smetrics.JaroWinkler(sub, text, 0.7, 4) > 0.80 {
+			if smetrics.JaroWinkler(sub, text, 0.7, 4) > 0.70 {
 				return strings.Index(ctx, text) + 1, text
 			}
 		}
