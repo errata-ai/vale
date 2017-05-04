@@ -122,11 +122,14 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 
 func (l Linter) lintScope(f *core.File, ctx, txt string, tags []string, lines int) {
 	for _, tag := range tags {
-		if heading.MatchString(tag) {
-			l.lintText(f, NewBlock(ctx, txt, "text.heading"+f.RealExt), lines, 0)
-			return
-		} else if scope, match := tagToScope[tag]; match {
-			l.lintText(f, NewBlock(ctx, txt, scope+f.RealExt), lines, 0)
+		scope, match := tagToScope[tag]
+		if match || heading.MatchString(tag) {
+			if match {
+				scope = scope + f.RealExt
+			} else {
+				scope = "text.heading." + tag + f.RealExt
+			}
+			l.lintText(f, NewBlock(ctx, txt, scope), lines, 0)
 			return
 		}
 	}
