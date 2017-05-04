@@ -23,7 +23,6 @@ Feature: Lint
     When I lint "test.adoc"
     Then the output should contain exactly:
     """
-    test.adoc:1:22:vale.Annotations:'TODO' left in text
     test.adoc:10:39:vale.Annotations:'TODO' left in text
     test.adoc:29:27:vale.Annotations:'XXX' left in text
     test.adoc:44:1:vale.Annotations:'TODO' left in text
@@ -92,7 +91,6 @@ Feature: Lint
     test.rst:63:29:vale.Annotations:'XXX' left in text
     test.rst:69:3:vale.Annotations:'FIXME' left in text
     test.rst:75:3:vale.Annotations:'TODO' left in text
-    test.rst:75:31:vale.Annotations:'TODO' left in text
     test.rst:75:38:vale.Annotations:'XXX' left in text
     """
     And the exit status should be 0

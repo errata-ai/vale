@@ -64,8 +64,9 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	var txt string
 	var tokt html.TokenType
 	var tok html.Token
-	var inBlock, inline bool
+	var inBlock, inline, skip bool
 
+	punct := []string{".", "?", "!", ",", ":", ";"}
 	lines := len(f.Lines) + offset
 	buf := bytes.NewBufferString("")
 	queue := []string{}
@@ -85,6 +86,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			inBlock = false
 		} else if tokt == html.StartTagToken {
 			inline = core.StringInSlice(txt, inlineTags)
+			skip = (txt == "tt" || txt == "code")
 			tagHistory = append(tagHistory, txt)
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
@@ -92,10 +94,10 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			queue = append(queue, txt)
 			if !inBlock {
 				first, _ := utf8.DecodeRuneInString(txt)
-				// Only add a space for non-punctuation. NOTE: we may want to
-				// use JaroWinkler here (instead of later), but we'll need to
-				// store position information to avoid duplicating work.
-				punct := []string{".", "?", "!", ",", ":", ";"}
+				if skip {
+					txt, _ = core.Substitute(txt, txt, '*')
+					skip = false
+				}
 				if inline && !core.StringInSlice(string(first), punct) {
 					txt = " " + txt
 				}
@@ -151,10 +153,10 @@ func updateCtx(ctx string, txt string, tokt html.TokenType) string {
 	var found bool
 	if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
 		for _, s := range strings.Split(txt, "\n") {
-			ctx, found = core.Substitute(ctx, s)
+			ctx, found = core.Substitute(ctx, s, '@')
 			if !found {
 				for _, w := range strings.Fields(s) {
-					ctx, _ = core.Substitute(ctx, w)
+					ctx, _ = core.Substitute(ctx, w, '@')
 				}
 			}
 		}

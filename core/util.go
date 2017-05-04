@@ -49,14 +49,14 @@ func FormatMessage(msg string, subs ...string) string {
 }
 
 // Substitute replaces the substring `sub` with a string of asterisks.
-func Substitute(src string, sub string) (string, bool) {
+func Substitute(src, sub string, char rune) (string, bool) {
 	idx := strings.Index(src, sub)
 	if idx < 0 {
 		return src, false
 	}
 	repl := strings.Map(func(r rune) rune {
 		if r != '\n' {
-			return '*'
+			return char
 		}
 		return r
 	}, sub)
