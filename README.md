@@ -19,7 +19,7 @@ Check out [project website](https://valelint.github.io/docs/) to learn more!
 
 Vale's functionality is split into extension points (called "checks") that can be customized to perform many different kinds of tasks, including finding [insensitive words and phrases](https://github.com/ValeLint/vale/blob/master/rule/GenderBias.yml), measuring [sentence length](https://github.com/ValeLint/vale/blob/master/styles/jQuery/SentenceLength.yml), enforcing a particular [heading style](https://github.com/ValeLint/vale/blob/master/styles/18F/Titles.yml), and identifying [undefined acronyms](https://github.com/ValeLint/vale/blob/master/styles/TheEconomist/UnexpandedAcronyms.yml). See the [Style Showcase](https://valelint.github.io/docs/showcase/) for more complete examples.
 
-Additionally, since Vale is “syntax aware,” you'll never have to worry about syntax-related false positives (e.g., URLs or code blocks). See [Creating a style](https://valelint.github.io/docs/styles/#creating-a-style) for more information.
+Additionally, since Vale is "syntax aware," you'll never have to worry about syntax-related false positives (e.g., URLs or code blocks). See [Creating a style](https://valelint.github.io/docs/styles/#creating-a-style) for more information.
 
 ## Installation
 
