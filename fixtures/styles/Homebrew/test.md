@@ -17,3 +17,5 @@ You can run the brew command to do many things (eg, `brew update`). homebrew-sci
 * Spell out certain technical words
   * "repository", not "repo"
   * When abbreviating, introduce the abbreviation with the first usage in any document
+
+## Formula Duplicate Names
