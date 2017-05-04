@@ -13,7 +13,6 @@ before_install:
   - export PATH=~/bin:"$PATH"
   - pip install --user docutils
   - gem install asciidoctor
-  - git --version
 install:
   - make setup
   - make build-linux
@@ -22,4 +21,4 @@ script:
 after_script:
   - make compare
 after_success:
-  test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
+  - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
