@@ -41,7 +41,7 @@ Feature: Styles
     Then the output should contain exactly:
     """
     test.adoc:1:1:demo.SentenceLength:Sentences should be less than 25 words
-    test.adoc:3:3:demo.Title:' Level 1 section Title' should be titlecased
+    test.adoc:3:3:demo.Title:' Level 1 section title' should be titlecased
     test.html:5:43:demo.EndingPreposition:Don't end a sentence with 'by.'
     test.html:8:30:demo.CommasPerSentence:More than 3 commas!
     test.html:10:27:demo.Spacing:'.M' should have one space
