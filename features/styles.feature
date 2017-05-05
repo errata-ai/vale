@@ -41,7 +41,7 @@ Feature: Styles
     Then the output should contain exactly:
     """
     test.adoc:1:1:demo.SentenceLength:Sentences should be less than 25 words
-    test.adoc:3:3:demo.Title:' Level 1 section title' should be titlecased
+    test.adoc:3:4:demo.Title:'Level 1 section title' should be titlecased
     test.html:5:43:demo.EndingPreposition:Don't end a sentence with 'by.'
     test.html:8:30:demo.CommasPerSentence:More than 3 commas!
     test.html:10:27:demo.Spacing:'.M' should have one space
@@ -108,7 +108,7 @@ Feature: Styles
     test.md:7:371:jQuery.PassiveVoice:"are covered" is passive voice
     test.md:7:399:jQuery.SentenceLength:Keep sentences short and to the point
     test.md:7:509:jQuery.UnexpandedAcronyms:'REPL' has no definition
-    test.md:10:3:jQuery.ListStart:Capitalize the first word in a list.
+    test.md:10:1:jQuery.ListStart:Capitalize the first word in a list.
     test.md:11:3:jQuery.ListStart:Capitalize the first word in a list.
     test.md:13:17:jQuery.Quotes:Punctuation should be inside the quotes.
     test.md:15:19:jQuery.Semicolons:Avoid using semicolons
