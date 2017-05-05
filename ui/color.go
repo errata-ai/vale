@@ -3,7 +3,6 @@ package ui
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/ValeLint/vale/core"
 	"github.com/fatih/color"
@@ -75,9 +74,10 @@ func printContextAlert(f *core.File) (int, int, int) {
 		} else {
 			errors++
 		}
-		output := colorizeSubString(a.Context, a.Match, color.FgRed)
+		loc := []int{a.Span[0] - 1, a.Span[1]}
+		output := colorizeSubString(a.Context, loc, color.FgRed)
 		line := colorize(fmt.Sprintf("%d", a.Line), color.FgGreen)
-		fmt.Print(fmt.Sprintf("%s:%s", line, output))
+		fmt.Print(fmt.Sprintf("%s:%s\n", line, fixOutputSpacing(output)))
 	}
 	fmt.Print("\n")
 
@@ -125,10 +125,6 @@ func colorize(message string, textColor color.Attribute) string {
 	return f(message)
 }
 
-func colorizeSubString(src, sub string, textColor color.Attribute) string {
-	idx := strings.Index(src, sub)
-	if idx < 0 {
-		return src
-	}
-	return src[:idx] + colorize(sub, textColor) + src[idx+len(sub):]
+func colorizeSubString(src string, loc []int, textColor color.Attribute) string {
+	return src[:loc[0]] + colorize(src[loc[0]:loc[1]], textColor) + src[loc[1]:]
 }
