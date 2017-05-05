@@ -96,6 +96,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 				first, _ := utf8.DecodeRuneInString(txt)
 				if skip {
 					txt, _ = core.Substitute(txt, txt, '*')
+					txt = "`" + txt + "`"
 					skip = false
 				}
 				if inline && !core.StringInSlice(string(first), punct) {
@@ -131,6 +132,7 @@ func (l Linter) lintScope(f *core.File, ctx, txt string, tags []string, lines in
 			} else {
 				scope = "text.heading." + tag + f.RealExt
 			}
+			txt = strings.TrimLeft(txt, " ")
 			l.lintText(f, NewBlock(ctx, txt, scope), lines, 0)
 			return
 		}
