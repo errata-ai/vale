@@ -15,7 +15,7 @@ Interested in contributing to Vale? Great! We welcome contributions of any kind 
 
 Vale is a natural language linter that supports plain text, markup (Markdown, reStructuredText, AsciiDoc, and HTML), and source code comments. However, unlike many similar projects, Vale's primary focus isn't on providing a collection of rules everyone must follow&mdash;instead, Vale aims to be flexible enough to support many different styles (see the [reference styles](https://github.com/ValeLint/vale#reference-styles) for examples).
 
-More specifically, Vale is written in Go and split into packages that are tasked with performing specific tasks:
+More specifically, Vale is written in Go and split into packages that are tasked with implementing specific functionality:
 
 - `check` handles the loading and validating of external rules (YAML files).
 - `core`: includes the main structures used throughout the application (e.g., `File` and `Alert`) and manages configuration files (`.vale` or `_vale`).
@@ -29,7 +29,7 @@ There is also a `styles` directory that contains the source for Vale's reference
 
 Vale is tested using both integration and unit tests.
 
-Integration tests are the most plentiful at the moment. They're implemented using the behavior-driven development framework [Cucumber](https://cucumber.io/). You'll find the relevant files for these tests in the `fixtures` and `features` directories. Unit tests are found in the `*_test.go` files inside the actual Go packages. 
+Integration tests are the most plentiful at the moment. They're implemented using the behavior-driven development framework [Cucumber](https://cucumber.io/). You'll find the relevant files for these tests in the `fixtures` and `features` directories. Unit tests are found in the `*_test.go` files inside the actual Go packages.
 
 We also track Vale's performance on a per-commit basis through benchmarks. On every commit, you'll see comparison against the last tagged release (over 10 runs) on CI builds:
 
