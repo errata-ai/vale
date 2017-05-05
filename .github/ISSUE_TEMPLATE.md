@@ -1,3 +1,5 @@
+(Note: this template is simply meant as a suggestion for typical issues; if you feel it doesn't fit your particular needs, feel free to discard it.)
+
 ### Expected Behavior
 
 
