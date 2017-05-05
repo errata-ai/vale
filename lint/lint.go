@@ -89,12 +89,13 @@ func (l Linter) Lint(src string, pat string) ([]*core.File, error) {
 func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan *core.File, <-chan error) {
 	filesChan := make(chan *core.File)
 	errc := make(chan error, 1)
+	ignore := []string{".", "_"}
 	go func() {
 		var wg sync.WaitGroup
 		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {
 				return nil
-			} else if !glob.Match(fp) {
+			} else if !glob.Match(fp) || core.HasAnyPrefix(fi.Name(), ignore) {
 				return nil
 			}
 			wg.Add(1)
