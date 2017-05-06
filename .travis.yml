@@ -4,9 +4,6 @@ language: go
 go:
   - 1.7
   - 1.8
-addons:
-  apt_packages:
-    - upx-ucl
 before_install:
   - export BUNDLE_GEMFILE=$PWD/Gemfile
   - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
@@ -15,7 +12,7 @@ before_install:
   - gem install asciidoctor
 install:
   - make setup
-  - make build-linux
+  - make build
 script:
   - make test
 after_script:

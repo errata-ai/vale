@@ -20,12 +20,7 @@ build:
 
 build-win:
 	go build ${LDFLAGS} -o vale.exe
-	upx vale.exe
 	go-msi make --msi vale.msi --version $(LAST_TAG)
-
-build-linux:
-	go build ${LDFLAGS} -o bin/vale
-	upx bin/vale
 
 install:
 	go install ${LDFLAGS}

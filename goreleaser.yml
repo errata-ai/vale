@@ -7,8 +7,6 @@ build:
     - linux
   goarch:
     - amd64
-  hooks:
-    post: /bin/sh scripts/compress.sh
 archive:
   format: tar.gz
   format_overrides:
