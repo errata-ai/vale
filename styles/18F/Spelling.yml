@@ -1,3 +1,0 @@
-extends: spelling
-message: "Use '%s' instead of '%s'"
-level: error

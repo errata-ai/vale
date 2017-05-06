@@ -50,14 +50,11 @@ Feature: Styles
     test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
     test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
     test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
-    test.md:10:133:demo.CheckSpellings:Use 'ValeLint' instead of 'Valelint'
     test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
     test.md:14:158:demo.SentenceLength:Sentences should be less than 25 words
     test.md:20:21:demo.Abbreviations:Use 'i.e.,'
     test.md:20:66:demo.Abbreviations:Use 'a.m. or p.m.'
     test.md:20:94:demo.Abbreviations:Use 'midnight or noon'
-    test.md:22:6:demo.CheckSpellings:Use 'disappear' instead of 'dissapear'
-    test.md:22:47:demo.CheckSpellings:Use 'preceded' instead of 'preceeded'
     test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
     test.rst:1:58:demo.Spacing:'. I' should have one space
     test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
@@ -119,7 +116,6 @@ Feature: Styles
     test.rst:8:51:jQuery.PassiveVoice:"be prompted" is passive voice
     test.rst:9:57:jQuery.PassiveVoice:"is sent" is passive voice
     test.rst:17:51:jQuery.PassiveVoice:"be omitted" is passive voice
-    test.rst:20:9:jQuery.Spelling:Use 'behavior' instead of 'behaviour'
     test.rst:23:4:jQuery.ListStart:Capitalize the first word in a list.
     test.rst:23:11:jQuery.PassiveVoice:"be applied" is passive voice
     test.rst:27:1:jQuery.PassiveVoice:"be used" is passive voice

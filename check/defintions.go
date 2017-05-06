@@ -74,21 +74,6 @@ type Conditional struct {
 	Exceptions []string
 }
 
-// Script runs Exe with Runtime.
-type Script struct {
-	Definition `mapstructure:",squash"`
-	Exe        string
-	Runtime    string
-}
-
-// Spelling spell checks English text according to a locale.
-type Spelling struct {
-	Definition `mapstructure:",squash"`
-	Locale     string
-	Ignore     []string
-	Add        []string
-}
-
 // Capitalization checks the case of a string.
 type Capitalization struct {
 	Definition `mapstructure:",squash"`
@@ -119,5 +104,4 @@ var extensionPoints = []string{
 	"repetition",
 	"script",
 	"substitution",
-	"spelling",
 }

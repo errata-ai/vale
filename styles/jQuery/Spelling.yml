@@ -1,5 +1,0 @@
-extends: spelling
-message: "Use '%s' instead of '%s'"
-description: "Use standard American English spelling."
-level: error
-locale: US

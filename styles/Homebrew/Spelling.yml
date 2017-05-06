@@ -1,5 +1,0 @@
-extends: spelling
-message: "Use '%s' instead of '%s'"
-description: "Prefer British/Commonwealth English over American English, in general."
-level: warning
-locale: UK
