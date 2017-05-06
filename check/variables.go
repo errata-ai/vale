@@ -4,14 +4,22 @@ import (
 	"strings"
 
 	"github.com/jdkato/prose/transform"
-	"github.com/xrash/smetrics"
 )
 
 func lower(s string) bool { return s == strings.ToLower(s) }
 func upper(s string) bool { return s == strings.ToUpper(s) }
 
 func title(s string) bool {
-	return smetrics.JaroWinkler(s, transform.Title(s), 0.7, 4) > 0.97
+	count := 0.0
+	words := 0.0
+	expected := strings.Fields(transform.Title(s))
+	for i, word := range strings.Fields(s) {
+		if word == expected[i] {
+			count++
+		}
+		words++
+	}
+	return (count / words) > 0.80
 }
 
 func sentence(s string) bool {
