@@ -83,7 +83,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		} else if tokt == html.StartTagToken && core.StringInSlice(txt, skipTags) {
 			inBlock = true
 		} else if inBlock && core.StringInSlice(txt, skipTags) {
-			inBlock = false
+			skip, inBlock = false, false
 		} else if tokt == html.StartTagToken {
 			inline = core.StringInSlice(txt, inlineTags)
 			skip = (txt == "tt" || txt == "code")
