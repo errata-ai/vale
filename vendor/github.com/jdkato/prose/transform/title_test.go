@@ -21,8 +21,9 @@ func TestTitle(t *testing.T) {
 	cases := util.ReadDataFile(filepath.Join(testdata, "title.json"))
 
 	util.CheckError(json.Unmarshal(cases, &tests))
+	tc := NewTitleConverter(APStyle)
 	for _, test := range tests {
-		assert.Equal(t, test.Expect, Title(test.Input))
+		assert.Equal(t, test.Expect, tc.Title(test.Input))
 	}
 }
 
@@ -31,9 +32,10 @@ func BenchmarkTitle(b *testing.B) {
 	cases := util.ReadDataFile(filepath.Join(testdata, "title.json"))
 
 	util.CheckError(json.Unmarshal(cases, &tests))
+	tc := NewTitleConverter(APStyle)
 	for n := 0; n < b.N; n++ {
 		for _, test := range tests {
-			_ = Title(test.Input)
+			_ = tc.Title(test.Input)
 		}
 	}
 }

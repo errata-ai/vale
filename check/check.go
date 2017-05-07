@@ -9,6 +9,7 @@ import (
 
 	"github.com/ValeLint/vale/core"
 	"github.com/ValeLint/vale/rule"
+	"github.com/jdkato/prose/transform"
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v2"
 	"matloob.io/regexp"
@@ -214,7 +215,15 @@ func checkCapitalization(txt string, chk Capitalization, f *core.File) []core.Al
 }
 
 func addCapitalizationCheck(chkName string, chkDef Capitalization) {
-	if f, ok := varToFunc[chkDef.Match]; ok {
+	if chkDef.Match == "$title" {
+		var tc *transform.TitleConverter
+		if chkDef.Style == "Chicago" {
+			tc = transform.NewTitleConverter(transform.ChicagoStyle)
+		} else {
+			tc = transform.NewTitleConverter(transform.APStyle)
+		}
+		chkDef.Check = func(s string) bool { return title(s, tc) }
+	} else if f, ok := varToFunc[chkDef.Match]; ok {
 		chkDef.Check = f
 	} else {
 		re, err := regexp.Compile(chkDef.Match)

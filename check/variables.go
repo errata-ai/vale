@@ -9,10 +9,10 @@ import (
 func lower(s string) bool { return s == strings.ToLower(s) }
 func upper(s string) bool { return s == strings.ToUpper(s) }
 
-func title(s string) bool {
+func title(s string, tc *transform.TitleConverter) bool {
 	count := 0.0
 	words := 0.0
-	expected := strings.Fields(transform.Title(s))
+	expected := strings.Fields(tc.Title(s))
 	for i, word := range strings.Fields(s) {
 		if word == expected[i] {
 			count++
@@ -35,7 +35,6 @@ func sentence(s string) bool {
 }
 
 var varToFunc = map[string]func(string) bool{
-	"$title":    title,
 	"$lower":    lower,
 	"$upper":    upper,
 	"$sentence": sentence,

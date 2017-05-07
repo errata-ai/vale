@@ -35,7 +35,7 @@
         {
             "name": "github.com/jdkato/prose",
             "branch": "master",
-            "revision": "f65005cead66ce83cad9aac23d94eb8c44b15ffc",
+            "revision": "304c372ed1ce682dbbf0ed4aaa50789a0fc4aa98",
             "packages": [
                 "internal/util",
                 "transform"

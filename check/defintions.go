@@ -79,6 +79,7 @@ type Capitalization struct {
 	Definition `mapstructure:",squash"`
 	Match      string
 	Check      func(string) bool
+	Style      string
 }
 
 var defaultChecks = []string{
