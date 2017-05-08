@@ -170,10 +170,11 @@ func (l Linter) lintProse(f *core.File, ctx string, txt string, lnTotal int, lnL
 	hasCtx := ctx != ""
 	for _, p := range strings.SplitAfter(text, "\n\n") {
 		for _, s := range core.SentenceTokenizer.Tokenize(p) {
+			sent := strings.TrimSpace(s.Text)
 			if hasCtx {
-				b = NewBlock(ctx, s.Text, senScope)
+				b = NewBlock(ctx, sent, senScope)
 			} else {
-				b = NewBlock(p, s.Text, senScope)
+				b = NewBlock(p, sent, senScope)
 			}
 			l.lintText(f, b, lnTotal, lnLength)
 		}
