@@ -1,0 +1,7 @@
+extends: existence
+message: "When referring generally to a file extension type, use all uppercase without a period."
+link: http://styleguide.mailchimp.com/grammar-and-mechanics/#header-4-file-extensions
+level: error
+nonword: true
+tokens:
+  - '[^.](?:gif|pdf|html|jpg)\b'

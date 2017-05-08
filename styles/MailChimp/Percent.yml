@@ -1,0 +1,7 @@
+extends: existence
+message: 'Use the "%%" symbol instead of spelling out "percent."'
+link: http://styleguide.mailchimp.com/grammar-and-mechanics/#header-4-percentages
+level: error
+nonword: true
+tokens:
+  - '\d+\s?%'

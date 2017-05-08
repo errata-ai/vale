@@ -1,0 +1,10 @@
+extends: existence
+message: "Use positive language rather than negative language like “%s.”"
+link: http://styleguide.mailchimp.com/grammar-and-mechanics/#header-3-write-positively
+level: warning
+tokens:
+  - can't
+  - won't
+  - don't
+  - doesn't
+  - hasn't

@@ -1,0 +1,7 @@
+extends: existence
+message: 'Punctuation should be inside the quotes.'
+link: http://styleguide.mailchimp.com/grammar-and-mechanics/#header-4-periods
+level: error
+nonword: true
+tokens:
+  - '"[^"]+"[.]'

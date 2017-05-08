@@ -1,0 +1,6 @@
+extends: existence
+message: "Spell out fractions."
+link: http://styleguide.mailchimp.com/grammar-and-mechanics/#header-4-decimals-and-fractions
+level: error
+tokens:
+  - '\d+\s?/\s?\d+'

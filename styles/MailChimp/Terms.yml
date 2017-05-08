@@ -1,0 +1,11 @@
+extends: substitution
+message: Use '%s' instead of '%s'
+ignorecase: true
+level: error
+swap:
+  'mail ?chimp?': MailChimp
+  double click: double-click
+  e commerce: e-commerce
+  epub: ePub
+  e-mail: email
+  wifi: WiFi

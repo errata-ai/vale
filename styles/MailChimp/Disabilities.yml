@@ -1,0 +1,9 @@
+extends: existence
+message: 'When writing about a person with disabilities, don’t use words like “%s.”'
+link: http://styleguide.mailchimp.com/writing-about-people/#header-3-disability
+level: warning
+ignorecase: true
+tokens:
+  - handicapped
+  - victim
+  - suffer
