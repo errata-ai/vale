@@ -34,10 +34,10 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"sync"
 
 	"github.com/ValeLint/vale/check"
 	"github.com/ValeLint/vale/core"
+	"github.com/remeh/sizedwaitgroup"
 )
 
 // A Linter lints a File.
@@ -91,21 +91,21 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 	errc := make(chan error, 1)
 	ignore := []string{".", "_"}
 	go func() {
-		var wg sync.WaitGroup
+		wg := sizedwaitgroup.New(5)
 		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {
 				return nil
 			} else if !glob.Match(fp) || core.HasAnyPrefix(fi.Name(), ignore) {
 				return nil
 			}
-			wg.Add(1)
-			go func() {
+			wg.Add()
+			go func(fp string) {
 				select {
 				case filesChan <- l.lintFile(fp):
 				case <-done:
 				}
 				wg.Done()
-			}()
+			}(fp)
 			// Abort the walk if done is closed.
 			select {
 			case <-done:

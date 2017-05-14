@@ -1,5 +1,5 @@
 {
-    "memo": "2a0e8751effe99b1917cad940a2e9450ed255b84a4883add889f338ecfa6cd61",
+    "memo": "7750ff0cbc58d26a28aec601a61e232525e66c334697c7662d2f8835a3b5bafc",
     "projects": [
         {
             "name": "github.com/davecgh/go-spew",
@@ -95,6 +95,14 @@
             "revision": "792786c7400a136282c1664665ae0a8db921c6c2",
             "packages": [
                 "difflib"
+            ]
+        },
+        {
+            "name": "github.com/remeh/sizedwaitgroup",
+            "branch": "master",
+            "revision": "4b44541c93591ee0e73747d6081e61bd8c58b5c7",
+            "packages": [
+                "."
             ]
         },
         {
