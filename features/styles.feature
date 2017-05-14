@@ -86,7 +86,7 @@ Feature: Styles
     test.md:1:224:TheEconomist.UnexpandedAcronyms:'DAFB' has no definition
     test.md:7:113:TheEconomist.OughtShould:Go easy on the oughts and shoulds
     test.md:9:13:TheEconomist.UnexpandedAcronyms:'AAAS' has no definition
-    test.md:9:152:TheEconomist.Punctuation:Use 'eg, or ie,' instead of 'ie '
+    test.md:9:152:TheEconomist.Punctuation:Use 'eg, or ie,' instead of 'ie'
     test.md:11:12:TheEconomist.OverusedWords:'community' is overused
     test.md:11:51:TheEconomist.OughtShould:Go easy on the oughts and shoulds
     test.md:11:69:TheEconomist.Didactic:'Consider' - Do not be too didactic
@@ -176,7 +176,7 @@ Feature: Styles
     test.md:1:34:Middlebury.Typography:Use a left-facing apostrophe.
     test.md:3:5:Middlebury.Terms:Avoid using 'oriental'
     test.md:3:42:Middlebury.Typography:Words combined with -long should be closed.
-    test.md:3:59:Middlebury.Abbreviations:Use 'i.e.,' instead of 'i.e. '
+    test.md:3:59:Middlebury.Abbreviations:Use 'i.e.,' instead of 'i.e.'
     test.md:5:122:Middlebury.Disabilities:Avoid using 'special needs'
     test.md:7:21:Middlebury.Hyphens:Use 'worldwide' instead of 'world-wide'
     """
