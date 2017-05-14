@@ -1,0 +1,9 @@
+extends: existence
+message: 'Use first person plural pronouns such as “%s” judiciously.'
+link: https://docs.openstack.org/contributor-guide/writing-style/general-writing-guidelines.html#write-in-second-person
+level: warning
+ignorecase: true
+tokens:
+  - we
+  - our
+  - I

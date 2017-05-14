@@ -51,6 +51,12 @@ var heading = regexp.MustCompile(`^h\d$`)
 
 // skipTags are tags that we don't want to lint.
 var skipTags = []string{"script", "style", "pre", "figure"}
+
+// skipClasses are classes that we don't want to lint:
+// 	- `problematic` is added by rst2html to processing errors which, in our
+// 	  case, could be things like file-insertion URLs.
+// 	- `pre` is added by rst2html to code spans.
+var skipClasses = []string{"problematic", "pre"}
 var inlineTags = []string{
 	"b", "big", "i", "small", "abbr", "acronym", "cite", "dfn", "em", "kbd",
 	"strong", "a", "br", "img", "span", "sub", "sup", "code", "tt"}
@@ -61,10 +67,10 @@ var tagToScope = map[string]string{
 }
 
 func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int) {
-	var txt string
+	var txt, attr string
 	var tokt html.TokenType
 	var tok html.Token
-	var inBlock, inline, skip bool
+	var inBlock, inline, skip, skipClass bool
 
 	punct := []string{".", "?", "!", ",", ":", ";"}
 	lines := len(f.Lines) + offset
@@ -78,6 +84,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		tok = tokens.Token()
 		txt = html.UnescapeString(strings.TrimSpace(tok.Data))
 
+		skipClass = core.StringInSlice(attr, skipClasses)
 		if tokt == html.ErrorToken {
 			break
 		} else if tokt == html.StartTagToken && core.StringInSlice(txt, skipTags) {
@@ -94,7 +101,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			queue = append(queue, txt)
 			if !inBlock {
 				first, _ := utf8.DecodeRuneInString(txt)
-				if skip {
+				if skip || skipClass {
 					txt, _ = core.Substitute(txt, txt, '*')
 					txt = "`" + txt + "`"
 					skip = false
@@ -119,6 +126,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			buf.Reset()
 		}
 
+		attr = getAttribute(tok, "class")
 		ctx = clearElements(ctx, tok)
 	}
 }
@@ -140,10 +148,19 @@ func (l Linter) lintScope(f *core.File, ctx, txt string, tags []string, lines in
 	l.lintProse(f, ctx, txt, lines, 0)
 }
 
+func getAttribute(tok html.Token, key string) string {
+	for _, attr := range tok.Attr {
+		if attr.Key == key {
+			return attr.Val
+		}
+	}
+	return ""
+}
+
 func clearElements(ctx string, tok html.Token) string {
-	if tok.Data == "img" || tok.Data == "a" {
+	if tok.Data == "img" || tok.Data == "a" || tok.Data == "p" {
 		for _, a := range tok.Attr {
-			if a.Key == "alt" || a.Key == "href" {
+			if a.Key == "alt" || a.Key == "href" || a.Key == "id" {
 				ctx = updateCtx(ctx, a.Val, html.TextToken)
 			}
 		}

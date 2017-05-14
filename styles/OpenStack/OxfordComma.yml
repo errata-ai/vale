@@ -1,0 +1,6 @@
+extends: existence
+message: 'Use the Serial (Oxford) comma.'
+link: https://docs.openstack.org/contributor-guide/writing-style/punctuation.html
+level: warning
+tokens:
+  - '(?:[^,]+,){1,}\s\w+\s(?:and|or)'

@@ -1,0 +1,7 @@
+extends: existence
+message: "Add a space between a numeral and a unit of measure."
+link: https://docs.openstack.org/contributor-guide/writing-style/num_and_units_of_measure.html
+level: error
+noword: true
+tokens:
+  - '\d+(?:MB|Gbit|GB|kbps|KB|kb)'

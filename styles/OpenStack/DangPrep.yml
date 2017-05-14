@@ -1,0 +1,8 @@
+message: Avoid ending a sentence with “%s”
+link: https://docs.openstack.org/contributor-guide/writing-style/general-writing-guidelines.html#avoid-prepositions-at-the-end-of-sentences
+description: As much as possible, avoid trailing prepositions in sentences by avoiding phrasal verbs.
+extends: existence
+level: warning
+scope: sentence
+raw:
+  - '\b(?:at|from|of|to|in|for|on|by|up)[.!]'

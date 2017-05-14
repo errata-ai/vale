@@ -1,0 +1,8 @@
+message: "Write short sentences (less than 25 words)."
+extends: occurrence
+link: https://docs.openstack.org/contributor-guide/writing-style/general-writing-guidelines.html#keep-sentences-short
+description: Short and simple sentences are easier to read and understand.
+scope: sentence
+level: warning
+max: 25
+token: \b(\w+)\b

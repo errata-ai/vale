@@ -1,0 +1,8 @@
+extends: existence
+message: 'Do not use “%s” in technical documentation.'
+link: https://docs.openstack.org/contributor-guide/writing-style/general-writing-guidelines.html#eliminate-needless-politeness
+level: error
+ignorecase: true
+tokens:
+  - please
+  - thank you

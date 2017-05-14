@@ -1,0 +1,7 @@
+extends: existence
+message: Place commas and periods inside closing quotation marks.
+link: https://docs.openstack.org/contributor-guide/writing-style/punctuation.html
+level: error
+nonword: true
+tokens:
+  - '"[^"]+"[.]'

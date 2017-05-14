@@ -213,3 +213,13 @@ Feature: Styles
     test.txt:5:1:MailChimp.Exclamation:Use exclamation points sparingly, and never more than one at a time.
     test.txt:5:22:MailChimp.Avoid:Avoid using “rockstar.”
     """
+
+  Scenario: Lint against OpenStack
+    When I apply style "OpenStack"
+    Then the output should contain exactly:
+    """
+    test.rst:1:58:OpenStack.This:Do not overuse “this”
+    test.rst:24:1:OpenStack.Branding:Use “OpenStack” instead of “openstack”
+    test.rst:24:11:OpenStack.Contractions:Generally, do not contract the words such as “can't”.
+    test.rst:24:17:OpenStack.Branding:Use “OpenStack” instead of “open stack”
+    """
