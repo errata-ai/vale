@@ -438,8 +438,8 @@ func addCheck(file []byte, chkName string) error {
 	// Load the rule definition.
 	generic := map[string]interface{}{}
 	err := yaml.Unmarshal(file, &generic)
-	if !core.CheckError(err) {
-		return err
+	if err != nil {
+		return fmt.Errorf("%s: %s", chkName, err.Error())
 	} else if defErr := validateDefinition(generic, chkName); defErr != nil {
 		return defErr
 	}
