@@ -1,4 +1,4 @@
-message: "Write short sentences."
+message: "Write short sentences (< 25 words)."
 extends: occurrence
 link: http://styleguide.mailchimp.com/writing-for-accessibility/#header-3-use-plain-language
 scope: sentence
