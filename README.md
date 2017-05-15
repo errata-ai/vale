@@ -17,7 +17,7 @@ Check out [project website](https://valelint.github.io/docs/) to learn more!
 
 ## Features
 
-Vale's functionality is split into extension points (called "checks") that can be customized to perform many different kinds of tasks, including finding [insensitive words and phrases](https://github.com/ValeLint/vale/blob/master/rule/GenderBias.yml), measuring [sentence length](https://github.com/ValeLint/vale/blob/master/styles/jQuery/SentenceLength.yml), enforcing a particular [heading style](https://github.com/ValeLint/vale/blob/master/styles/18F/Titles.yml), and identifying [undefined acronyms](https://github.com/ValeLint/vale/blob/master/styles/TheEconomist/UnexpandedAcronyms.yml). See the [Style Showcase](https://valelint.github.io/docs/showcase/) for more complete examples.
+Vale's functionality is split into extension points (called "checks") that can be customized to perform many different kinds of tasks, including finding [insensitive words and phrases](https://github.com/ValeLint/vale/blob/master/rule/GenderBias.yml), measuring [sentence length](https://github.com/ValeLint/vale/blob/master/styles/jQuery/SentenceLength.yml), enforcing a particular [heading style](https://github.com/ValeLint/vale/blob/master/styles/18F/Titles.yml), and identifying [undefined acronyms](https://github.com/ValeLint/vale/blob/master/styles/TheEconomist/UnexpandedAcronyms.yml). See the [Style Showcase](https://valelint.github.io/docs/showcase/) for more advanced examples.
 
 Additionally, since Vale is "syntax aware," you'll never have to worry about syntax-related false positives (e.g., URLs or code blocks). See [Creating a style](https://valelint.github.io/docs/styles/#creating-a-style) for more information.
 
@@ -25,19 +25,19 @@ Additionally, since Vale is "syntax aware," you'll never have to worry about syn
 
 There are a few options to choose from:
 
-- [Homebrew](http://brew.sh) on **macOS**:
+- [Homebrew](http://brew.sh) or [Linuxbrew](http://linuxbrew.sh/):
 
     ```bash
     $ brew tap ValeLint/vale
     $ brew install vale
     ```
-- A **Windows** Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
-- [Chocolatey](https://chocolatey.org/packages/vale/) on **Windows** (thanks to @[Kristinita](https://github.com/Kristinita)):
-    
+- [Chocolatey](https://chocolatey.org/packages/vale/) (thanks to @[Kristinita](https://github.com/Kristinita)):
+
     ```shell
     C:\> choco install vale
     ```
-- Manually on **Windows**, **macOS**, and **Linux** by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
+- A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
+- Manually on **Windows**, **macOS**, or **Linux** by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
 
 ## Usage
 
