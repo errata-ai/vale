@@ -223,3 +223,36 @@ Feature: Styles
     test.rst:24:11:OpenStack.Contractions:Generally, do not contract the words such as “can't”.
     test.rst:24:17:OpenStack.Branding:Use “OpenStack” instead of “open stack”
     """
+
+  Scenario: Lint against Pedantic
+    When I apply style "Pedantic"
+    Then the output should contain exactly:
+    """
+    test.md:1:19:Pedantic.Nonwords:Consider using 'regardless' instead of 'irregardless'.
+    test.md:3:18:Pedantic.Archaisms:'perchance' is archaic.
+    test.md:7:6:Pedantic.Cliches:'a chip off the old block' is a cliche.
+    test.md:9:12:Pedantic.Cliches:'a fate worse than death' is a cliche.
+    test.md:11:20:Pedantic.Spelling:Inconsistent spelling of 'color'.
+    test.md:11:61:Pedantic.Spelling:Inconsistent spelling of 'center'.
+    test.md:13:9:Pedantic.CorporateSpeak:'circle back around' is corporate speak.
+    test.md:15:5:Pedantic.Cursing:Consider replacing 'shit'.
+    test.md:17:16:Pedantic.DateCase:With lowercase letters, the periods are standard.
+    test.md:17:37:Pedantic.DateSpacing:It's standard to put a space before '7a.m.'
+    test.md:17:58:Pedantic.DateMidnight:Use 'midnight' or 'noon'.
+    test.md:17:81:Pedantic.DateRedundancy:'a.m.' is always morning; 'p.m.' is always night.
+    test.md:19:18:Pedantic.Uncomparables:'most correct' is not comparable
+    test.md:21:1:Pedantic.Hedging:'I would argue that' is hedging.
+    test.md:23:4:Pedantic.Hyperbole:'exaggerated!!!' is hyperbolic.
+    test.md:25:14:Pedantic.Jargon:'in the affirmative' is jargon.
+    test.md:27:10:Pedantic.Illusions:'the the' - There's a lexical illusion here.
+    test.md:29:14:Pedantic.LGBTOffensiveTerms:'fag' is offensive. Remove it or consider the context.
+    test.md:29:44:Pedantic.LGBTTerms:Consider using 'sexual orientation' instead of 'sexual preference'.
+    test.md:31:10:Pedantic.Malapropisms:'the Infinitesimal Universe' is a malapropism.
+    test.md:33:1:Pedantic.Apologizing:Excessive apologizing: 'More research is needed'
+    test.md:35:1:Pedantic.ButStartingParagraph:Do not start a paragraph with a 'but'.
+    test.md:37:9:Pedantic.Currency:Incorrect use of symbols in '$10 dollars'.
+    test.md:39:14:Pedantic.Oxymorons:'exact estimate' is an oxymoron.
+    test.md:41:38:Pedantic.GenderBias:Consider using 'lawyer' instead of 'lady lawyer'.
+    test.md:43:11:Pedantic.Skunked:'impassionate' is a bit of a skunked term — impossible to use without issue.
+    test.md:45:21:Pedantic.DenzienLabels:Did you mean 'Hong Konger'?
+    """
