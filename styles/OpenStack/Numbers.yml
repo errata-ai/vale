@@ -1,6 +1,0 @@
-extends: existence
-message: "Spell out numbers from one to nine."
-link: https://docs.openstack.org/contributor-guide/writing-style/num_and_units_of_measure.html
-level: warning
-tokens:
-  - '[1-9]'
