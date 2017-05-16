@@ -73,8 +73,8 @@ func StringsToInterface(strings []string) []interface{} {
 }
 
 // DumpConfig returns Vale's configuration in JSON format.
-func DumpConfig() string {
-	b, _ := json.MarshalIndent(Config, "", "  ")
+func DumpConfig(config *Config) string {
+	b, _ := json.MarshalIndent(config, "", "  ")
 	return string(b)
 }
 

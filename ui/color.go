@@ -23,14 +23,14 @@ const (
 )
 
 // PrintVerboseAlerts prints Alerts in verbose format.
-func PrintVerboseAlerts(linted []*core.File, option int) bool {
+func PrintVerboseAlerts(linted []*core.File, option int, wrap bool) bool {
 	var errors, warnings, suggestions int
 	var e, w, s int
 	var symbol string
 
 	for _, f := range linted {
 		if option == VERBOSE {
-			e, w, s = printVerboseAlert(f)
+			e, w, s = printVerboseAlert(f, wrap)
 		} else {
 			e, w, s = printContextAlert(f)
 		}
@@ -84,7 +84,7 @@ func printContextAlert(f *core.File) (int, int, int) {
 	return errors, warnings, notifications
 }
 
-func printVerboseAlert(f *core.File) (int, int, int) {
+func printVerboseAlert(f *core.File, wrap bool) (int, int, int) {
 	var loc, level string
 	var errors, warnings, notifications int
 
@@ -97,7 +97,7 @@ func printVerboseAlert(f *core.File) (int, int, int) {
 	table.SetCenterSeparator("")
 	table.SetColumnSeparator("")
 	table.SetRowSeparator("")
-	table.SetAutoWrapText(!core.CLConfig.Wrap)
+	table.SetAutoWrapText(!wrap)
 
 	fmt.Printf("\n %s", colorize(f.Path, underlineColor))
 	for _, a := range alerts {

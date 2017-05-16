@@ -92,7 +92,7 @@ func (a ByName) Less(i, j int) bool {
 }
 
 // NewFile initilizes a File.
-func NewFile(src string) *File {
+func NewFile(src string, config *Config) *File {
 	var scanner *bufio.Scanner
 	var format, ext string
 	var fbytes []byte
@@ -103,13 +103,13 @@ func NewFile(src string) *File {
 		ext, format = FormatFromExt(src)
 	} else {
 		scanner = bufio.NewScanner(strings.NewReader(src))
-		ext, format = FormatFromExt(CLConfig.InExt)
+		ext, format = FormatFromExt(config.InExt)
 		fbytes = []byte(src)
 		src = "stdin" + ext
 	}
 
-	baseStyles := Config.GBaseStyles
-	for sec, styles := range Config.SBaseStyles {
+	baseStyles := config.GBaseStyles
+	for sec, styles := range config.SBaseStyles {
 		pat, err := glob.Compile(sec)
 		if CheckError(err) && pat.Match(src) {
 			baseStyles = styles
@@ -118,7 +118,7 @@ func NewFile(src string) *File {
 	}
 
 	checks := make(map[string]bool)
-	for sec, smap := range Config.SChecks {
+	for sec, smap := range config.SChecks {
 		pat, err := glob.Compile(sec)
 		if CheckError(err) && pat.Match(src) {
 			checks = smap

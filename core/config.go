@@ -36,12 +36,6 @@ func NewGlob(pat string) Glob {
 	return Glob{Pattern: g, Negated: negate}
 }
 
-// CLConfig holds our command-line configuration.
-var CLConfig = clConfig{}
-
-// Config holds our .vale configuration.
-var Config = loadOptions()
-
 // AlertLevels holds the possible values for "level" in an external rule.
 var AlertLevels = []string{"suggestion", "warning", "error"}
 
@@ -52,16 +46,8 @@ var LevelToInt = map[string]int{
 	"error":      2,
 }
 
-type clConfig struct {
-	Output string // (optional) output style ("line" or "CLI")
-	Wrap   bool   // (optional) wrap output when CLI style
-	NoExit bool   // (optional) don't return a nonzero exit code on lint errors
-	Sorted bool   // (optional) sort files by their name for output
-	Simple bool   // (optional) lint all files line-by-line
-	InExt  string // (optional) extension to associate with stdin
-}
-
-type config struct {
+type Config struct {
+	// General configuration
 	Checks        []string                   // All checks to load
 	GBaseStyles   []string                   // Global base style
 	GChecks       map[string]bool            // Global checks
@@ -70,10 +56,18 @@ type config struct {
 	SChecks       map[string]map[string]bool // Syntax-specific checks
 	StylesPath    string                     // Directory with Rule.yml files
 	RuleToLevel   map[string]string          // Single-rule level changes
+
+	// Command-line configuration
+	Output string // (optional) output style ("line" or "CLI")
+	Wrap   bool   // (optional) wrap output when CLI style
+	NoExit bool   // (optional) don't return a nonzero exit code on lint errors
+	Sorted bool   // (optional) sort files by their name for output
+	Simple bool   // (optional) lint all files line-by-line
+	InExt  string // (optional) extension to associate with stdin
 }
 
-func newConfig() *config {
-	var cfg config
+func NewConfig() *Config {
+	var cfg Config
 	cfg.GChecks = make(map[string]bool)
 	cfg.SBaseStyles = make(map[string][]string)
 	cfg.SChecks = make(map[string]map[string]bool)
@@ -94,7 +88,7 @@ func determinePath(configPath string, keyPath string) string {
 	return abs
 }
 
-func validateLevel(key string, val string, cfg *config) bool {
+func validateLevel(key string, val string, cfg *Config) bool {
 	options := []string{"YES", "suggestion", "warning", "error"}
 	if val == "NO" || !StringInSlice(val, options) {
 		return false
@@ -136,12 +130,12 @@ func loadConfig(names []string) (*ini.File, string, error) {
 	return iniFile, dir, err
 }
 
-// loadOptions reads the .vale file.
-func loadOptions() config {
-	cfg := newConfig()
+// LoadConfig reads the .vale/_vale file.
+func LoadConfig() *Config {
+	cfg := NewConfig()
 	uCfg, path, err := loadConfig([]string{".vale", "_vale"})
 	if err != nil {
-		return *cfg
+		return cfg
 	}
 
 	core := uCfg.Section("")
@@ -185,5 +179,5 @@ func loadOptions() config {
 		cfg.SChecks[sec] = syntaxOpts
 	}
 
-	return *cfg
+	return cfg
 }

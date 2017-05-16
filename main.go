@@ -19,6 +19,8 @@ var version = "master"
 
 func main() {
 	var glob string
+
+	config := core.LoadConfig()
 	app := cli.NewApp()
 	app.Name = "vale"
 	app.Usage = "A command-line linter for prose."
@@ -34,33 +36,33 @@ func main() {
 			Name:        "output",
 			Value:       "CLI",
 			Usage:       `output style ("line", "JSON", or "context")`,
-			Destination: &core.CLConfig.Output,
+			Destination: &config.Output,
 		},
 		cli.StringFlag{
 			Name:        "ext",
 			Value:       ".txt",
 			Usage:       `extension to associate with stdin`,
-			Destination: &core.CLConfig.InExt,
+			Destination: &config.InExt,
 		},
 		cli.BoolFlag{
 			Name:        "no-wrap",
 			Usage:       "don't wrap CLI output",
-			Destination: &core.CLConfig.Wrap,
+			Destination: &config.Wrap,
 		},
 		cli.BoolFlag{
 			Name:        "no-exit",
 			Usage:       "don't return a nonzero exit code on lint errors",
-			Destination: &core.CLConfig.NoExit,
+			Destination: &config.NoExit,
 		},
 		cli.BoolFlag{
 			Name:        "sort",
 			Usage:       "sort files by their name in output",
-			Destination: &core.CLConfig.Sorted,
+			Destination: &config.Sorted,
 		},
 		cli.BoolFlag{
 			Name:        "ignore-syntax",
 			Usage:       "lint all files line-by-line",
-			Destination: &core.CLConfig.Simple,
+			Destination: &config.Simple,
 		},
 	}
 	app.Commands = []cli.Command{
@@ -69,7 +71,7 @@ func main() {
 			Aliases: []string{"dc"},
 			Usage:   "Dumps configuration options to stdout and exits",
 			Action: func(c *cli.Context) error {
-				fmt.Println(core.DumpConfig())
+				fmt.Println(core.DumpConfig(config))
 				return nil
 			},
 		},
@@ -96,7 +98,9 @@ func main() {
 		var src string
 
 		if c.NArg() > 0 || core.Stat() {
-			check.Load() // we have input, so let's load our configuration.
+			mgr := check.CheckManager{
+				AllChecks: make(map[string]check.Check), Config: config}
+			mgr.Load()
 			if c.NArg() > 0 {
 				src = c.Args()[0]
 			} else {
@@ -104,7 +108,7 @@ func main() {
 				src = string(stdin)
 			}
 
-			l := new(lint.Linter)
+			l := lint.Linter{Config: config, CheckMgr: &mgr}
 			// Do we a directory/file or a string?
 			if core.IsDir(src) || core.FileExists(src) {
 				linted, err = l.Lint(src, glob)
@@ -113,18 +117,18 @@ func main() {
 			}
 
 			// How should we style the output?
-			if core.CLConfig.Output == "line" {
+			if config.Output == "line" {
 				hasAlerts = ui.PrintLineAlerts(linted)
-			} else if core.CLConfig.Output == "JSON" {
+			} else if config.Output == "JSON" {
 				hasAlerts = ui.PrintJSONAlerts(linted)
-			} else if core.CLConfig.Output == "context" {
-				hasAlerts = ui.PrintVerboseAlerts(linted, ui.CONTEXT)
+			} else if config.Output == "context" {
+				hasAlerts = ui.PrintVerboseAlerts(linted, ui.CONTEXT, config.Wrap)
 			} else {
-				hasAlerts = ui.PrintVerboseAlerts(linted, ui.VERBOSE)
+				hasAlerts = ui.PrintVerboseAlerts(linted, ui.VERBOSE, config.Wrap)
 			}
 
 			// Should return a nonzero vale on errors?
-			if err == nil && hasAlerts && !core.CLConfig.NoExit {
+			if err == nil && hasAlerts && !config.NoExit {
 				err = errors.New("")
 			}
 

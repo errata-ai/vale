@@ -41,7 +41,10 @@ import (
 )
 
 // A Linter lints a File.
-type Linter struct{}
+type Linter struct {
+	Config   *core.Config
+	CheckMgr *check.CheckManager
+}
 
 // A Block represents a section of text.
 type Block struct {
@@ -78,7 +81,7 @@ func (l Linter) Lint(src string, pat string) ([]*core.File, error) {
 		return nil, err
 	}
 
-	if core.CLConfig.Sorted {
+	if l.Config.Sorted {
 		sort.Sort(core.ByName(linted))
 	}
 	return linted, nil
@@ -130,8 +133,8 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 //
 // TODO: remove dependencies on `asciidoctor` and `rst2html`.
 func (l Linter) lintFile(src string) *core.File {
-	file := core.NewFile(src)
-	if file.Format == "markup" && !core.CLConfig.Simple {
+	file := core.NewFile(src, l.Config)
+	if file.Format == "markup" && !l.Config.Simple {
 		switch file.NormedExt {
 		case ".adoc":
 			cmd := core.Which([]string{"asciidoctor"})
@@ -153,7 +156,7 @@ func (l Linter) lintFile(src string) *core.File {
 		case ".html":
 			l.lintHTML(file)
 		}
-	} else if file.Format == "code" && !core.CLConfig.Simple {
+	} else if file.Format == "code" && !l.Config.Simple {
 		l.lintCode(file)
 	} else {
 		l.lintLines(file)
@@ -199,9 +202,9 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 
 	ctx := blk.Context
 	txt := core.PrepText(blk.Text)
-	min := core.Config.MinAlertLevel
+	min := l.Config.MinAlertLevel
 	f.ChkToCtx = make(map[string]string)
-	for name, chk := range check.AllChecks {
+	for name, chk := range l.CheckMgr.AllChecks {
 		style = strings.Split(name, ".")[0]
 		run = false
 
@@ -223,7 +226,7 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 		}
 
 		// Has the check been disabled for all extensions?
-		if val, ok := core.Config.GChecks[name]; ok && !run {
+		if val, ok := l.Config.GChecks[name]; ok && !run {
 			if !val {
 				continue
 			}

@@ -14,12 +14,13 @@ var checktests = []struct {
 }
 
 func TestAddCheck(t *testing.T) {
+	mgr := new(CheckManager)
 	for _, tt := range checktests {
 		path, err := filepath.Abs(filepath.Join("../fixtures/YAML", tt.check))
 		if err != nil {
 			panic(err)
 		}
-		s := loadCheck(tt.check, path)
+		s := mgr.loadCheck(tt.check, path)
 		if s.Error() != tt.msg {
 			t.Errorf("%q != %q", s.Error(), tt.msg)
 		}

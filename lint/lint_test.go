@@ -5,7 +5,6 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/ValeLint/vale/check"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -51,7 +50,6 @@ func benchmarkLint(path string, b *testing.B) {
 		panic(err)
 	}
 	l := new(Linter)
-	check.Load()
 	for n := 0; n < b.N; n++ {
 		_, _ = l.Lint(path, "*")
 	}

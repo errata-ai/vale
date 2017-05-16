@@ -10,10 +10,6 @@ type Check struct {
 	Scope   core.Selector
 }
 
-// AllChecks holds all of our individual checks. The keys are in the form
-// "styleName.checkName".
-var AllChecks = map[string]Check{}
-
 // Definition holds the common attributes of rule definitions.
 type Definition struct {
 	Description string
