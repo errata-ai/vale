@@ -245,14 +245,20 @@ Feature: Styles
     test.md:23:4:Pedantic.Hyperbole:'exaggerated!!!' is hyperbolic.
     test.md:25:14:Pedantic.Jargon:'in the affirmative' is jargon.
     test.md:27:10:Pedantic.Illusions:'the the' - There's a lexical illusion here.
-    test.md:29:14:Pedantic.LGBTOffensiveTerms:'fag' is offensive. Remove it or consider the context.
+    test.md:29:14:Pedantic.LGBTOffensive:'fag' is offensive. Remove it or consider the context.
     test.md:29:44:Pedantic.LGBTTerms:Consider using 'sexual orientation' instead of 'sexual preference'.
     test.md:31:10:Pedantic.Malapropisms:'the Infinitesimal Universe' is a malapropism.
     test.md:33:1:Pedantic.Apologizing:Excessive apologizing: 'More research is needed'
-    test.md:35:1:Pedantic.ButStartingParagraph:Do not start a paragraph with a 'but'.
+    test.md:35:1:Pedantic.But:Do not start a paragraph with a 'but'.
     test.md:37:9:Pedantic.Currency:Incorrect use of symbols in '$10 dollars'.
     test.md:39:14:Pedantic.Oxymorons:'exact estimate' is an oxymoron.
     test.md:41:38:Pedantic.GenderBias:Consider using 'lawyer' instead of 'lady lawyer'.
     test.md:43:11:Pedantic.Skunked:'impassionate' is a bit of a skunked term — impossible to use without issue.
     test.md:45:21:Pedantic.DenzienLabels:Did you mean 'Hong Konger'?
+    test.md:47:13:Pedantic.AnimalLabels:Consider using 'avine' instead of 'bird-like'.
+    test.md:49:20:Pedantic.Typography:Consider using the '©' symbol instead of '(C)'.
+    test.md:49:40:Pedantic.Typography:Consider using the '™' symbol instead of '(tm)'.
+    test.md:49:56:Pedantic.Typography:Consider using the '®' symbol instead of '(R)'.
+    test.md:49:79:Pedantic.Typography:Consider using the '×' symbol instead of '2 x 2'.
+    test.md:51:27:Pedantic.Diacritical:Consider using 'Beyoncé' instead of 'Beyonce'.
     """

@@ -43,3 +43,9 @@ The legal team had two lawyers and a lady lawyer.
 I gave an impassionate defence of the situation.
 
 He was definitely a Hong Kongite.
+
+It was some bird-like creature.
+
+Show me the money! (C) The Fresh Maker (tm) Just Do It (R) It is obvious that 2 x 2 = 4
+
+He saw the performance by Beyonce.
