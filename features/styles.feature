@@ -196,13 +196,13 @@ Feature: Styles
     When I apply style "MailChimp"
     Then the output should contain exactly:
     """
-    test.md:1:70:MailChimp.SentenceLength:Write short sentences (< 25 words).
+    test.md:1:70:MailChimp.SentenceLength:Write short sentences (less than 25 words).
     test.md:3:5:MailChimp.Ages:Don’t refer to people using age-related descriptors like "young."
     test.md:3:24:MailChimp.Quotes:Punctuation should be inside the quotes.
     test.md:5:1:MailChimp.Exclamation:Use exclamation points sparingly, and never more than one at a time.
     test.md:5:22:MailChimp.Avoid:Avoid using “rockstar.”
     test.md:7:1:MailChimp.NumbersStart:Spell out a number when it begins a sentence.
-    test.rst:1:70:MailChimp.SentenceLength:Write short sentences (< 25 words).
+    test.rst:1:70:MailChimp.SentenceLength:Write short sentences (less than 25 words).
     test.rst:3:5:MailChimp.Ages:Don’t refer to people using age-related descriptors like "young."
     test.rst:3:24:MailChimp.Quotes:Punctuation should be inside the quotes.
     test.rst:5:1:MailChimp.Exclamation:Use exclamation points sparingly, and never more than one at a time.
