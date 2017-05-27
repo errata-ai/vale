@@ -23,19 +23,22 @@ const (
 
 type ruleFn func(string, *core.File) []core.Alert
 
-type CheckManager struct {
+// Manager ...
+type Manager struct {
 	AllChecks map[string]Check
 	Config    *core.Config
 }
 
-// Load initializes AllChecks based on the user's configuration.
-func (mgr *CheckManager) Load() {
+// NewManager ...
+func NewManager(config *core.Config) *Manager {
 	var style, path string
 
+	mgr := Manager{AllChecks: make(map[string]Check), Config: config}
 	loadedStyles := []string{}
+
 	mgr.loadDefaultChecks()
 	if mgr.Config.StylesPath == "" {
-		return
+		return &mgr
 	}
 
 	loadedStyles = append(loadedStyles, "vale")
@@ -68,6 +71,8 @@ func (mgr *CheckManager) Load() {
 			core.CheckError(mgr.loadCheck(fName, path))
 		}
 	}
+
+	return &mgr
 }
 
 func formatMessages(msg string, desc string, subs ...string) (string, string) {
@@ -219,7 +224,7 @@ func checkCapitalization(txt string, chk Capitalization, f *core.File) []core.Al
 	return alerts
 }
 
-func (mgr *CheckManager) addCapitalizationCheck(chkName string, chkDef Capitalization) {
+func (mgr *Manager) addCapitalizationCheck(chkName string, chkDef Capitalization) {
 	if chkDef.Match == "$title" {
 		var tc *transform.TitleConverter
 		if chkDef.Style == "Chicago" {
@@ -243,7 +248,7 @@ func (mgr *CheckManager) addCapitalizationCheck(chkName string, chkDef Capitaliz
 	mgr.updateAllChecks(chkDef.Definition, fn)
 }
 
-func (mgr *CheckManager) addConsistencyCheck(chkName string, chkDef Consistency) {
+func (mgr *Manager) addConsistencyCheck(chkName string, chkDef Consistency) {
 	var chkRE string
 
 	regex := ""
@@ -277,7 +282,7 @@ func (mgr *CheckManager) addConsistencyCheck(chkName string, chkDef Consistency)
 	}
 }
 
-func (mgr *CheckManager) addExistenceCheck(chkName string, chkDef Existence) {
+func (mgr *Manager) addExistenceCheck(chkName string, chkDef Existence) {
 	regex := ""
 	if chkDef.Ignorecase {
 		regex += ignoreCase
@@ -300,7 +305,7 @@ func (mgr *CheckManager) addExistenceCheck(chkName string, chkDef Existence) {
 	}
 }
 
-func (mgr *CheckManager) addRepetitionCheck(chkName string, chkDef Repetition) {
+func (mgr *Manager) addRepetitionCheck(chkName string, chkDef Repetition) {
 	regex := ""
 	if chkDef.Ignorecase {
 		regex += ignoreCase
@@ -315,7 +320,7 @@ func (mgr *CheckManager) addRepetitionCheck(chkName string, chkDef Repetition) {
 	}
 }
 
-func (mgr *CheckManager) addOccurrenceCheck(chkName string, chkDef Occurrence) {
+func (mgr *Manager) addOccurrenceCheck(chkName string, chkDef Occurrence) {
 	re, err := regexp.Compile(chkDef.Token)
 	if core.CheckError(err) && chkDef.Max >= 1 {
 		fn := func(text string, file *core.File) []core.Alert {
@@ -325,7 +330,7 @@ func (mgr *CheckManager) addOccurrenceCheck(chkName string, chkDef Occurrence) {
 	}
 }
 
-func (mgr *CheckManager) addConditionalCheck(chkName string, chkDef Conditional) {
+func (mgr *Manager) addConditionalCheck(chkName string, chkDef Conditional) {
 	var re *regexp.Regexp
 	var expression []*regexp.Regexp
 	var err error
@@ -348,7 +353,7 @@ func (mgr *CheckManager) addConditionalCheck(chkName string, chkDef Conditional)
 	mgr.updateAllChecks(chkDef.Definition, fn)
 }
 
-func (mgr *CheckManager) addSubstitutionCheck(chkName string, chkDef Substitution) {
+func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 	regex := ""
 	tokens := ""
 
@@ -381,14 +386,14 @@ func (mgr *CheckManager) addSubstitutionCheck(chkName string, chkDef Substitutio
 	}
 }
 
-func (mgr *CheckManager) updateAllChecks(chkDef Definition, fn ruleFn) {
+func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn) {
 	chk := Check{Rule: fn, Extends: chkDef.Extends}
 	chk.Level = core.LevelToInt[chkDef.Level]
 	chk.Scope = core.Selector{Value: chkDef.Scope}
 	mgr.AllChecks[chkDef.Name] = chk
 }
 
-func (mgr *CheckManager) makeCheck(generic map[string]interface{}, extends string, chkName string) {
+func (mgr *Manager) makeCheck(generic map[string]interface{}, extends, chkName string) {
 	// TODO: make this less ugly ...
 	if extends == "existence" {
 		def := Existence{}
@@ -440,7 +445,7 @@ func validateDefinition(generic map[string]interface{}, name string) error {
 	return nil
 }
 
-func (mgr *CheckManager) addCheck(file []byte, chkName string) error {
+func (mgr *Manager) addCheck(file []byte, chkName string) error {
 	// Load the rule definition.
 	generic := map[string]interface{}{}
 	err := yaml.Unmarshal(file, &generic)
@@ -465,7 +470,7 @@ func (mgr *CheckManager) addCheck(file []byte, chkName string) error {
 	return nil
 }
 
-func (mgr *CheckManager) loadExternalStyle(path string) {
+func (mgr *Manager) loadExternalStyle(path string) {
 	err := filepath.Walk(path,
 		func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {
@@ -477,7 +482,7 @@ func (mgr *CheckManager) loadExternalStyle(path string) {
 	core.CheckError(err)
 }
 
-func (mgr *CheckManager) loadCheck(fName string, fp string) error {
+func (mgr *Manager) loadCheck(fName string, fp string) error {
 	if strings.HasSuffix(fName, ".yml") {
 		f, err := ioutil.ReadFile(fp)
 		if !core.CheckError(err) {
@@ -494,7 +499,7 @@ func (mgr *CheckManager) loadCheck(fName string, fp string) error {
 	return nil
 }
 
-func (mgr *CheckManager) loadDefaultChecks() {
+func (mgr *Manager) loadDefaultChecks() {
 	for _, chk := range defaultChecks {
 		b, err := rule.Asset("rule/" + chk + ".yml")
 		if err != nil {

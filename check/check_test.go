@@ -14,7 +14,7 @@ var checktests = []struct {
 }
 
 func TestAddCheck(t *testing.T) {
-	mgr := new(CheckManager)
+	mgr := new(Manager)
 	for _, tt := range checktests {
 		path, err := filepath.Abs(filepath.Join("../fixtures/YAML", tt.check))
 		if err != nil {

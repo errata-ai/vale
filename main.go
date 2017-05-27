@@ -98,9 +98,7 @@ func main() {
 		var src string
 
 		if c.NArg() > 0 || core.Stat() {
-			mgr := check.CheckManager{
-				AllChecks: make(map[string]check.Check), Config: config}
-			mgr.Load()
+			mgr := check.NewManager(config)
 			if c.NArg() > 0 {
 				src = c.Args()[0]
 			} else {
@@ -108,12 +106,12 @@ func main() {
 				src = string(stdin)
 			}
 
-			l := lint.Linter{Config: config, CheckMgr: &mgr}
+			linter := lint.Linter{Config: config, CheckManager: mgr}
 			// Do we a directory/file or a string?
 			if core.IsDir(src) || core.FileExists(src) {
-				linted, err = l.Lint(src, glob)
+				linted, err = linter.Lint(src, glob)
 			} else {
-				linted, err = l.LintString(src)
+				linted, err = linter.LintString(src)
 			}
 
 			// How should we style the output?
@@ -122,9 +120,11 @@ func main() {
 			} else if config.Output == "JSON" {
 				hasAlerts = ui.PrintJSONAlerts(linted)
 			} else if config.Output == "context" {
-				hasAlerts = ui.PrintVerboseAlerts(linted, ui.CONTEXT, config.Wrap)
+				hasAlerts = ui.PrintVerboseAlerts(
+					linted, ui.CONTEXT, config.Wrap)
 			} else {
-				hasAlerts = ui.PrintVerboseAlerts(linted, ui.VERBOSE, config.Wrap)
+				hasAlerts = ui.PrintVerboseAlerts(
+					linted, ui.VERBOSE, config.Wrap)
 			}
 
 			// Should return a nonzero vale on errors?

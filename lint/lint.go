@@ -42,13 +42,13 @@ import (
 
 // A Linter lints a File.
 type Linter struct {
-	Config   *core.Config
-	CheckMgr *check.CheckManager
+	Config       *core.Config   // command-line and config file settings
+	CheckManager *check.Manager // loaded checks
 }
 
 // A Block represents a section of text.
 type Block struct {
-	Context string        // parent content (if any) - e.g., sentence -> paragraph
+	Context string        // parent content - e.g., sentence -> paragraph
 	Text    string        // text content
 	Scope   core.Selector // section selector
 }
@@ -204,7 +204,7 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 	txt := core.PrepText(blk.Text)
 	min := l.Config.MinAlertLevel
 	f.ChkToCtx = make(map[string]string)
-	for name, chk := range l.CheckMgr.AllChecks {
+	for name, chk := range l.CheckManager.AllChecks {
 		style = strings.Split(name, ".")[0]
 		run = false
 
