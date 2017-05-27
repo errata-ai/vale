@@ -23,13 +23,14 @@ const (
 
 type ruleFn func(string, *core.File) []core.Alert
 
-// Manager ...
+// Manager controls the loading and validating of the check extension points.
 type Manager struct {
 	AllChecks map[string]Check
 	Config    *core.Config
 }
 
-// NewManager ...
+// NewManager creates a new Manager and loads the rule definitions (that is,
+// extended checks) specified by config.
 func NewManager(config *core.Config) *Manager {
 	var style, path string
 

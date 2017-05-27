@@ -46,6 +46,7 @@ var LevelToInt = map[string]int{
 	"error":      2,
 }
 
+// Config holds Vale's configuration, both from the CLI and its config file.
 type Config struct {
 	// General configuration
 	Checks        []string                   // All checks to load
@@ -66,6 +67,7 @@ type Config struct {
 	InExt  string // (optional) extension to associate with stdin
 }
 
+// NewConfig initializes a Config.
 func NewConfig() *Config {
 	var cfg Config
 	cfg.GChecks = make(map[string]bool)

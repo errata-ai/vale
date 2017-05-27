@@ -57,6 +57,7 @@ func PrintVerboseAlerts(linted []*core.File, option int, wrap bool) bool {
 	return errors != 0
 }
 
+// printContextAlert includes an alert's line and its surrounding text.
 func printContextAlert(f *core.File) (int, int, int) {
 	var errors, warnings, notifications int
 
@@ -84,6 +85,7 @@ func printContextAlert(f *core.File) (int, int, int) {
 	return errors, warnings, notifications
 }
 
+// printVerboseAlert includes an alert's line, column, level, and message.
 func printVerboseAlert(f *core.File, wrap bool) (int, int, int) {
 	var loc, level string
 	var errors, warnings, notifications int
