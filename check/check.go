@@ -363,7 +363,8 @@ func (mgr *CheckManager) addSubstitutionCheck(chkName string, chkDef Substitutio
 
 	replacements := []string{}
 	for regexstr, replacement := range chkDef.Swap {
-		if strings.Count(regexstr, "(") != strings.Count(regexstr, "?:") {
+		opens := strings.Count(regexstr, "(")
+		if opens != strings.Count(regexstr, "?:") && opens != strings.Count(regexstr, `\(`) {
 			continue
 		}
 		tokens += `(` + regexstr + `)|`

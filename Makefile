@@ -28,7 +28,7 @@ install:
 test:
 	go test -race ./core ./lint ./check
 	cucumber
-	misspell -error rule styles
+	misspell -error -i inexpense,seldomly rule styles
 
 bench:
 	go test -bench=. -benchmem ./core ./lint ./check

@@ -196,13 +196,13 @@ Feature: Styles
     When I apply style "MailChimp"
     Then the output should contain exactly:
     """
-    test.md:1:70:MailChimp.SentenceLength:Write short sentences (< 25 words).
+    test.md:1:70:MailChimp.SentenceLength:Write short sentences (less than 25 words).
     test.md:3:5:MailChimp.Ages:Don’t refer to people using age-related descriptors like "young."
     test.md:3:24:MailChimp.Quotes:Punctuation should be inside the quotes.
     test.md:5:1:MailChimp.Exclamation:Use exclamation points sparingly, and never more than one at a time.
     test.md:5:22:MailChimp.Avoid:Avoid using “rockstar.”
     test.md:7:1:MailChimp.NumbersStart:Spell out a number when it begins a sentence.
-    test.rst:1:70:MailChimp.SentenceLength:Write short sentences (< 25 words).
+    test.rst:1:70:MailChimp.SentenceLength:Write short sentences (less than 25 words).
     test.rst:3:5:MailChimp.Ages:Don’t refer to people using age-related descriptors like "young."
     test.rst:3:24:MailChimp.Quotes:Punctuation should be inside the quotes.
     test.rst:5:1:MailChimp.Exclamation:Use exclamation points sparingly, and never more than one at a time.
@@ -222,4 +222,43 @@ Feature: Styles
     test.rst:24:1:OpenStack.Branding:Use “OpenStack” instead of “openstack”
     test.rst:24:11:OpenStack.Contractions:Generally, do not contract the words such as “can't”.
     test.rst:24:17:OpenStack.Branding:Use “OpenStack” instead of “open stack”
+    """
+
+  Scenario: Lint against Pedantic
+    When I apply style "Pedantic"
+    Then the output should contain exactly:
+    """
+    test.md:1:19:Pedantic.Nonwords:Consider using 'regardless' instead of 'irregardless'.
+    test.md:3:18:Pedantic.Archaisms:'perchance' is archaic.
+    test.md:7:6:Pedantic.Cliches:'a chip off the old block' is a cliche.
+    test.md:9:12:Pedantic.Cliches:'a fate worse than death' is a cliche.
+    test.md:11:20:Pedantic.Spelling:Inconsistent spelling of 'color'.
+    test.md:11:61:Pedantic.Spelling:Inconsistent spelling of 'center'.
+    test.md:13:9:Pedantic.CorporateSpeak:'circle back around' is corporate speak.
+    test.md:15:5:Pedantic.Cursing:Consider replacing 'shit'.
+    test.md:17:16:Pedantic.DateCase:With lowercase letters, the periods are standard.
+    test.md:17:37:Pedantic.DateSpacing:It's standard to put a space before '7a.m.'
+    test.md:17:58:Pedantic.DateMidnight:Use 'midnight' or 'noon'.
+    test.md:17:81:Pedantic.DateRedundancy:'a.m.' is always morning; 'p.m.' is always night.
+    test.md:19:18:Pedantic.Uncomparables:'most correct' is not comparable
+    test.md:21:1:Pedantic.Hedging:'I would argue that' is hedging.
+    test.md:23:4:Pedantic.Hyperbole:'exaggerated!!!' is hyperbolic.
+    test.md:25:14:Pedantic.Jargon:'in the affirmative' is jargon.
+    test.md:27:10:Pedantic.Illusions:'the the' - There's a lexical illusion here.
+    test.md:29:14:Pedantic.LGBTOffensive:'fag' is offensive. Remove it or consider the context.
+    test.md:29:44:Pedantic.LGBTTerms:Consider using 'sexual orientation' instead of 'sexual preference'.
+    test.md:31:10:Pedantic.Malapropisms:'the Infinitesimal Universe' is a malapropism.
+    test.md:33:1:Pedantic.Apologizing:Excessive apologizing: 'More research is needed'
+    test.md:35:1:Pedantic.But:Do not start a paragraph with a 'but'.
+    test.md:37:9:Pedantic.Currency:Incorrect use of symbols in '$10 dollars'.
+    test.md:39:14:Pedantic.Oxymorons:'exact estimate' is an oxymoron.
+    test.md:41:38:Pedantic.GenderBias:Consider using 'lawyer' instead of 'lady lawyer'.
+    test.md:43:11:Pedantic.Skunked:'impassionate' is a bit of a skunked term — impossible to use without issue.
+    test.md:45:21:Pedantic.DenzienLabels:Did you mean 'Hong Konger'?
+    test.md:47:13:Pedantic.AnimalLabels:Consider using 'avine' instead of 'bird-like'.
+    test.md:49:20:Pedantic.Typography:Consider using the '©' symbol instead of '(C)'.
+    test.md:49:40:Pedantic.Typography:Consider using the '™' symbol instead of '(tm)'.
+    test.md:49:56:Pedantic.Typography:Consider using the '®' symbol instead of '(R)'.
+    test.md:49:79:Pedantic.Typography:Consider using the '×' symbol instead of '2 x 2'.
+    test.md:51:27:Pedantic.Diacritical:Consider using 'Beyoncé' instead of 'Beyonce'.
     """

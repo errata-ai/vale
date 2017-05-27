@@ -93,6 +93,9 @@ See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) f
 |   [`Homebrew`](http://docs.brew.sh/Prose-Style-Guidelines.html)    |     [`Homebrew.zip`](https://github.com/ValeLint/docs/raw/master/styles/Homebrew.zip)     | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
 | [`Middlebury`](https://middlebury.github.io/styleguide/editorial/) |   [`Middlebury.zip`](https://github.com/ValeLint/docs/raw/master/styles/Middlebury.zip)   |                         A collection of rules based on The Middlebury Editorial Style Guide.                          |   :construction:   |
 |           [`18F`](https://pages.18f.gov/content-guide/)            |          [`18F.zip`](https://github.com/ValeLint/docs/raw/master/styles/18F.zip)          |                                  Guidelines for creating plain and concise writing.                                   |   :construction:   |
+|     [`OpenStack`](https://docs.openstack.org/contributor-guide/writing-style.html)            |          [`OpenStack.zip`](https://github.com/ValeLint/docs/raw/master/styles/OpenStack.zip)  | General writing style guidelines used on the OpenStack documentation.           |   :construction:   |
+|     [`MailChimp`](http://styleguide.mailchimp.com/)            |          [`MailChimp.zip`](https://github.com/ValeLint/docs/raw/master/styles/MailChimp.zip)  | General writing style guidelines used on the MailChimp documentation,                                                  |   :construction:   |
+
 
 
 To use one of these styles, you'd copy its files onto your `StylesPath` and then specify it in your config file:
