@@ -31,11 +31,6 @@ There are a few options to choose from:
     $ brew tap ValeLint/vale
     $ brew install vale
     ```
-- [Chocolatey](https://chocolatey.org/packages/vale/) (thanks to @[Kristinita](https://github.com/Kristinita)):
-
-    ```shell
-    C:\> choco install vale
-    ```
 - A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
 - Manually on **Windows**, **macOS**, or **Linux** by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
 
@@ -84,17 +79,17 @@ See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) f
 
 ## Reference Styles
 
-|                           Style (source)                           |                                         Download                                          |                                                      Description                                                      | Development Status |
-|:------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|:------------------:|
-|        [`write-good`](https://github.com/btford/write-good)        |   [`write-good.zip`](https://github.com/ValeLint/docs/raw/master/styles/write-good.zip)   |    Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.     | :white_check_mark: |
-|        [`Joblint`](https://github.com/rowanmanning/joblint)        |      [`Joblint.zip`](https://github.com/ValeLint/docs/raw/master/styles/Joblint.zip)      |                Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                | :white_check_mark: |
-|    [`jQuery`](https://contribute.jquery.org/style-guide/prose/)    |       [`jQuery.zip`](https://github.com/ValeLint/docs/raw/master/styles/jQuery.zip)       |            A collection of rules based on jQuery's documentation formatting conventions and writing style.            |   :construction:   |
-| [`TheEconomist`](http://www.economist.com/styleguide/introduction) | [`TheEconomist.zip`](https://github.com/ValeLint/docs/raw/master/styles/TheEconomist.zip) |                               A collection of rules based on The Economist Style Guide.                               |   :construction:   |
-|   [`Homebrew`](http://docs.brew.sh/Prose-Style-Guidelines.html)    |     [`Homebrew.zip`](https://github.com/ValeLint/docs/raw/master/styles/Homebrew.zip)     | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
-| [`Middlebury`](https://middlebury.github.io/styleguide/editorial/) |   [`Middlebury.zip`](https://github.com/ValeLint/docs/raw/master/styles/Middlebury.zip)   |                         A collection of rules based on The Middlebury Editorial Style Guide.                          |   :construction:   |
-|           [`18F`](https://pages.18f.gov/content-guide/)            |          [`18F.zip`](https://github.com/ValeLint/docs/raw/master/styles/18F.zip)          |                                  Guidelines for creating plain and concise writing.                                   |   :construction:   |
-|     [`OpenStack`](https://docs.openstack.org/contributor-guide/writing-style.html)            |          [`OpenStack.zip`](https://github.com/ValeLint/docs/raw/master/styles/OpenStack.zip)  | General writing style guidelines used on the OpenStack documentation.           |   :construction:   |
-|     [`MailChimp`](http://styleguide.mailchimp.com/)            |          [`MailChimp.zip`](https://github.com/ValeLint/docs/raw/master/styles/MailChimp.zip)  | General writing style guidelines used on the MailChimp documentation,                                                  |   :construction:   |
+|                                 Style (source)                                 |                                         Download                                          |                                                      Description                                                      | Development Status |
+|:------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|:------------------:|
+|              [`write-good`](https://github.com/btford/write-good)              |   [`write-good.zip`](https://github.com/ValeLint/docs/raw/master/styles/write-good.zip)   |    Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.     | :white_check_mark: |
+|              [`Joblint`](https://github.com/rowanmanning/joblint)              |      [`Joblint.zip`](https://github.com/ValeLint/docs/raw/master/styles/Joblint.zip)      |                Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                | :white_check_mark: |
+|          [`jQuery`](https://contribute.jquery.org/style-guide/prose/)          |       [`jQuery.zip`](https://github.com/ValeLint/docs/raw/master/styles/jQuery.zip)       |            A collection of rules based on jQuery's documentation formatting conventions and writing style.            |   :construction:   |
+|       [`TheEconomist`](http://www.economist.com/styleguide/introduction)       | [`TheEconomist.zip`](https://github.com/ValeLint/docs/raw/master/styles/TheEconomist.zip) |                               A collection of rules based on The Economist Style Guide.                               |   :construction:   |
+|         [`Homebrew`](http://docs.brew.sh/Prose-Style-Guidelines.html)          |     [`Homebrew.zip`](https://github.com/ValeLint/docs/raw/master/styles/Homebrew.zip)     | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
+|       [`Middlebury`](https://middlebury.github.io/styleguide/editorial/)       |   [`Middlebury.zip`](https://github.com/ValeLint/docs/raw/master/styles/Middlebury.zip)   |                         A collection of rules based on The Middlebury Editorial Style Guide.                          |   :construction:   |
+|                 [`18F`](https://pages.18f.gov/content-guide/)                  |          [`18F.zip`](https://github.com/ValeLint/docs/raw/master/styles/18F.zip)          |                                  Guidelines for creating plain and concise writing.                                   |   :construction:   |
+| [`OpenStack`](https://docs.openstack.org/contributor-guide/writing-style.html) |    [`OpenStack.zip`](https://github.com/ValeLint/docs/raw/master/styles/OpenStack.zip)    |                         General writing style guidelines used on the OpenStack documentation.                         |   :construction:   |
+|                [`MailChimp`](http://styleguide.mailchimp.com/)                 |    [`MailChimp.zip`](https://github.com/ValeLint/docs/raw/master/styles/MailChimp.zip)    |                         General writing style guidelines used on the MailChimp documentation,                         |   :construction:   |
 
 
 
