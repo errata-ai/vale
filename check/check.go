@@ -388,7 +388,7 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 }
 
 func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn) {
-	chk := Check{Rule: fn, Extends: chkDef.Extends}
+	chk := Check{Rule: fn, Extends: chkDef.Extends, Code: chkDef.Code}
 	chk.Level = core.LevelToInt[chkDef.Level]
 	chk.Scope = core.Selector{Value: chkDef.Scope}
 	mgr.AllChecks[chkDef.Name] = chk

@@ -50,15 +50,17 @@ type Linter struct {
 type Block struct {
 	Context string        // parent content - e.g., sentence -> paragraph
 	Text    string        // text content
+	Raw     string        // text content without any processing
 	Scope   core.Selector // section selector
 }
 
 // NewBlock makes a new Block with prepared text and a Selector.
-func NewBlock(ctx string, txt string, sel string) Block {
+func NewBlock(ctx, txt, raw, sel string) Block {
 	if ctx == "" {
 		ctx = txt
 	}
-	return Block{Context: ctx, Text: txt, Scope: core.Selector{Value: sel}}
+	return Block{
+		Context: ctx, Text: txt, Raw: raw, Scope: core.Selector{Value: sel}}
 }
 
 // LintString src according to its format.
@@ -164,9 +166,10 @@ func (l Linter) lintFile(src string) *core.File {
 	return file
 }
 
-func (l Linter) lintProse(f *core.File, ctx string, txt string, lnTotal int, lnLength int) {
+func (l Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength int) {
 	var b Block
 	text := core.PrepText(txt)
+	rawText := core.PrepText(raw)
 	senScope := "sentence" + f.RealExt
 	parScope := "paragraph" + f.RealExt
 	txtScope := "text" + f.RealExt
@@ -175,15 +178,15 @@ func (l Linter) lintProse(f *core.File, ctx string, txt string, lnTotal int, lnL
 		for _, s := range core.SentenceTokenizer.Tokenize(p) {
 			sent := strings.TrimSpace(s.Text)
 			if hasCtx {
-				b = NewBlock(ctx, sent, senScope)
+				b = NewBlock(ctx, sent, "", senScope)
 			} else {
-				b = NewBlock(p, sent, senScope)
+				b = NewBlock(p, sent, "", senScope)
 			}
 			l.lintText(f, b, lnTotal, lnLength)
 		}
-		l.lintText(f, NewBlock(ctx, p, parScope), lnTotal, lnLength)
+		l.lintText(f, NewBlock(ctx, p, "", parScope), lnTotal, lnLength)
 	}
-	l.lintText(f, NewBlock(ctx, text, txtScope), lnTotal, lnLength)
+	l.lintText(f, NewBlock(ctx, text, rawText, txtScope), lnTotal, lnLength)
 }
 
 func (l Linter) lintLines(f *core.File) {
@@ -191,25 +194,31 @@ func (l Linter) lintLines(f *core.File) {
 	lines := 1
 	for f.Scanner.Scan() {
 		line = core.PrepText(f.Scanner.Text() + "\n")
-		l.lintText(f, NewBlock("", line, "text"+f.RealExt), lines+1, 0)
+		l.lintText(f, NewBlock("", line, "", "text"+f.RealExt), lines+1, 0)
 		lines++
 	}
 }
 
 func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
-	var style string
+	var style, txt string
 	var run bool
 
 	ctx := blk.Context
-	txt := core.PrepText(blk.Text)
 	min := l.Config.MinAlertLevel
+	hasCode := core.StringInSlice(f.NormedExt, []string{".md", ".adoc", ".rst"})
 	f.ChkToCtx = make(map[string]string)
 	for name, chk := range l.CheckManager.AllChecks {
 		style = strings.Split(name, ".")[0]
 		run = false
 
+		if chk.Code && hasCode {
+			txt = blk.Raw
+		} else {
+			txt = blk.Text
+		}
+
 		// It has been disabled via an in-text comment.
-		if f.QueryComments(name) {
+		if f.QueryComments(name) || txt == "" {
 			continue
 		}
 

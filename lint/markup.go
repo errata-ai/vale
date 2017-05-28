@@ -67,7 +67,7 @@ var tagToScope = map[string]string{
 }
 
 func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int) {
-	var txt, attr string
+	var txt, attr, raw string
 	var tokt html.TokenType
 	var tok html.Token
 	var inBlock, inline, skip, skipClass bool
@@ -75,6 +75,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	punct := []string{".", "?", "!", ",", ":", ";"}
 	lines := len(f.Lines) + offset
 	buf := bytes.NewBufferString("")
+	act := bytes.NewBufferString("")
 	queue := []string{}
 	tagHistory := []string{}
 
@@ -101,22 +102,27 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			queue = append(queue, txt)
 			if !inBlock {
 				first, _ := utf8.DecodeRuneInString(txt)
+				raw = txt
 				if skip || skipClass {
+					raw = codify(f.NormedExt, txt)
 					txt, _ = core.Substitute(txt, txt, '*')
-					txt = "`" + txt + "`"
+					txt = codify(f.NormedExt, txt)
 					skip = false
 				}
 				if inline && !core.StringInSlice(string(first), punct) {
 					txt = " " + txt
+					raw = " " + raw
 				}
 				buf.WriteString(txt)
+				act.WriteString(raw)
 			}
 		}
 
 		if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
 			content := buf.String()
+			actual := act.String()
 			if content != "" {
-				l.lintScope(f, ctx, content, tagHistory, lines)
+				l.lintScope(f, ctx, content, actual, tagHistory, lines)
 			}
 			for _, s := range queue {
 				ctx = updateCtx(ctx, s, html.TextToken)
@@ -124,6 +130,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			queue = []string{}
 			tagHistory = []string{}
 			buf.Reset()
+			act.Reset()
 		}
 
 		attr = getAttribute(tok, "class")
@@ -131,7 +138,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	}
 }
 
-func (l Linter) lintScope(f *core.File, ctx, txt string, tags []string, lines int) {
+func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lines int) {
 	for _, tag := range tags {
 		scope, match := tagToScope[tag]
 		if match || heading.MatchString(tag) {
@@ -141,11 +148,20 @@ func (l Linter) lintScope(f *core.File, ctx, txt string, tags []string, lines in
 				scope = "text.heading." + tag + f.RealExt
 			}
 			txt = strings.TrimLeft(txt, " ")
-			l.lintText(f, NewBlock(ctx, txt, scope), lines, 0)
+			l.lintText(f, NewBlock(ctx, txt, raw, scope), lines, 0)
 			return
 		}
 	}
-	l.lintProse(f, ctx, txt, lines, 0)
+	l.lintProse(f, ctx, txt, raw, lines, 0)
+}
+
+func codify(ext, text string) string {
+	if ext == ".md" || ext == ".adoc" {
+		return "`" + text + "`"
+	} else if ext == ".rst" {
+		return "``" + text + "``"
+	}
+	return text
 }
 
 func getAttribute(tok html.Token, key string) string {

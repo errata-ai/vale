@@ -5,6 +5,7 @@ import "github.com/ValeLint/vale/core"
 // A Check implements a single rule.
 type Check struct {
 	Extends string
+	Code    bool
 	Level   int
 	Rule    ruleFn
 	Scope   core.Selector
@@ -19,6 +20,7 @@ type Definition struct {
 	Message     string
 	Name        string
 	Scope       string
+	Code        bool
 }
 
 // Existence checks for the present of Tokens.

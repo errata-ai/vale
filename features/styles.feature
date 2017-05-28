@@ -55,6 +55,8 @@ Feature: Styles
     test.md:20:21:demo.Abbreviations:Use 'i.e.,'
     test.md:20:66:demo.Abbreviations:Use 'a.m. or p.m.'
     test.md:20:94:demo.Abbreviations:Use 'midnight or noon'
+    test.md:24:27:demo.Code:Consider using 'for-loop' instead of '`for` loops'
+    test.md:24:42:demo.Code:Consider using 'for-loop' instead of 'for loops'
     test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
     test.rst:1:58:demo.Spacing:'. I' should have one space
     test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
@@ -261,4 +263,16 @@ Feature: Styles
     test.md:49:56:Pedantic.Typography:Consider using the '®' symbol instead of '(R)'.
     test.md:49:79:Pedantic.Typography:Consider using the '×' symbol instead of '2 x 2'.
     test.md:51:27:Pedantic.Diacritical:Consider using 'Beyoncé' instead of 'Beyonce'.
+    """
+
+  Scenario: Lint against Rust
+    When I apply style "Rust"
+    Then the output should contain exactly:
+    """
+    test.adoc:1:4:Rust.Titles:'Generating a secret number' should be in title case
+    test.adoc:3:25:Rust.Methods:Remove parentheses from '`read_line()`'
+    test.md:1:4:Rust.Titles:'Generating a secret number' should be in title case
+    test.md:3:25:Rust.Methods:Remove parentheses from '`read_line()`'
+    test.rst:1:1:Rust.Titles:'Generating a secret number' should be in title case
+    test.rst:4:26:Rust.Methods:Remove parentheses from '`read_line()`'
     """

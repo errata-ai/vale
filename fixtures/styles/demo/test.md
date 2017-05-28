@@ -20,3 +20,5 @@ NASA continues to work on the International Space Station astronaut living-quart
 This is a sentence (i.e. when X > 0), we can compute stuff. It's 11 am! Just wait until it's 12 p.m.!
 
 `at` dissapear `least` one proper noun, maybe preceeded `by` an adjective and/or number
+
+Python has for-loops (not `for` loops or for loops).
