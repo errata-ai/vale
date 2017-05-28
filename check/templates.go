@@ -69,24 +69,21 @@ ignorecase: false
 tokens:
   - '[^\s]+'`
 
-var spellingTemplate = `extends: spelling
-message: "Use '%s' instead of '%s'"
-# "US", "UK" or omit to ignore locality differences
-locale: US
-ignore:
-  - Something # don't flag these words
-add: # Add these word pairs
-  - Valelint # bad
-  - ValeLint # good`
+var capitalizationTemplate = `extends: capitalization
+message: "'%s' should be in title case"
+scope: heading
+# $title, $sentence, $lower, $upper, or a pattern.
+match: $title
+style: AP # AP or Chicago; only applies when match is set to $title.`
 
 var checkToTemplate = map[string]string{
-	"existence":    existenceTemplate,
-	"substitution": substitutionTemplate,
-	"occurrence":   occurrenceTemplate,
-	"conditional":  conditionalTemplate,
-	"consistency":  consistencyTemplate,
-	"repetition":   repetitionTemplate,
-	"spelling":     spellingTemplate,
+	"existence":      existenceTemplate,
+	"substitution":   substitutionTemplate,
+	"occurrence":     occurrenceTemplate,
+	"conditional":    conditionalTemplate,
+	"consistency":    consistencyTemplate,
+	"repetition":     repetitionTemplate,
+	"capitalization": capitalizationTemplate,
 }
 
 // GetTemplate makes a template for the given extension point.
