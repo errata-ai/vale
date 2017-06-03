@@ -80,7 +80,7 @@ type Capitalization struct {
 	Style      string
 }
 
-var defaultChecks = []string{
+var defaultRules = []string{
 	"Annotations",
 	"ComplexWords",
 	"Editorializing",

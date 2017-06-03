@@ -35,10 +35,14 @@ func NewManager(config *core.Config) *Manager {
 	var style, path string
 
 	mgr := Manager{AllChecks: make(map[string]Check), Config: config}
+
+	// loadedStyles keeps track of the styles we've loaded as we go.
 	loadedStyles := []string{}
 
-	mgr.loadDefaultChecks()
+	// First we load Vale's built-in rules.
+	mgr.loadDefaultRules()
 	if mgr.Config.StylesPath == "" {
+		// If we're not given a StylesPath, there's nothing left to look for.
 		return &mgr
 	}
 
@@ -46,8 +50,10 @@ func NewManager(config *core.Config) *Manager {
 	baseDir := mgr.Config.StylesPath
 	for _, style = range mgr.Config.GBaseStyles {
 		if style == "vale" {
+			// We've already loaded this style.
 			continue
 		}
+		// Now we load all styles specified at the global ("*") level.
 		mgr.loadExternalStyle(filepath.Join(baseDir, style))
 		loadedStyles = append(loadedStyles, style)
 	}
@@ -55,6 +61,9 @@ func NewManager(config *core.Config) *Manager {
 	for _, styles := range mgr.Config.SBaseStyles {
 		for _, style := range styles {
 			if !core.StringInSlice(style, loadedStyles) {
+				// Now we load all styles specified at a syntax level
+				//(e.g., "*.md"), assuming we didn't already load it at the
+				// global level.
 				mgr.loadExternalStyle(filepath.Join(baseDir, style))
 				loadedStyles = append(loadedStyles, style)
 			}
@@ -62,13 +71,17 @@ func NewManager(config *core.Config) *Manager {
 	}
 
 	for _, chk := range mgr.Config.Checks {
+		// Finally, we load any remaining individual rules.
 		if !strings.Contains(chk, ".") {
+			// A rule must be associated with a style (i.e., "Style[.]Rule").
 			continue
 		}
-		check := strings.Split(chk, ".")
-		if !core.StringInSlice(check[0], loadedStyles) {
-			fName := check[1] + ".yml"
-			path = filepath.Join(baseDir, check[0], fName)
+		parts := strings.Split(chk, ".")
+		if !core.StringInSlice(parts[0], loadedStyles) {
+			// If this rule isn't part of an already-loaded style, we load it
+			// individually.
+			fName := parts[1] + ".yml"
+			path = filepath.Join(baseDir, parts[0], fName)
 			core.CheckError(mgr.loadCheck(fName, path))
 		}
 	}
@@ -90,22 +103,34 @@ func makeAlert(chk Definition, loc []int, txt string) core.Alert {
 func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Regexp) []core.Alert {
 	alerts := []core.Alert{}
 
-	definitions := r[0].FindAllStringSubmatch(txt, -1)
-	for _, def := range definitions {
-		if len(def) > 1 {
-			f.Sequences = append(f.Sequences, def[1])
+	// We first look for the consequent of the conditional statement.
+	// For example, if we're ensuring that abbriviations have been defined
+	// parenthetically, we'd have something like:
+	//     "WHO" [antecedent], "World Health Organization (WHO)" [consequent]
+	// In other words: if "WHO" exists, it must also have a definition -- which
+	// we're currently looking for.
+	matches := r[0].FindAllStringSubmatch(txt, -1)
+	for _, mat := range matches {
+		if len(mat) > 1 {
+			// If we find one, we store it in a slice associated with this
+			// particular file.
+			f.Sequences = append(f.Sequences, mat[1])
 		}
 	}
 
+	// Now we look for the antecedent.
 	locs := r[1].FindAllStringIndex(txt, -1)
 	if locs != nil {
 		for _, loc := range locs {
 			s := txt[loc[0]:loc[1]]
 			if !core.StringInSlice(s, f.Sequences) && !core.StringInSlice(s, chk.Exceptions) {
+				// If we've found one (e.g., "WHO") and we haven't marked it as
+				// being defined previously, send an Alert.
 				alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
 			}
 		}
 	}
+
 	return alerts
 }
 
@@ -500,8 +525,8 @@ func (mgr *Manager) loadCheck(fName string, fp string) error {
 	return nil
 }
 
-func (mgr *Manager) loadDefaultChecks() {
-	for _, chk := range defaultChecks {
+func (mgr *Manager) loadDefaultRules() {
+	for _, chk := range defaultRules {
 		b, err := rule.Asset("rule/" + chk + ".yml")
 		if err != nil {
 			continue
