@@ -2,4 +2,6 @@
 
 Rust has a method named `read_line()`.
 
-### Matching Ranges of Values with `...`
+### Matching Ranges of Values with `...` foo bar
+
+Rust `network::connect()`, rather than just `connect()`.

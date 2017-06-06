@@ -5,4 +5,4 @@ level: error
 nonword: true
 code: true
 tokens:
-  - '`\w+\(\)`'
+  - '\w+\(\)`'

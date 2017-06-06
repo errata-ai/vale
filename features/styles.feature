@@ -269,10 +269,9 @@ Feature: Styles
     When I apply style "Rust"
     Then the output should contain exactly:
     """
-    test.adoc:1:4:Rust.Titles:'Generating a secret number' should be in title case
-    test.adoc:3:25:Rust.Methods:Remove parentheses from '`read_line()`'
     test.md:1:4:Rust.Titles:'Generating a secret number' should be in title case
-    test.md:3:25:Rust.Methods:Remove parentheses from '`read_line()`'
-    test.rst:1:1:Rust.Titles:'Generating a secret number' should be in title case
-    test.rst:4:26:Rust.Methods:Remove parentheses from '`read_line()`'
+    test.md:3:26:Rust.Methods:Remove parentheses from 'read_line()`'
+    test.md:5:1:Rust.Titles:'Matching Ranges of Values with `***` foo bar' should be in title case
+    test.md:7:16:Rust.Methods:Remove parentheses from 'connect()`'
+    test.md:7:46:Rust.Methods:Remove parentheses from 'connect()`'
     """
