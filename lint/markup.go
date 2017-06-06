@@ -102,6 +102,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			queue = append(queue, txt)
 			if !inBlock {
 				first, _ := utf8.DecodeRuneInString(txt)
+				starter := core.StringInSlice(string(first), punct) && !skip
 				raw = txt
 				if skip || skipClass {
 					raw = codify(f.NormedExt, txt)
@@ -109,7 +110,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 					txt = codify(f.NormedExt, txt)
 					skip = false
 				}
-				if inline && !core.StringInSlice(string(first), punct) {
+				if inline && !starter {
 					txt = " " + txt
 					raw = " " + raw
 				}
