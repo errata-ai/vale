@@ -75,6 +75,7 @@ See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) f
 - Atom&mdash;[TimKam/atomic-vale](https://github.com/TimKam/atomic-vale)
 - Emacs&mdash;[abingham/flycheck-vale](https://github.com/abingham/flycheck-vale)
 - Sublime Text&mdash;[ValeLint/SubVale](https://github.com/ValeLint/SubVale)
+- Visual Studio Code&mdash;[lunaryorn/vscode-vale](https://marketplace.visualstudio.com/items?itemName=lunaryorn.vale)
 - Vim&mdash;via [ALE](https://github.com/w0rp/ale) (thanks to @[chew-z](https://github.com/chew-z))
 
 ## Reference Styles
