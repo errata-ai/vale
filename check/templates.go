@@ -3,7 +3,7 @@ package check
 import "fmt"
 
 var baseTemplate = `# Save as MyRule.yml on your StylesPath
-# See https://valelint.github.io/styles/#check-types for more info
+# See https://valelint.github.io/docs/styles/ for more info
 # "suggestion", "warning" or "error"
 level: warning
 # Text describing this rule (generally longer than 'message').
