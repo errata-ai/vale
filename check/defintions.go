@@ -101,6 +101,5 @@ var extensionPoints = []string{
 	"existence",
 	"occurrence",
 	"repetition",
-	"script",
 	"substitution",
 }

@@ -84,7 +84,8 @@ func main() {
 				if template != "" {
 					fmt.Println(template)
 				} else {
-					fmt.Println(fmt.Sprintf("'%s' is not a check!", name))
+					fmt.Printf(
+						"'%s' not in %v!\n", name, check.GetExtenionPoints())
 				}
 				return nil
 			},

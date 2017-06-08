@@ -93,3 +93,8 @@ func GetTemplate(name string) string {
 	}
 	return ""
 }
+
+// GetExtenionPoints returns a slice of extension points.
+func GetExtenionPoints() []string {
+	return extensionPoints
+}
