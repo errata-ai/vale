@@ -59,12 +59,13 @@ type Config struct {
 	RuleToLevel   map[string]string          // Single-rule level changes
 
 	// Command-line configuration
-	Output string // (optional) output style ("line" or "CLI")
-	Wrap   bool   // (optional) wrap output when CLI style
-	NoExit bool   // (optional) don't return a nonzero exit code on lint errors
-	Sorted bool   // (optional) sort files by their name for output
-	Simple bool   // (optional) lint all files line-by-line
-	InExt  string // (optional) extension to associate with stdin
+	Output    string // (optional) output style ("line" or "CLI")
+	Wrap      bool   // (optional) wrap output when CLI style
+	NoExit    bool   // (optional) don't return a nonzero exit code on lint errors
+	Sorted    bool   // (optional) sort files by their name for output
+	Normalize bool   // (optional) replace each path separator with a slash ('/')
+	Simple    bool   // (optional) lint all files line-by-line
+	InExt     string // (optional) extension to associate with stdin
 }
 
 // NewConfig initializes a Config.

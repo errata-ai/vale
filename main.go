@@ -60,6 +60,11 @@ func main() {
 			Destination: &config.Sorted,
 		},
 		cli.BoolFlag{
+			Name:        "normalize",
+			Usage:       "replace each path separator with a slash ('/')",
+			Destination: &config.Normalize,
+		},
+		cli.BoolFlag{
 			Name:        "ignore-syntax",
 			Usage:       "lint all files line-by-line",
 			Destination: &config.Simple,

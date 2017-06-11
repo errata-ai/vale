@@ -4,7 +4,7 @@ exe = 'vale'
 if OS.windows?
   exe += '.exe'
 end
-exe += ' --output="line" --sort'
+exe += ' --output=line --sort --normalize'
 
 When(/^I lint "(.*)"$/) do |file|
   step %(I cd to "../../fixtures/formats")

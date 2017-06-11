@@ -81,6 +81,9 @@ func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
 		}
 		filesChan, errc := l.lintFiles(done, src, core.NewGlob(pat))
 		for f := range filesChan {
+			if l.Config.Normalize {
+				f.Path = filepath.ToSlash(f.Path)
+			}
 			linted = append(linted, f)
 		}
 		if err := <-errc; err != nil {
