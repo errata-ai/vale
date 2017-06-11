@@ -96,23 +96,16 @@ func main() {
 		var linted []*core.File
 		var err error
 		var hasAlerts bool
-		var src string
 
 		if c.NArg() > 0 || core.Stat() {
-			mgr := check.NewManager(config)
+			linter := lint.Linter{
+				Config: config, CheckManager: check.NewManager(config)}
+
 			if c.NArg() > 0 {
-				src = c.Args()[0]
+				linted, err = linter.Lint(c.Args(), glob)
 			} else {
 				stdin, _ := ioutil.ReadAll(os.Stdin)
-				src = string(stdin)
-			}
-
-			linter := lint.Linter{Config: config, CheckManager: mgr}
-			// Do we a directory/file or a string?
-			if core.IsDir(src) || core.FileExists(src) {
-				linted, err = linter.Lint(src, glob)
-			} else {
-				linted, err = linter.LintString(src)
+				linted, err = linter.LintString(string(stdin))
 			}
 
 			// How should we style the output?

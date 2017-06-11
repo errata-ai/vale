@@ -69,18 +69,23 @@ func (l Linter) LintString(src string) ([]*core.File, error) {
 }
 
 // Lint src according to its format.
-func (l Linter) Lint(src string, pat string) ([]*core.File, error) {
+func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
 	var linted []*core.File
 
 	done := make(chan core.File)
 	defer close(done)
 
-	filesChan, errc := l.lintFiles(done, src, core.NewGlob(pat))
-	for f := range filesChan {
-		linted = append(linted, f)
-	}
-	if err := <-errc; err != nil {
-		return nil, err
+	for _, src := range input {
+		if !(core.IsDir(src) || core.FileExists(src)) {
+			continue
+		}
+		filesChan, errc := l.lintFiles(done, src, core.NewGlob(pat))
+		for f := range filesChan {
+			linted = append(linted, f)
+		}
+		if err := <-errc; err != nil {
+			return nil, err
+		}
 	}
 
 	if l.Config.Sorted {
