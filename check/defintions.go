@@ -80,6 +80,13 @@ type Capitalization struct {
 	Style      string
 }
 
+// Readability checks the reading grade level of text.
+type Readability struct {
+	Definition `mapstructure:",squash"`
+	Metric     string
+	Grade      float64
+}
+
 var defaultRules = []string{
 	"Annotations",
 	"ComplexWords",
@@ -102,4 +109,5 @@ var extensionPoints = []string{
 	"occurrence",
 	"repetition",
 	"substitution",
+	"readability",
 }

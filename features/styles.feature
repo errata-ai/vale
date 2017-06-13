@@ -51,10 +51,13 @@ Feature: Styles
     test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
     test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
     test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
+    test.md:12:1:demo.Reading:Grade level too high!
     test.md:14:158:demo.SentenceLength:Sentences should be less than 25 words
+    test.md:18:1:demo.Reading:Grade level too high!
     test.md:20:21:demo.Abbreviations:Use 'i.e.,'
     test.md:20:66:demo.Abbreviations:Use 'a.m. or p.m.'
     test.md:20:94:demo.Abbreviations:Use 'midnight or noon'
+    test.md:22:1:demo.Reading:Grade level too high!
     test.md:24:27:demo.Code:Consider using 'for-loop' instead of '`for` loops'
     test.md:24:42:demo.Code:Consider using 'for-loop' instead of 'for loops'
     test.rst:1:22:demo.CommasPerSentence:More than 3 commas!

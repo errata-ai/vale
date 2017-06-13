@@ -9,6 +9,7 @@ import (
 
 	"github.com/ValeLint/vale/core"
 	"github.com/ValeLint/vale/rule"
+	"github.com/jdkato/prose/summarize"
 	"github.com/jdkato/prose/transform"
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v2"
@@ -250,6 +251,41 @@ func checkCapitalization(txt string, chk Capitalization, f *core.File) []core.Al
 	return alerts
 }
 
+func checkReadability(txt string, chk Readability, f *core.File) []core.Alert {
+	var grade float64
+	alerts := []core.Alert{}
+
+	doc := summarize.NewDocument(txt)
+	if chk.Metric == "SMOG" {
+		grade = doc.SMOG()
+	} else if chk.Metric == "Gunning Fog" {
+		grade = doc.GunningFog()
+	} else if chk.Metric == "Coleman-Liau" {
+		grade = doc.ColemanLiau()
+	} else if chk.Metric == "Flesch-Kincaid" {
+		grade = doc.FleschKincaid()
+	} else {
+		grade = doc.AutomatedReadability()
+	}
+
+	if grade > chk.Grade {
+		alerts = append(alerts, makeAlert(chk.Definition, []int{0, len(txt)}, txt))
+	}
+
+	return alerts
+}
+
+func (mgr *Manager) addReadabilityCheck(chkName string, chkDef Readability) {
+	known := []string{"Gunning Fog", "Coleman-Liau", "Flesch-Kincaid", "SMOG",
+		"Automated Readability"}
+	if core.StringInSlice(chkDef.Metric, known) {
+		fn := func(text string, file *core.File) []core.Alert {
+			return checkReadability(text, chkDef, file)
+		}
+		mgr.updateAllChecks(chkDef.Definition, fn)
+	}
+}
+
 func (mgr *Manager) addCapitalizationCheck(chkName string, chkDef Capitalization) {
 	if chkDef.Match == "$title" {
 		var tc *transform.TitleConverter
@@ -455,6 +491,11 @@ func (mgr *Manager) makeCheck(generic map[string]interface{}, extends, chkName s
 		def := Capitalization{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addCapitalizationCheck(chkName, def)
+		}
+	} else if extends == "readability" {
+		def := Readability{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addReadabilityCheck(chkName, def)
 		}
 	}
 }

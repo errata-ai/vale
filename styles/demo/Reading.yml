@@ -1,0 +1,6 @@
+extends: readability
+message: "Grade level too high!"
+level: warning
+metric: Flesch-Kincaid
+grade: 8
+scope: paragraph.md
