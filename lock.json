@@ -1,5 +1,5 @@
 {
-    "memo": "7750ff0cbc58d26a28aec601a61e232525e66c334697c7662d2f8835a3b5bafc",
+    "memo": "32bc4cf7aaf3baaa4755b8d45a12c53bc4002e81c033627a274310468505c63b",
     "projects": [
         {
             "name": "github.com/davecgh/go-spew",
@@ -38,6 +38,8 @@
             "revision": "304c372ed1ce682dbbf0ed4aaa50789a0fc4aa98",
             "packages": [
                 "internal/util",
+                "summarize",
+                "tokenize",
                 "transform"
             ]
         },
@@ -77,6 +79,14 @@
             "name": "github.com/mitchellh/mapstructure",
             "branch": "master",
             "revision": "db1efb556f84b25a0a13a04aad883943538ad2e0",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/montanaflynn/stats",
+            "version": "0.2.0",
+            "revision": "eeaced052adbcfeea372c749c281099ed7fdaa38",
             "packages": [
                 "."
             ]
