@@ -11,8 +11,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/gobwas/glob"
-
-	"gopkg.in/neurosnap/sentences.v1/english"
+	"github.com/jdkato/prose/tokenize"
 )
 
 // A File represents a linted text file.
@@ -216,7 +215,7 @@ func (f *File) QueryComments(check string) bool {
 	return f.Comments["off"]
 }
 
-// ResetComments ...
+// ResetComments resets the state of all checks back to active.
 func (f *File) ResetComments() {
 	for check := range f.Comments {
 		if check != "off" {
@@ -226,4 +225,4 @@ func (f *File) ResetComments() {
 }
 
 // SentenceTokenizer splits text into sentences.
-var SentenceTokenizer, _ = english.NewSentenceTokenizer(nil)
+var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()

@@ -1,5 +1,5 @@
 {
-    "memo": "7750ff0cbc58d26a28aec601a61e232525e66c334697c7662d2f8835a3b5bafc",
+    "memo": "500d26b02565e9c55f2c52835bc77916d5876d89f9f307066a8017d1cc175e65",
     "projects": [
         {
             "name": "github.com/davecgh/go-spew",
@@ -38,6 +38,7 @@
             "revision": "304c372ed1ce682dbbf0ed4aaa50789a0fc4aa98",
             "packages": [
                 "internal/util",
+                "tokenize",
                 "transform"
             ]
         },
@@ -168,16 +169,6 @@
             "revision": "6e4869b434bd001f6983749881c7ead3545887d8",
             "packages": [
                 "."
-            ]
-        },
-        {
-            "name": "gopkg.in/neurosnap/sentences.v1",
-            "branch": "master",
-            "revision": "53acab9054f8489ce33611a240b7dd92eaba863f",
-            "packages": [
-                ".",
-                "data",
-                "english"
             ]
         },
         {

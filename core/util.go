@@ -86,8 +86,7 @@ func JaroWinkler(ctx, sub string) (int, string) {
 		threshold = 0.65 // lower the threshold for short text with code spans
 	}
 	for _, line := range strings.Split(ctx, "\n") {
-		for _, s := range SentenceTokenizer.Tokenize(line) {
-			text := s.Text
+		for _, text := range SentenceTokenizer.Tokenize(line) {
 			if smetrics.JaroWinkler(sub, text, 0.7, 4) > threshold {
 				return strings.Index(ctx, text) + 1, text
 			}

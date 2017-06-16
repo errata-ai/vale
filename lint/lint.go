@@ -184,7 +184,7 @@ func (l Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength 
 	hasCtx := ctx != ""
 	for _, p := range strings.SplitAfter(text, "\n\n") {
 		for _, s := range core.SentenceTokenizer.Tokenize(p) {
-			sent := strings.TrimSpace(s.Text)
+			sent := strings.TrimSpace(s)
 			if hasCtx {
 				b = NewBlock(ctx, sent, "", senScope)
 			} else {
