@@ -39,3 +39,11 @@ var varToFunc = map[string]func(string) bool{
 	"$upper":    upper,
 	"$sentence": sentence,
 }
+
+var readabilityMetrics = []string{
+	"Gunning Fog",
+	"Coleman-Liau",
+	"Flesch-Kincaid",
+	"SMOG",
+	"Automated Readability",
+}

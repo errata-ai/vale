@@ -256,18 +256,23 @@ func checkReadability(txt string, chk Readability, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
 	doc := summarize.NewDocument(txt)
-	if chk.Metric == "SMOG" {
-		grade = doc.SMOG()
-	} else if chk.Metric == "Gunning Fog" {
-		grade = doc.GunningFog()
-	} else if chk.Metric == "Coleman-Liau" {
-		grade = doc.ColemanLiau()
-	} else if chk.Metric == "Flesch-Kincaid" {
-		grade = doc.FleschKincaid()
-	} else {
-		grade = doc.AutomatedReadability()
+	if core.StringInSlice("SMOG", chk.Metrics) {
+		grade += doc.SMOG()
+	}
+	if core.StringInSlice("Gunning Fog", chk.Metrics) {
+		grade += doc.GunningFog()
+	}
+	if core.StringInSlice("Coleman-Liau", chk.Metrics) {
+		grade += doc.ColemanLiau()
+	}
+	if core.StringInSlice("Flesch-Kincaid", chk.Metrics) {
+		grade += doc.FleschKincaid()
+	}
+	if core.StringInSlice("Automated Readability", chk.Metrics) {
+		grade += doc.AutomatedReadability()
 	}
 
+	grade = grade / float64(len(chk.Metrics))
 	if grade > chk.Grade {
 		alerts = append(alerts, makeAlert(chk.Definition, []int{0, len(txt)}, txt))
 	}
@@ -276,9 +281,7 @@ func checkReadability(txt string, chk Readability, f *core.File) []core.Alert {
 }
 
 func (mgr *Manager) addReadabilityCheck(chkName string, chkDef Readability) {
-	known := []string{"Gunning Fog", "Coleman-Liau", "Flesch-Kincaid", "SMOG",
-		"Automated Readability"}
-	if core.StringInSlice(chkDef.Metric, known) {
+	if core.AllStringsInSlice(chkDef.Metrics, readabilityMetrics) {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkReadability(text, chkDef, file)
 		}

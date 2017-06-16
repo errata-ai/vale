@@ -83,7 +83,7 @@ type Capitalization struct {
 // Readability checks the reading grade level of text.
 type Readability struct {
 	Definition `mapstructure:",squash"`
-	Metric     string
+	Metrics    []string
 	Grade      float64
 }
 
