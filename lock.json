@@ -172,6 +172,16 @@
             ]
         },
         {
+            "name": "gopkg.in/neurosnap/sentences.v1",
+            "version": "v1.0.6",
+            "revision": "a7f18ead1433a139742a8b42ce7a059cfb484d60",
+            "packages": [
+                ".",
+                "data",
+                "english"
+            ]
+        },
+        {
             "name": "gopkg.in/yaml.v2",
             "branch": "v2",
             "revision": "a3f3340b5840cee44f372bddb5880fcbc419b46a",
