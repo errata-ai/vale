@@ -10,12 +10,59 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/jdkato/prose/tag"
 	"github.com/xrash/smetrics"
 	"matloob.io/regexp"
 )
 
 // ExeDir is our starting location.
 var ExeDir string
+
+// TextToWords convert raw text into a slice of words.
+func TextToWords(text string) []string {
+	words := []string{}
+	for _, s := range SentenceTokenizer.Tokenize(text) {
+		words = append(words, strings.Fields(s)...)
+	}
+	return words
+}
+
+// InRange determines if the range r contains the integer n.
+func InRange(n int, r []int) bool {
+	return len(r) == 2 && (r[0] <= n && n <= r[1])
+}
+
+// SlicesEqual determines if the slices a and b are equal.
+func SlicesEqual(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// CheckPOS determines if a match (as found by an extension point) also matches
+// the expected part-of-speech in text.
+func CheckPOS(loc []int, expected []string, text string) bool {
+	// Initilize our tagger, if needed.
+	if Tagger == nil {
+		Tagger = tag.NewPerceptronTagger()
+	}
+
+	pos := 1
+	observed := []string{}
+	for _, tok := range Tagger.Tag(TextToWords(text)) {
+		if InRange(pos, loc) {
+			observed = append(observed, tok.Tag)
+		}
+		pos += len(tok.Text) + 1
+	}
+	return !SlicesEqual(expected, observed)
+}
 
 // Stat checks if we have anything waiting in stdin.
 func Stat() bool {

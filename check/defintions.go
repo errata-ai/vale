@@ -13,14 +13,15 @@ type Check struct {
 
 // Definition holds the common attributes of rule definitions.
 type Definition struct {
+	Code        bool
 	Description string
 	Extends     string
 	Level       string
 	Link        string
 	Message     string
 	Name        string
+	POS         map[string][]string
 	Scope       string
-	Code        bool
 }
 
 // Existence checks for the present of Tokens.

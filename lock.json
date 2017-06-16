@@ -1,5 +1,5 @@
 {
-    "memo": "500d26b02565e9c55f2c52835bc77916d5876d89f9f307066a8017d1cc175e65",
+    "memo": "fc800410117b4828917cc168806403f4b6d436774e1e1ea0a314ad8a5ab6b4a7",
     "projects": [
         {
             "name": "github.com/davecgh/go-spew",
@@ -35,9 +35,11 @@
         {
             "name": "github.com/jdkato/prose",
             "branch": "master",
-            "revision": "304c372ed1ce682dbbf0ed4aaa50789a0fc4aa98",
+            "revision": "d62723ee3fb13fa37c6bf52c39dba9888787c152",
             "packages": [
+                "internal/model",
                 "internal/util",
+                "tag",
                 "tokenize",
                 "transform"
             ]
@@ -83,6 +85,14 @@
             ]
         },
         {
+            "name": "github.com/montanaflynn/stats",
+            "version": "0.2.0",
+            "revision": "eeaced052adbcfeea372c749c281099ed7fdaa38",
+            "packages": [
+                "."
+            ]
+        },
+        {
             "name": "github.com/olekukonko/tablewriter",
             "branch": "master",
             "revision": "febf2d34b54a69ce7530036c7503b1c9fbfdf0bb",
@@ -110,6 +120,14 @@
             "name": "github.com/russross/blackfriday",
             "branch": "master",
             "revision": "5f33e7b7878355cd2b7e6b8eefc48a5472c69f70",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/shogo82148/go-shuffle",
+            "branch": "master",
+            "revision": "4789c7c401f229b3ae1673acbccca451480660cd",
             "packages": [
                 "."
             ]
@@ -177,8 +195,7 @@
             "revision": "a7f18ead1433a139742a8b42ce7a059cfb484d60",
             "packages": [
                 ".",
-                "data",
-                "english"
+                "data"
             ]
         },
         {

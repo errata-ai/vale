@@ -197,6 +197,7 @@ func checkRepetition(txt string, chk Repetition, f *core.File, r *regexp.Regexp)
 
 func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Regexp, repl []string) []core.Alert {
 	alerts := []core.Alert{}
+	pos := false
 	if !r.MatchString(txt) {
 		return alerts
 	}
@@ -207,9 +208,12 @@ func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Reg
 				loc := []int{mat, submat[idx+1]}
 				expected := repl[(idx/2)-1]
 				observed := strings.TrimSpace(txt[loc[0]:loc[1]])
+				if tags, ok := chk.POS[observed]; ok {
+					pos = core.CheckPOS(loc, tags, txt)
+				}
 				if expected != observed {
 					a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
-						Link: chk.Link}
+						Link: chk.Link, Hide: pos}
 					a.Message, a.Description = formatMessages(chk.Message,
 						chk.Description, expected, observed)
 					alerts = append(alerts, a)

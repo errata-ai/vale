@@ -1,11 +1,7 @@
 BASE_DIR=$(shell echo $$GOPATH)/src/github.com/jdkato/prose
 BUILD_DIR=./builds
-COMMIT= `git rev-parse --short HEAD 2>/dev/null`
 
-VERSION_FILE=$(BASE_DIR)/VERSION
-VERSION=$(shell cat $(VERSION_FILE))
-
-LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
+LDFLAGS=-ldflags "-s -w"
 
 .PHONY: clean test lint ci cross install bump model setup
 
@@ -18,7 +14,7 @@ build-win:
 	go build ${LDFLAGS} -o bin/prose.exe ./cmd/prose
 
 bench:
-	go test -bench=. ./tokenize ./transform ./summarize
+	go test -bench=. ./tokenize ./transform ./summarize ./tag ./chunk
 
 test-tokenize:
 	go test -v ./tokenize
@@ -32,7 +28,10 @@ test-summarize:
 test-chunk:
 	go test -v ./chunk
 
-test: test-tokenize test-transform test-summarize test-chunk
+test-tag:
+	go test -v ./tag
+
+test: test-tokenize test-transform test-summarize test-chunk test-tag
 
 ci: test lint
 
@@ -52,6 +51,8 @@ lint:
 		./tokenize ./tag ./transform ./summarize ./chunk
 
 setup:
+	go get -u matloob.io/regexp
+	go get -u github.com/shogo82148/go-shuffle
 	go get -u github.com/jdkato/syllables
 	go get -u github.com/montanaflynn/stats
 	go get -u gopkg.in/neurosnap/sentences.v1/english
@@ -62,13 +63,5 @@ setup:
 	go-bindata -ignore=\\.DS_Store -pkg="model" -o internal/model/model.go internal/model/
 	gometalinter --install
 
-bump:
-	MAJOR=$(word 1, $(subst ., , $(CURRENT_VERSION)))
-	MINOR=$(word 2, $(subst ., , $(CURRENT_VERSION)))
-	PATCH=$(word 3, $(subst ., , $(CURRENT_VERSION)))
-	VER ?= $(MAJOR).$(MINOR).$(shell echo $$(($(PATCH)+1)))
-
-	echo $(VER) > $(VERSION_FILE)
-
 model:
-	go-bindata -ignore=\\.DS_Store -pkg="model" -o internal/model/model.go internal/model/
+	go-bindata -ignore=\\.DS_Store -pkg="model" -o internal/model/model.go internal/model/*.gob

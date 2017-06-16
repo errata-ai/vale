@@ -1,0 +1,8 @@
+extends: substitution
+message: Use '%s' instead of '%s'
+level: error
+swap:
+  'meet[- ]ups?': meetup(s)
+pos:
+  'meet-up': ['NN']
+  'meet up': ['VB', 'RB']

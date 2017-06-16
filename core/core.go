@@ -11,6 +11,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/gobwas/glob"
+	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
 )
 
@@ -42,6 +43,7 @@ type Alert struct {
 	Message     string // the output message
 	Severity    string // 'suggestion', 'warning', or 'error'
 	Span        []int  // the [begin, end] location within a line
+	Hide        bool   // should we hide this alert?
 }
 
 // A Selector represents a named section of text.
@@ -179,7 +181,7 @@ func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int, st
 }
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
-func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
+func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad int) {
 	substring := txt[a.Span[0]:a.Span[1]]
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old
@@ -187,7 +189,9 @@ func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
 	a.Line, a.Span, a.Context = f.FindLoc(ctx, txt, pad, lines, a.Span)
 	if a.Span[0] > 0 {
 		f.ChkToCtx[a.Check], _ = Substitute(ctx, substring, '#')
-		f.Alerts = append(f.Alerts, a)
+		if !a.Hide {
+			f.Alerts = append(f.Alerts, a)
+		}
 	}
 }
 
@@ -226,3 +230,9 @@ func (f *File) ResetComments() {
 
 // SentenceTokenizer splits text into sentences.
 var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
+
+// Tagger tags a sentence.
+//
+// We wait to initilize it until we need it since it's slow (~1s) and we may
+// not need it.
+var Tagger *tag.PerceptronTagger

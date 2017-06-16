@@ -37,6 +37,15 @@ func TestWordPunctTokenizer(t *testing.T) {
 	}
 }
 
+func TestNewRegexpTokenizer(t *testing.T) {
+	input, _ := getWordData("word_punct.json")
+	expected := NewWordPunctTokenizer()
+	observed := NewRegexpTokenizer(`\w+|[^\w\s]+`, false, false)
+	for _, s := range input {
+		assert.Equal(t, expected.Tokenize(s), observed.Tokenize(s))
+	}
+}
+
 func BenchmarkWordPunctTokenizer(b *testing.B) {
 	word := NewWordPunctTokenizer()
 	for n := 0; n < b.N; n++ {

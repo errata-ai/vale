@@ -22,3 +22,5 @@ This is a sentence (i.e. when X > 0), we can compute stuff. It's 11 am! Just wai
 `at` dissapear `least` one proper noun, maybe preceeded `by` an adjective and/or number
 
 Python has for-loops (not `for` loops or for loops).
+
+Let's meet up at the next Write the Docs meet up and write the docs for our new project.

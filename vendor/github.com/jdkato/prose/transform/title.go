@@ -9,10 +9,12 @@ import (
 	"github.com/jdkato/prose/internal/util"
 )
 
-// A IgnoreFunc is a TitleConverter callback.
+// An IgnoreFunc is a TitleConverter callback that decides whether or not the
+// the string word should be capitalized. firstOrLast indicates whether or not
+// word is the first or last word in the given string.
 type IgnoreFunc func(word string, firstOrLast bool) bool
 
-// A TitleConverter converts a string to title case according to its options.
+// A TitleConverter converts a string to title case according to its style.
 type TitleConverter struct {
 	ignore IgnoreFunc
 }
@@ -31,7 +33,8 @@ var (
 	ChicagoStyle IgnoreFunc = optionsChicago
 )
 
-// NewTitleConverter returns a new TitleConverter with the specified options.
+// NewTitleConverter returns a new TitleConverter set to enforce the specified
+// style.
 func NewTitleConverter(style IgnoreFunc) *TitleConverter {
 	return &TitleConverter{ignore: style}
 }

@@ -1,3 +1,6 @@
+/*
+Package util contains internals used across the other prose packages.
+*/
 package util
 
 import (
@@ -77,6 +80,17 @@ func StringInSlice(a string, slice []string) bool {
 func HasAnySuffix(a string, slice []string) bool {
 	for _, b := range slice {
 		if strings.HasSuffix(a, b) {
+			return true
+		}
+	}
+	return false
+}
+
+// ContainsAny determines if the string a contains any fo the strings contained
+// in the slice b.
+func ContainsAny(a string, b []string) bool {
+	for _, s := range b {
+		if strings.Contains(a, s) {
 			return true
 		}
 	}
