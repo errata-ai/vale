@@ -1,0 +1,10 @@
+extends: substitution
+message: Use %s instead of '%s'
+level: error
+# Use 'front end' (noun) or 'front-end' (adj).
+pos: 'front-end/NN|frontend/(?:JJ|NN)|front/\w+ end/JJ'
+ignorecase: true
+swap:
+  'front-end': "'front end'"
+  'front end': "'front-end'"
+  'frontend': "'front end' or 'front-end'"

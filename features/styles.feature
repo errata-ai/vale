@@ -286,3 +286,16 @@ Feature: Styles
     test.md:7:16:Rust.Methods:Remove parentheses from 'connect()`'
     test.md:7:46:Rust.Methods:Remove parentheses from 'connect()`'
     """
+
+  Scenario: Lint against GCC
+    When I apply style "GCC"
+    Then the output should contain exactly:
+    """
+    test.md:1:1:GCC.Terms:Use 'Red Hat' instead of 'RedHat'
+    test.md:1:43:GCC.Terms:Use 'free software' instead of 'open source'
+    test.md:3:15:GCC.Bugfix:Use 'bug fix' (noun) or 'bug-fix' (adjective) instead of 'bugfix'
+    test.md:3:26:GCC.Terms:Use 'GNU/Linux' instead of 'Linux'
+    test.md:3:32:GCC.Terms:Use 'bit-field(s)' instead of 'bitfields'
+    test.md:3:75:GCC.Terms:Use 'Microsoft Windows' instead of 'Windows'
+    test.md:3:98:GCC.Backend:Use 'back-end' instead of 'back end'
+    """
