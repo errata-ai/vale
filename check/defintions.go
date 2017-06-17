@@ -20,7 +20,6 @@ type Definition struct {
 	Link        string
 	Message     string
 	Name        string
-	POS         map[string][]string
 	Scope       string
 }
 
@@ -39,6 +38,7 @@ type Substitution struct {
 	Ignorecase bool
 	Nonword    bool
 	Swap       map[string]string
+	POS        string
 }
 
 // Occurrence counts the number of times Token appears.

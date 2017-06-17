@@ -208,8 +208,8 @@ func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Reg
 				loc := []int{mat, submat[idx+1]}
 				expected := repl[(idx/2)-1]
 				observed := strings.TrimSpace(txt[loc[0]:loc[1]])
-				if tags, ok := chk.POS[observed]; ok {
-					pos = core.CheckPOS(loc, tags, txt)
+				if chk.POS != "" {
+					pos = core.CheckPOS(loc, chk.POS, txt)
 				}
 				if expected != observed {
 					a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc,

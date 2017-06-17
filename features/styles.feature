@@ -57,7 +57,12 @@ Feature: Styles
     test.md:20:94:demo.Abbreviations:Use 'midnight or noon'
     test.md:24:27:demo.Code:Consider using 'for-loop' instead of '`for` loops'
     test.md:24:42:demo.Code:Consider using 'for-loop' instead of 'for loops'
-    test.md:26:42:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
+    test.md:26:3:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
+    test.md:26:88:demo.Abbreviations:Use 'a.m. or p.m.'
+    test.md:26:110:demo.Meetup:Use 'meetup(s)' instead of 'meet-ups'
+    test.md:26:381:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
+    test.md:28:37:demo.Backend:Use 'back end(s)' instead of 'back-ends'
+    test.md:28:71:demo.Backend:Use 'back-end(s)' instead of 'back end'
     test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
     test.rst:1:58:demo.Spacing:'. I' should have one space
     test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
