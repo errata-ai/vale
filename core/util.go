@@ -57,7 +57,7 @@ func CheckPOS(loc []int, expected, text string) bool {
 	observed := []string{}
 	for _, tok := range Tagger.Tag(TextToWords(text)) {
 		if InRange(pos, loc) {
-			word := strings.TrimRight(tok.Text, ",.!?:;")
+			word := strings.ToLower(strings.TrimRight(tok.Text, ",.!?:;"))
 			observed = append(observed, (word + "/" + tok.Tag))
 		}
 		pos += len(tok.Text) + 1
