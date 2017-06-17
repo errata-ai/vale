@@ -3,6 +3,7 @@ message: Use %s instead of “%s”
 level: error
 # Use 'back end' (noun) or 'back-end' (adj).
 pos: 'back-ends?/NN|backends?/(?:JJ|NN)|back/\w+ ends?/JJ'
+ignorecase: true
 swap:
   'back-ends?': "“back end(s)”"
   'back ends?': "“back-end(s)”"

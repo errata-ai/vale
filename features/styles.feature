@@ -230,6 +230,11 @@ Feature: Styles
     test.rst:24:17:OpenStack.Branding:Use “OpenStack” instead of “open stack”
     test.rst:26:37:OpenStack.Backend:Use “back end(s)” instead of “back-ends”
     test.rst:26:71:OpenStack.Backend:Use “back-end(s)” instead of “back end”
+    test.rst:32:14:OpenStack.Login:Use “login” instead of “log in”
+    test.rst:32:83:OpenStack.Login:Use “log in” instead of “login”
+    test.rst:36:45:OpenStack.Contractions:Generally, do not contract the words such as “don't”.
+    test.rst:36:51:OpenStack.Login:Use “log in” or “login” instead of “log-in”
+    test.rst:38:11:OpenStack.Setup:Use “set up” instead of “setup”
     """
 
   Scenario: Lint against Pedantic

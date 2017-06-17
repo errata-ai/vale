@@ -24,3 +24,15 @@ channel on Freenode IRC <https://wiki.openstack.org/wiki/IRC>`_,
 openstack can't open stack
 
 When you configure multiple-storage back-ends, you can create several back end storage solutions.
+
+The ``euca2ools`` command line tool provides a command-line interface to
+EC2 API calls. For more information, see the `Official Eucalyptus Documentation
+<http://docs.hpcloud.com/eucalyptus/>`_.
+
+Users have a log in and can access resources by using assigned tokens. You should login as root and do stuff.
+
+Users have a login and can access resources by using assigned tokens.
+
+You should Log in as root and do stuff, but don't log-in as a user.
+
+You shoud setup a stand. Let's set up another one!
