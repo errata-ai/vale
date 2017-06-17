@@ -61,8 +61,6 @@ Feature: Styles
     test.md:26:88:demo.Abbreviations:Use 'a.m. or p.m.'
     test.md:26:110:demo.Meetup:Use 'meetup(s)' instead of 'meet-ups'
     test.md:26:381:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
-    test.md:28:37:demo.Backend:Use 'back end(s)' instead of 'back-ends'
-    test.md:28:71:demo.Backend:Use 'back-end(s)' instead of 'back end'
     test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
     test.rst:1:58:demo.Spacing:'. I' should have one space
     test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
@@ -230,6 +228,8 @@ Feature: Styles
     test.rst:24:1:OpenStack.Branding:Use “OpenStack” instead of “openstack”
     test.rst:24:11:OpenStack.Contractions:Generally, do not contract the words such as “can't”.
     test.rst:24:17:OpenStack.Branding:Use “OpenStack” instead of “open stack”
+    test.rst:26:37:OpenStack.Backend:Use “back end(s)” instead of “back-ends”
+    test.rst:26:71:OpenStack.Backend:Use “back-end(s)” instead of “back end”
     """
 
   Scenario: Lint against Pedantic

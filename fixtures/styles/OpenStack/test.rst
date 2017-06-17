@@ -22,3 +22,5 @@ You can contact the HA community directly in `the #openstack-ha
 channel on Freenode IRC <https://wiki.openstack.org/wiki/IRC>`_,
 
 openstack can't open stack
+
+When you configure multiple-storage back-ends, you can create several back end storage solutions.
