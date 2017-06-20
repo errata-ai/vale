@@ -107,7 +107,11 @@ func main() {
 				Config: config, CheckManager: check.NewManager(config)}
 
 			if c.NArg() > 0 {
-				linted, err = linter.Lint(c.Args(), glob)
+				if core.LooksLikeStdin(c.Args()[0]) {
+					linted, err = linter.LintString(c.Args()[0])
+				} else {
+					linted, err = linter.Lint(c.Args(), glob)
+				}
 			} else {
 				stdin, _ := ioutil.ReadAll(os.Stdin)
 				linted, err = linter.LintString(string(stdin))

@@ -275,6 +275,11 @@ func CheckError(err error) bool {
 	return err == nil
 }
 
+// LooksLikeStdin determines if s appears to be a string.
+func LooksLikeStdin(s string) bool {
+	return !(FileExists(s) || IsDir(s))
+}
+
 // CheckAndClose closes `file` and prints any errors to stdout.
 // A return value of true => no error.
 func CheckAndClose(file *os.File) bool {
