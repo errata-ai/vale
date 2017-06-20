@@ -59,13 +59,13 @@ $ vale --glob='!*.txt' directory
 Pipe input to Vale:
 
 ```shell
-$ echo 'this is some text' | vale
+$ echo 'this is some very interesting text' | vale
 ```
 
 Run Vale on text with an assigned syntax:
 
 ```shell
-$ vale --ext=.md 'this is some text'
+$ vale --ext=.md 'this is some `very` interesting text'
 ```
 
 See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) for more information.
@@ -80,18 +80,18 @@ See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) f
 
 ## Reference Styles
 
-|           Style (source)           |        Download        |                                                      Description                                                      | Development Status |
-|:----------------------------------:|:----------------------:|:---------------------------------------------------------------------------------------------------------------------:|:------------------:|
-|   [`write-good`][write-good-src]   |  [`write-good.zip`][write-good-dl]  |    Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.     | :white_check_mark: |
-|      [`Joblint`][Joblint-src]      |   [`Joblint.zip`][Joblint-dl]    |                Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                | :white_check_mark: |
-|       [`jQuery`][jQuery-src]       |    [`jQuery.zip`][jQuery-dl]    |            A collection of rules based on jQuery's documentation formatting conventions and writing style.            |   :construction:   |
+|           Style (source)           |               Download                |                                                      Description                                                      | Development Status |
+|:----------------------------------:|:-------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|:------------------:|
+|   [`write-good`][write-good-src]   |   [`write-good.zip`][write-good-dl]   |    Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.     | :white_check_mark: |
+|      [`Joblint`][Joblint-src]      |      [`Joblint.zip`][Joblint-dl]      |                Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                | :white_check_mark: |
+|       [`jQuery`][jQuery-src]       |       [`jQuery.zip`][jQuery-dl]       |            A collection of rules based on jQuery's documentation formatting conventions and writing style.            |   :construction:   |
 | [`TheEconomist`][TheEconomist-src] | [`TheEconomist.zip`][TheEconomist-dl] |                               A collection of rules based on The Economist Style Guide.                               |   :construction:   |
-|     [`Homebrew`][Homebrew-src]     |   [`Homebrew.zip`][Homebrew-dl]   | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
-|   [`Middlebury`][Middlebury-src]   |  [`Middlebury.zip`][Middlebury-dl]  |                         A collection of rules based on The Middlebury Editorial Style Guide.                          |   :construction:   |
-|          [`18F`][18F-src]          |     [`18F.zip`][18F-dl]      |                                  Guidelines for creating plain and concise writing.                                   |   :construction:   |
-|    [`OpenStack`][OpenStack-src]    |  [`OpenStack.zip`][OpenStack-dl]   |                         Writing style guidelines used on the OpenStack documentation.                         |   :construction:   |
-|    [`MailChimp`][MailChimp-src]    |  [`MailChimp.zip`][MailChimp-dl]   |                         Writing style guidelines used on the MailChimp documentation.                         |   :construction:   |
-|         [`Rust`][Rust-src]         |     [`Rust.zip`][Rust-dl]     |                         Writing style guidelines used on *The Rust Programming Language* book.                         |   :white_check_mark:   |
+|     [`Homebrew`][Homebrew-src]     |     [`Homebrew.zip`][Homebrew-dl]     | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
+|   [`Middlebury`][Middlebury-src]   |   [`Middlebury.zip`][Middlebury-dl]   |                         A collection of rules based on The Middlebury Editorial Style Guide.                          |   :construction:   |
+|          [`18F`][18F-src]          |          [`18F.zip`][18F-dl]          |                                  Guidelines for creating plain and concise writing.                                   |   :construction:   |
+|    [`OpenStack`][OpenStack-src]    |    [`OpenStack.zip`][OpenStack-dl]    |                             Writing style guidelines used on the OpenStack documentation.                             |   :construction:   |
+|    [`MailChimp`][MailChimp-src]    |    [`MailChimp.zip`][MailChimp-dl]    |                             Writing style guidelines used on the MailChimp documentation.                             |   :construction:   |
+|         [`Rust`][Rust-src]         |         [`Rust.zip`][Rust-dl]         |                        Writing style guidelines used on *The Rust Programming Language* book.                         | :white_check_mark: |
 
 To use one of these styles, you'd copy its files onto your `StylesPath` and then specify it in your config file:
 
