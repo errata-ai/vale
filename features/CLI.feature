@@ -69,10 +69,10 @@ Feature: CLI
     And the exit status should be 0
 
   Scenario: Lint stdin
-    When I lint "'this is some very XXX interesting text'"
+    When I lint string "XXX"
     Then the output should contain exactly:
     """
-    stdin.txt:1:19:vale.Annotations:'XXX' left in text
+    stdin.txt:1:1:vale.Annotations:'XXX' left in text
     """
     And the exit status should be 0
 
