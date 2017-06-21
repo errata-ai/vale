@@ -2,4 +2,4 @@ StylesPath = ../../../styles
 MinAlertLevel = suggestion
 
 [*]
-BasedOnStyles = Pedantic
+BasedOnStyles = proselint

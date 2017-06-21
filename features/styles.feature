@@ -237,43 +237,43 @@ Feature: Styles
     test.rst:38:11:OpenStack.Setup:Use “set up” instead of “setup”
     """
 
-  Scenario: Lint against Pedantic
-    When I apply style "Pedantic"
+  Scenario: Lint against proselint
+    When I apply style "proselint"
     Then the output should contain exactly:
     """
-    test.md:1:19:Pedantic.Nonwords:Consider using 'regardless' instead of 'irregardless'.
-    test.md:3:18:Pedantic.Archaisms:'perchance' is archaic.
-    test.md:7:6:Pedantic.Cliches:'a chip off the old block' is a cliche.
-    test.md:9:12:Pedantic.Cliches:'a fate worse than death' is a cliche.
-    test.md:11:20:Pedantic.Spelling:Inconsistent spelling of 'color'.
-    test.md:11:61:Pedantic.Spelling:Inconsistent spelling of 'center'.
-    test.md:13:9:Pedantic.CorporateSpeak:'circle back around' is corporate speak.
-    test.md:15:5:Pedantic.Cursing:Consider replacing 'shit'.
-    test.md:17:16:Pedantic.DateCase:With lowercase letters, the periods are standard.
-    test.md:17:37:Pedantic.DateSpacing:It's standard to put a space before '7a.m.'
-    test.md:17:58:Pedantic.DateMidnight:Use 'midnight' or 'noon'.
-    test.md:17:81:Pedantic.DateRedundancy:'a.m.' is always morning; 'p.m.' is always night.
-    test.md:19:18:Pedantic.Uncomparables:'most correct' is not comparable
-    test.md:21:1:Pedantic.Hedging:'I would argue that' is hedging.
-    test.md:23:4:Pedantic.Hyperbole:'exaggerated!!!' is hyperbolic.
-    test.md:25:14:Pedantic.Jargon:'in the affirmative' is jargon.
-    test.md:27:10:Pedantic.Illusions:'the the' - There's a lexical illusion here.
-    test.md:29:14:Pedantic.LGBTOffensive:'fag' is offensive. Remove it or consider the context.
-    test.md:29:44:Pedantic.LGBTTerms:Consider using 'sexual orientation' instead of 'sexual preference'.
-    test.md:31:10:Pedantic.Malapropisms:'the Infinitesimal Universe' is a malapropism.
-    test.md:33:1:Pedantic.Apologizing:Excessive apologizing: 'More research is needed'
-    test.md:35:1:Pedantic.But:Do not start a paragraph with a 'but'.
-    test.md:37:9:Pedantic.Currency:Incorrect use of symbols in '$10 dollars'.
-    test.md:39:14:Pedantic.Oxymorons:'exact estimate' is an oxymoron.
-    test.md:41:38:Pedantic.GenderBias:Consider using 'lawyer' instead of 'lady lawyer'.
-    test.md:43:11:Pedantic.Skunked:'impassionate' is a bit of a skunked term — impossible to use without issue.
-    test.md:45:21:Pedantic.DenzienLabels:Did you mean 'Hong Konger'?
-    test.md:47:13:Pedantic.AnimalLabels:Consider using 'avine' instead of 'bird-like'.
-    test.md:49:20:Pedantic.Typography:Consider using the '©' symbol instead of '(C)'.
-    test.md:49:40:Pedantic.Typography:Consider using the '™' symbol instead of '(tm)'.
-    test.md:49:56:Pedantic.Typography:Consider using the '®' symbol instead of '(R)'.
-    test.md:49:79:Pedantic.Typography:Consider using the '×' symbol instead of '2 x 2'.
-    test.md:51:27:Pedantic.Diacritical:Consider using 'Beyoncé' instead of 'Beyonce'.
+    test.md:1:19:proselint.Nonwords:Consider using 'regardless' instead of 'irregardless'.
+    test.md:3:18:proselint.Archaisms:'perchance' is archaic.
+    test.md:7:6:proselint.Cliches:'a chip off the old block' is a cliche.
+    test.md:9:12:proselint.Cliches:'a fate worse than death' is a cliche.
+    test.md:11:20:proselint.Spelling:Inconsistent spelling of 'color'.
+    test.md:11:61:proselint.Spelling:Inconsistent spelling of 'center'.
+    test.md:13:9:proselint.CorporateSpeak:'circle back around' is corporate speak.
+    test.md:15:5:proselint.Cursing:Consider replacing 'shit'.
+    test.md:17:16:proselint.DateCase:With lowercase letters, the periods are standard.
+    test.md:17:37:proselint.DateSpacing:It's standard to put a space before '7a.m.'
+    test.md:17:58:proselint.DateMidnight:Use 'midnight' or 'noon'.
+    test.md:17:81:proselint.DateRedundancy:'a.m.' is always morning; 'p.m.' is always night.
+    test.md:19:18:proselint.Uncomparables:'most correct' is not comparable
+    test.md:21:1:proselint.Hedging:'I would argue that' is hedging.
+    test.md:23:4:proselint.Hyperbole:'exaggerated!!!' is hyperbolic.
+    test.md:25:14:proselint.Jargon:'in the affirmative' is jargon.
+    test.md:27:10:proselint.Illusions:'the the' - There's a lexical illusion here.
+    test.md:29:14:proselint.LGBTOffensive:'fag' is offensive. Remove it or consider the context.
+    test.md:29:44:proselint.LGBTTerms:Consider using 'sexual orientation' instead of 'sexual preference'.
+    test.md:31:10:proselint.Malapropisms:'the Infinitesimal Universe' is a malapropism.
+    test.md:33:1:proselint.Apologizing:Excessive apologizing: 'More research is needed'
+    test.md:35:1:proselint.But:Do not start a paragraph with a 'but'.
+    test.md:37:9:proselint.Currency:Incorrect use of symbols in '$10 dollars'.
+    test.md:39:14:proselint.Oxymorons:'exact estimate' is an oxymoron.
+    test.md:41:38:proselint.GenderBias:Consider using 'lawyer' instead of 'lady lawyer'.
+    test.md:43:11:proselint.Skunked:'impassionate' is a bit of a skunked term — impossible to use without issue.
+    test.md:45:21:proselint.DenzienLabels:Did you mean 'Hong Konger'?
+    test.md:47:13:proselint.AnimalLabels:Consider using 'avine' instead of 'bird-like'.
+    test.md:49:20:proselint.Typography:Consider using the '©' symbol instead of '(C)'.
+    test.md:49:40:proselint.Typography:Consider using the '™' symbol instead of '(tm)'.
+    test.md:49:56:proselint.Typography:Consider using the '®' symbol instead of '(R)'.
+    test.md:49:79:proselint.Typography:Consider using the '×' symbol instead of '2 x 2'.
+    test.md:51:27:proselint.Diacritical:Consider using 'Beyoncé' instead of 'Beyonce'.
     """
 
   Scenario: Lint against Rust
