@@ -275,6 +275,7 @@ Feature: Styles
     test.md:49:79:proselint.Typography:Consider using the '×' symbol instead of '2 x 2'.
     test.md:51:27:proselint.Diacritical:Consider using 'Beyoncé' instead of 'Beyonce'.
     test.md:51:36:proselint.P-Value:You should use more decimal places, unless 'p = 0.00' is really true.
+    test.md:51:47:proselint.Needless:Prefer 'abolition' over 'abolishment'
     """
 
   Scenario: Lint against Rust
