@@ -270,7 +270,7 @@ func ContainsAny(text string, slice []string) bool {
 // CheckError prints any errors to stdout. A return value of true => no error.
 func CheckError(err error) bool {
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Fprintln(os.Stderr, err.Error())
 	}
 	return err == nil
 }
