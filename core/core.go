@@ -36,7 +36,6 @@ type File struct {
 // An Alert represents a potential error in prose.
 type Alert struct {
 	Check       string // the name of the check
-	Context     string // the surrounding text
 	Description string // why `Message` is meaningful
 	Line        int    // the source line
 	Link        string // reference material
@@ -146,14 +145,14 @@ func (f *File) SortedAlerts() []Alert {
 }
 
 // FindLoc calculates the line and span of an Alert.
-func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int, string) {
+func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
 	var length int
 	var lines []string
 
 	pos, substring := initialPosition(ctx, s[loc[0]:loc[1]], loc)
 	if pos < 0 {
 		// Shouldn't happen ...
-		return pos, []int{0, 0}, ""
+		return pos, []int{0, 0}
 	}
 
 	if f.Format == "markup" {
@@ -172,12 +171,12 @@ func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int, st
 			if loc[1] > extent {
 				loc[1] = extent
 			}
-			return count - (len(lines) - (idx + 1)), loc, l
+			return count - (len(lines) - (idx + 1)), loc
 		}
 		counter += length
 	}
 
-	return count, loc, ""
+	return count, loc
 }
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
@@ -186,7 +185,7 @@ func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad int) {
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old
 	}
-	a.Line, a.Span, a.Context = f.FindLoc(ctx, txt, pad, lines, a.Span)
+	a.Line, a.Span = f.FindLoc(ctx, txt, pad, lines, a.Span)
 	if a.Span[0] > 0 {
 		f.ChkToCtx[a.Check], _ = Substitute(ctx, substring, '#')
 		if !a.Hide {

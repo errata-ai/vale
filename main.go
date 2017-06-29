@@ -35,7 +35,7 @@ func main() {
 		cli.StringFlag{
 			Name:        "output",
 			Value:       "CLI",
-			Usage:       `output style ("line", "JSON", or "context")`,
+			Usage:       `output style ("line" or "JSON")`,
 			Destination: &config.Output,
 		},
 		cli.StringFlag{
@@ -122,12 +122,8 @@ func main() {
 				hasAlerts = ui.PrintLineAlerts(linted)
 			} else if config.Output == "JSON" {
 				hasAlerts = ui.PrintJSONAlerts(linted)
-			} else if config.Output == "context" {
-				hasAlerts = ui.PrintVerboseAlerts(
-					linted, ui.CONTEXT, config.Wrap)
 			} else {
-				hasAlerts = ui.PrintVerboseAlerts(
-					linted, ui.VERBOSE, config.Wrap)
+				hasAlerts = ui.PrintVerboseAlerts(linted, config.Wrap)
 			}
 
 			// Should return a nonzero vale on errors?
