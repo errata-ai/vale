@@ -92,6 +92,7 @@ See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) f
 |    [`OpenStack`][OpenStack-src]    |    [`OpenStack.zip`][OpenStack-dl]    |                             Writing style guidelines used on the OpenStack documentation.                             |   :construction:   |
 |    [`MailChimp`][MailChimp-src]    |    [`MailChimp.zip`][MailChimp-dl]    |                             Writing style guidelines used on the MailChimp documentation.                             |   :construction:   |
 |         [`Rust`][Rust-src]         |         [`Rust.zip`][Rust-dl]         |                        Writing style guidelines used on *The Rust Programming Language* book.                         | :white_check_mark: |
+|    [`proselint`][proselint-src]    |    [`proselint.zip`][proselint-dl]    |                 A linter for English prose that aggregates knowledge about best practices in writing.                 | :white_check_mark: |
 
 To use one of these styles, you'd copy its files onto your `StylesPath` and then specify it in your config file:
 
@@ -142,3 +143,6 @@ See [Configuration](https://valelint.github.io/docs/config/) and [Styles](https:
 
 [Rust-src]: https://github.com/rust-lang/book/blob/master/second-edition/style-guide.md
 [Rust-dl]: https://github.com/ValeLint/docs/raw/master/styles/Rust.zip
+
+[proselint-src]: https://github.com/amperser/proselint
+[proselint-dl]: https://github.com/ValeLint/docs/raw/master/styles/proselint.zip
