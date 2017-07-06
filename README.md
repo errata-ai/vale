@@ -31,6 +31,11 @@ There are a few options to choose from:
     $ brew tap ValeLint/vale
     $ brew install vale
     ```
+- [Chocolatey](https://chocolatey.org/packages/vale/):		
+		
+     ```shell		
+     C:\> choco install vale		
+     ```
 - A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
 - Manually on **Windows**, **macOS**, or **Linux** by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
 
