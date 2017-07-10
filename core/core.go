@@ -31,6 +31,7 @@ type File struct {
 	RealExt    string            // actual file extension
 	Scanner    *bufio.Scanner    // used by lintXXX functions
 	Sequences  []string          // tracks various info (e.g., defined abbreviations)
+	Summary    bytes.Buffer      // holds content to be included in summarization checks
 }
 
 // An Alert represents a potential error in prose.

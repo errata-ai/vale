@@ -4,3 +4,7 @@ MinAlertLevel = suggestion
 [*]
 BasedOnStyles = demo
 demo.CheckLinks = NO
+demo.Reading = NO
+
+[*.md]
+demo.Reading = YES

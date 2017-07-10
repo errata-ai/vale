@@ -1,7 +1,6 @@
 extends: readability
-message: "Grade level too high!"
+message: "Grade level (%s) too high!"
 level: warning
 grade: 8
-scope: text.md
 metrics:
   - Flesch-Kincaid

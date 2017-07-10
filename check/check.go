@@ -288,7 +288,11 @@ func checkReadability(txt string, chk Readability, f *core.File) []core.Alert {
 
 	grade = grade / float64(len(chk.Metrics))
 	if grade > chk.Grade {
-		alerts = append(alerts, makeAlert(chk.Definition, []int{0, len(txt)}, txt))
+		a := core.Alert{Check: chk.Name, Severity: chk.Level,
+			Span: []int{0, len(txt)}, Link: chk.Link}
+		a.Message, a.Description = formatMessages(chk.Message, chk.Description,
+			fmt.Sprintf("%.2f", grade))
+		alerts = append(alerts, a)
 	}
 
 	return alerts
@@ -299,6 +303,12 @@ func (mgr *Manager) addReadabilityCheck(chkName string, chkDef Readability) {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkReadability(text, chkDef, file)
 		}
+		// NOTE: This is the only extension point that doesn't support scoping.
+		// The reason for this is that we need to split on sentences to
+		// calculate readability, which means that specifying a scope smaller
+		// than a paragraph or including non-block level content (i.e.,
+		// headings, list items or table cells) doesn't make sense.
+		chkDef.Definition.Scope = "summary"
 		mgr.updateAllChecks(chkDef.Definition, fn)
 	}
 }

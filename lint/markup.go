@@ -72,11 +72,17 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	var tok html.Token
 	var inBlock, inline, skip, skipClass bool
 
-	punct := []string{".", "?", "!", ",", ":", ";"}
 	lines := len(f.Lines) + offset
 	buf := bytes.NewBufferString("")
 	act := bytes.NewBufferString("")
+
+	// queue holds each segment of text we encounter in a block, which we then
+	// use to sequentially update our context.
 	queue := []string{}
+
+	// tagHistory holds the HTML tags we encounter in a given block -- e.g.,
+	// if we see <ul>, <li>, <p>, we'd get tagHistory = [ul li p]. It's reset
+	// on every non-inline end tag.
 	tagHistory := []string{}
 
 	tokens := html.NewTokenizer(bytes.NewReader(fsrc))
@@ -101,19 +107,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		} else if tokt == html.TextToken {
 			queue = append(queue, txt)
 			if !inBlock {
-				first, _ := utf8.DecodeRuneInString(txt)
-				starter := core.StringInSlice(string(first), punct) && !skip
-				raw = txt
-				if skip || skipClass {
-					raw = codify(f.NormedExt, txt)
-					txt, _ = core.Substitute(txt, txt, '*')
-					txt = codify(f.NormedExt, txt)
-					skip = false
-				}
-				if inline && !starter {
-					txt = " " + txt
-					raw = " " + raw
-				}
+				txt, raw, skip = clean(txt, f.NormedExt, skip, skipClass, inline)
 				buf.WriteString(txt)
 				act.WriteString(raw)
 			}
@@ -137,6 +131,9 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		attr = getAttribute(tok, "class")
 		ctx = clearElements(ctx, tok)
 	}
+
+	summary := NewBlock("", f.Summary.String(), "", "summary."+f.RealExt)
+	l.lintText(f, summary, lines, 0)
 }
 
 func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lines int) {
@@ -153,6 +150,10 @@ func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lin
 			return
 		}
 	}
+
+	// NOTE: We don't include headings, list items, or table cells (which are
+	// processed above) in our Summary content.
+	f.Summary.WriteString(raw + " ")
 	l.lintProse(f, ctx, txt, raw, lines, 0)
 }
 
@@ -163,6 +164,24 @@ func codify(ext, text string) string {
 		return "``" + text + "``"
 	}
 	return text
+}
+
+func clean(txt, ext string, skip, skipClass, inline bool) (string, string, bool) {
+	punct := []string{".", "?", "!", ",", ":", ";"}
+	first, _ := utf8.DecodeRuneInString(txt)
+	starter := core.StringInSlice(string(first), punct) && !skip
+	raw := txt
+	if skip || skipClass {
+		raw = codify(ext, txt)
+		txt, _ = core.Substitute(txt, txt, '*')
+		txt = codify(ext, txt)
+		skip = false
+	}
+	if inline && !starter {
+		txt = " " + txt
+		raw = " " + raw
+	}
+	return txt, raw, skip
 }
 
 func getAttribute(tok html.Token, key string) string {
