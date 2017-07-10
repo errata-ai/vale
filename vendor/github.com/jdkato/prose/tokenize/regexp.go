@@ -50,11 +50,7 @@ func NewBlanklineTokenizer() *RegexpTokenizer {
 // NewWordPunctTokenizer is a RegexpTokenizer constructor.
 //
 // This tokenizer splits text into a sequence of alphabetic and non-alphabetic
-// characters. For example,
-//
-//    t := NewWordPunctTokenizer()
-//    t.Tokenize("They'll save and invest more.")
-//    // [They 'll save and invest more .]
+// characters.
 func NewWordPunctTokenizer() *RegexpTokenizer {
 	return &RegexpTokenizer{
 		regex: regexp.MustCompile(`\w+|[^\w\s]+`), gaps: false}
@@ -62,13 +58,9 @@ func NewWordPunctTokenizer() *RegexpTokenizer {
 
 // NewWordBoundaryTokenizer is a RegexpTokenizer constructor.
 //
-// This tokenizer splits text into a sequence of word-like tokens. For example,
-//
-//    t := NewWordBoundaryTokenizer()
-//    t.Tokenize("They'll save and invest more.")
-//    // [They'll save and invest more]
+// This tokenizer splits text into a sequence of word-like tokens.
 func NewWordBoundaryTokenizer() *RegexpTokenizer {
 	return &RegexpTokenizer{
-		regex: regexp.MustCompile(`(?:[A-Z]\.){2,}|[\p{N}\p{L}'-]+`),
+		regex: regexp.MustCompile(`(?:[A-Z]\.){2,}|[\p{N}\p{L}']+`),
 		gaps:  false}
 }

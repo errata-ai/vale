@@ -1,13 +1,24 @@
 package chunk
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
 )
 
-func Test(t *testing.T) {
+func Example() {
+	txt := "Go is a open source programming language created at Google."
+
+	words := tokenize.TextToWords(txt)
+	tagger := tag.NewPerceptronTagger()
+
+	fmt.Println(Chunk(tagger.Tag(words), TreebankNamedEntities))
+	// Output: [Go Google]
+}
+
+func TestChunk(t *testing.T) {
 	text := `
 Property surveyors are getting gloomier about the state of the housing market, according to the Royal Institution of Chartered Surveyors (Rics).
 Its latest monthly survey shows that stock levels are at a new record low.
@@ -33,11 +44,11 @@ It was also reported on BBC Radio 4 and BBC Radio 5 Live.
 		"Rics",
 		"March",
 		"UK",
-		"central London",
+		"London",
 		"Rics",
 		"North West",
 		"February",
-		"central London",
+		"London",
 		"Simon Rubinsohn",
 		"Rics",
 		"Office for National Statistics",
@@ -54,27 +65,16 @@ It was also reported on BBC Radio 4 and BBC Radio 5 Live.
 		"BBC Radio 5 Live",
 	}
 
-	t.Log(text)
-
 	words := tokenize.TextToWords(text)
 	tagger := tag.NewPerceptronTagger()
 	tagged := tagger.Tag(words)
-	rs := Locate(tagged, TreebankNamedEntities)
 
-	for r, loc := range rs {
-		res := ""
-		for t, tt := range tagged[loc[0]:loc[1]] {
-			if t != 0 {
-				res += " "
-			}
-			res += tt.Text
-		}
-		t.Log(res)
-		if r >= len(expected) {
-			t.Error("ERROR unexpected result: " + res)
+	for i, chunk := range Chunk(tagged, TreebankNamedEntities) {
+		if i >= len(expected) {
+			t.Error("ERROR unexpected result: " + chunk)
 		} else {
-			if res != expected[r] {
-				t.Error("ERROR", res, "!=", expected[r])
+			if chunk != expected[i] {
+				t.Error("ERROR", chunk, "!=", expected[i])
 			}
 		}
 	}

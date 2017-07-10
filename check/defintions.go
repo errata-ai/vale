@@ -13,6 +13,7 @@ type Check struct {
 
 // Definition holds the common attributes of rule definitions.
 type Definition struct {
+	Code        bool
 	Description string
 	Extends     string
 	Level       string
@@ -20,7 +21,6 @@ type Definition struct {
 	Message     string
 	Name        string
 	Scope       string
-	Code        bool
 }
 
 // Existence checks for the present of Tokens.
@@ -38,6 +38,7 @@ type Substitution struct {
 	Ignorecase bool
 	Nonword    bool
 	Swap       map[string]string
+	POS        string
 }
 
 // Occurrence counts the number of times Token appears.

@@ -198,6 +198,10 @@ func checkRepetition(txt string, chk Repetition, f *core.File, r *regexp.Regexp)
 
 func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Regexp, repl []string) []core.Alert {
 	alerts := []core.Alert{}
+	pos := false
+
+	// Leave early if we can to avoid calling `FindAllStringSubmatchIndex`
+	// unnecessarily.
 	if !r.MatchString(txt) {
 		return alerts
 	}
@@ -206,11 +210,21 @@ func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Reg
 		for idx, mat := range submat {
 			if mat != -1 && idx > 0 && idx%2 == 0 {
 				loc := []int{mat, submat[idx+1]}
+				// Based on the current capture group (`idx`), we can determine
+				// the associated replacement string by using the `repl` slice:
 				expected := repl[(idx/2)-1]
 				observed := strings.TrimSpace(txt[loc[0]:loc[1]])
 				if expected != observed {
-					a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
-						Link: chk.Link}
+					if chk.POS != "" {
+						// If we're given a POS pattern, check that it matches.
+						//
+						// If it doesn't match, the alert doesn't get added to
+						// a File (i.e., `hide` == true).
+						pos = core.CheckPOS(loc, chk.POS, txt)
+					}
+					a := core.Alert{
+						Check: chk.Name, Severity: chk.Level, Span: loc,
+						Link: chk.Link, Hide: pos}
 					a.Message, a.Description = formatMessages(chk.Message,
 						chk.Description, expected, observed)
 					alerts = append(alerts, a)
@@ -425,6 +439,7 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 	if chkDef.Ignorecase {
 		regex += ignoreCase
 	}
+
 	if !chkDef.Nonword {
 		regex += wordTemplate
 	} else {
@@ -434,7 +449,20 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 	replacements := []string{}
 	for regexstr, replacement := range chkDef.Swap {
 		opens := strings.Count(regexstr, "(")
-		if opens != strings.Count(regexstr, "?:") && opens != strings.Count(regexstr, `\(`) {
+		if opens != strings.Count(regexstr, "?:") &&
+			opens != strings.Count(regexstr, `\(`) {
+			// We rely on manually-added capture groups to associate a match
+			// with its replacement -- e.g.,
+			//
+			//    `(foo)|(bar)`, [replacement1, replacement2]
+			//
+			// where the first capture group ("foo") corresponds to the first
+			// element of the replacements slice ("replacement1"). This means
+			// that we can only accept non-capture groups from the user (the
+			// indexing would be mixed up otherwise).
+			//
+			// TODO: Should we change this? Perhaps by creating a map of regex
+			// to replacements?
 			continue
 		}
 		tokens += `(` + regexstr + `)|`

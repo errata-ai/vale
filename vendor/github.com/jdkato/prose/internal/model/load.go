@@ -1,10 +1,18 @@
+/*
+Package model contains internals used by prose/tag.
+*/
 package model
 
-import "github.com/jdkato/prose/internal/util"
+import (
+	"bytes"
+	"encoding/gob"
+
+	"github.com/jdkato/prose/internal/util"
+)
 
 // GetAsset returns the named Asset.
-func GetAsset(name string) []byte {
+func GetAsset(name string) *gob.Decoder {
 	b, err := Asset("internal/model/" + name)
 	util.CheckError(err)
-	return b
+	return gob.NewDecoder(bytes.NewReader(b))
 }

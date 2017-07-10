@@ -60,6 +60,10 @@ Feature: Styles
     test.md:22:1:demo.Reading:Grade level too high!
     test.md:24:27:demo.Code:Consider using 'for-loop' instead of '`for` loops'
     test.md:24:42:demo.Code:Consider using 'for-loop' instead of 'for loops'
+    test.md:26:3:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
+    test.md:26:88:demo.Abbreviations:Use 'a.m. or p.m.'
+    test.md:26:110:demo.Meetup:Use 'meetup(s)' instead of 'meet-ups'
+    test.md:26:381:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
     test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
     test.rst:1:58:demo.Spacing:'. I' should have one space
     test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
@@ -227,45 +231,54 @@ Feature: Styles
     test.rst:24:1:OpenStack.Branding:Use “OpenStack” instead of “openstack”
     test.rst:24:11:OpenStack.Contractions:Generally, do not contract the words such as “can't”.
     test.rst:24:17:OpenStack.Branding:Use “OpenStack” instead of “open stack”
+    test.rst:26:37:OpenStack.Backend:Use “back end(s)” instead of “back-ends”
+    test.rst:26:71:OpenStack.Backend:Use “back-end(s)” instead of “back end”
+    test.rst:32:14:OpenStack.Login:Use “login” instead of “log in”
+    test.rst:32:83:OpenStack.Login:Use “log in” instead of “login”
+    test.rst:36:45:OpenStack.Contractions:Generally, do not contract the words such as “don't”.
+    test.rst:36:51:OpenStack.Login:Use “log in” or “login” instead of “log-in”
+    test.rst:38:11:OpenStack.Setup:Use “set up” instead of “setup”
     """
 
-  Scenario: Lint against Pedantic
-    When I apply style "Pedantic"
+  Scenario: Lint against proselint
+    When I apply style "proselint"
     Then the output should contain exactly:
     """
-    test.md:1:19:Pedantic.Nonwords:Consider using 'regardless' instead of 'irregardless'.
-    test.md:3:18:Pedantic.Archaisms:'perchance' is archaic.
-    test.md:7:6:Pedantic.Cliches:'a chip off the old block' is a cliche.
-    test.md:9:12:Pedantic.Cliches:'a fate worse than death' is a cliche.
-    test.md:11:20:Pedantic.Spelling:Inconsistent spelling of 'color'.
-    test.md:11:61:Pedantic.Spelling:Inconsistent spelling of 'center'.
-    test.md:13:9:Pedantic.CorporateSpeak:'circle back around' is corporate speak.
-    test.md:15:5:Pedantic.Cursing:Consider replacing 'shit'.
-    test.md:17:16:Pedantic.DateCase:With lowercase letters, the periods are standard.
-    test.md:17:37:Pedantic.DateSpacing:It's standard to put a space before '7a.m.'
-    test.md:17:58:Pedantic.DateMidnight:Use 'midnight' or 'noon'.
-    test.md:17:81:Pedantic.DateRedundancy:'a.m.' is always morning; 'p.m.' is always night.
-    test.md:19:18:Pedantic.Uncomparables:'most correct' is not comparable
-    test.md:21:1:Pedantic.Hedging:'I would argue that' is hedging.
-    test.md:23:4:Pedantic.Hyperbole:'exaggerated!!!' is hyperbolic.
-    test.md:25:14:Pedantic.Jargon:'in the affirmative' is jargon.
-    test.md:27:10:Pedantic.Illusions:'the the' - There's a lexical illusion here.
-    test.md:29:14:Pedantic.LGBTOffensive:'fag' is offensive. Remove it or consider the context.
-    test.md:29:44:Pedantic.LGBTTerms:Consider using 'sexual orientation' instead of 'sexual preference'.
-    test.md:31:10:Pedantic.Malapropisms:'the Infinitesimal Universe' is a malapropism.
-    test.md:33:1:Pedantic.Apologizing:Excessive apologizing: 'More research is needed'
-    test.md:35:1:Pedantic.But:Do not start a paragraph with a 'but'.
-    test.md:37:9:Pedantic.Currency:Incorrect use of symbols in '$10 dollars'.
-    test.md:39:14:Pedantic.Oxymorons:'exact estimate' is an oxymoron.
-    test.md:41:38:Pedantic.GenderBias:Consider using 'lawyer' instead of 'lady lawyer'.
-    test.md:43:11:Pedantic.Skunked:'impassionate' is a bit of a skunked term — impossible to use without issue.
-    test.md:45:21:Pedantic.DenzienLabels:Did you mean 'Hong Konger'?
-    test.md:47:13:Pedantic.AnimalLabels:Consider using 'avine' instead of 'bird-like'.
-    test.md:49:20:Pedantic.Typography:Consider using the '©' symbol instead of '(C)'.
-    test.md:49:40:Pedantic.Typography:Consider using the '™' symbol instead of '(tm)'.
-    test.md:49:56:Pedantic.Typography:Consider using the '®' symbol instead of '(R)'.
-    test.md:49:79:Pedantic.Typography:Consider using the '×' symbol instead of '2 x 2'.
-    test.md:51:27:Pedantic.Diacritical:Consider using 'Beyoncé' instead of 'Beyonce'.
+    test.md:1:19:proselint.Nonwords:Consider using 'regardless' instead of 'irregardless'.
+    test.md:3:18:proselint.Archaisms:'perchance' is archaic.
+    test.md:7:6:proselint.Cliches:'a chip off the old block' is a cliche.
+    test.md:9:12:proselint.Cliches:'a fate worse than death' is a cliche.
+    test.md:11:20:proselint.Spelling:Inconsistent spelling of 'color'.
+    test.md:11:61:proselint.Spelling:Inconsistent spelling of 'center'.
+    test.md:13:9:proselint.CorporateSpeak:'circle back around' is corporate speak.
+    test.md:15:5:proselint.Cursing:Consider replacing 'shit'.
+    test.md:17:16:proselint.DateCase:With lowercase letters, the periods are standard.
+    test.md:17:37:proselint.DateSpacing:It's standard to put a space before '7a.m.'
+    test.md:17:58:proselint.DateMidnight:Use 'midnight' or 'noon'.
+    test.md:17:81:proselint.DateRedundancy:'a.m.' is always morning; 'p.m.' is always night.
+    test.md:19:18:proselint.Uncomparables:'most correct' is not comparable
+    test.md:21:1:proselint.Hedging:'I would argue that' is hedging.
+    test.md:23:4:proselint.Hyperbole:'exaggerated!!!' is hyperbolic.
+    test.md:25:14:proselint.Jargon:'in the affirmative' is jargon.
+    test.md:27:10:proselint.Illusions:'the the' - There's a lexical illusion here.
+    test.md:29:14:proselint.LGBTOffensive:'fag' is offensive. Remove it or consider the context.
+    test.md:29:44:proselint.LGBTTerms:Consider using 'sexual orientation' instead of 'sexual preference'.
+    test.md:31:10:proselint.Malapropisms:'the Infinitesimal Universe' is a malapropism.
+    test.md:33:1:proselint.Apologizing:Excessive apologizing: 'More research is needed'
+    test.md:35:1:proselint.But:Do not start a paragraph with a 'but'.
+    test.md:37:9:proselint.Currency:Incorrect use of symbols in '$10 dollars'.
+    test.md:39:14:proselint.Oxymorons:'exact estimate' is an oxymoron.
+    test.md:41:38:proselint.GenderBias:Consider using 'lawyer' instead of 'lady lawyer'.
+    test.md:43:11:proselint.Skunked:'impassionate' is a bit of a skunked term — impossible to use without issue.
+    test.md:45:21:proselint.DenzienLabels:Did you mean 'Hong Konger'?
+    test.md:47:13:proselint.AnimalLabels:Consider using 'avine' instead of 'bird-like'.
+    test.md:49:20:proselint.Typography:Consider using the '©' symbol instead of '(C)'.
+    test.md:49:40:proselint.Typography:Consider using the '™' symbol instead of '(tm)'.
+    test.md:49:56:proselint.Typography:Consider using the '®' symbol instead of '(R)'.
+    test.md:49:79:proselint.Typography:Consider using the '×' symbol instead of '2 x 2'.
+    test.md:51:27:proselint.Diacritical:Consider using 'Beyoncé' instead of 'Beyonce'.
+    test.md:51:36:proselint.P-Value:You should use more decimal places, unless 'p = 0.00' is really true.
+    test.md:51:47:proselint.Needless:Prefer 'abolition' over 'abolishment'
     """
 
   Scenario: Lint against Rust
@@ -277,4 +290,17 @@ Feature: Styles
     test.md:5:1:Rust.Titles:'Matching Ranges of Values with `***` foo bar' should be in title case
     test.md:7:16:Rust.Methods:Remove parentheses from 'connect()`'
     test.md:7:46:Rust.Methods:Remove parentheses from 'connect()`'
+    """
+
+  Scenario: Lint against GCC
+    When I apply style "GCC"
+    Then the output should contain exactly:
+    """
+    test.md:1:1:GCC.Terms:Use 'Red Hat' instead of 'RedHat'
+    test.md:1:43:GCC.Terms:Use 'free software' instead of 'open source'
+    test.md:3:15:GCC.Bugfix:Use 'bug fix' (noun) or 'bug-fix' (adjective) instead of 'bugfix'
+    test.md:3:26:GCC.Terms:Use 'GNU/Linux' instead of 'Linux'
+    test.md:3:32:GCC.Terms:Use 'bit-field(s)' instead of 'bitfields'
+    test.md:3:75:GCC.Terms:Use 'Microsoft Windows' instead of 'Windows'
+    test.md:3:98:GCC.Backend:Use 'back-end' instead of 'back end'
     """

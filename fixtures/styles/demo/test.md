@@ -22,3 +22,5 @@ This is a sentence (i.e. when X > 0), we can compute stuff. It's 11 am! Just wai
 `at` dissapear `least` one proper noun, maybe preceeded `by` an adjective and/or number
 
 Python has for-loops (not `for` loops or for loops).
+
+A meet up on Sunday before the reception. We should meet up and talk. Let's meet up at 5pm. All of our local meet-ups are organized by members of the community in their own town. They vary in style as much as the individual cities themselves vary. The main thread that brings people together is caring about great communication and users of their product. We invite you to join a meet up in your local community.

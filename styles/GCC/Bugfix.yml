@@ -1,0 +1,10 @@
+extends: substitution
+message: Use %s instead of '%s'
+level: error
+# Use 'bug fix' (noun) or 'bug-fix' (adj).
+pos: 'bug-fix/NN|bugfix/(?:JJ|NN)|bug/\w+ fix/JJ'
+ignorecase: true
+swap:
+  'bug-fix': "'bug fix'"
+  'bug fix': "'bug-fix'"
+  'bugfix': "'bug fix' (noun) or 'bug-fix' (adjective)"

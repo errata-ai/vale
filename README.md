@@ -1,6 +1,6 @@
 # Vale: Your Style, Our Editor
 
-[![Build Status](https://travis-ci.org/ValeLint/vale.svg?branch=master)](https://travis-ci.org/ValeLint/vale) [![Build status](https://ci.appveyor.com/api/projects/status/snk0oo6ih1nwuf6r/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/vale/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/ValeLint/vale)](https://goreportcard.com/report/github.com/ValeLint/vale) [![codebeat](https://codebeat.co/badges/a9b4b73a-182d-4ed7-8019-0fc5957bad91)](https://codebeat.co/projects/github-com-valelint-vale-master) [![release](https://img.shields.io/github/release/valelint/vale.svg)](https://github.com/ValeLint/vale/releases/latest) [![license](https://img.shields.io/github/license/valelint/vale.svg)](https://github.com/ValeLint/vale/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/ValeLint/vale.svg?branch=master)](https://travis-ci.org/ValeLint/vale) [![Build status](https://ci.appveyor.com/api/projects/status/snk0oo6ih1nwuf6r/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/vale/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/ValeLint/vale)](https://goreportcard.com/report/github.com/ValeLint/vale) [![release](https://img.shields.io/github/release/valelint/vale.svg)](https://github.com/ValeLint/vale/releases/latest) [![license](https://img.shields.io/github/license/valelint/vale.svg)](https://github.com/ValeLint/vale/blob/master/LICENSE)
 
 ![demo](https://cloud.githubusercontent.com/assets/8785025/22951386/df064226-f2bd-11e6-84e3-4cedfc098528.png)
 
@@ -31,6 +31,11 @@ There are a few options to choose from:
     $ brew tap ValeLint/vale
     $ brew install vale
     ```
+- [Chocolatey](https://chocolatey.org/packages/vale/):		
+		
+     ```shell		
+     C:\> choco install vale		
+     ```
 - A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
 - Manually on **Windows**, **macOS**, or **Linux** by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
 
@@ -59,13 +64,13 @@ $ vale --glob='!*.txt' directory
 Pipe input to Vale:
 
 ```shell
-$ echo 'this is some text' | vale
+$ echo 'this is some very interesting text' | vale
 ```
 
 Run Vale on text with an assigned syntax:
 
 ```shell
-$ vale --ext=.md 'this is some text'
+$ vale --ext=.md 'this is some `very` interesting text'
 ```
 
 See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) for more information.
@@ -80,18 +85,19 @@ See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) f
 
 ## Reference Styles
 
-|           Style (source)           |        Download        |                                                      Description                                                      | Development Status |
-|:----------------------------------:|:----------------------:|:---------------------------------------------------------------------------------------------------------------------:|:------------------:|
-|   [`write-good`][write-good-src]   |  [`write-good.zip`][write-good-dl]  |    Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.     | :white_check_mark: |
-|      [`Joblint`][Joblint-src]      |   [`Joblint.zip`][Joblint-dl]    |                Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                | :white_check_mark: |
-|       [`jQuery`][jQuery-src]       |    [`jQuery.zip`][jQuery-dl]    |            A collection of rules based on jQuery's documentation formatting conventions and writing style.            |   :construction:   |
+|           Style (source)           |               Download                |                                                      Description                                                      | Development Status |
+|:----------------------------------:|:-------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|:------------------:|
+|          [`18F`][18F-src]          |          [`18F.zip`][18F-dl]          |                                  Guidelines for creating plain and concise writing.                                   |   :construction:   |
+|     [`Homebrew`][Homebrew-src]     |     [`Homebrew.zip`][Homebrew-dl]     | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
+|      [`Joblint`][Joblint-src]      |      [`Joblint.zip`][Joblint-dl]      |                Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.                | :white_check_mark: |
+|       [`jQuery`][jQuery-src]       |       [`jQuery.zip`][jQuery-dl]       |            A collection of rules based on jQuery's documentation formatting conventions and writing style.            |   :construction:   |
+|    [`MailChimp`][MailChimp-src]    |    [`MailChimp.zip`][MailChimp-dl]    |                             Writing style guidelines used on the MailChimp documentation.                             |   :construction:   |
+|   [`Middlebury`][Middlebury-src]   |   [`Middlebury.zip`][Middlebury-dl]   |                         A collection of rules based on The Middlebury Editorial Style Guide.                          |   :construction:   |
+|    [`OpenStack`][OpenStack-src]    |    [`OpenStack.zip`][OpenStack-dl]    |                             Writing style guidelines used on the OpenStack documentation.                             |   :construction:   |
+|    [`proselint`][proselint-src]    |    [`proselint.zip`][proselint-dl]    |                 A linter for English prose that aggregates knowledge about best practices in writing.                 | :white_check_mark: |
+|         [`Rust`][Rust-src]         |         [`Rust.zip`][Rust-dl]         |                        Writing style guidelines used on *The Rust Programming Language* book.                         | :white_check_mark: |
 | [`TheEconomist`][TheEconomist-src] | [`TheEconomist.zip`][TheEconomist-dl] |                               A collection of rules based on The Economist Style Guide.                               |   :construction:   |
-|     [`Homebrew`][Homebrew-src]     |   [`Homebrew.zip`][Homebrew-dl]   | A set of style and usage guidelines for Homebrew’s prose documentation aimed at users, contributors, and maintainers. |   :construction:   |
-|   [`Middlebury`][Middlebury-src]   |  [`Middlebury.zip`][Middlebury-dl]  |                         A collection of rules based on The Middlebury Editorial Style Guide.                          |   :construction:   |
-|          [`18F`][18F-src]          |     [`18F.zip`][18F-dl]      |                                  Guidelines for creating plain and concise writing.                                   |   :construction:   |
-|    [`OpenStack`][OpenStack-src]    |  [`OpenStack.zip`][OpenStack-dl]   |                         Writing style guidelines used on the OpenStack documentation.                         |   :construction:   |
-|    [`MailChimp`][MailChimp-src]    |  [`MailChimp.zip`][MailChimp-dl]   |                         Writing style guidelines used on the MailChimp documentation.                         |   :construction:   |
-|         [`Rust`][Rust-src]         |     [`Rust.zip`][Rust-dl]     |                         Writing style guidelines used on *The Rust Programming Language* book.                         |   :white_check_mark:   |
+|   [`write-good`][write-good-src]   |   [`write-good.zip`][write-good-dl]   |    Naive linter for English prose for developers who can't write good and wanna learn to do other stuff good too.     | :white_check_mark: |
 
 To use one of these styles, you'd copy its files onto your `StylesPath` and then specify it in your config file:
 
@@ -142,3 +148,6 @@ See [Configuration](https://valelint.github.io/docs/config/) and [Styles](https:
 
 [Rust-src]: https://github.com/rust-lang/book/blob/master/second-edition/style-guide.md
 [Rust-dl]: https://github.com/ValeLint/docs/raw/master/styles/Rust.zip
+
+[proselint-src]: https://github.com/amperser/proselint
+[proselint-dl]: https://github.com/ValeLint/docs/raw/master/styles/proselint.zip

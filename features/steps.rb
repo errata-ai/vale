@@ -52,8 +52,9 @@ end
 When(/^I lint string "(.*)"$/) do |string|
   step %(I cd to "../../fixtures/formats")
   if OS.windows?
-    step %(I run `#{exe} --% #{string}`)
+    # FIXME: How do we pass a string with spaces on AppVeyor?
+    step %(I run `#{exe} "#{string}"`)
   else
-    step %(I run `#{exe} #{string}`)
+    step %(I run `#{exe} '#{string}'`)
   end
 end

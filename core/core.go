@@ -11,8 +11,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/gobwas/glob"
-
-	"gopkg.in/neurosnap/sentences.v1/english"
+	"github.com/jdkato/prose/tag"
+	"github.com/jdkato/prose/tokenize"
 )
 
 // A File represents a linted text file.
@@ -36,13 +36,13 @@ type File struct {
 // An Alert represents a potential error in prose.
 type Alert struct {
 	Check       string // the name of the check
-	Context     string // the surrounding text
 	Description string // why `Message` is meaningful
 	Line        int    // the source line
 	Link        string // reference material
 	Message     string // the output message
 	Severity    string // 'suggestion', 'warning', or 'error'
 	Span        []int  // the [begin, end] location within a line
+	Hide        bool   // should we hide this alert?
 }
 
 // A Selector represents a named section of text.
@@ -145,14 +145,14 @@ func (f *File) SortedAlerts() []Alert {
 }
 
 // FindLoc calculates the line and span of an Alert.
-func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int, string) {
+func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
 	var length int
 	var lines []string
 
 	pos, substring := initialPosition(ctx, s[loc[0]:loc[1]], loc)
 	if pos < 0 {
 		// Shouldn't happen ...
-		return pos, []int{0, 0}, ""
+		return pos, []int{0, 0}
 	}
 
 	if f.Format == "markup" {
@@ -171,24 +171,26 @@ func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int, st
 			if loc[1] > extent {
 				loc[1] = extent
 			}
-			return count - (len(lines) - (idx + 1)), loc, l
+			return count - (len(lines) - (idx + 1)), loc
 		}
 		counter += length
 	}
 
-	return count, loc, ""
+	return count, loc
 }
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
-func (f *File) AddAlert(a Alert, ctx string, txt string, lines int, pad int) {
+func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad int) {
 	substring := txt[a.Span[0]:a.Span[1]]
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old
 	}
-	a.Line, a.Span, a.Context = f.FindLoc(ctx, txt, pad, lines, a.Span)
+	a.Line, a.Span = f.FindLoc(ctx, txt, pad, lines, a.Span)
 	if a.Span[0] > 0 {
 		f.ChkToCtx[a.Check], _ = Substitute(ctx, substring, '#')
-		f.Alerts = append(f.Alerts, a)
+		if !a.Hide {
+			f.Alerts = append(f.Alerts, a)
+		}
 	}
 }
 
@@ -216,7 +218,7 @@ func (f *File) QueryComments(check string) bool {
 	return f.Comments["off"]
 }
 
-// ResetComments ...
+// ResetComments resets the state of all checks back to active.
 func (f *File) ResetComments() {
 	for check := range f.Comments {
 		if check != "off" {
@@ -226,4 +228,10 @@ func (f *File) ResetComments() {
 }
 
 // SentenceTokenizer splits text into sentences.
-var SentenceTokenizer, _ = english.NewSentenceTokenizer(nil)
+var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
+
+// Tagger tags a sentence.
+//
+// We wait to initilize it until we need it since it's slow (~1s) and we may
+// not need it.
+var Tagger *tag.PerceptronTagger

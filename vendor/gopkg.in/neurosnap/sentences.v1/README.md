@@ -1,8 +1,7 @@
 [![Build Status](https://travis-ci.org/neurosnap/sentences.svg)](https://travis-ci.org/neurosnap/sentences)
 [![GODOC](https://godoc.org/github.com/nathany/looper?status.svg)](https://godoc.org/gopkg.in/neurosnap/sentences.v1)
 ![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg)
-
-<a href="https://github.com/hackraft/gophericons"><img src="gopher.png" align="left" height="230"></a>
+[![Go Report Card](https://goreportcard.com/badge/github.com/neurosnap/sentences)](https://goreportcard.com/report/github.com/neurosnap/sentences)
 
 Sentences - A command line sentence tokenizer
 =============================================
@@ -72,7 +71,7 @@ func main() {
     b, _ := data.Asset("data/english.json");
 
     // load the training data
-    training, _ := sentences.LoadTraining(data)
+    training, _ := sentences.LoadTraining(b)
 
     // create the default sentence tokenizer
     tokenizer := sentences.NewSentenceTokenizer(training)
@@ -110,6 +109,19 @@ func main() {
     }
 }
 ```
+
+Contributing
+------------
+
+I need help maintaining this library.  If you are interested in contributing
+to this library then please start by looking at the [golder-rules](https://github.com/neurosnap/sentences/tree/golden-rule) branch which
+tests the [Golden Rules](https://github.com/diasks2/pragmatic_segmenter/blob/master/README.md#the-golden-rules)
+for english sentence tokenization created by the [Pragmatic Segmenter](https://github.com/diasks2/pragmatic_segmenter)
+library.
+
+Create an issue for a particular failing test and submit an issue/PR.
+
+I'm happy to help anyone willing to contribute.
 
 Customizable
 ------------
@@ -158,5 +170,3 @@ text, we compare this package with other libraries across multiple programming l
 |:----------|:----------------------:|:-----------:
 | Sentences | 1.96                   | 98.95
 | NLTK      | 5.22                   | 99.21
-
-

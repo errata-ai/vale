@@ -15,6 +15,18 @@ type testCase struct {
 	Words      float64
 	PolyWords  float64
 	Characters float64
+
+	AutomatedReadability float64
+	ColemanLiau          float64
+	FleschKincaid        float64
+	GunningFog           float64
+	SMOG                 float64
+
+	MeanGrade   float64
+	StdDevGrade float64
+
+	DaleChall   float64
+	ReadingEase float64
 }
 
 func TestSummarize(t *testing.T) {

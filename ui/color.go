@@ -14,26 +14,16 @@ const (
 	warningColor                    = color.FgYellow
 	suggestionColor                 = color.FgBlue
 	underlineColor                  = color.Underline
-
-	// CONTEXT prints an alert with its surrounding text.
-	CONTEXT = iota
-
-	// VERBOSE prints an alert with its Message, Level, and Check.
-	VERBOSE
 )
 
 // PrintVerboseAlerts prints Alerts in verbose format.
-func PrintVerboseAlerts(linted []*core.File, option int, wrap bool) bool {
+func PrintVerboseAlerts(linted []*core.File, wrap bool) bool {
 	var errors, warnings, suggestions int
 	var e, w, s int
 	var symbol string
 
 	for _, f := range linted {
-		if option == VERBOSE {
-			e, w, s = printVerboseAlert(f, wrap)
-		} else {
-			e, w, s = printContextAlert(f)
-		}
+		e, w, s = printVerboseAlert(f, wrap)
 		errors += e
 		warnings += w
 		suggestions += s
@@ -55,34 +45,6 @@ func PrintVerboseAlerts(linted []*core.File, option int, wrap bool) bool {
 		colorize(stotal, suggestionColor), n, pluralize("file", n))
 
 	return errors != 0
-}
-
-// printContextAlert includes an alert's line and its surrounding text.
-func printContextAlert(f *core.File) (int, int, int) {
-	var errors, warnings, notifications int
-
-	alerts := f.SortedAlerts()
-	if len(alerts) == 0 {
-		return 0, 0, 0
-	}
-
-	fmt.Printf("\n%s\n", colorize(f.Path, underlineColor))
-	for _, a := range alerts {
-		if a.Severity == "suggestion" {
-			notifications++
-		} else if a.Severity == "warning" {
-			warnings++
-		} else {
-			errors++
-		}
-		loc := []int{a.Span[0] - 1, a.Span[1]}
-		output := colorizeSubString(a.Context, loc, color.FgRed)
-		line := colorize(fmt.Sprintf("%d", a.Line), color.FgGreen)
-		fmt.Print(fmt.Sprintf("%s:%s\n", line, fixOutputSpacing(output)))
-	}
-	fmt.Print("\n")
-
-	return errors, warnings, notifications
 }
 
 // printVerboseAlert includes an alert's line, column, level, and message.
@@ -125,8 +87,4 @@ func colorize(message string, textColor color.Attribute) string {
 	colorPrinter := color.New(textColor)
 	f := colorPrinter.SprintFunc()
 	return f(message)
-}
-
-func colorizeSubString(src string, loc []int, textColor color.Attribute) string {
-	return src[:loc[0]] + colorize(src[loc[0]:loc[1]], textColor) + src[loc[1]:]
 }

@@ -7,28 +7,33 @@ import (
 	"testing"
 
 	"github.com/jdkato/prose/internal/util"
+	"github.com/stretchr/testify/assert"
 )
 
 var testdata = filepath.Join("..", "testdata")
+
+func check(expected, observed float64) bool {
+	return fmt.Sprintf("%0.2f", expected) == fmt.Sprintf("%0.2f", observed)
+}
 
 func TestReadability(t *testing.T) {
 	tests := make([]testCase, 0)
 	cases := util.ReadDataFile(filepath.Join(testdata, "summarize.json"))
 
 	util.CheckError(json.Unmarshal(cases, &tests))
-	for i, test := range tests {
+	for _, test := range tests {
 		d := NewDocument(test.Text)
 		a := d.Assess()
-		fmt.Printf("Case: %d\n", i)
-		fmt.Printf("AutomatedReadability: %0.2f\n", a.AutomatedReadability)
-		fmt.Printf("ColemanLiau: %0.2f\n", a.ColemanLiau)
-		fmt.Printf("FleschKincaid: %0.2f\n", a.FleschKincaid)
-		fmt.Printf("Gunningfog: %0.2f\n", a.GunningFog)
-		fmt.Printf("SMOG: %0.2f\n", a.SMOG)
-		fmt.Printf("MeanGrade: %0.2f\n", a.MeanGradeLevel)
-		fmt.Printf("StdDevGrade: %0.2f\n", a.StdDevGradeLevel)
-		fmt.Printf("DaleChall: %0.2f\n", a.DaleChall)
-		fmt.Printf("ReadingEase: %0.2f\n", a.ReadingEase)
+
+		assert.True(t, check(test.AutomatedReadability, a.AutomatedReadability))
+		assert.True(t, check(test.ColemanLiau, a.ColemanLiau))
+		assert.True(t, check(test.FleschKincaid, a.FleschKincaid))
+		assert.True(t, check(test.GunningFog, a.GunningFog))
+		assert.True(t, check(test.SMOG, a.SMOG))
+		assert.True(t, check(test.MeanGrade, a.MeanGradeLevel))
+		assert.True(t, check(test.StdDevGrade, a.StdDevGradeLevel))
+		assert.True(t, check(test.DaleChall, a.DaleChall))
+		assert.True(t, check(test.ReadingEase, a.ReadingEase))
 	}
 }
 

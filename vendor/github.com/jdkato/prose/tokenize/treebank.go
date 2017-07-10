@@ -69,12 +69,6 @@ var spaces = regexp.MustCompile(`(?: {2,})`)
 // single quotes when followed by whitespace, and (4) split on periods that
 // appear at the end of lines.
 //
-// For example:
-//
-//    t := NewTreebankWordTokenizer()
-//    t.Tokenize("They'll save and invest more.")
-//    // [They 'll save and invest more .]
-//
 // NOTE: As mentioned above, this function expects a sentence (not raw text) as
 // input.
 func (t TreebankWordTokenizer) Tokenize(text string) []string {

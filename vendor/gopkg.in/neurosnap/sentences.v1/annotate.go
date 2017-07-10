@@ -156,6 +156,17 @@ func (a *TokenBasedAnnotation) tokenAnnotation(tokOne, tokTwo *Token) {
 	}
 
 	/*
+		Sometimes there are two consecutive tokens with a lone "."
+		which probably means it is part of a spaced ellipsis ". . ."
+		so set those tokens and not sentence breaks
+	*/
+	if tokOne.Tok == "." && tokTwo.Tok == "." {
+		tokOne.SentBreak = false
+		tokTwo.SentBreak = false
+		return
+	}
+
+	/*
 		[4.3. Token-Based Detection of Initials and Ordinals]
 		Check if any initials or ordinals tokens that are marked
 		as sentbreaks should be reclassified as abbreviations.

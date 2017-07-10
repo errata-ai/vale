@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "memo": "32bc4cf7aaf3baaa4755b8d45a12c53bc4002e81c033627a274310468505c63b",
     "projects": [
         {
@@ -35,10 +36,15 @@
         {
             "name": "github.com/jdkato/prose",
             "branch": "master",
-            "revision": "304c372ed1ce682dbbf0ed4aaa50789a0fc4aa98",
+            "revision": "d62723ee3fb13fa37c6bf52c39dba9888787c152",
             "packages": [
+                "internal/model",
                 "internal/util",
+<<<<<<< HEAD
                 "summarize",
+=======
+                "tag",
+>>>>>>> origin/master
                 "tokenize",
                 "transform"
             ]
@@ -124,6 +130,14 @@
             ]
         },
         {
+            "name": "github.com/shogo82148/go-shuffle",
+            "branch": "master",
+            "revision": "4789c7c401f229b3ae1673acbccca451480660cd",
+            "packages": [
+                "."
+            ]
+        },
+        {
             "name": "github.com/shurcooL/sanitized_anchor_name",
             "branch": "master",
             "revision": "1dba4b3954bc059efc3991ec364f9f9a35f597d2",
@@ -182,12 +196,11 @@
         },
         {
             "name": "gopkg.in/neurosnap/sentences.v1",
-            "branch": "master",
-            "revision": "53acab9054f8489ce33611a240b7dd92eaba863f",
+            "version": "v1.0.6",
+            "revision": "a7f18ead1433a139742a8b42ce7a059cfb484d60",
             "packages": [
                 ".",
-                "data",
-                "english"
+                "data"
             ]
         },
         {

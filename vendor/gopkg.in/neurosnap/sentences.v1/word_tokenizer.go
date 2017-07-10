@@ -67,7 +67,9 @@ func NewWordTokenizer(p PunctStrings) *DefaultWordTokenizer {
 // Tokenize breaks text into words while preserving their character position, whether it starts
 // a new line, and new paragraph.
 func (p *DefaultWordTokenizer) Tokenize(text string, onlyPeriodContext bool) []*Token {
-	if len(text) == 0 {
+	textLength := len(text)
+
+	if textLength == 0 {
 		return nil
 	}
 
@@ -78,7 +80,7 @@ func (p *DefaultWordTokenizer) Tokenize(text string, onlyPeriodContext bool) []*
 	getNextWord := false
 
 	for i, char := range text {
-		if !unicode.IsSpace(char) {
+		if !unicode.IsSpace(char) && i != textLength - 1 {
 			continue
 		}
 
@@ -89,25 +91,32 @@ func (p *DefaultWordTokenizer) Tokenize(text string, onlyPeriodContext bool) []*
 			lineStart = true
 		}
 
-		word := strings.TrimSpace(text[lastSpace:i])
+		var cursor int
+		if i == textLength - 1 {
+			cursor = textLength
+		} else {
+			cursor = i
+		}
+
+		word := strings.TrimSpace(text[lastSpace:cursor])
+
 		if word == "" {
 			continue
 		}
 
 		hasSentencePunct := p.PunctStrings.HasSentencePunct(word)
-
 		if onlyPeriodContext && !hasSentencePunct && !getNextWord {
-			lastSpace = i
+			lastSpace = cursor
 			continue
 		}
 
 		token := NewToken(word)
-		token.Position = i
+		token.Position = cursor
 		token.ParaStart = paragraphStart
 		token.LineStart = lineStart
 		tokens = append(tokens, token)
 
-		lastSpace = i
+		lastSpace = cursor
 		lineStart = false
 		paragraphStart = false
 
@@ -120,7 +129,7 @@ func (p *DefaultWordTokenizer) Tokenize(text string, onlyPeriodContext bool) []*
 
 	if len(tokens) == 0 {
 		token := NewToken(text)
-		token.Position = len(text)
+		token.Position = textLength
 		tokens = append(tokens, token)
 	}
 
