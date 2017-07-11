@@ -120,6 +120,27 @@ Feature: Config
     """
     And the exit status should be 1
 
+  Scenario: Overwrite disabled rules on a per-syntax basis
+    Given a file named "_vale" with:
+    """
+    StylesPath = ../../styles/
+    MinAlertLevel = warning
+
+    [*]
+    BasedOnStyles = write-good
+    write-good.Weasal = NO
+
+    [*.py]
+    write-good.Weasal = YES
+    """
+    When I run vale "test.py test.md"
+    Then the output should contain exactly:
+    """
+    test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
+    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
+    """
+    And the exit status should be 1
+
   Scenario: Load two base styles
     Given a file named "_vale" with:
     """
