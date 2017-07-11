@@ -151,9 +151,11 @@ Feature: Config
     BasedOnStyles = TheEconomist, write-good
     write-good.E-Prime = NO
     """
-    When I run vale "test.py"
+    When I run vale "test.py test.md"
     Then the output should contain exactly:
     """
+    test.md:1:11:write-good.Weasal:'very' is a weasal word!
+    test.md:1:36:TheEconomist.UnnecessaryWords:'There is' - See section 'Unnecessary words'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:3:TheEconomist.UnnecessaryWords:'There is' - See section 'Unnecessary words'
     test.py:1:37:write-good.Weasal:'Very' is a weasal word!
