@@ -56,7 +56,6 @@ var runewidthtests = []struct {
 
 func TestRuneWidth(t *testing.T) {
 	c := NewCondition()
-	c.EastAsianWidth = false
 	for _, tt := range runewidthtests {
 		if out := c.RuneWidth(tt.in); out != tt.out {
 			t.Errorf("RuneWidth(%q) = %d, want %d", tt.in, out, tt.out)
@@ -122,16 +121,15 @@ var stringwidthtests = []struct {
 
 func TestStringWidth(t *testing.T) {
 	c := NewCondition()
-	c.EastAsianWidth = false
 	for _, tt := range stringwidthtests {
 		if out := c.StringWidth(tt.in); out != tt.out {
-			t.Errorf("StringWidth(%q) = %d, want %d", tt.in, out, tt.out)
+			t.Errorf("StringWidth(%q) = %q, want %q", tt.in, out, tt.out)
 		}
 	}
 	c.EastAsianWidth = true
 	for _, tt := range stringwidthtests {
 		if out := c.StringWidth(tt.in); out != tt.eaout {
-			t.Errorf("StringWidth(%q) = %d, want %d", tt.in, out, tt.eaout)
+			t.Errorf("StringWidth(%q) = %q, want %q", tt.in, out, tt.eaout)
 		}
 	}
 }
@@ -139,7 +137,7 @@ func TestStringWidth(t *testing.T) {
 func TestStringWidthInvalid(t *testing.T) {
 	s := "こんにちわ\x00世界"
 	if out := StringWidth(s); out != 14 {
-		t.Errorf("StringWidth(%q) = %d, want %d", s, out, 14)
+		t.Errorf("StringWidth(%q) = %q, want %q", s, out, 14)
 	}
 }
 

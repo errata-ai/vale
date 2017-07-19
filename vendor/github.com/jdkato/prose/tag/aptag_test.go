@@ -47,9 +47,9 @@ func TestTrain(t *testing.T) {
 		}
 	}
 
-	assert.Equal(t, nrWords*iter, int(tagger.Model.Instances))
+	assert.Equal(t, nrWords*iter, int(tagger.model.instances))
 	for _, tag := range tagSet {
-		assert.True(t, util.StringInSlice(tag, tagger.Model.Classes))
+		assert.True(t, util.StringInSlice(tag, tagger.model.classes))
 	}
 }
 

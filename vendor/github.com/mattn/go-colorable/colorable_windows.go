@@ -68,6 +68,7 @@ var (
 	procFillConsoleOutputAttribute = kernel32.NewProc("FillConsoleOutputAttribute")
 	procGetConsoleCursorInfo       = kernel32.NewProc("GetConsoleCursorInfo")
 	procSetConsoleCursorInfo       = kernel32.NewProc("SetConsoleCursorInfo")
+	procSetConsoleTitle            = kernel32.NewProc("SetConsoleTitleW")
 )
 
 // Writer provide colorable Writer to the console
@@ -362,6 +363,45 @@ var color256 = map[int]int{
 	255: 0xeeeeee,
 }
 
+// `\033]0;TITLESTR\007`
+func doTitleSequence(er *bytes.Reader) error {
+	var c byte
+	var err error
+
+	c, err = er.ReadByte()
+	if err != nil {
+		return err
+	}
+	if c != '0' && c != '2' {
+		return nil
+	}
+	c, err = er.ReadByte()
+	if err != nil {
+		return err
+	}
+	if c != ';' {
+		return nil
+	}
+	title := make([]byte, 0, 80)
+	for {
+		c, err = er.ReadByte()
+		if err != nil {
+			return err
+		}
+		if c == 0x07 || c == '\n' {
+			break
+		}
+		title = append(title, c)
+	}
+	if len(title) > 0 {
+		title8, err := syscall.UTF16PtrFromString(string(title))
+		if err == nil {
+			procSetConsoleTitle.Call(uintptr(unsafe.Pointer(title8)))
+		}
+	}
+	return nil
+}
+
 // Write write data on console
 func (w *Writer) Write(data []byte) (n int, err error) {
 	var csbi consoleScreenBufferInfo
@@ -388,6 +428,13 @@ loop:
 		c2, err := er.ReadByte()
 		if err != nil {
 			break loop
+		}
+
+		if c2 == ']' {
+			if err := doTitleSequence(er); err != nil {
+				break loop
+			}
+			continue
 		}
 		if c2 != 0x5b {
 			continue

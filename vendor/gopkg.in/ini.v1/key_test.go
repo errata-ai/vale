@@ -15,6 +15,7 @@
 package ini
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 	"testing"
@@ -436,6 +437,41 @@ key2= ; comment`
 		cfg, err := Load([]byte(_conf))
 		So(err, ShouldBeNil)
 		So(cfg.Section("").Key("key1").Value(), ShouldBeEmpty)
+	})
+}
+
+const _CONF_GIT_CONFIG = `
+[remote "origin"]
+        url = https://github.com/Antergone/test1.git
+        url = https://github.com/Antergone/test2.git
+`
+
+func Test_Key_Shadows(t *testing.T) {
+	Convey("Shadows keys", t, func() {
+		Convey("Disable shadows", func() {
+			cfg, err := Load([]byte(_CONF_GIT_CONFIG))
+			So(err, ShouldBeNil)
+			So(cfg.Section(`remote "origin"`).Key("url").String(), ShouldEqual, "https://github.com/Antergone/test2.git")
+		})
+
+		Convey("Enable shadows", func() {
+			cfg, err := ShadowLoad([]byte(_CONF_GIT_CONFIG))
+			So(err, ShouldBeNil)
+			So(cfg.Section(`remote "origin"`).Key("url").String(), ShouldEqual, "https://github.com/Antergone/test1.git")
+			So(strings.Join(cfg.Section(`remote "origin"`).Key("url").ValueWithShadows(), " "), ShouldEqual,
+				"https://github.com/Antergone/test1.git https://github.com/Antergone/test2.git")
+
+			Convey("Save with shadows", func() {
+				var buf bytes.Buffer
+				_, err := cfg.WriteTo(&buf)
+				So(err, ShouldBeNil)
+				So(buf.String(), ShouldEqual, `[remote "origin"]
+url = https://github.com/Antergone/test1.git
+url = https://github.com/Antergone/test2.git
+
+`)
+			})
+		})
 	})
 }
 

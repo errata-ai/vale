@@ -86,13 +86,7 @@ func Run(t *testing.T, suite TestingSuite) {
 					if setupTestSuite, ok := suite.(SetupTestSuite); ok {
 						setupTestSuite.SetupTest()
 					}
-					if beforeTestSuite, ok := suite.(BeforeTest); ok {
-						beforeTestSuite.BeforeTest(methodFinder.Elem().Name(), method.Name)
-					}
 					defer func() {
-						if afterTestSuite, ok := suite.(AfterTest); ok {
-							afterTestSuite.AfterTest(methodFinder.Elem().Name(), method.Name)
-						}
 						if tearDownTestSuite, ok := suite.(TearDownTestSuite); ok {
 							tearDownTestSuite.TearDownTest()
 						}

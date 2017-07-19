@@ -1,0 +1,254 @@
+[
+    {
+        "input": "follow step-by-step instructions",
+        "expect": "Follow Step-by-Step Instructions"
+    },
+    {
+        "input": "follow step-BY-step instructions",
+        "expect": "Follow Step-by-Step Instructions"
+    },
+    {
+        "input": "this sub-phrase is nice",
+        "expect": "This Sub-Phrase Is Nice"
+    },
+    {
+        "input": "catchy title: a subtitle",
+        "expect": "Catchy Title: A Subtitle"
+    },
+    {
+        "input": "catchy title: \"a quoted subtitle\"",
+        "expect": "Catchy Title: \"A Quoted Subtitle\""
+    },
+    {
+        "input": "catchy title: “‘a twice quoted subtitle’”",
+        "expect": "Catchy Title: “‘A Twice Quoted Subtitle’”"
+    },
+    {
+        "input": "\"a title inside double quotes\"",
+        "expect": "\"A Title Inside Double Quotes\""
+    },
+    {
+        "input": "all words capitalized",
+        "expect": "All Words Capitalized"
+    },
+    {
+        "input": "small words are for by and of lowercase",
+        "expect": "Small Words Are for by and of Lowercase"
+    },
+    {
+        "input": "a small word starts",
+        "expect": "A Small Word Starts"
+    },
+    {
+        "input": "a small word it ends on",
+        "expect": "A Small Word It Ends On"
+    },
+    {
+        "input": "do questions work?",
+        "expect": "Do Questions Work?"
+    },
+    {
+        "input": "multiple sentences. more than one.",
+        "expect": "Multiple Sentences. More Than One."
+    },
+    {
+        "input": "Ends with small word of",
+        "expect": "Ends With Small Word Of"
+    },
+    {
+        "input": "double quoted \"inner\" word",
+        "expect": "Double Quoted \"Inner\" Word"
+    },
+    {
+        "input": "single quoted 'inner' word",
+        "expect": "Single Quoted 'Inner' Word"
+    },
+    {
+        "input": "fancy double quoted “inner” word",
+        "expect": "Fancy Double Quoted “Inner” Word"
+    },
+    {
+        "input": "fancy single quoted ‘inner’ word",
+        "expect": "Fancy Single Quoted ‘Inner’ Word"
+    },
+    {
+        "input": "this vs. that",
+        "expect": "This vs. That"
+    },
+    {
+        "input": "this vs that",
+        "expect": "This vs That"
+    },
+    {
+        "input": "this v. that",
+        "expect": "This v. That"
+    },
+    {
+        "input": "this v that",
+        "expect": "This v That"
+    },
+    {
+        "input": "catchy title: substance subtitle",
+        "expect": "Catchy Title: Substance Subtitle"
+    },
+    {
+        "input": "have you read “The Lottery”?",
+        "expect": "Have You Read “The Lottery”?"
+    },
+    {
+        "input": "Drink this piña colada while you listen to ænima",
+        "expect": "Drink This Piña Colada While You Listen to Ænima"
+    },
+    {
+        "input": "don't break",
+        "expect": "Don't Break"
+    },
+    {
+        "input": "we keep NASA capitalized",
+        "expect": "We Keep NASA Capitalized"
+    },
+    {
+        "input":"leave Q&A unscathed",
+        "expect":"Leave Q&A Unscathed"
+    },
+    {
+        "input":"your hair[cut] looks (nice)",
+        "expect":"Your Hair[cut] Looks (Nice)"
+    },
+    {
+        "input":"keep that colo(u)r",
+        "expect":"Keep That Colo(u)r"
+    },
+    {
+        "input":"capitalize hyphenated words on-demand",
+        "expect":"Capitalize Hyphenated Words On-Demand"
+    },
+    {
+        "input":"take them on: special lower cases",
+        "expect":"Take Them On: Special Lower Cases"
+    },
+    {
+        "input":"Notes and observations regarding Apple’s announcements from ‘The Beat Goes On’ special event",
+        "expect":"Notes and Observations Regarding Apple’s Announcements From ‘The Beat Goes On’ Special Event"
+    },
+    {
+        "input": "a title and/or string",
+        "expect": "A Title and/or String"
+    },
+    {
+        "input": "dance with me/let’s face the music and dance",
+        "expect": "Dance With Me/Let’s Face the Music and Dance"
+    },
+    {
+        "input": "34th 3rd 2nd",
+        "expect": "34th 3rd 2nd"
+    },
+    {
+        "input": "Q&A with steve jobs: 'that's what happens in technology'",
+        "expect": "Q&A With Steve Jobs: 'That's What Happens in Technology'"
+    },
+    {
+        "input": "What is AT&T's problem?",
+        "expect": "What Is AT&T's Problem?"
+    },
+    {
+        "input": "Apple deal with AT&T falls through",
+        "expect": "Apple Deal With AT&T Falls Through"
+    },
+    {
+        "input": "The SEC's Apple probe: what you need to know",
+        "expect": "The SEC's Apple Probe: What You Need to Know"
+    },
+    {
+        "input": "The SEC's Apple probe: what you need to know",
+        "expect": "The SEC's Apple Probe: What You Need to Know"
+    },
+    {
+        "input": "'by the Way, small word at the start but within quotes.'",
+        "expect": "'By the Way, Small Word at the Start but Within Quotes.'"
+    },
+    {
+        "input": "Small word at end is nothing to be afraid of",
+        "expect": "Small Word at End Is Nothing to Be Afraid Of"
+    },
+    {
+        "input": "Starting Sub-Phrase With a Small Word: a Trick, Perhaps?",
+        "expect": "Starting Sub-Phrase With a Small Word: A Trick, Perhaps?"
+    },
+    {
+        "input": "Sub-Phrase With a Small Word in Quotes: 'a Trick, Perhaps?'",
+        "expect": "Sub-Phrase With a Small Word in Quotes: 'A Trick, Perhaps?'"
+    },
+    {
+        "input": "Starting a Hyphen Delimited Sub-Phrase With a Small Word - a Trick, Perhaps?",
+        "expect": "Starting a Hyphen Delimited Sub-Phrase With a Small Word - A Trick, Perhaps?"
+    },
+    {
+        "input": "Hyphen Delimited Sub-Phrase With a Small Word in Quotes - 'a Trick, Perhaps?'",
+        "expect": "Hyphen Delimited Sub-Phrase With a Small Word in Quotes - 'A Trick, Perhaps?'"
+    },
+    {
+        "input": "Snakes on a Plane - The TV Edit - The Famous Line",
+        "expect": "Snakes on a Plane - The TV Edit - The Famous Line"
+    },
+    {
+        "input": "Starting an Em Dash Delimited Sub-Phrase With a Small Word — a Trick, Perhaps?",
+        "expect": "Starting an Em Dash Delimited Sub-Phrase With a Small Word — A Trick, Perhaps?"
+    },
+    {
+        "input": "Em Dash Delimited Sub-Phrase With a Small Word in Quotes — 'a Trick, Perhaps?'",
+        "expect": "Em Dash Delimited Sub-Phrase With a Small Word in Quotes — 'A Trick, Perhaps?'"
+    },
+    {
+        "input": "Snakes on a Plane — The TV Edit — The Famous Line",
+        "expect": "Snakes on a Plane — The TV Edit — The Famous Line"
+    },
+    {
+        "input": "\"Nothing to Be Afraid of?\"",
+        "expect": "\"Nothing to Be Afraid Of?\""
+    },
+    {
+        "input": "a thing",
+        "expect": "A Thing"
+    },
+    {
+        "input": "2lmc Spool: 'gruber on OmniFocus and vapo(u)rware'",
+        "expect": "2lmc Spool: 'Gruber on OmniFocus and Vapo(u)rware'"
+    },
+    {
+        "input": "reading between the lines of steve jobs’s ‘thoughts on music’",
+        "expect": "Reading Between the Lines of Steve Jobs’s ‘Thoughts on Music’"
+    },
+    {
+        "input": "seriously, ‘repair permissions’ is voodoo",
+        "expect": "Seriously, ‘Repair Permissions’ Is Voodoo"
+    },
+    {
+        "input": "generalissimo francisco franco: still dead; kieren McCarthy: still a jackass",
+        "expect": "Generalissimo Francisco Franco: Still Dead; Kieren McCarthy: Still a Jackass"
+    },
+    {
+        "input": "O'Reilly should be untouched",
+        "expect": "O'Reilly Should Be Untouched"
+    },
+    {
+        "input": "Mr McTavish went to MacDonalds",
+        "expect": "Mr McTavish Went to MacDonalds"
+    },
+    {
+        "input": "this shouldn't\nget mangled",
+        "expect": "This Shouldn't\nGet Mangled"
+    },
+    {
+        "input": "mac mc MAC MC machine",
+        "expect": "Mac Mc MAC MC Machine"
+    },
+    {
+        "input": "foo bar 5th st",
+        "expect": "Foo Bar 5th St"
+    },
+    {
+        "input": "hmm ... this is interesting...",
+        "expect": "Hmm ... This Is Interesting..."
+    }
+]
