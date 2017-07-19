@@ -10,26 +10,6 @@ Feature: Checks
     test.java:13:12:vale.Annotations:'FIXME' left in text
     """
 
-  Scenario: PassiveVoice
-    When I test "checks/PassiveVoice"
-    Then the output should contain exactly:
-    """
-    test.adoc:1:39:vale.PassiveVoice:'be retracted' is passive voice
-    test.adoc:2:6:vale.PassiveVoice:'be retracted' is passive voice
-    test.adoc:7:32:vale.PassiveVoice:'be retracted' is passive voice
-    test.md:7:88:vale.PassiveVoice:'been implemented' is passive voice
-    test.md:7:221:vale.PassiveVoice:'been implemented' is passive voice
-    test.md:7:266:vale.PassiveVoice:'be mixed' is passive voice
-    test.md:7:371:vale.PassiveVoice:'are covered' is passive voice
-    test.rst:8:51:vale.PassiveVoice:'be prompted' is passive voice
-    test.rst:9:57:vale.PassiveVoice:'is sent' is passive voice
-    test.rst:17:51:vale.PassiveVoice:'be omitted' is passive voice
-    test.rst:23:11:vale.PassiveVoice:'be applied' is passive voice
-    test.rst:27:1:vale.PassiveVoice:'be used' is passive voice
-    test.swift:3:47:vale.PassiveVoice:'were eaten' is passive voice
-    test.swift:5:38:vale.PassiveVoice:'was faxed' is passive voice
-    """
-
   Scenario: GenderBias
     When I test "checks/GenderBias"
     Then the output should contain exactly:
@@ -79,24 +59,6 @@ Feature: Checks
     """
     test.adoc:1:49:vale.Uncomparables:'absolutely false' is not comparable
     test.adoc:10:15:vale.Uncomparables:'very unique' is not comparable
-    """
-
-  Scenario: Wordiness
-    When I test "checks/Wordiness"
-    Then the output should contain exactly:
-    """
-    test.cs:2:19:vale.Wordiness:Consider using 'across' instead of 'all across'
-    test.cs:10:4:vale.Wordiness:Consider using 'most' instead of 'A large majority of'
-    test.cs:10:45:vale.Wordiness:Consider using 'time' instead of 'time period'
-    test.rst:3:1:vale.Wordiness:Consider using 'some' instead of 'some of the'
-    """
-
-  Scenario: ComplexWords
-    When I test "checks/ComplexWords"
-    Then the output should contain exactly:
-    """
-    test.sass:4:16:vale.ComplexWords:Consider using 'plenty' instead of 'abundance'
-    test.sass:5:13:vale.ComplexWords:Consider using 'use' instead of 'utilize'
     """
 
   Scenario: Hedging

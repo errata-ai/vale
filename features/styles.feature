@@ -302,3 +302,41 @@ Feature: Styles
     test.md:3:75:GCC.Terms:Use 'Microsoft Windows' instead of 'Windows'
     test.md:3:98:GCC.Backend:Use 'back-end' instead of 'back end'
     """
+
+  Scenario: Lint against PlainLanguage
+    When I apply style "PlainLanguage"
+    Then the output should contain exactly:
+    """
+    test.adoc:1:14:PlainLanguage.Slash:Use either 'or' or 'and' in 'db/retract'
+    test.adoc:1:31:PlainLanguage.ComplexWords:Consider using 'give' or 'offer' instead of 'provide'
+    test.adoc:1:39:PlainLanguage.PassiveVoice:'be retracted' is passive voice
+    test.adoc:1:60:PlainLanguage.ComplexWords:Consider using 'give' or 'offer' instead of 'provide'
+    test.adoc:2:6:PlainLanguage.PassiveVoice:'be retracted' is passive voice
+    test.adoc:4:10:PlainLanguage.Slash:Use either 'or' or 'and' in 'db/noHistory'
+    test.adoc:6:17:PlainLanguage.Slash:Use either 'or' or 'and' in 'fn/retractEntity'
+    test.adoc:7:32:PlainLanguage.PassiveVoice:'be retracted' is passive voice
+    test.cs:2:19:PlainLanguage.Wordiness:Consider using 'across' instead of 'all across'
+    test.cs:5:45:PlainLanguage.PassiveVoice:'be named' is passive voice
+    test.cs:10:4:PlainLanguage.Wordiness:Consider using 'most' instead of 'A large majority of'
+    test.cs:10:45:PlainLanguage.Wordiness:Consider using 'time' instead of 'time period'
+    test.md:1:68:PlainLanguage.Contractions:Use 'aren't' instead of 'are not.'
+    test.md:7:1:PlainLanguage.SentenceLength:Keep sentences short and to the point
+    test.md:7:39:PlainLanguage.Wordiness:Consider using 'some' instead of 'some of the'
+    test.md:7:88:PlainLanguage.PassiveVoice:'been implemented' is passive voice
+    test.md:7:212:PlainLanguage.Contractions:Use 'haven't' instead of 'have not.'
+    test.md:7:221:PlainLanguage.PassiveVoice:'been implemented' is passive voice
+    test.md:7:266:PlainLanguage.PassiveVoice:'be mixed' is passive voice
+    test.md:7:371:PlainLanguage.PassiveVoice:'are covered' is passive voice
+    test.md:7:399:PlainLanguage.SentenceLength:Keep sentences short and to the point
+    test.md:7:555:PlainLanguage.Slash:Use either 'or' or 'and' in 'io/repl'
+    test.rst:8:51:PlainLanguage.PassiveVoice:'be prompted' is passive voice
+    test.rst:9:49:PlainLanguage.ComplexWords:Consider using 'ask' instead of 'request'
+    test.rst:9:57:PlainLanguage.PassiveVoice:'is sent' is passive voice
+    test.rst:17:51:PlainLanguage.PassiveVoice:'be omitted' is passive voice
+    test.rst:23:11:PlainLanguage.PassiveVoice:'be applied' is passive voice
+    test.rst:27:1:PlainLanguage.PassiveVoice:'be used' is passive voice
+    test.sass:4:16:PlainLanguage.ComplexWords:Consider using 'plenty' instead of 'abundance'
+    test.sass:5:13:PlainLanguage.ComplexWords:Consider using 'use' instead of 'utilize'
+    test.swift:3:47:PlainLanguage.PassiveVoice:'were eaten' is passive voice
+    test.swift:5:38:PlainLanguage.PassiveVoice:'was faxed' is passive voice
+    """

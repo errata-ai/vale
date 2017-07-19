@@ -2,7 +2,7 @@ Feature: Misc
   Background:
     Given a file named "test.md" with:
     """
-    This is very, very important message: all of the teams in all of the cities should listen!
+    This is very, very important message: very the teams in very the cities should listen!
 
     """
 
@@ -35,6 +35,6 @@ Feature: Misc
     """
     test.md:1:9:vale.Editorializing:Consider removing 'very'
     test.md:1:15:vale.Editorializing:Consider removing 'very'
-    test.md:1:39:vale.Wordiness:Consider using 'all' instead of 'all of'
-    test.md:1:59:vale.Wordiness:Consider using 'all' instead of 'all of'
+    test.md:1:39:vale.Editorializing:Consider removing 'very'
+    test.md:1:57:vale.Editorializing:Consider removing 'very'
     """

@@ -90,16 +90,13 @@ type Readability struct {
 
 var defaultRules = []string{
 	"Annotations",
-	"ComplexWords",
 	"Editorializing",
 	"GenderBias",
 	"Hedging",
 	"Litotes",
-	"PassiveVoice",
 	"Redundancy",
 	"Repetition",
 	"Uncomparables",
-	"Wordiness",
 }
 
 var extensionPoints = []string{
