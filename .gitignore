@@ -10,6 +10,7 @@ tags
 site
 target
 dist
+_vendor-*
 
 # Files
 *.o
