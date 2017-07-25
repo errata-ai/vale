@@ -1,0 +1,34 @@
+name: vale
+version: '0.9.0'
+summary: A customizable, syntax-aware linter for prose.
+
+description: |
+  Vale is a natural language linter that supports plain text, markup 
+  (Markdown, reStructuredText, AsciiDoc, and HTML), and source code comments. 
+  Vale doesn't attempt to offer a one-size-fits-all collection of rules—instead, 
+  it strives to make customization as easy as possible.
+  
+grade: devel # "devel" or "stable"
+confinement: strict
+apps:
+  vale:
+    command: bin/vale
+    plugs: [home, network-bind]
+parts:
+  vale:
+    source: .
+    plugin: go
+    go-importpath: github.com/ValeLint/vale
+    build-packages:
+      - git
+      - make
+    prepare: |
+      export GOPATH=$(dirname $SNAPCRAFT_PART_INSTALL)/go
+      export PATH=$GOPATH/bin:$PATH
+      cd $GOPATH/src/github.com/ValeLint/vale
+      make
+    install: |
+      $SNAPCRAFT_PART_INSTALL/bin/vale
+    after: [go]
+  go:
+    source-tag: go1.8.3
