@@ -36,8 +36,14 @@ There are a few options to choose from:
      ```shell		
      C:\> choco install vale		
      ```
+- [snapcraft](https://snapcraft.io/):
+
+    ```bash
+    $ snap install vale
+    ```
+    
 - A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
-- Manually on **Windows**, **macOS**, or **Linux** by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
+- Manually on Windows, macOS, or Linux by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
 
 ## Usage
 
