@@ -11,8 +11,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"matloob.io/regexp/internal/input"
-	"matloob.io/regexp/syntax"
+	"github.com/jdkato/regexp/internal/input"
+	"github.com/jdkato/regexp/syntax"
 )
 
 // TODO(matloob): lowercase these before submitting
@@ -187,7 +187,7 @@ func (d *DFA) analyzeSearchHelper(params *searchParams, info *startInfo, flags f
 		atomic.StoreInt64(&info.firstbyte, fbNone)
 		return true
 	}
-  
+
 	// TODO(matloob): we don't actually use firstbyte. fix that!
   	firstByte := fbNone
 
@@ -736,7 +736,7 @@ func (d *DFA) searchLoop(params *searchParams) bool {
 					p = ep
 					break
 				}
-				p++ 
+				p++
 			}
 		}
 

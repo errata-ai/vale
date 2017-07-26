@@ -87,7 +87,7 @@ func NewPerceptronTagger() *PerceptronTagger {
 //        ...
 //       }
 //       ...
-//     }
+//    }
 func (pt *PerceptronTagger) Weights() map[string]map[string]float64 {
 	return pt.model.weights
 }

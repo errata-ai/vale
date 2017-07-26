@@ -5,7 +5,7 @@
 package regexp
 
 import (
-	"matloob.io/regexp/syntax"
+	"github.com/jdkato/regexp/syntax"
 	"reflect"
 	"strings"
 	"testing"

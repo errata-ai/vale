@@ -26,10 +26,10 @@ package tokenize
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/jdkato/prose/internal/util"
-	"matloob.io/regexp"
 )
 
 /* Public API */

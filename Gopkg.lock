@@ -23,7 +23,13 @@
   branch = "master"
   name = "github.com/jdkato/prose"
   packages = ["internal/model","internal/util","summarize","tag","tokenize","transform"]
-  revision = "116c2a8f2978d4f3bf04fefbe90a4eb29af882f2"
+  revision = "4d68d1b77f66e36b6897a79f59f434d558e5e0c2"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/jdkato/regexp"
+  packages = [".","internal/dfa","internal/input","syntax"]
+  revision = "38ab2f7842bf2a539528aa7d0014b37421b886e1"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -119,13 +125,13 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["html","html/atom"]
-  revision = "02ac38e2528ff4adea90f184d71a3faa04b4b1b0"
+  revision = "ab5485076ff3407ad2d02db054635913f017b0ed"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "cd2c276457edda6df7fb04895d3fd6a6add42926"
+  revision = "14ac33bf8474b62c65cae263af2e4d3b543cc699"
 
 [[projects]]
   name = "gopkg.in/ini.v1"
@@ -143,17 +149,11 @@
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "3b4ad1db5b2a649883ff3782f5f9f6fb52be71af"
-
-[[projects]]
-  branch = "master"
-  name = "matloob.io/regexp"
-  packages = [".","internal/dfa","internal/input","syntax"]
-  revision = "a9296bf6ee794d8726f013c254654bb606da0b7e"
+  revision = "25c4ec802a7d637f88d584ab26798e94ad14c13b"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "85be8a3a8fac1eaff49d4c4bba2c87edff2ebd1226cf302edfe063584376564d"
+  inputs-digest = "c2c586b7265789ad535d02338cc9eafb7b47319d517f7a5d00d15ae9bd7ba972"
   solver-name = "gps-cdcl"
   solver-version = 1

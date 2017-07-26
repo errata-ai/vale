@@ -51,7 +51,6 @@ lint:
 		./tokenize ./tag ./transform ./summarize ./chunk
 
 setup:
-	go get -u matloob.io/regexp
 	go get -u github.com/shogo82148/go-shuffle
 	go get -u github.com/jdkato/syllables
 	go get -u github.com/montanaflynn/stats

@@ -6,8 +6,8 @@ package regexp
 
 import (
 	"io"
-	"matloob.io/regexp/internal/input"
-	"matloob.io/regexp/syntax"
+	"github.com/jdkato/regexp/internal/input"
+	"github.com/jdkato/regexp/syntax"
 )
 
 // A queue is a 'sparse array' holding pending threads of execution.

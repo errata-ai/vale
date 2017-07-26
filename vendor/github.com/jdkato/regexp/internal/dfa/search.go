@@ -8,8 +8,8 @@ import (
 	"sync"
 	"errors"
 	"math"
-	"matloob.io/regexp/internal/input"
-	"matloob.io/regexp/syntax"
+	"github.com/jdkato/regexp/internal/input"
+	"github.com/jdkato/regexp/syntax"
 )
 
 type Searcher struct {
@@ -23,7 +23,7 @@ type Searcher struct {
 func (s *Searcher) Init(prog *syntax.Prog, expr *syntax.Regexp, p input.Prefixer) {
 	s.prog = prog
 	s.re = expr
-	s.prefixer = p 
+	s.prefixer = p
 }
 
 var errNotDFA = errors.New("can't use dfa")
@@ -65,7 +65,7 @@ func (s *Searcher) Search(i input.Input, pos int, longest bool, matchcap *[]int,
 	s.mu.Lock()
 	revdfa = s.revdfa
 	s.mu.Unlock()
-		
+
 	var matched bool
 	*matchcap = (*matchcap)[:ncap]
 	p, ep, matched, err := search(dfa, revdfa, rinput, pos)
@@ -103,7 +103,7 @@ func search(d, reversed *DFA, i input.Rinput, startpos int) (start int, end int,
 	params.input = i
 	params.anchored = isanchored(d.prog)
 	params.runForward = true
-	params.ep = int(math.MaxInt64)
+	params.ep = int(math.MaxInt32)
 	if !d.analyzeSearch(&params) {
 		return -1, -1, false, errors.New("analyze search failed on forward DFA")
 	}

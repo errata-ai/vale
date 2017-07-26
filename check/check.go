@@ -11,9 +11,9 @@ import (
 	"github.com/ValeLint/vale/rule"
 	"github.com/jdkato/prose/summarize"
 	"github.com/jdkato/prose/transform"
+	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v2"
-	"matloob.io/regexp"
 )
 
 const (

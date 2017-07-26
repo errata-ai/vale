@@ -31,6 +31,10 @@
 
 [[constraint]]
   branch = "master"
+  name = "github.com/jdkato/regexp"
+
+[[constraint]]
+  branch = "master"
   name = "github.com/mitchellh/go-homedir"
 
 [[constraint]]
@@ -64,7 +68,3 @@
 [[constraint]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
-
-[[constraint]]
-  branch = "master"
-  name = "matloob.io/regexp"

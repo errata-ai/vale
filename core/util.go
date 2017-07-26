@@ -11,8 +11,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/jdkato/prose/tag"
+	"github.com/jdkato/regexp"
 	"github.com/xrash/smetrics"
-	"matloob.io/regexp"
 )
 
 // ExeDir is our starting location.

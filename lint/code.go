@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ValeLint/vale/core"
-	"matloob.io/regexp"
+	"github.com/jdkato/regexp"
 )
 
 // lintCode lints source code -- whether it be a markup codeblock, a complete

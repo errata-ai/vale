@@ -7,9 +7,9 @@ import (
 	"unicode/utf8"
 
 	"github.com/ValeLint/vale/core"
+	"github.com/jdkato/regexp"
 	"github.com/russross/blackfriday"
 	"golang.org/x/net/html"
-	"matloob.io/regexp"
 )
 
 // reStructuredText configuration.
