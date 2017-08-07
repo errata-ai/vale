@@ -10,16 +10,6 @@ Feature: Checks
     test.java:13:12:vale.Annotations:'FIXME' left in text
     """
 
-  Scenario: GenderBias
-    When I test "checks/GenderBias"
-    Then the output should contain exactly:
-    """
-    test.adoc:10:57:vale.GenderBias:Consider using 'first-year student(s)' instead of 'freshman'
-    test.adoc:44:34:vale.GenderBias:Consider using 'everyone' instead of 'guys'
-    test.adoc:59:32:vale.GenderBias:Consider using 'concierge(s)' instead of 'doorman'
-    test.adoc:68:2:vale.GenderBias:Consider using 'firefighter(s)' instead of 'fireman'
-    """
-
   Scenario: Editorializing
     When I test "checks/Editorializing"
     Then the output should contain exactly:

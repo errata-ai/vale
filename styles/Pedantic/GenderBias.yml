@@ -10,6 +10,7 @@ swap:
   air(?:m[ae]n|wom[ae]n):      pilot(s)
   anchor(?:m[ae]n|wom[ae]n):   anchor(s)
   authoress:                   author
+  business(?:m[ae]n|wom[ae]n): business person
   camera(?:m[ae]n|wom[ae]n):   camera operator(s)
   chair(?:m[ae]n|wom[ae]n):    chair(s)
   congress(?:m[ae]n|wom[ae]n): member(s) of congress

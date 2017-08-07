@@ -91,7 +91,6 @@ type Readability struct {
 var defaultRules = []string{
 	"Annotations",
 	"Editorializing",
-	"GenderBias",
 	"Hedging",
 	"Litotes",
 	"Redundancy",
