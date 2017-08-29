@@ -7,7 +7,7 @@ description: |
   code comments. Vale doesn't attempt to offer a one-size-fits-all collection of
   rules—instead, it strives to make customization as easy as possible.
 
-grade: devel # "devel" or "stable"
+grade: stable
 confinement: strict
 apps:
   vale:
