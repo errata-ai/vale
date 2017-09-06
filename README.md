@@ -1,6 +1,4 @@
-# Vale: Your Style, Our Editor
-
-[![Build Status](https://travis-ci.org/ValeLint/vale.svg?branch=master)](https://travis-ci.org/ValeLint/vale) [![Build status](https://ci.appveyor.com/api/projects/status/snk0oo6ih1nwuf6r/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/vale/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/ValeLint/vale)](https://goreportcard.com/report/github.com/ValeLint/vale) [![release](https://img.shields.io/github/release/valelint/vale.svg)](https://github.com/ValeLint/vale/releases/latest) [![Snap Status](https://build.snapcraft.io/badge/ValeLint/vale.svg)](https://build.snapcraft.io/user/ValeLint/vale)
+# Vale: Your Style, Our Editor [![Build Status](https://travis-ci.org/ValeLint/vale.svg?branch=master)](https://travis-ci.org/ValeLint/vale) [![Build status](https://ci.appveyor.com/api/projects/status/snk0oo6ih1nwuf6r/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/vale/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/ValeLint/vale)](https://goreportcard.com/report/github.com/ValeLint/vale) [![release](https://img.shields.io/github/release/valelint/vale.svg)](https://github.com/ValeLint/vale/releases/latest)
 
 ![demo](https://cloud.githubusercontent.com/assets/8785025/22951386/df064226-f2bd-11e6-84e3-4cedfc098528.png)
 
@@ -31,17 +29,12 @@ There are a few options to choose from:
     $ brew tap ValeLint/vale
     $ brew install vale
     ```
-- [Chocolatey](https://chocolatey.org/packages/vale/):		
-		
-     ```shell		
-     C:\> choco install vale		
-     ```
-- [snapcraft](https://snapcraft.io/):
+- [Chocolatey](https://chocolatey.org/packages/vale/):
 
-    ```bash
-    $ snap install vale
-    ```
-    
+     ```shell
+     C:\> choco install vale
+     ```
+
 - A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
 - Manually on Windows, macOS, or Linux by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
 
