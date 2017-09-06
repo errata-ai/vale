@@ -3,6 +3,7 @@ package lint
 import (
 	"bytes"
 	"os/exec"
+	"runtime"
 	"strings"
 	"unicode/utf8"
 
@@ -230,9 +231,18 @@ func (l Linter) lintMarkdown(f *core.File) {
 
 func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 	var out bytes.Buffer
-	cmd := exec.Command(python, append([]string{rst2html}, rstArgs...)...)
+	var cmd *exec.Cmd
+
+	if runtime.GOOS == "windows" {
+		// rst2html is executable by default on Windows.
+		cmd = exec.Command(python, append([]string{rst2html}, rstArgs...)...)
+	} else {
+		cmd = exec.Command(rst2html, rstArgs...)
+	}
+
 	cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(f.Content, "::"))
 	cmd.Stdout = &out
+
 	if core.CheckError(cmd.Run()) {
 		html := bytes.Replace(out.Bytes(), []byte("\r"), []byte(""), -1)
 		bodyStart := bytes.Index(html, []byte("<body>\n"))
