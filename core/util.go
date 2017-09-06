@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 
 	"github.com/jdkato/prose/tag"
@@ -17,6 +18,15 @@ import (
 
 // ExeDir is our starting location.
 var ExeDir string
+
+func IsLetter(s string) bool {
+	for _, r := range s {
+		if !unicode.IsLetter(r) {
+			return false
+		}
+	}
+	return true
+}
 
 // TextToWords convert raw text into a slice of words.
 func TextToWords(text string) []string {

@@ -178,9 +178,12 @@ func checkRepetition(txt string, chk Repetition, f *core.File, r *regexp.Regexp)
 		} else {
 			hit = curr == prev && curr != ""
 		}
+
+		hit = hit && (!chk.Alpha || core.IsLetter(curr))
 		if hit {
 			count++
 		}
+
 		if hit && count > chk.Max {
 			floc := []int{ploc[0], loc[1]}
 			a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: floc,

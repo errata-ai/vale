@@ -53,6 +53,7 @@ type Repetition struct {
 	Definition `mapstructure:",squash"`
 	Max        int
 	Ignorecase bool
+	Alpha      bool
 	Tokens     []string
 }
 
