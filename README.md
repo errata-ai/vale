@@ -127,7 +127,7 @@ See [Configuration](https://valelint.github.io/docs/config/) and [Styles](https:
 [jQuery-src]: https://contribute.jquery.org/style-guide/prose/
 [jQuery-dl]: https://github.com/ValeLint/docs/raw/master/styles/jQuery.zip
 
-[TheEconomist-src]: http://www.economist.com/styleguide/introduction
+[TheEconomist-src]: https://shop.economist.com/products/style-guide
 [TheEconomist-dl]: https://github.com/ValeLint/docs/raw/master/styles/TheEconomist.zip
 
 [Homebrew-src]: http://docs.brew.sh/Prose-Style-Guidelines.html
