@@ -69,6 +69,11 @@ func main() {
 			Usage:       "lint all files line-by-line",
 			Destination: &config.Simple,
 		},
+		cli.BoolFlag{
+			Name:        "relative",
+			Usage:       "return relative paths",
+			Destination: &config.Relative,
+		},
 	}
 	app.Commands = []cli.Command{
 		{
@@ -119,7 +124,7 @@ func main() {
 
 			// How should we style the output?
 			if config.Output == "line" {
-				hasAlerts = ui.PrintLineAlerts(linted)
+				hasAlerts = ui.PrintLineAlerts(linted, config.Relative)
 			} else if config.Output == "JSON" {
 				hasAlerts = ui.PrintJSONAlerts(linted)
 			} else {

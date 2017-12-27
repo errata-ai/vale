@@ -8,7 +8,7 @@ import (
 )
 
 // PrintLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.
-func PrintLineAlerts(linted []*core.File) bool {
+func PrintLineAlerts(linted []*core.File, relative bool) bool {
 	var base string
 
 	alertCount := 0
@@ -17,7 +17,9 @@ func PrintLineAlerts(linted []*core.File) bool {
 		// path -- e.g., if run from the directory 'vale', we use
 		// 'testdata/test.cc: ...' instead of
 		// /Users/.../.../.../vale/testdata/test.cc: ...'.
-		if strings.Contains(f.Path, core.ExeDir) {
+		if relative && strings.Contains(f.Path, core.ExeDir) {
+			// FIXME: This doesn't work as intended, but our tests rely on its
+			// output -- so, we hide it behind a flag for now.
 			base = strings.Split(f.Path, core.ExeDir)[1]
 		} else {
 			base = f.Path

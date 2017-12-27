@@ -8,7 +8,7 @@ import (
 
 	"github.com/gobwas/glob"
 	"github.com/mitchellh/go-homedir"
-	"gopkg.in/ini.v1"
+	ini "gopkg.in/ini.v1"
 )
 
 // Glob represents a glob pattern passed via `--glob`.
@@ -66,6 +66,7 @@ type Config struct {
 	Normalize bool   // (optional) replace each path separator with a slash ('/')
 	Simple    bool   // (optional) lint all files line-by-line
 	InExt     string // (optional) extension to associate with stdin
+	Relative  bool   // (optional) return relative paths
 }
 
 // NewConfig initializes a Config.
