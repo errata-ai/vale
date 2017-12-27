@@ -121,14 +121,12 @@ func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Reg
 
 	// Now we look for the antecedent.
 	locs := r[1].FindAllStringIndex(txt, -1)
-	if locs != nil {
-		for _, loc := range locs {
-			s := txt[loc[0]:loc[1]]
-			if !core.StringInSlice(s, f.Sequences) && !core.StringInSlice(s, chk.Exceptions) {
-				// If we've found one (e.g., "WHO") and we haven't marked it as
-				// being defined previously, send an Alert.
-				alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
-			}
+	for _, loc := range locs {
+		s := txt[loc[0]:loc[1]]
+		if !core.StringInSlice(s, f.Sequences) && !core.StringInSlice(s, chk.Exceptions) {
+			// If we've found one (e.g., "WHO") and we haven't marked it as
+			// being defined previously, send an Alert.
+			alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
 		}
 	}
 
@@ -138,10 +136,8 @@ func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Reg
 func checkExistence(txt string, chk Existence, f *core.File, r *regexp.Regexp) []core.Alert {
 	alerts := []core.Alert{}
 	locs := r.FindAllStringIndex(txt, -1)
-	if locs != nil {
-		for _, loc := range locs {
-			alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
-		}
+	for _, loc := range locs {
+		alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
 	}
 	return alerts
 }
