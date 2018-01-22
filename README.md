@@ -23,7 +23,7 @@ Additionally, since Vale is "syntax aware," you'll never have to worry about syn
 
 There are a few options to choose from:
 
-- [Homebrew](http://brew.sh) or [Linuxbrew](http://linuxbrew.sh/):
+- [Homebrew](http://brew.sh):
 
     ```bash
     $ brew tap ValeLint/vale
