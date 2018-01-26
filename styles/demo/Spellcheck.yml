@@ -1,0 +1,8 @@
+extends: spelling
+message: "Did you really mean '%s'?"
+aff: /usr/share/hunspell/en_US.aff
+dic: /usr/share/hunspell/en_US.dic
+ignore:
+  - valelint
+  - for-loops
+  - sysadmin

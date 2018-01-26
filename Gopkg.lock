@@ -2,6 +2,18 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/ValeLint/gospell"
+  packages = ["."]
+  revision = "90dfc71015dfebd3a7274f1ad2756c1dbf09e250"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/client9/gospell"
+  packages = ["plaintext"]
+  revision = "90dfc71015dfebd3a7274f1ad2756c1dbf09e250"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
@@ -154,6 +166,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c2c586b7265789ad535d02338cc9eafb7b47319d517f7a5d00d15ae9bd7ba972"
+  inputs-digest = "bca74b8adbb83d5325b8a5034729283691efeaefe7d96b1f5556d13b551567a8"
   solver-name = "gps-cdcl"
   solver-version = 1

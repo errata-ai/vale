@@ -5,6 +5,8 @@ MinAlertLevel = suggestion
 BasedOnStyles = demo
 demo.CheckLinks = NO
 demo.Reading = NO
+demo.Spellcheck = NO
 
 [*.md]
 demo.Reading = YES
+demo.Spellcheck = YES

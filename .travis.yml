@@ -4,6 +4,10 @@ language: go
 go:
   - 1.8
   - 1.9
+addons:
+  apt:
+    packages:
+      - hunspell-en-us
 before_cache:
   - rm -rf $GOPATH/src/github.com/ValeLint/vale/*
 cache:

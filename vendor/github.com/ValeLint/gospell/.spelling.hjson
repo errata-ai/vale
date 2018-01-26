@@ -1,0 +1,15 @@
+extra: [
+  words/LocalDictionary
+]
+additions: [
+ AFF
+ DIC
+ PFX
+ SFX
+ hunspell
+ UTF
+ WIP
+ gospell
+ io
+ googlesource
+]

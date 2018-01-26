@@ -89,6 +89,15 @@ type Readability struct {
 	Grade      float64
 }
 
+// Spelling checks text against a Hunspell dictionary.
+type Spelling struct {
+	Definition `mapstructure:",squash"`
+	Aff        string
+	Dic        string
+	Ignore     []string
+	IgnoreSet  map[string]struct{}
+}
+
 var defaultRules = []string{
 	"Annotations",
 	"Editorializing",
@@ -108,4 +117,5 @@ var extensionPoints = []string{
 	"repetition",
 	"substitution",
 	"readability",
+	"spelling",
 }

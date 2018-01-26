@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/ValeLint/gospell"
 	"github.com/ValeLint/vale/core"
 	"github.com/ValeLint/vale/rule"
 	"github.com/jdkato/prose/summarize"
@@ -21,6 +22,14 @@ const (
 	wordTemplate    = `\b(?:%s)\b`
 	nonwordTemplate = `(?:%s)`
 )
+
+var defaultFilters = []*regexp.Regexp{
+	regexp.MustCompile(`(?:\w+)?\.\w{1,4}\b`),
+	regexp.MustCompile(`\b(?:[a-zA-Z]\.){2,}`),
+	regexp.MustCompile(`0[xX][0-9a-fA-F]+`),
+	regexp.MustCompile(`\w+-\w+`),
+	regexp.MustCompile(`[A-Z]{1}[a-z]+[A-Z]+\w+`),
+}
 
 type ruleFn func(string, *core.File) []core.Alert
 
@@ -297,6 +306,37 @@ func checkReadability(txt string, chk Readability, f *core.File) []core.Alert {
 	return alerts
 }
 
+func checkSpelling(txt string, chk Spelling, gs *gospell.GoSpell, f *core.File) []core.Alert {
+	alerts := []core.Alert{}
+
+OUTER:
+	for _, w := range core.WordTokenizer.Tokenize(txt) {
+		if _, found := chk.IgnoreSet[strings.ToLower(w)]; found {
+			continue
+		} else if strings.ToUpper(w) == w {
+			continue
+		}
+
+		for _, filter := range defaultFilters {
+			if filter.MatchString(w) {
+				continue OUTER
+			}
+		}
+
+		if known := gs.Spell(w); !known {
+			offset := strings.Index(txt, w)
+			loc := []int{offset, offset + len(w)}
+			a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
+				Link: chk.Link}
+			a.Message, a.Description = formatMessages(chk.Message,
+				chk.Description, w)
+			alerts = append(alerts, a)
+		}
+	}
+
+	return alerts
+}
+
 func (mgr *Manager) addReadabilityCheck(chkName string, chkDef Readability) {
 	if core.AllStringsInSlice(chkDef.Metrics, readabilityMetrics) {
 		fn := func(text string, file *core.File) []core.Alert {
@@ -488,6 +528,24 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 	}
 }
 
+func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
+	model, err := gospell.NewGoSpell(chkDef.Aff, chkDef.Dic)
+
+	chkDef.IgnoreSet = make(map[string]struct{})
+	for _, word := range chkDef.Ignore {
+		chkDef.IgnoreSet[word] = struct{}{}
+	}
+	chkDef.Ignore = []string{}
+
+	fn := func(text string, file *core.File) []core.Alert {
+		return checkSpelling(text, chkDef, model, file)
+	}
+
+	if core.CheckError(err) {
+		mgr.updateAllChecks(chkDef.Definition, fn)
+	}
+}
+
 func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn) {
 	chk := Check{Rule: fn, Extends: chkDef.Extends, Code: chkDef.Code}
 	chk.Level = core.LevelToInt[chkDef.Level]
@@ -536,6 +594,11 @@ func (mgr *Manager) makeCheck(generic map[string]interface{}, extends, chkName s
 		def := Readability{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addReadabilityCheck(chkName, def)
+		}
+	} else if extends == "spelling" {
+		def := Spelling{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addSpellingCheck(chkName, def)
 		}
 	}
 }

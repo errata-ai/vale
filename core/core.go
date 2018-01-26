@@ -231,6 +231,10 @@ func (f *File) ResetComments() {
 // SentenceTokenizer splits text into sentences.
 var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
 
+// WordTokenizer splits text into words.
+var WordTokenizer = tokenize.NewRegexpTokenizer(
+	`[\p{L}]+(?:['-.][\p{L}]+)?`, false, true)
+
 // Tagger tags a sentence.
 //
 // We wait to initilize it until we need it since it's slow (~1s) and we may

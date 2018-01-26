@@ -3,4 +3,6 @@ MinAlertLevel = suggestion
 
 [*]
 BasedOnStyles = vale, demo
+
 demo.CheckLinks = NO
+demo.Spellcheck = NO
