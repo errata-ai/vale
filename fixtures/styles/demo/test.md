@@ -4,8 +4,8 @@
 
 this is not a heading.
 
-this is *another* heading!
----
+# this is *another* heading!
+
 
 There were lots of useful suggestions, most of which boiled down to: Consider your docs' audience, and choose your words carefully. Valelint
 

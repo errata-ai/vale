@@ -8,6 +8,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/ValeLint/vale/core"
+	"github.com/gobwas/glob"
 	"github.com/jdkato/regexp"
 	"github.com/russross/blackfriday"
 	"golang.org/x/net/html"
@@ -46,6 +47,7 @@ var commonExtensions = 0 |
 	blackfriday.EXTENSION_FENCED_CODE
 var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
 var options = blackfriday.Options{Extensions: commonExtensions}
+var reFrontMatter = regexp.MustCompile(`---\n`)
 
 // HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
@@ -225,7 +227,19 @@ func (l Linter) lintHTML(f *core.File) {
 }
 
 func (l Linter) lintMarkdown(f *core.File) {
-	html := blackfriday.MarkdownOptions([]byte(f.Content), renderer, options)
+	s := reFrontMatter.ReplaceAllString(f.Content, "```\n")
+	for syntax, regexes := range l.Config.IgnorePatterns {
+		sec, err := glob.Compile(syntax)
+		if core.CheckError(err) && sec.Match(".md") {
+			for _, r := range regexes {
+				pat, err := regexp.Compile(r)
+				if err == nil {
+					s = pat.ReplaceAllString(s, "```\n")
+				}
+			}
+		}
+	}
+	html := blackfriday.MarkdownOptions([]byte(s), renderer, options)
 	l.lintHTMLTokens(f, f.Content, html, 0)
 }
 

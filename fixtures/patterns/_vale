@@ -1,0 +1,9 @@
+StylesPath = ../../styles
+MinAlertLevel = suggestion
+
+[*.{md}]
+BasedOnStyles = vale, demo
+IgnorePatterns = {{< .* >}}
+
+vale.Redundancy = warning
+demo.CheckLinks = NO

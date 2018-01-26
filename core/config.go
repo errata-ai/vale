@@ -49,14 +49,15 @@ var LevelToInt = map[string]int{
 // Config holds Vale's configuration, both from the CLI and its config file.
 type Config struct {
 	// General configuration
-	Checks        []string                   // All checks to load
-	GBaseStyles   []string                   // Global base style
-	GChecks       map[string]bool            // Global checks
-	MinAlertLevel int                        // Lowest alert level to display
-	SBaseStyles   map[string][]string        // Syntax-specific base styles
-	SChecks       map[string]map[string]bool // Syntax-specific checks
-	StylesPath    string                     // Directory with Rule.yml files
-	RuleToLevel   map[string]string          // Single-rule level changes
+	IgnorePatterns map[string][]string        // TODO
+	Checks         []string                   // All checks to load
+	GBaseStyles    []string                   // Global base style
+	GChecks        map[string]bool            // Global checks
+	MinAlertLevel  int                        // Lowest alert level to display
+	SBaseStyles    map[string][]string        // Syntax-specific base styles
+	SChecks        map[string]map[string]bool // Syntax-specific checks
+	StylesPath     string                     // Directory with Rule.yml files
+	RuleToLevel    map[string]string          // Single-rule level changes
 
 	// Command-line configuration
 	Output    string // (optional) output style ("line" or "CLI")
@@ -78,6 +79,7 @@ func NewConfig() *Config {
 	cfg.MinAlertLevel = 1
 	cfg.GBaseStyles = []string{"vale"}
 	cfg.RuleToLevel = make(map[string]string)
+	cfg.IgnorePatterns = make(map[string][]string)
 	return &cfg
 }
 
@@ -175,6 +177,8 @@ func LoadConfig() *Config {
 		for _, k := range uCfg.Section(sec).KeyStrings() {
 			if k == "BasedOnStyles" {
 				cfg.SBaseStyles[sec] = uCfg.Section(sec).Key(k).Strings(",")
+			} else if k == "IgnorePatterns" {
+				cfg.IgnorePatterns[sec] = uCfg.Section(sec).Key(k).Strings(",")
 			} else {
 				syntaxOpts[k] = validateLevel(k, uCfg.Section(sec).Key(k).String(), cfg)
 				cfg.Checks = append(cfg.Checks, k)
