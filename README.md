@@ -1,6 +1,6 @@
 # Vale: Your Style, Our Editor [![Build Status](https://travis-ci.org/ValeLint/vale.svg?branch=master)](https://travis-ci.org/ValeLint/vale) [![Build status](https://ci.appveyor.com/api/projects/status/snk0oo6ih1nwuf6r/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/vale/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/ValeLint/vale)](https://goreportcard.com/report/github.com/ValeLint/vale) [![release](https://img.shields.io/github/release/valelint/vale.svg)](https://github.com/ValeLint/vale/releases/latest)
 
-> :star2: We're now offering [**Integration Assistance**](https://valelint.github.io/)! This is a great way to support the project while also getting the time-consuming tasks (e.g., creating a Vale-compatible version of your house style and setting up a CI service) out of the way. Shoot us <a href="mailto:joseph@jdkato.io" target="_top">an email</a> for more information! :star2:
+> :star2: We're now offering **Integration Assistance**! This is a great way to support the project while also getting the time-consuming tasks (e.g., creating a Vale-compatible version of your house style and setting up a CI service) out of the way. Shoot us <a href="mailto:joseph@jdkato.io" target="_top">an email</a> for more information! :star2:
 
 ![demo](https://cloud.githubusercontent.com/assets/8785025/22951386/df064226-f2bd-11e6-84e3-4cedfc098528.png)
 
