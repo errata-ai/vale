@@ -94,8 +94,8 @@ type Spelling struct {
 	Definition `mapstructure:",squash"`
 	Aff        string
 	Dic        string
-	Ignore     []string
-	IgnoreSet  map[string]struct{}
+	Ignore     string
+	Threshold  int
 }
 
 var defaultRules = []string{

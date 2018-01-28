@@ -10,16 +10,16 @@ Feature: Styles
       test.cc:18:6:write-good.Illusions:'the' is repeated!
       test.cc:21:25:write-good.ThereIs:Don't start a sentence with '// There are'
       test.cc:28:21:write-good.ThereIs:Don't start a sentence with '// There is'
-      test.cc:31:21:write-good.So:Don't start a sentence with '; so '
-      test.cc:34:14:write-good.So:Don't start a sentence with '// So '
+      test.cc:31:21:write-good.So:Don't start a sentence with '; so'
+      test.cc:34:14:write-good.So:Don't start a sentence with '// So'
       test.md:1:1:write-good.Weasal:'Remarkably' is a weasal word!
       test.md:1:12:write-good.Weasal:'few' is a weasal word!
       test.md:3:12:write-good.Passive:'was killed'
       test.md:5:1:write-good.Illusions:'the' is repeated!
       test.md:7:1:write-good.Illusions:'the' is repeated!
       test.md:10:1:write-good.Illusions:'the' is repeated!
-      test.md:14:1:write-good.So:Don't start a sentence with 'So '
-      test.md:23:15:write-good.So:Don't start a sentence with '; so '
+      test.md:14:1:write-good.So:Don't start a sentence with 'So'
+      test.md:23:15:write-good.So:Don't start a sentence with '; so'
       test.md:25:1:write-good.ThereIs:Don't start a sentence with 'There is'
       test.md:27:1:write-good.ThereIs:Don't start a sentence with 'There are'
       test.md:29:18:write-good.Weasal:'simply' is a weasal word!
@@ -45,12 +45,13 @@ Feature: Styles
       test.html:5:43:demo.EndingPreposition:Don't end a sentence with 'by.'
       test.html:8:30:demo.CommasPerSentence:More than 3 commas!
       test.html:10:27:demo.Spacing:'.M' should have one space
-      test.html:10:35:demo.Hyphen:' Randomly-' doesn't need a hyphen
+      test.html:10:35:demo.Hyphen:'Randomly-' doesn't need a hyphen
       test.html:12:12:demo.SentenceLength:Sentences should be less than 25 words
       test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
       test.md:1:1:demo.Reading:Grade level (9.10) too high!
       test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
       test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
+      test.md:10:133:demo.Spellcheck:Did you really mean 'Valelint'?
       test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
       test.md:14:158:demo.SentenceLength:Sentences should be less than 25 words
       test.md:20:21:demo.Abbreviations:Use 'i.e.,'

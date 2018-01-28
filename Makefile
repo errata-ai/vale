@@ -6,7 +6,7 @@ CURR_SHA=$(shell git rev-parse --verify HEAD)
 
 LDFLAGS=-ldflags "-s -w -X main.version=$(LAST_TAG)"
 
-.PHONY: clean test lint ci cross install bump rules setup bench compare release
+.PHONY: data test lint ci cross install bump rules setup bench compare release
 
 all: build
 
@@ -71,3 +71,6 @@ setup:
 
 rules:
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/*.yml
+
+data:
+	go-bindata -ignore=\\.DS_Store -pkg="data" -o data/data.go data/*.{dic,aff}

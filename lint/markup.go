@@ -47,7 +47,7 @@ var commonExtensions = 0 |
 	blackfriday.EXTENSION_FENCED_CODE
 var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
 var options = blackfriday.Options{Extensions: commonExtensions}
-var reFrontMatter = regexp.MustCompile(`---\n`)
+var reFrontMatter = regexp.MustCompile(`^(?s)---\n([^{]+?)\n---`)
 
 // HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
@@ -89,6 +89,12 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	tagHistory := []string{}
 
 	tokens := html.NewTokenizer(bytes.NewReader(fsrc))
+
+	skipped := []string{"tt", "code"}
+	if len(l.Config.IgnoredScopes) > 0 {
+		skipped = l.Config.IgnoredScopes
+	}
+
 	for {
 		tokt = tokens.Next()
 		tok = tokens.Token()
@@ -103,7 +109,8 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			skip, inBlock = false, false
 		} else if tokt == html.StartTagToken {
 			inline = core.StringInSlice(txt, inlineTags)
-			skip = (txt == "tt" || txt == "code")
+			// skip = (txt == "tt" || txt == "code")
+			skip = core.StringInSlice(txt, skipped)
 			tagHistory = append(tagHistory, txt)
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
@@ -227,14 +234,14 @@ func (l Linter) lintHTML(f *core.File) {
 }
 
 func (l Linter) lintMarkdown(f *core.File) {
-	s := reFrontMatter.ReplaceAllString(f.Content, "```\n")
+	s := reFrontMatter.ReplaceAllString(f.Content, "```\n$1\n```")
 	for syntax, regexes := range l.Config.IgnorePatterns {
 		sec, err := glob.Compile(syntax)
 		if core.CheckError(err) && sec.Match(".md") {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
 				if err == nil {
-					s = pat.ReplaceAllString(s, "```\n")
+					s = pat.ReplaceAllString(s, "\n```\n$1\n```\n")
 				}
 			}
 		}

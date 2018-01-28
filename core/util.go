@@ -103,7 +103,7 @@ func FormatMessage(msg string, subs ...string) string {
 	max := len(subs)
 	found := []string{}
 	for i := 0; i < n && i < max; i++ {
-		found = append(found, subs[i])
+		found = append(found, strings.TrimSpace(subs[i]))
 	}
 	return fmt.Sprintf(msg, StringsToInterface(found)...)
 }

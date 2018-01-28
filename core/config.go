@@ -49,15 +49,17 @@ var LevelToInt = map[string]int{
 // Config holds Vale's configuration, both from the CLI and its config file.
 type Config struct {
 	// General configuration
-	IgnorePatterns map[string][]string        // TODO
 	Checks         []string                   // All checks to load
 	GBaseStyles    []string                   // Global base style
 	GChecks        map[string]bool            // Global checks
+	IgnoredScopes  []string                   // A list of HTML tags to ignore
+	IgnorePatterns map[string][]string        // A list of regexp's indentifying sections to ignore
 	MinAlertLevel  int                        // Lowest alert level to display
+	RuleToLevel    map[string]string          // Single-rule level changes
 	SBaseStyles    map[string][]string        // Syntax-specific base styles
 	SChecks        map[string]map[string]bool // Syntax-specific checks
 	StylesPath     string                     // Directory with Rule.yml files
-	RuleToLevel    map[string]string          // Single-rule level changes
+	WordTemplate   string                     // The template used in YAML -> regexp list conversions
 
 	// Command-line configuration
 	Output    string // (optional) output style ("line" or "CLI")
@@ -139,7 +141,8 @@ func loadConfig(names []string) (*ini.File, string, error) {
 // LoadConfig reads the .vale/_vale file.
 func LoadConfig() *Config {
 	cfg := NewConfig()
-	uCfg, path, err := loadConfig([]string{".vale", "_vale"})
+	names := []string{".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini"}
+	uCfg, path, err := loadConfig(names)
 	if err != nil {
 		return cfg
 	}
@@ -154,6 +157,10 @@ func LoadConfig() *Config {
 		} else if k == "MinAlertLevel" {
 			level := core.Key(k).In("warning", AlertLevels)
 			cfg.MinAlertLevel = LevelToInt[level]
+		} else if k == "IgnoredScopes" {
+			cfg.IgnoredScopes = core.Key(k).Strings(",")
+		} else if k == "WordTemplate" {
+			cfg.WordTemplate = core.Key(k).String()
 		}
 	}
 

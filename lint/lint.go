@@ -94,6 +94,7 @@ func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
 	if l.Config.Sorted {
 		sort.Sort(core.ByName(linted))
 	}
+
 	return linted, nil
 }
 

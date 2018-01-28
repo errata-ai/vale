@@ -44,6 +44,7 @@ type Alert struct {
 	Severity    string // 'suggestion', 'warning', or 'error'
 	Span        []int  // the [begin, end] location within a line
 	Hide        bool   // should we hide this alert?
+	Match       string // the actual matched text
 }
 
 // A Selector represents a named section of text.
@@ -233,7 +234,7 @@ var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
 
 // WordTokenizer splits text into words.
 var WordTokenizer = tokenize.NewRegexpTokenizer(
-	`[\p{L}]+(?:['-.][\p{L}]+)?`, false, true)
+	`(?:[A-Z]\.){2,}|[\p{L}[\p{N}]+'[\p{L}[\p{N}]+|[\p{L}[\p{N}]+`, false, true)
 
 // Tagger tags a sentence.
 //

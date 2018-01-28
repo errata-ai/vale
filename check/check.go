@@ -1,6 +1,7 @@
 package check
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/ValeLint/gospell"
 	"github.com/ValeLint/vale/core"
+	"github.com/ValeLint/vale/data"
 	"github.com/ValeLint/vale/rule"
 	"github.com/jdkato/prose/summarize"
 	"github.com/jdkato/prose/transform"
@@ -29,6 +31,7 @@ var defaultFilters = []*regexp.Regexp{
 	regexp.MustCompile(`0[xX][0-9a-fA-F]+`),
 	regexp.MustCompile(`\w+-\w+`),
 	regexp.MustCompile(`[A-Z]{1}[a-z]+[A-Z]+\w+`),
+	regexp.MustCompile(`[0-9]`),
 }
 
 type ruleFn func(string, *core.File) []core.Alert
@@ -97,6 +100,27 @@ func NewManager(config *core.Config) *Manager {
 	}
 
 	return &mgr
+}
+
+func makeRegexp(template string, noCase bool, word func() bool, callback func() string) string {
+	regex := ""
+	if noCase {
+		regex += ignoreCase
+	}
+
+	regex += callback()
+
+	if word() {
+		if template != "" {
+			regex += template
+		} else {
+			regex += wordTemplate
+		}
+	} else {
+		regex += nonwordTemplate
+	}
+
+	return regex
 }
 
 func formatMessages(msg string, desc string, subs ...string) (string, string) {
@@ -232,7 +256,7 @@ func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Reg
 					}
 					a := core.Alert{
 						Check: chk.Name, Severity: chk.Level, Span: loc,
-						Link: chk.Link, Hide: pos}
+						Link: chk.Link, Hide: pos, Match: observed}
 					a.Message, a.Description = formatMessages(chk.Message,
 						chk.Description, expected, observed)
 					alerts = append(alerts, a)
@@ -311,9 +335,7 @@ func checkSpelling(txt string, chk Spelling, gs *gospell.GoSpell, f *core.File) 
 
 OUTER:
 	for _, w := range core.WordTokenizer.Tokenize(txt) {
-		if _, found := chk.IgnoreSet[strings.ToLower(w)]; found {
-			continue
-		} else if strings.ToUpper(w) == w {
+		if strings.ToUpper(w) == w {
 			continue
 		}
 
@@ -323,11 +345,12 @@ OUTER:
 			}
 		}
 
-		if known := gs.Spell(w); !known {
+		known := gs.Spell(w) || gs.Spell(strings.ToLower(w)) || gs.Spell(strings.Title(w))
+		if !known {
 			offset := strings.Index(txt, w)
 			loc := []int{offset, offset + len(w)}
 			a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
-				Link: chk.Link}
+				Link: chk.Link, Match: strings.ToLower(w)}
 			a.Message, a.Description = formatMessages(chk.Message,
 				chk.Description, w)
 			alerts = append(alerts, a)
@@ -379,18 +402,14 @@ func (mgr *Manager) addCapitalizationCheck(chkName string, chkDef Capitalization
 func (mgr *Manager) addConsistencyCheck(chkName string, chkDef Consistency) {
 	var chkRE string
 
-	regex := ""
-	if chkDef.Ignorecase {
-		regex += ignoreCase
-	}
-	if !chkDef.Nonword {
-		regex += wordTemplate
-	} else {
-		regex += nonwordTemplate
-	}
+	regex := makeRegexp(
+		mgr.Config.WordTemplate,
+		chkDef.Ignorecase,
+		func() bool { return !chkDef.Nonword },
+		func() string { return "" })
 
-	count := 0
 	chkKey := strings.Split(chkName, ".")[1]
+	count := 0
 	for v1, v2 := range chkDef.Either {
 		count += 2
 		subs := []string{
@@ -411,17 +430,12 @@ func (mgr *Manager) addConsistencyCheck(chkName string, chkDef Consistency) {
 }
 
 func (mgr *Manager) addExistenceCheck(chkName string, chkDef Existence) {
-	regex := ""
-	if chkDef.Ignorecase {
-		regex += ignoreCase
-	}
 
-	regex += strings.Join(chkDef.Raw, "")
-	if !chkDef.Nonword && len(chkDef.Tokens) > 0 {
-		regex += wordTemplate
-	} else {
-		regex += nonwordTemplate
-	}
+	regex := makeRegexp(
+		mgr.Config.WordTemplate,
+		chkDef.Ignorecase,
+		func() bool { return !chkDef.Nonword && len(chkDef.Tokens) > 0 },
+		func() string { return strings.Join(chkDef.Raw, "") })
 
 	regex = fmt.Sprintf(regex, strings.Join(chkDef.Tokens, "|"))
 	re, err := regexp.Compile(regex)
@@ -482,18 +496,13 @@ func (mgr *Manager) addConditionalCheck(chkName string, chkDef Conditional) {
 }
 
 func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
-	regex := ""
 	tokens := ""
 
-	if chkDef.Ignorecase {
-		regex += ignoreCase
-	}
-
-	if !chkDef.Nonword {
-		regex += wordTemplate
-	} else {
-		regex += nonwordTemplate
-	}
+	regex := makeRegexp(
+		mgr.Config.WordTemplate,
+		chkDef.Ignorecase,
+		func() bool { return !chkDef.Nonword },
+		func() string { return "" })
 
 	replacements := []string{}
 	for regexstr, replacement := range chkDef.Swap {
@@ -529,13 +538,24 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 }
 
 func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
-	model, err := gospell.NewGoSpell(chkDef.Aff, chkDef.Dic)
+	var model *gospell.GoSpell
+	var err error
 
-	chkDef.IgnoreSet = make(map[string]struct{})
-	for _, word := range chkDef.Ignore {
-		chkDef.IgnoreSet[word] = struct{}{}
+	if !(core.FileExists(chkDef.Aff) && core.FileExists(chkDef.Dic)) {
+		// Fall back to the defaults:
+		aff, _ := data.Asset("data/en_US-large.aff")
+		dic, _ := data.Asset("data/en_US-large.dic")
+		model, err = gospell.NewGoSpellReader(bytes.NewReader(aff), bytes.NewReader(dic))
+
+	} else {
+		model, err = gospell.NewGoSpell(chkDef.Aff, chkDef.Dic)
 	}
-	chkDef.Ignore = []string{}
+
+	if chkDef.Ignore != "" {
+		vocab, _ := filepath.Abs(chkDef.Ignore)
+		_, exists := model.AddWordListFile(vocab)
+		core.CheckError(exists)
+	}
 
 	fn := func(text string, file *core.File) []core.Alert {
 		return checkSpelling(text, chkDef, model, file)
