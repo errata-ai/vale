@@ -204,9 +204,9 @@ func getAttribute(tok html.Token, key string) string {
 }
 
 func clearElements(ctx string, tok html.Token) string {
-	if tok.Data == "img" || tok.Data == "a" || tok.Data == "p" {
+	if tok.Data == "img" || tok.Data == "a" || tok.Data == "p" || tok.Data == "script" {
 		for _, a := range tok.Attr {
-			if a.Key == "alt" || a.Key == "href" || a.Key == "id" {
+			if a.Key == "alt" || a.Key == "href" || a.Key == "id" || a.Key == "src" {
 				ctx = updateCtx(ctx, a.Val, html.TextToken)
 			}
 		}
