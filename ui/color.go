@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/ValeLint/vale/core"
 	"github.com/fatih/color"
@@ -40,9 +41,15 @@ func PrintVerboseAlerts(linted []*core.File, wrap bool) bool {
 	}
 
 	n := len(linted)
-	fmt.Printf("%s %s, %s and %s in %d %s.\n", symbol,
-		colorize(etotal, errorColor), colorize(wtotal, warningColor),
-		colorize(stotal, suggestionColor), n, pluralize("file", n))
+	if n == 1 && strings.HasPrefix(linted[0].Path, "stdin") {
+		fmt.Printf("%s %s, %s and %s in %s.\n", symbol,
+			colorize(etotal, errorColor), colorize(wtotal, warningColor),
+			colorize(stotal, suggestionColor), "stdin")
+	} else {
+		fmt.Printf("%s %s, %s and %s in %d %s.\n", symbol,
+			colorize(etotal, errorColor), colorize(wtotal, warningColor),
+			colorize(stotal, suggestionColor), n, pluralize("file", n))
+	}
 
 	return errors != 0
 }
