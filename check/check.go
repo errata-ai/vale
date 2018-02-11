@@ -543,8 +543,8 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 
 	if !(core.FileExists(chkDef.Aff) && core.FileExists(chkDef.Dic)) {
 		// Fall back to the defaults:
-		aff, _ := data.Asset("data/en_US-large.aff")
-		dic, _ := data.Asset("data/en_US-large.dic")
+		aff, _ := data.Asset("data/en_US-web.aff")
+		dic, _ := data.Asset("data/en_US-web.dic")
 		model, err = gospell.NewGoSpellReader(bytes.NewReader(aff), bytes.NewReader(dic))
 
 	} else {
