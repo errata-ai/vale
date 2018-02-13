@@ -60,6 +60,7 @@ type Config struct {
 	SChecks        map[string]map[string]bool // Syntax-specific checks
 	StylesPath     string                     // Directory with Rule.yml files
 	WordTemplate   string                     // The template used in YAML -> regexp list conversions
+	Parsers        map[string]string          // A map of syntax -> commands
 
 	// Command-line configuration
 	Output    string // (optional) output style ("line" or "CLI")
@@ -81,6 +82,7 @@ func NewConfig() *Config {
 	cfg.MinAlertLevel = 1
 	cfg.GBaseStyles = []string{"vale"}
 	cfg.RuleToLevel = make(map[string]string)
+	cfg.Parsers = make(map[string]string)
 	cfg.IgnorePatterns = make(map[string][]string)
 	return &cfg
 }
@@ -186,6 +188,8 @@ func LoadConfig() *Config {
 				cfg.SBaseStyles[sec] = uCfg.Section(sec).Key(k).Strings(",")
 			} else if k == "IgnorePatterns" {
 				cfg.IgnorePatterns[sec] = uCfg.Section(sec).Key(k).Strings(",")
+			} else if k == "Parser" {
+				cfg.Parsers[sec] = uCfg.Section(sec).Key(k).String()
 			} else {
 				syntaxOpts[k] = validateLevel(k, uCfg.Section(sec).Key(k).String(), cfg)
 				cfg.Checks = append(cfg.Checks, k)

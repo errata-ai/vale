@@ -26,6 +26,7 @@ type File struct {
 	Counts     map[string]int    // word counts
 	Format     string            // 'code', 'markup' or 'prose'
 	Lines      []string          // the File's Content split into lines
+	Command    string            // a user-provided parsing CLI command
 	NormedExt  string            // the normalized extension (see util/format.go)
 	Path       string            // the full path
 	RealExt    string            // actual file extension
@@ -128,13 +129,22 @@ func NewFile(src string, config *Config) *File {
 		}
 	}
 
+	command := ""
+	for sec, p := range config.Parsers {
+		pat, err := glob.Compile(sec)
+		if CheckError(err) && pat.Match(src) {
+			command = p
+			break
+		}
+	}
+
 	scanner.Split(SplitLines)
 	content := PrepText(string(fbytes))
 	lines := strings.SplitAfter(content, "\n")
 	file := File{
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Lines: lines,
-		Comments: make(map[string]bool), Content: content,
+		Comments: make(map[string]bool), Content: content, Command: command,
 	}
 
 	return &file

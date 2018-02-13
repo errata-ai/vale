@@ -145,7 +145,16 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 // TODO: remove dependencies on `asciidoctor` and `rst2html`.
 func (l Linter) lintFile(src string) *core.File {
 	file := core.NewFile(src, l.Config)
-	if file.Format == "markup" && !l.Config.Simple {
+	if file.Command != "" {
+		// We've been given a custom command to execute.
+		parts := strings.Split(file.Command, " ")
+		exe := core.Which([]string{parts[0]})
+		if exe != "" {
+			l.lintCustom(file, exe, parts[1:])
+		} else {
+			fmt.Printf("%s not found!\n", parts[0])
+		}
+	} else if file.Format == "markup" && !l.Config.Simple {
 		switch file.NormedExt {
 		case ".adoc":
 			cmd := core.Which([]string{"asciidoctor"})

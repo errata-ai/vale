@@ -2,7 +2,6 @@ package lint
 
 import (
 	"bytes"
-	"fmt"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -234,8 +233,8 @@ func (l Linter) lintHTML(f *core.File) {
 	l.lintHTMLTokens(f, f.Content, []byte(f.Content), 0)
 }
 
-func (l Linter) lintMarkdown(f *core.File) {
-	s := reFrontMatter.ReplaceAllString(f.Content, "```\n$1\n```")
+func (l Linter) prepMarkdown(content string) string {
+	s := reFrontMatter.ReplaceAllString(content, "```\n$1\n```")
 	for syntax, regexes := range l.Config.IgnorePatterns {
 		sec, err := glob.Compile(syntax)
 		if core.CheckError(err) && sec.Match(".md") {
@@ -247,8 +246,12 @@ func (l Linter) lintMarkdown(f *core.File) {
 			}
 		}
 	}
+	return s
+}
+
+func (l Linter) lintMarkdown(f *core.File) {
+	s := l.prepMarkdown(f.Content)
 	html := blackfriday.MarkdownOptions([]byte(s), renderer, options)
-	fmt.Println(s)
 	l.lintHTMLTokens(f, f.Content, html, 0)
 }
 
@@ -287,6 +290,20 @@ func (l Linter) lintADoc(f *core.File, asciidoctor string) {
 	var out bytes.Buffer
 	cmd := exec.Command(asciidoctor, adocArgs...)
 	cmd.Stdin = strings.NewReader(f.Content)
+	cmd.Stdout = &out
+	if core.CheckError(cmd.Run()) {
+		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
+	}
+}
+
+func (l Linter) lintCustom(f *core.File, command string, args []string) {
+	var out bytes.Buffer
+	s := f.Content
+	if f.NormedExt == ".md" {
+		s = l.prepMarkdown(s)
+	}
+	cmd := exec.Command(command, args...)
+	cmd.Stdin = strings.NewReader(s)
 	cmd.Stdout = &out
 	if core.CheckError(cmd.Run()) {
 		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
