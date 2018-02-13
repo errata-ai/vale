@@ -241,7 +241,7 @@ func (l Linter) prepMarkdown(content string) string {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
 				if err == nil {
-					s = pat.ReplaceAllString(s, "\n<pre>\n$1\n</pre>\n\n")
+					s = pat.ReplaceAllString(s, "\n```\n$1\n```\n")
 				}
 			}
 		}
