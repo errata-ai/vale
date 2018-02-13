@@ -2,6 +2,7 @@ package lint
 
 import (
 	"bytes"
+	"fmt"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -241,12 +242,13 @@ func (l Linter) lintMarkdown(f *core.File) {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
 				if err == nil {
-					s = pat.ReplaceAllString(s, "\n```\n$1\n```\n")
+					s = pat.ReplaceAllString(s, "\n<pre>\n$1\n</pre>\n\n")
 				}
 			}
 		}
 	}
 	html := blackfriday.MarkdownOptions([]byte(s), renderer, options)
+	fmt.Println(s)
 	l.lintHTMLTokens(f, f.Content, html, 0)
 }
 
