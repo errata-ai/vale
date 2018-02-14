@@ -16,7 +16,6 @@ Feature: Styles
       test.md:1:12:write-good.Weasal:'few' is a weasal word!
       test.md:3:12:write-good.Passive:'was killed'
       test.md:5:1:write-good.Illusions:'the' is repeated!
-      test.md:7:1:write-good.Illusions:'the' is repeated!
       test.md:10:1:write-good.Illusions:'the' is repeated!
       test.md:14:1:write-good.So:Don't start a sentence with 'So'
       test.md:23:15:write-good.So:Don't start a sentence with '; so'

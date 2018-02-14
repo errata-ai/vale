@@ -215,13 +215,15 @@ func checkRepetition(txt string, chk Repetition, f *core.File, r *regexp.Regexp)
 		}
 
 		if hit && count > chk.Max {
-			floc := []int{ploc[0], loc[1]}
-			a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: floc,
-				Link: chk.Link}
-			a.Message, a.Description = formatMessages(chk.Message,
-				chk.Description, curr)
-			alerts = append(alerts, a)
-			count = 0
+			if !strings.Contains(txt[ploc[0]:loc[1]], "\n") {
+				floc := []int{ploc[0], loc[1]}
+				a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: floc,
+					Link: chk.Link}
+				a.Message, a.Description = formatMessages(chk.Message,
+					chk.Description, curr)
+				alerts = append(alerts, a)
+				count = 0
+			}
 		}
 		ploc = loc
 		prev = curr
