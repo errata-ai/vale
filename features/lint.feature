@@ -31,6 +31,7 @@ Feature: Lint
     test.adoc:59:27:vale.Annotations:'XXX' left in text
     test.adoc:64:38:vale.Annotations:'XXX' left in text
     test.adoc:66:20:vale.Annotations:'TODO' left in text
+    test.adoc:75:16:vale.Annotations:'TODO' left in text
     """
     And the exit status should be 0
 
@@ -76,6 +77,7 @@ Feature: Lint
     test.md:36:16:vale.Annotations:'FIXME' left in text
     test.md:40:21:vale.Annotations:'FIXME' left in text
     test.md:44:5:vale.Annotations:'TODO' left in text
+    test.md:46:3:vale.Annotations:'TODO' left in text
     """
     And the exit status should be 0
 
@@ -92,6 +94,7 @@ Feature: Lint
     test.rst:69:3:vale.Annotations:'FIXME' left in text
     test.rst:75:3:vale.Annotations:'TODO' left in text
     test.rst:75:38:vale.Annotations:'XXX' left in text
+    test.rst:81:10:vale.Annotations:'TODO' left in text
     """
     And the exit status should be 0
 

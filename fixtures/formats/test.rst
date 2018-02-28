@@ -75,3 +75,7 @@ The |biohazard| symbol must be used on TODO containers used to dispose of medica
 **TODO** this is a sentence ``TODO`` XXX.
 
 .. |biohazard| image:: biohazard.png
+
+
+.. image:: /images/logo.png
+   :alt: TODO

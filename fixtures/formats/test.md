@@ -43,4 +43,6 @@ this sentence has -- dashes TODO: but it should still work.
 
 is *TODO* by
 
+![TODO](/images/logo.png)
+
 [img-monokai]: https://

@@ -98,6 +98,7 @@ Feature: CLI
     stdin.md:36:16:vale.Annotations:'FIXME' left in text
     stdin.md:40:21:vale.Annotations:'FIXME' left in text
     stdin.md:44:5:vale.Annotations:'TODO' left in text
+    stdin.md:46:3:vale.Annotations:'TODO' left in text
     """
     And the exit status should be 0
 

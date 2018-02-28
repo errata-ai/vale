@@ -141,6 +141,14 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 
 		attr = getAttribute(tok, "class")
 		ctx = clearElements(ctx, tok)
+
+		if tok.Data == "img" {
+			for _, a := range tok.Attr {
+				if a.Key == "alt" || a.Key == "title" {
+					l.lintScope(f, ctx, a.Val, a.Val, tagHistory, lines)
+				}
+			}
+		}
 	}
 
 	summary := NewBlock("", f.Summary.String(), "", "summary."+f.RealExt)
@@ -204,17 +212,6 @@ func getAttribute(tok html.Token, key string) string {
 	return ""
 }
 
-func clearElements(ctx string, tok html.Token) string {
-	if tok.Data == "img" || tok.Data == "a" || tok.Data == "p" || tok.Data == "script" {
-		for _, a := range tok.Attr {
-			if a.Key == "alt" || a.Key == "href" || a.Key == "id" || a.Key == "src" {
-				ctx = updateCtx(ctx, a.Val, html.TextToken)
-			}
-		}
-	}
-	return ctx
-}
-
 func updateCtx(ctx string, txt string, tokt html.TokenType) string {
 	var found bool
 	if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
@@ -224,6 +221,17 @@ func updateCtx(ctx string, txt string, tokt html.TokenType) string {
 				for _, w := range strings.Fields(s) {
 					ctx, _ = core.Substitute(ctx, w, '@')
 				}
+			}
+		}
+	}
+	return ctx
+}
+
+func clearElements(ctx string, tok html.Token) string {
+	if tok.Data == "img" || tok.Data == "a" || tok.Data == "p" || tok.Data == "script" {
+		for _, a := range tok.Attr {
+			if a.Key == "href" || a.Key == "id" || a.Key == "src" {
+				ctx = updateCtx(ctx, a.Val, html.TextToken)
 			}
 		}
 	}

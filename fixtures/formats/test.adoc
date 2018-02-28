@@ -71,3 +71,5 @@ FIXME *bold phrase* TODO _XXX_
 |Cell in column 2, row 2
 |Cell in column 3, row 2
 |===
+
+image:logo.png[TODO]
