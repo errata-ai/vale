@@ -1,0 +1,22 @@
+extends: substitution
+message: Use '%s' instead of '%s.'
+level: error
+ignorecase: true
+swap:
+  mightn't've : might not have)
+  mustn't've : must not have)
+  wouldn't've : would not have)
+  shouldn't've : should not have)
+  is not: isn't
+  are not: aren't
+  was not: wasn't
+  were not: weren't
+  have not: haven't
+  has not: hasn't
+  will not: won't
+  do not: don't
+  does not: doesn't
+  did not: didn't
+  cannot: can't
+  could not: couldn't
+  should not: shouldn't

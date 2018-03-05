@@ -1,0 +1,115 @@
+extends: substitution
+message: Use “%s” instead of “%s”
+link: https://developers.google.com/style/word-list
+level: warning
+ignorecase: false
+swap:
+  3-D	:	3D
+  abort	:	stop OR exit OR cancel OR end
+  above	:	preceding
+  access (verb)	:	see OR edit OR find OR use OR view
+  account name	:	username
+  action bar	:	app bar
+  omnibox	:	address bar
+  admin	:	administrator
+  Ajax	:	AJAX
+  a.m.	:	AM
+  p.m.	:	PM
+  am	:	AM
+  pm	:	PM
+  android	:	Android
+  Android device	:	Android-powered device
+  approx. : approximately
+  dev console	:	API console
+  developer console	:	API console
+  APIs console	:	API console
+  API Console key	:	API key
+  dev key	:	API key
+  developer key	:	API key
+  APIs	:	APIs
+  API explorer	:	APIs Explorer
+  '[\.]+apk'	:	APK
+  application	:	app
+  argument	:	option
+  authN	:	authentication
+  authZ	:	authorization
+  autoupdate	:	automatically update
+  cell phone	:	phone OR mobile OR mobile phone OR mobile device
+  cellular data	:	 mobile data
+  cellular network	:	 mobile network
+  chapter	:	documents OR pages OR sections
+  check	:	select
+  check box	:	checkbox
+  CLI	:	 command-line tool
+  click on	:	click in
+  Cloud	:	Google Cloud Platform OR GCP
+  Container Engine	:	Kubernetes Engine
+  content type	:	media type
+  curated roles	:	predefined roles
+  data are	:	data is
+  fewer data	:	less data
+  deselect	:	clear
+  Developers Console	:	Google API Console OR API Console
+  disabled	:	turn off OR off
+  disable	:	turn off OR off
+  e.g.	:	for example OR for instance
+  e-mail	:	email
+  Email	:	email
+  E-mail	:	email
+  ephemeral IP address	:	ephemeral external IP address
+  file name	:	filename
+  firewalls	:	firewall rules
+  functionality	:	capability OR feature
+  '[\.]+gif'	:	 GIF file
+  GIF	:	 GIF file
+  Googling	:	 search with Google
+  Google accounts	:	Google Accounts
+  Google account	:	Google Account
+  Google I-O	:	Google I/O
+  Google IO	:	Google I/O
+  grayed-out	:	unavailable
+  HTTPS; not HTTPs	:	HTTPS
+  i.e.	:	that is
+  ingest	:	import OR load
+  in order to	:	to
+  network IP address	:	internal IP address
+  '[\.]+jpg'	:	JPEG file
+  k8s	:	Kubernetes
+  kill	:	stop OR exit OR cancel OR end
+  long press	:	touch & hold
+  OAuth 2	:	OAuth 2.0
+  OAuth2	:	OAuth 2.0
+  Oauth	:	OAuth 2.0
+  ok	:	OK OR okay
+  Okay	:	OK OR okay
+  open-source	:	open source
+  overview screen	:	recents screen
+  filepath	:	path
+  file path	:	path
+  pathname	:	path
+  path name	:	path
+  '[\.]+png'	:	PNG file
+  regex	:	regular expression
+  SHA1	:	SHA-1 OR HAS-SHA1
+  sign into	:	sign in to
+  sign on	:	single sign-on
+  sign-on	:	single sign-on
+  smartphone	:	mobile phone OR phone
+  static IP address	:	static external IP address
+  stylesheet	:	style sheet
+  synch	:	sync
+  tablename	:	table name
+  tablet	:	device
+  tap & hold	:	touch & hold
+  tap and hold	:	touch & hold
+  terminate	:	stop OR exit OR cancel OR end
+  touch	:	tap
+  touch and hold	:	touch & hold
+  uncheck	:	clear
+  unselect	:	clear
+  url	:	URL
+  vs.	:	versus
+  WiFi	:	Wi-Fi
+  wifi	:	Wi-Fi
+  World Wide Web	:	web
+  '[\.]+zip'	:	zip file

@@ -1,0 +1,14 @@
+extends: substitution
+message: Use “%s” instead of “%s”
+link: https://developers.google.com/style/articles
+level: error
+ignorecase: true
+swap:
+  a hour : an hour
+  a HTML : an HTML
+  an hand : a hand
+  an hotel : a hotel
+  a umbrella : an umbrella
+  an union : a union
+  a SQL : an SQL
+  a FAQ : an FAQ

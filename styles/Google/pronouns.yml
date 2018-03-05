@@ -1,0 +1,18 @@
+extends: existence
+message: "Avoid gender-specific and first-person pronouns."
+link: https://developers.google.com/style/pronouns
+level: warning
+ignorecase: true
+tokens:
+    he
+    him
+    his
+    she
+    her
+    he/she
+    (s)he
+    I
+    we
+    us
+    our
+    ours

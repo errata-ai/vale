@@ -1,0 +1,1 @@
+Based on [Google Developer Documentation Style Guide](https://developers.google.com/style/)
