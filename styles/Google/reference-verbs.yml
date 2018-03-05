@@ -1,0 +1,10 @@
+extends: substitution
+message: "Use the form '“%s” foo' rather than '“%s” foo'."
+link: https://developers.google.com/style/reference-verbs
+level: warning
+ignorecase: false
+swap:
+  get : gets
+  list : lists
+  create : creates
+  search : searches

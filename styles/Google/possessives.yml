@@ -1,0 +1,14 @@
+extends: existence
+message: "Consider removing '%s'"
+link: https://developers.google.com/style/possessives
+level: error
+ignorecase: true
+tokens:
+    businesses's
+    Buzz'
+    Carlos'
+    class'
+    examples's
+    users's
+    values's
+    Search's

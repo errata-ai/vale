@@ -1,0 +1,7 @@
+extends: existence
+message: "Consider removing '%s'"
+link: https://developers.google.com/style/plurals-parentheses
+level: error
+ignorecase: true
+tokens:
+  '[\w]+\(s\)'

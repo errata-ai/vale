@@ -1,0 +1,6 @@
+extends: capitalization
+message: "'%s' should be in sentence case"
+link : https://developers.google.com/style/capitalization
+level: warning
+scope: heading
+match: $sentence

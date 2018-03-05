@@ -1,0 +1,22 @@
+extends: existence
+message: 'Do not use “%s” (in some rare cases it indicates a term that's OK to use).'
+link: https://developers.google.com/style/
+level: error
+ignorecase: true
+tokens:
+  - please note
+  - at this time
+  - \!
+  - lets do
+  - let's do
+  - simply
+  - it's that simple
+  - its that simple
+  - its easy
+  - it's easy
+  - please
+  - will
+  - would
+  - ballpark figure
+  - back burner
+  - hang in there

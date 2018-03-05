@@ -1,0 +1,7 @@
+extends: existence
+message: "Try to avoid using "will" where possible."
+link: https://developers.google.com/style/tense
+level: warning
+ignorecase: true
+tokens:
+    will
