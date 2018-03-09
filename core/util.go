@@ -58,6 +58,8 @@ func SlicesEqual(a, b []string) bool {
 // CheckPOS determines if a match (as found by an extension point) also matches
 // the expected part-of-speech in text.
 func CheckPOS(loc []int, expected, text string) bool {
+	var word string
+
 	// Initilize our tagger, if needed.
 	if Tagger == nil {
 		Tagger = tag.NewPerceptronTagger()
@@ -67,7 +69,11 @@ func CheckPOS(loc []int, expected, text string) bool {
 	observed := []string{}
 	for _, tok := range Tagger.Tag(TextToWords(text)) {
 		if InRange(pos, loc) {
-			word := strings.ToLower(strings.TrimRight(tok.Text, ",.!?:;"))
+			if len(tok.Text) > 1 {
+				word = strings.ToLower(strings.TrimRight(tok.Text, ",.!?:;"))
+			} else {
+				word = tok.Text
+			}
 			observed = append(observed, (word + "/" + tok.Tag))
 		}
 		pos += len(tok.Text) + 1
