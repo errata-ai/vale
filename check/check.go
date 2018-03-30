@@ -32,6 +32,8 @@ var defaultFilters = []string{
 	`\w+-\w+`,
 	`[A-Z]{1}[a-z]+[A-Z]+\w+`,
 	`[0-9]`,
+	`[A-Z]+$`,
+	`\W`,
 	`\w{3,}\.\w{3,}`,
 }
 
@@ -338,11 +340,6 @@ func checkSpelling(txt string, chk Spelling, gs *gospell.GoSpell, f *core.File) 
 
 OUTER:
 	for _, w := range core.WordTokenizer.Tokenize(txt) {
-
-		if strings.ToUpper(w) == w || !core.IsLetter(w) {
-			continue
-		}
-
 		for _, filter := range chk.Filters {
 			if match, _ := regexp.MatchString(filter, w); match {
 				continue OUTER

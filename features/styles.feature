@@ -47,12 +47,15 @@ Feature: Styles
       test.html:10:35:demo.Hyphen:'Randomly-' doesn't need a hyphen
       test.html:12:12:demo.SentenceLength:Sentences should be less than 25 words
       test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
-      test.md:1:1:demo.Reading:Grade level (9.10) too high!
+      test.md:1:1:demo.Reading:Grade level (8.87) too high!
       test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
       test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
       test.md:10:133:demo.Spellcheck:Did you really mean 'Valelint'?
       test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
+      test.md:14:121:demo.Filters:Did you really mean 'DBA'?
       test.md:14:158:demo.SentenceLength:Sentences should be less than 25 words
+      test.md:16:1:demo.Filters:Did you really mean 'MHS'?
+      test.md:16:60:demo.Filters:Did you really mean 'MHS'?
       test.md:20:21:demo.Abbreviations:Use 'i.e.,'
       test.md:20:66:demo.Abbreviations:Use 'a.m. or p.m.'
       test.md:20:94:demo.Abbreviations:Use 'midnight or noon'
@@ -64,6 +67,7 @@ Feature: Styles
       test.md:26:88:demo.Abbreviations:Use 'a.m. or p.m.'
       test.md:26:110:demo.Meetup:Use 'meetup(s)' instead of 'meet-ups'
       test.md:26:381:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
+      test.md:28:1:demo.Filters:Did you really mean 'FOOOOOO'?
       test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
       test.rst:1:58:demo.Spacing:'. I' should have one space
       test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
