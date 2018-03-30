@@ -25,14 +25,14 @@ const (
 	nonwordTemplate = `(?:%s)`
 )
 
-var defaultFilters = []*regexp.Regexp{
-	regexp.MustCompile(`(?:\w+)?\.\w{1,4}\b`),
-	regexp.MustCompile(`\b(?:[a-zA-Z]\.){2,}`),
-	regexp.MustCompile(`0[xX][0-9a-fA-F]+`),
-	regexp.MustCompile(`\w+-\w+`),
-	regexp.MustCompile(`[A-Z]{1}[a-z]+[A-Z]+\w+`),
-	regexp.MustCompile(`[0-9]`),
-	regexp.MustCompile(`\w{3,}\.\w{3,}`),
+var defaultFilters = []string{
+	`(?:\w+)?\.\w{1,4}\b`,
+	`\b(?:[a-zA-Z]\.){2,}`,
+	`0[xX][0-9a-fA-F]+`,
+	`\w+-\w+`,
+	`[A-Z]{1}[a-z]+[A-Z]+\w+`,
+	`[0-9]`,
+	`\w{3,}\.\w{3,}`,
 }
 
 type ruleFn func(string, *core.File) []core.Alert
@@ -338,12 +338,13 @@ func checkSpelling(txt string, chk Spelling, gs *gospell.GoSpell, f *core.File) 
 
 OUTER:
 	for _, w := range core.WordTokenizer.Tokenize(txt) {
+
 		if strings.ToUpper(w) == w || !core.IsLetter(w) {
 			continue
 		}
 
-		for _, filter := range defaultFilters {
-			if filter.MatchString(w) {
+		for _, filter := range chk.Filters {
+			if match, _ := regexp.MatchString(filter, w); match {
 				continue OUTER
 			}
 		}
@@ -558,6 +559,10 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 		vocab, _ := filepath.Abs(chkDef.Ignore)
 		_, exists := model.AddWordListFile(vocab)
 		core.CheckError(exists)
+	}
+
+	if chkDef.Filter {
+		chkDef.Filters = append(chkDef.Filters, defaultFilters...)
 	}
 
 	fn := func(text string, file *core.File) []core.Alert {

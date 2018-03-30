@@ -1,6 +1,8 @@
 package check
 
-import "github.com/ValeLint/vale/core"
+import (
+	"github.com/ValeLint/vale/core"
+)
 
 // A Check implements a single rule.
 type Check struct {
@@ -94,6 +96,8 @@ type Spelling struct {
 	Definition `mapstructure:",squash"`
 	Aff        string
 	Dic        string
+	Filters    []string
+	Filter     bool
 	Ignore     string
 	Threshold  int
 }
