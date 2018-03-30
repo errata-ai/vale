@@ -50,7 +50,6 @@ Feature: Styles
       test.md:1:1:demo.Reading:Grade level (8.87) too high!
       test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
       test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
-      test.md:10:133:demo.Spellcheck:Did you really mean 'Valelint'?
       test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
       test.md:14:121:demo.Filters:Did you really mean 'DBA'?
       test.md:14:158:demo.SentenceLength:Sentences should be less than 25 words
