@@ -558,7 +558,7 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 		core.CheckError(exists)
 	}
 
-	if chkDef.Filter {
+	if !chkDef.Custom {
 		chkDef.Filters = append(chkDef.Filters, defaultFilters...)
 	}
 

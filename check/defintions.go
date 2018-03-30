@@ -95,9 +95,9 @@ type Readability struct {
 type Spelling struct {
 	Definition `mapstructure:",squash"`
 	Aff        string
+	Custom     bool
 	Dic        string
 	Filters    []string
-	Filter     bool
 	Ignore     string
 	Threshold  int
 }
