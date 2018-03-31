@@ -2,6 +2,7 @@ package check
 
 import (
 	"github.com/ValeLint/vale/core"
+	"github.com/jdkato/regexp"
 )
 
 // A Check implements a single rule.
@@ -97,7 +98,7 @@ type Spelling struct {
 	Aff        string
 	Custom     bool
 	Dic        string
-	Filters    []string
+	Filters    []*regexp.Regexp
 	Ignore     string
 	Threshold  int
 }

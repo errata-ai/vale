@@ -25,16 +25,16 @@ const (
 	nonwordTemplate = `(?:%s)`
 )
 
-var defaultFilters = []string{
-	`(?:\w+)?\.\w{1,4}\b`,
-	`\b(?:[a-zA-Z]\.){2,}`,
-	`0[xX][0-9a-fA-F]+`,
-	`\w+-\w+`,
-	`[A-Z]{1}[a-z]+[A-Z]+\w+`,
-	`[0-9]`,
-	`[A-Z]+$`,
-	`\W`,
-	`\w{3,}\.\w{3,}`,
+var defaultFilters = []*regexp.Regexp{
+	regexp.MustCompile(`(?:\w+)?\.\w{1,4}\b`),
+	regexp.MustCompile(`\b(?:[a-zA-Z]\.){2,}`),
+	regexp.MustCompile(`0[xX][0-9a-fA-F]+`),
+	regexp.MustCompile(`\w+-\w+`),
+	regexp.MustCompile(`[A-Z]{1}[a-z]+[A-Z]+\w+`),
+	regexp.MustCompile(`[0-9]`),
+	regexp.MustCompile(`[A-Z]+$`),
+	regexp.MustCompile(`\W`),
+	regexp.MustCompile(`\w{3,}\.\w{3,}`),
 }
 
 type ruleFn func(string, *core.File) []core.Alert
@@ -341,7 +341,7 @@ func checkSpelling(txt string, chk Spelling, gs *gospell.GoSpell, f *core.File) 
 OUTER:
 	for _, w := range core.WordTokenizer.Tokenize(txt) {
 		for _, filter := range chk.Filters {
-			if match, _ := regexp.MatchString(filter, w); match {
+			if filter.MatchString(w) {
 				continue OUTER
 			}
 		}
@@ -622,6 +622,20 @@ func (mgr *Manager) makeCheck(generic map[string]interface{}, extends, chkName s
 		}
 	} else if extends == "spelling" {
 		def := Spelling{}
+
+		if generic["filters"] != nil {
+			// We pre-compile user-provided filters for efficiency.
+			//
+			// NOTE: This makes a big difference: ~50s -> ~13s.
+			for _, filter := range generic["filters"].([]interface{}) {
+				if pat, e := regexp.Compile(filter.(string)); e == nil {
+					// TODO: Should we report malformed patterns?
+					def.Filters = append(def.Filters, pat)
+				}
+			}
+			delete(generic, "filters")
+		}
+
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addSpellingCheck(chkName, def)
 		}
