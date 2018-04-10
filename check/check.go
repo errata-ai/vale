@@ -105,13 +105,14 @@ func NewManager(config *core.Config) *Manager {
 	return &mgr
 }
 
-func makeRegexp(template string, noCase bool, word func() bool, callback func() string) string {
+func makeRegexp(
+	template string,
+	noCase bool,
+	word func() bool,
+	callback func() string,
+	append bool,
+) string {
 	regex := ""
-	if noCase {
-		regex += ignoreCase
-	}
-
-	regex += callback()
 
 	if word() {
 		if template != "" {
@@ -121,6 +122,16 @@ func makeRegexp(template string, noCase bool, word func() bool, callback func() 
 		}
 	} else {
 		regex += nonwordTemplate
+	}
+
+	if append {
+		regex += callback()
+	} else {
+		regex = callback() + regex
+	}
+
+	if noCase {
+		regex = ignoreCase + regex
 	}
 
 	return regex
@@ -407,7 +418,7 @@ func (mgr *Manager) addConsistencyCheck(chkName string, chkDef Consistency) {
 		mgr.Config.WordTemplate,
 		chkDef.Ignorecase,
 		func() bool { return !chkDef.Nonword },
-		func() string { return "" })
+		func() string { return "" }, true)
 
 	chkKey := strings.Split(chkName, ".")[1]
 	count := 0
@@ -436,7 +447,8 @@ func (mgr *Manager) addExistenceCheck(chkName string, chkDef Existence) {
 		mgr.Config.WordTemplate,
 		chkDef.Ignorecase,
 		func() bool { return !chkDef.Nonword && len(chkDef.Tokens) > 0 },
-		func() string { return strings.Join(chkDef.Raw, "") })
+		func() string { return strings.Join(chkDef.Raw, "") },
+		chkDef.Append)
 
 	regex = fmt.Sprintf(regex, strings.Join(chkDef.Tokens, "|"))
 	re, err := regexp.Compile(regex)
@@ -503,7 +515,7 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 		mgr.Config.WordTemplate,
 		chkDef.Ignorecase,
 		func() bool { return !chkDef.Nonword },
-		func() string { return "" })
+		func() string { return "" }, true)
 
 	replacements := []string{}
 	for regexstr, replacement := range chkDef.Swap {

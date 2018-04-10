@@ -29,6 +29,7 @@ type Definition struct {
 // Existence checks for the present of Tokens.
 type Existence struct {
 	Definition `mapstructure:",squash"`
+	Append     bool
 	Ignorecase bool
 	Nonword    bool
 	Raw        []string
