@@ -111,31 +111,36 @@ func validateLevel(key string, val string, cfg *Config) bool {
 // loadConfig loads the .vale file. It checks the current directory up to the
 // user's home directory, stopping on the first occurrence of a .vale or _vale
 // file.
-func loadConfig(names []string) (*ini.File, string, error) {
+func loadConfig(names, paths []string) (*ini.File, string, error) {
 	var configPath, dir string
 	var iniFile *ini.File
 	var err error
+	var recur bool
 
-	count := 0
-	for configPath == "" && count < 6 {
-		if count == 0 {
-			dir, _ = os.Getwd()
-		} else {
-			dir = filepath.Dir(dir)
-		}
-		for _, name := range names {
-			loc := path.Join(dir, name)
-			if FileExists(loc) {
-				configPath = loc
-				break
+	for _, start := range paths {
+		count := 0
+		for configPath == "" && count < 6 {
+			recur = start == "" && count == 0
+			if recur {
+				dir, _ = os.Getwd()
+				recur = true
+			} else if count == 0 {
+				dir = start
+				count = 6
+			} else {
+				dir = filepath.Dir(dir)
 			}
+			for _, name := range names {
+				loc := path.Join(dir, name)
+				if FileExists(loc) {
+					configPath = loc
+					break
+				}
+			}
+			count++
 		}
-		count++
 	}
 
-	if configPath == "" {
-		configPath, _ = homedir.Dir()
-	}
 	iniFile, err = ini.Load(configPath)
 	return iniFile, dir, err
 }
@@ -144,7 +149,9 @@ func loadConfig(names []string) (*ini.File, string, error) {
 func LoadConfig() *Config {
 	cfg := NewConfig()
 	names := []string{".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini"}
-	uCfg, path, err := loadConfig(names)
+	home, _ := homedir.Dir()
+
+	uCfg, path, err := loadConfig(names, []string{"", home})
 	if err != nil {
 		return cfg
 	}
