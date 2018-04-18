@@ -123,7 +123,6 @@ func loadConfig(names, paths []string) (*ini.File, string, error) {
 			recur = start == "" && count == 0
 			if recur {
 				dir, _ = os.Getwd()
-				recur = true
 			} else if count == 0 {
 				dir = start
 				count = 6
