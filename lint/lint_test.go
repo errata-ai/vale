@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/ValeLint/vale/check"
-	"github.com/ValeLint/vale/core"
+	"github.com/errata-ai/vale/check"
+	"github.com/errata-ai/vale/core"
 	"github.com/stretchr/testify/assert"
 )
 

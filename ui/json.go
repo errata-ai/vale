@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ValeLint/vale/core"
+	"github.com/errata-ai/vale/core"
 )
 
 // PrintJSONAlerts prints Alerts in map[file.path][]Alert form.

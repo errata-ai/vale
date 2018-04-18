@@ -7,10 +7,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ValeLint/vale/check"
-	"github.com/ValeLint/vale/core"
-	"github.com/ValeLint/vale/lint"
-	"github.com/ValeLint/vale/ui"
+	"github.com/errata-ai/vale/check"
+	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/lint"
+	"github.com/errata-ai/vale/ui"
 	"github.com/urfave/cli"
 )
 

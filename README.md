@@ -1,4 +1,4 @@
-# Vale: Your Style, Our Editor [![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/snk0oo6ih1nwuf6r/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/vale/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/ValeLint/vale)](https://goreportcard.com/report/github.com/ValeLint/vale) [![release](https://img.shields.io/github/release/valelint/vale.svg)](https://github.com/ValeLint/vale/releases/latest)
+# Vale: Your Style, Our Editor [![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/snk0oo6ih1nwuf6r/branch/master?svg=true)](https://ci.appveyor.com/project/jdkato/vale/branch/master) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale) [![release](https://img.shields.io/github/release/errata-ai/vale.svg)](https://github.com/errata-ai/vale/releases/latest)
 
 > :star2: We're now offering **Integration Assistance**! This is a great way to support the project while also getting the time-consuming tasks (e.g., creating a Vale-compatible version of your house style and setting up a CI service) out of the way. Shoot us <a href="mailto:joseph@jdkato.io" target="_top">an email</a> for more information! :star2:
 
@@ -17,7 +17,7 @@ Check out [project website](https://valelint.github.io/docs/) to learn more!
 
 ## Features
 
-Vale's functionality is split into extension points (called "checks") that can be customized to perform many different kinds of tasks, including [calculating readability](https://github.com/ValeLint/vale/blob/master/styles/demo/Reading.yml), [measuring sentence length](https://github.com/ValeLint/vale/blob/master/styles/jQuery/SentenceLength.yml), [enforcing a particular heading style](https://github.com/ValeLint/vale/blob/master/styles/18F/Titles.yml), and [identifying undefined acronyms](https://github.com/ValeLint/vale/blob/master/styles/TheEconomist/UnexpandedAcronyms.yml). See the [Style Showcase](https://valelint.github.io/docs/showcase/) for more advanced examples.
+Vale's functionality is split into extension points (called "checks") that can be customized to perform many different kinds of tasks, including [calculating readability](https://github.com/errata-ai/vale/blob/master/styles/demo/Reading.yml), [measuring sentence length](https://github.com/errata-ai/vale/blob/master/styles/jQuery/SentenceLength.yml), [enforcing a particular heading style](https://github.com/errata-ai/vale/blob/master/styles/18F/Titles.yml), and [identifying undefined acronyms](https://github.com/errata-ai/vale/blob/master/styles/TheEconomist/UnexpandedAcronyms.yml). See the [Style Showcase](https://valelint.github.io/docs/showcase/) for more advanced examples.
 
 Additionally, since Vale is "syntax aware," you'll never have to worry about syntax-related false positives (e.g., URLs or code blocks). See [Creating a style](https://valelint.github.io/docs/styles/#creating-a-style) for more information.
 
@@ -28,7 +28,7 @@ There are a few options to choose from:
 - [Homebrew](http://brew.sh):
 
     ```bash
-    $ brew tap ValeLint/vale
+    $ brew tap errata-ai/vale
     $ brew install vale
     ```
 - [Chocolatey](https://chocolatey.org/packages/vale/):
@@ -37,8 +37,8 @@ There are a few options to choose from:
      C:\> choco install vale
      ```
 
-- A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/valelint/vale/releases).
-- Manually on Windows, macOS, or Linux by downloading an executable from the [releases page](https://github.com/valelint/vale/releases).
+- A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/errata-ai/vale/releases).
+- Manually on Windows, macOS, or Linux by downloading an executable from the [releases page](https://github.com/errata-ai/vale/releases).
 
 ## Usage
 

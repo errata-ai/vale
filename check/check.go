@@ -9,9 +9,9 @@ import (
 	"strings"
 
 	"github.com/ValeLint/gospell"
-	"github.com/ValeLint/vale/core"
-	"github.com/ValeLint/vale/data"
-	"github.com/ValeLint/vale/rule"
+	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/data"
+	"github.com/errata-ai/vale/rule"
 	"github.com/jdkato/prose/summarize"
 	"github.com/jdkato/prose/transform"
 	"github.com/jdkato/regexp"

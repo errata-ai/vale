@@ -13,7 +13,7 @@ Interested in contributing to Vale? Great! We welcome contributions of any kind 
 
 ## <a name="intro"></a> Introduction
 
-Vale is a natural language linter that supports plain text, markup (Markdown, reStructuredText, AsciiDoc, and HTML), and source code comments. However, unlike many similar projects, Vale's primary focus isn't on providing a collection of rules everyone must follow&mdash;instead, Vale aims to be flexible enough to support many different styles (see the [reference styles](https://github.com/ValeLint/vale#reference-styles) for examples).
+Vale is a natural language linter that supports plain text, markup (Markdown, reStructuredText, AsciiDoc, and HTML), and source code comments. However, unlike many similar projects, Vale's primary focus isn't on providing a collection of rules everyone must follow&mdash;instead, Vale aims to be flexible enough to support many different styles (see the [reference styles](https://github.com/errata-ai/vale#reference-styles) for examples).
 
 More specifically, Vale is written in Go and split into packages that are tasked with implementing specific functionality:
 
@@ -102,5 +102,5 @@ Related to #30.
 | Term  | Definition                                                                                                                                                                        |
 |:-----:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | check | A "check" is one of Vale's extension points (e.g., `existence` and `substitution`) that performs a single task such as looking for the existence of a word.                       |
-| rule  | A "rule" is an actual implementation of a check. For example, [`Hedging`](https://github.com/ValeLint/vale/blob/master/rule/Hedging.yml) is one of Vale's built-in rules.         |
-| style | A "style" is a collection of rules. For example, [`Joblint`](https://github.com/ValeLint/vale/tree/master/styles/Joblint) is a style that consists of rules such as `LegacyTech`. |
+| rule  | A "rule" is an actual implementation of a check. For example, [`Hedging`](https://github.com/errata-ai/vale/blob/master/rule/Hedging.yml) is one of Vale's built-in rules.         |
+| style | A "style" is a collection of rules. For example, [`Joblint`](https://github.com/errata-ai/vale/tree/master/styles/Joblint) is a style that consists of rules such as `LegacyTech`. |

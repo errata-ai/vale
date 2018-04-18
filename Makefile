@@ -1,4 +1,4 @@
-BASE_DIR=$(shell echo $$GOPATH)/src/github.com/ValeLint/vale
+BASE_DIR=$(shell echo $$GOPATH)/src/github.com/errata-ai/vale
 BUILD_DIR=./builds
 
 LAST_TAG=$(shell git describe --abbrev=0 --tags)

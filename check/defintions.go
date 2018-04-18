@@ -1,7 +1,7 @@
 package check
 
 import (
-	"github.com/ValeLint/vale/core"
+	"github.com/errata-ai/vale/core"
 	"github.com/jdkato/regexp"
 )
 

@@ -22,4 +22,4 @@ brew:
     owner: ValeLint
     name: homebrew-vale
   description: A customizable, syntax-aware linter for prose.
-  homepage: 'https://github.com/ValeLint/vale'
+  homepage: 'https://github.com/errata-ai/vale'

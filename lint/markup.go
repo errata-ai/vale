@@ -7,7 +7,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/ValeLint/vale/core"
+	"github.com/errata-ai/vale/core"
 	"github.com/gobwas/glob"
 	"github.com/jdkato/regexp"
 	"github.com/russross/blackfriday"
