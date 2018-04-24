@@ -28,7 +28,7 @@ There are a few options to choose from:
 - [Homebrew](http://brew.sh):
 
     ```bash
-    $ brew tap errata-ai/vale
+    $ brew tap ValeLint/vale
     $ brew install vale
     ```
 - [Chocolatey](https://chocolatey.org/packages/vale/):
