@@ -1,6 +1,6 @@
 # Vale: Your Style, Our Editor
 
-[![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/k9r5sijmtxedg0kn?svg=true)](https://ci.appveyor.com/project/jdkato/vale-2k8ha) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale) [![Maintainability](https://api.codeclimate.com/v1/badges/5cc363706a6b0098bf26/maintainability)](https://codeclimate.com/github/errata-ai/vale/maintainability) [![Snap Status](https://build.snapcraft.io/badge/errata-ai/vale.svg)](https://build.snapcraft.io/user/errata-ai/vale) [![release](https://img.shields.io/github/release/errata-ai/vale.svg)](https://github.com/errata-ai/vale/releases/latest)
+[![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/k9r5sijmtxedg0kn?svg=true)](https://ci.appveyor.com/project/jdkato/vale-2k8ha) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale) [![Maintainability](https://api.codeclimate.com/v1/badges/5cc363706a6b0098bf26/maintainability)](https://codeclimate.com/github/errata-ai/vale/maintainability) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/errata-ai/vale.svg)](http://isitmaintained.com/project/errata-ai/vale "Average time to resolve an issue") [![release](https://img.shields.io/github/release/errata-ai/vale.svg)](https://github.com/errata-ai/vale/releases/latest)
 
 ![demo](https://cloud.githubusercontent.com/assets/8785025/22951386/df064226-f2bd-11e6-84e3-4cedfc098528.png)
 
@@ -28,7 +28,7 @@ There are a few options to choose from:
 - [Homebrew](http://brew.sh):
 
     ```bash
-    $ brew tap errata-ai/vale
+    $ brew tap ValeLint/vale
     $ brew install vale
     ```
 - [Chocolatey](https://chocolatey.org/packages/vale/):
