@@ -2,7 +2,8 @@
 
 [![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/k9r5sijmtxedg0kn?svg=true)](https://ci.appveyor.com/project/jdkato/vale-2k8ha) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale) [![Maintainability](https://api.codeclimate.com/v1/badges/5cc363706a6b0098bf26/maintainability)](https://codeclimate.com/github/errata-ai/vale/maintainability) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/errata-ai/vale.svg)](http://isitmaintained.com/project/errata-ai/vale "Average time to resolve an issue") [![release](https://img.shields.io/github/release/errata-ai/vale.svg)](https://github.com/errata-ai/vale/releases/latest)
 
-![demo](https://cloud.githubusercontent.com/assets/8785025/22951386/df064226-f2bd-11e6-84e3-4cedfc098528.png)
+![vale-demo](https://user-images.githubusercontent.com/8785025/39656657-59e62c26-4fb6-11e8-9f48-ba230400ed55.png)
+
 
 Vale is a natural language linter that supports plain text, markup (Markdown, reStructuredText, AsciiDoc, and HTML), and source code comments. Vale doesn't attempt to offer a one-size-fits-all collection of rules&mdash;instead, it strives to make customization as easy as possible.
 
