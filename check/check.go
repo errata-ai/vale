@@ -35,6 +35,7 @@ var defaultFilters = []*regexp.Regexp{
 	regexp.MustCompile(`[A-Z]+$`),
 	regexp.MustCompile(`\W`),
 	regexp.MustCompile(`\w{3,}\.\w{3,}`),
+	regexp.MustCompile(`@.*\b`),
 }
 
 type ruleFn func(string, *core.File) []core.Alert
