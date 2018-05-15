@@ -49,7 +49,6 @@ var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
 var options = blackfriday.Options{Extensions: commonExtensions}
 var reFrontMatter = regexp.MustCompile(
 	`^(?s)(?:---|\+\+\+)\n([^{]+?)\n(?:---|\+\+\+)`)
-var reMath = regexp.MustCompile(`\$([^\d].+)\$`)
 
 // HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
@@ -245,7 +244,6 @@ func (l Linter) lintHTML(f *core.File) {
 
 func (l Linter) prepMarkdown(content string) string {
 	s := reFrontMatter.ReplaceAllString(content, "```\n$1\n```")
-	s = reMath.ReplaceAllString(content, "`$1`")
 	for syntax, regexes := range l.Config.IgnorePatterns {
 		sec, err := glob.Compile(syntax)
 		if core.CheckError(err) && sec.Match(".md") {
@@ -257,6 +255,7 @@ func (l Linter) prepMarkdown(content string) string {
 			}
 		}
 	}
+
 	return s
 }
 
