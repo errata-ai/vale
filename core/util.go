@@ -194,6 +194,7 @@ var sanitizer = strings.NewReplacer(
 	"\u201d", `"`,
 	"\u2018", "'",
 	"\u2019", "'",
+	"&rsquo;", "'",
 	"\r\n", "\n",
 	"\r", "\n")
 
