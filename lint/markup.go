@@ -49,7 +49,7 @@ var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
 var options = blackfriday.Options{Extensions: commonExtensions}
 var reFrontMatter = regexp.MustCompile(
 	`^(?s)(?:---|\+\+\+)\n([^{]+?)\n(?:---|\+\+\+)`)
-var reMathInline = regexp.MustCompile(`\${1,2}([^\n$]+)\${1,2}`)
+var reMathInline = regexp.MustCompile(`\${1,2}([^\d][^\n$]+)\${1,2}`)
 
 // HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
