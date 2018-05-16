@@ -2,7 +2,7 @@ StylesPath = ../../styles
 MinAlertLevel = suggestion
 IgnoredScopes = code, tt, strong
 
-[*.{md}]
+[*.{md,rst,adoc}]
 BasedOnStyles = vale, demo
 IgnorePatterns = (?s) *({{< ?file(?:-excerpt)? [^>]* ?>}}.*?{{< ?/file(?:-excerpt)? ?>}})
 

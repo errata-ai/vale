@@ -2,6 +2,7 @@ package lint
 
 import (
 	"bytes"
+	"fmt"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -253,7 +254,15 @@ func (l Linter) prep(content, block, inline, ext string) string {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
 				if err == nil {
-					s = pat.ReplaceAllString(s, block)
+					if ext == ".rst" {
+						// HACK: We need to add padding for the literal block.
+						for _, c := range pat.FindAllStringSubmatch(s, -1) {
+							new := fmt.Sprintf(block, core.Indent(c[0], "    "))
+							s = strings.Replace(s, c[0], new, 1)
+						}
+					} else {
+						s = pat.ReplaceAllString(s, block)
+					}
 				}
 			}
 		}
@@ -279,7 +288,7 @@ func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 		cmd = exec.Command(rst2html, rstArgs...)
 	}
 
-	s := l.prep(f.Content, "\n::\n\n    $1", "``$1``", ".rst")
+	s := l.prep(f.Content, "\n::\n\n%s\n", "``$1``", ".rst")
 	cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(s, "::"))
 	cmd.Stdout = &out
 
