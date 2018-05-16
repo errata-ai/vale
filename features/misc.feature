@@ -1,10 +1,4 @@
 Feature: Misc
-  Background:
-    Given a file named "test.md" with:
-    """
-    This is very, very important message: very the teams in very the cities should listen!
-
-    """
 
   Scenario: Line Endings
     When I test "misc/line-endings"
@@ -30,7 +24,7 @@ Feature: Misc
     """
 
   Scenario: Duplicate matches
-    When I run vale "test.md"
+    When I test "misc/duplicates"
     Then the output should contain exactly:
     """
     test.md:1:9:vale.Editorializing:Consider removing 'very'

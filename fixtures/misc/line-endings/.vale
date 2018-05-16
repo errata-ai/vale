@@ -1,0 +1,4 @@
+MinAlertLevel = suggestion
+
+[*.{md}]
+BasedOnStyles = vale
