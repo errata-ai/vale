@@ -6,5 +6,7 @@ IgnoredScopes = code, tt, strong
 BasedOnStyles = vale, demo
 IgnorePatterns = (?s) *({{< ?file(?:-excerpt)? [^>]* ?>}}.*?{{< ?/file(?:-excerpt)? ?>}})
 
+TokenIgnores = (\$+?[^\d][^\n$]+\$+?)
+
 vale.Redundancy = warning
 demo.CheckLinks = NO

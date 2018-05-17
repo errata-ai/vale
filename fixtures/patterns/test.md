@@ -17,3 +17,5 @@ This is some text **ACT test**
 {{< /file-excerpt >}}
 
 ACT test
+
+$ACT test$
