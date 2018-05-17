@@ -50,7 +50,6 @@ var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
 var options = blackfriday.Options{Extensions: commonExtensions}
 var reFrontMatter = regexp.MustCompile(
 	`^(?s)(?:---|\+\+\+)\n([^{]+?)\n(?:---|\+\+\+)`)
-var reMathInline = regexp.MustCompile(`\${1,2}([^\d][^\n$]+)\${1,2}`)
 
 // HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
@@ -246,9 +245,20 @@ func (l Linter) lintHTML(f *core.File) {
 
 func (l Linter) prep(content, block, inline, ext string) string {
 	s := reFrontMatter.ReplaceAllString(content, block)
-	s = reMathInline.ReplaceAllString(s, inline)
 
-	for syntax, regexes := range l.Config.IgnorePatterns {
+	for syntax, regexes := range l.Config.TokenIgnores {
+		sec, err := glob.Compile(syntax)
+		if core.CheckError(err) && sec.Match(ext) {
+			for _, r := range regexes {
+				pat, err := regexp.Compile(r)
+				if err == nil {
+					s = pat.ReplaceAllString(s, inline)
+				}
+			}
+		}
+	}
+
+	for syntax, regexes := range l.Config.BlockIgnores {
 		sec, err := glob.Compile(syntax)
 		if core.CheckError(err) && sec.Match(ext) {
 			for _, r := range regexes {
@@ -330,7 +340,7 @@ func (l Linter) lintCustom(f *core.File, command string, args []string) {
 	} else if f.NormedExt == ".adoc" {
 		s = l.prep(f.Content, "\n----\n$1\n----\n", "`$1`", ".adoc")
 	} else if f.NormedExt == ".rst" {
-		s = l.prep(f.Content, "\n::\n\n    $1", "``$1``", ".rst")
+		s = l.prep(f.Content, "\n::\n\n%s\n", "``$1``", ".rst")
 	}
 
 	cmd := exec.Command(command, args...)

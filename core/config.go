@@ -49,18 +49,19 @@ var LevelToInt = map[string]int{
 // Config holds Vale's configuration, both from the CLI and its config file.
 type Config struct {
 	// General configuration
-	Checks         []string                   // All checks to load
-	GBaseStyles    []string                   // Global base style
-	GChecks        map[string]bool            // Global checks
-	IgnoredScopes  []string                   // A list of HTML tags to ignore
-	IgnorePatterns map[string][]string        // A list of regexp's indentifying sections to ignore
-	MinAlertLevel  int                        // Lowest alert level to display
-	RuleToLevel    map[string]string          // Single-rule level changes
-	SBaseStyles    map[string][]string        // Syntax-specific base styles
-	SChecks        map[string]map[string]bool // Syntax-specific checks
-	StylesPath     string                     // Directory with Rule.yml files
-	WordTemplate   string                     // The template used in YAML -> regexp list conversions
-	Parsers        map[string]string          // A map of syntax -> commands
+	Checks        []string                   // All checks to load
+	GBaseStyles   []string                   // Global base style
+	GChecks       map[string]bool            // Global checks
+	IgnoredScopes []string                   // A list of HTML tags to ignore
+	BlockIgnores  map[string][]string        // A list of blocks to ignore
+	TokenIgnores  map[string][]string        // A list of tokens to ignore
+	MinAlertLevel int                        // Lowest alert level to display
+	RuleToLevel   map[string]string          // Single-rule level changes
+	SBaseStyles   map[string][]string        // Syntax-specific base styles
+	SChecks       map[string]map[string]bool // Syntax-specific checks
+	StylesPath    string                     // Directory with Rule.yml files
+	WordTemplate  string                     // The template used in YAML -> regexp list conversions
+	Parsers       map[string]string          // A map of syntax -> commands
 
 	// Command-line configuration
 	Output    string // (optional) output style ("line" or "CLI")
@@ -83,7 +84,8 @@ func NewConfig() *Config {
 	cfg.GBaseStyles = []string{"vale"}
 	cfg.RuleToLevel = make(map[string]string)
 	cfg.Parsers = make(map[string]string)
-	cfg.IgnorePatterns = make(map[string][]string)
+	cfg.BlockIgnores = make(map[string][]string)
+	cfg.TokenIgnores = make(map[string][]string)
 	return &cfg
 }
 
@@ -192,8 +194,10 @@ func LoadConfig() *Config {
 		for _, k := range uCfg.Section(sec).KeyStrings() {
 			if k == "BasedOnStyles" {
 				cfg.SBaseStyles[sec] = uCfg.Section(sec).Key(k).Strings(",")
-			} else if k == "IgnorePatterns" {
-				cfg.IgnorePatterns[sec] = uCfg.Section(sec).Key(k).Strings(",")
+			} else if k == "IgnorePatterns" || k == "BlockIgnores" {
+				cfg.BlockIgnores[sec] = uCfg.Section(sec).Key(k).Strings(",")
+			} else if k == "TokenIgnores" {
+				cfg.TokenIgnores[sec] = uCfg.Section(sec).Key(k).Strings(",")
 			} else if k == "Parser" {
 				cfg.Parsers[sec] = uCfg.Section(sec).Key(k).String()
 			} else {
