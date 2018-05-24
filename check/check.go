@@ -555,14 +555,17 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 	var model *gospell.GoSpell
 	var err error
 
-	if !(core.FileExists(chkDef.Aff) && core.FileExists(chkDef.Dic)) {
+	affloc := core.DeterminePath(mgr.Config.Path, chkDef.Aff)
+	dicloc := core.DeterminePath(mgr.Config.Path, chkDef.Dic)
+	undefined := (chkDef.Aff == "" || chkDef.Dic == "")
+
+	if undefined || !(core.FileExists(affloc) && core.FileExists(dicloc)) {
 		// Fall back to the defaults:
 		aff, _ := data.Asset("data/en_US-web.aff")
 		dic, _ := data.Asset("data/en_US-web.dic")
 		model, err = gospell.NewGoSpellReader(bytes.NewReader(aff), bytes.NewReader(dic))
-
 	} else {
-		model, err = gospell.NewGoSpell(chkDef.Aff, chkDef.Dic)
+		model, err = gospell.NewGoSpell(affloc, dicloc)
 	}
 
 	if chkDef.Ignore != "" {

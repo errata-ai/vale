@@ -340,3 +340,15 @@ func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) {
 	}
 	return 0, nil, nil
 }
+
+// DeterminePath decides if `keyPath` is relative or absolute.
+func DeterminePath(configPath string, keyPath string) string {
+	sep := string(filepath.Separator)
+	abs, _ := filepath.Abs(keyPath)
+	rel := strings.TrimRight(keyPath, sep)
+	if abs != rel || !strings.Contains(keyPath, sep) {
+		// The path was relative
+		return filepath.Join(configPath, keyPath)
+	}
+	return abs
+}

@@ -62,6 +62,7 @@ type Config struct {
 	StylesPath    string                     // Directory with Rule.yml files
 	WordTemplate  string                     // The template used in YAML -> regexp list conversions
 	Parsers       map[string]string          // A map of syntax -> commands
+	Path          string                     // The location of the config file
 
 	// Command-line configuration
 	Output    string // (optional) output style ("line" or "CLI")
@@ -87,17 +88,6 @@ func NewConfig() *Config {
 	cfg.BlockIgnores = make(map[string][]string)
 	cfg.TokenIgnores = make(map[string][]string)
 	return &cfg
-}
-
-func determinePath(configPath string, keyPath string) string {
-	sep := string(filepath.Separator)
-	abs, _ := filepath.Abs(keyPath)
-	rel := strings.TrimRight(keyPath, sep)
-	if abs != rel || !strings.Contains(keyPath, sep) {
-		// The path was relative
-		return filepath.Join(configPath, keyPath)
-	}
-	return abs
 }
 
 func validateLevel(key string, val string, cfg *Config) bool {
@@ -157,13 +147,14 @@ func LoadConfig() *Config {
 		return cfg
 	}
 
+	cfg.Path = path
 	core := uCfg.Section("")
 	global := uCfg.Section("*")
 
 	// Default settings
 	for _, k := range core.KeyStrings() {
 		if k == "StylesPath" {
-			cfg.StylesPath = determinePath(path, core.Key(k).MustString(""))
+			cfg.StylesPath = DeterminePath(path, core.Key(k).MustString(""))
 		} else if k == "MinAlertLevel" {
 			level := core.Key(k).In("warning", AlertLevels)
 			cfg.MinAlertLevel = LevelToInt[level]
