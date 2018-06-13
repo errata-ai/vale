@@ -143,9 +143,10 @@ func formatMessages(msg string, desc string, subs ...string) (string, string) {
 }
 
 func makeAlert(chk Definition, loc []int, txt string) core.Alert {
-	a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc, Link: chk.Link}
-	a.Message, a.Description = formatMessages(chk.Message, chk.Description,
-		txt[loc[0]:loc[1]])
+	match := txt[loc[0]:loc[1]]
+	a := core.Alert{
+		Check: chk.Name, Severity: chk.Level, Span: loc, Link: chk.Link, Match: match}
+	a.Message, a.Description = formatMessages(chk.Message, chk.Description, match)
 	return a
 }
 
