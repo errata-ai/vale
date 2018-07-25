@@ -303,7 +303,10 @@ func ContainsAny(text string, slice []string) bool {
 // CheckError prints any errors to stdout. A return value of true => no error.
 func CheckError(err error) bool {
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
+		_, werr := fmt.Fprintln(os.Stderr, err.Error())
+		if werr != nil {
+			panic(werr)
+		}
 	}
 	return err == nil
 }
