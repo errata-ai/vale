@@ -11,6 +11,11 @@ When(/^I lint "(.*)"$/) do |file|
   step %(I run `#{exe} #{file}`)
 end
 
+When(/^I lint with config "(.*)"$/) do |file|
+  step %(I cd to "../../fixtures/formats")
+  step %(I run `#{exe} --config='#{file}' test.md`)
+end
+
 When(/^I test "(.*)"$/) do |dir|
   step %(I cd to "../../fixtures/#{dir}")
   step %(I run `#{exe} .`)

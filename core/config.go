@@ -137,12 +137,11 @@ func loadConfig(names, paths []string) (*ini.File, string, error) {
 }
 
 // LoadConfig reads the .vale/_vale file.
-func LoadConfig() *Config {
-	cfg := NewConfig()
+func LoadConfig(cfg *Config, path string) *Config {
 	names := []string{".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini"}
 	home, _ := homedir.Dir()
 
-	uCfg, path, err := loadConfig(names, []string{"", home})
+	uCfg, path, err := loadConfig(names, []string{path, "", home})
 	if err != nil {
 		return cfg
 	}

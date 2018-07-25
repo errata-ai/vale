@@ -40,6 +40,14 @@ Feature: Config
     """
     And the exit status should be 0
 
+  Scenario: External config
+    When I lint with config "../../fixtures/styles/GCC"
+    Then the output should contain exactly:
+      """
+      test.md:50:1:GCC.Terms:Use 'Red Hat' instead of 'RedHat'
+      """
+    And the exit status should be 1
+
   Scenario: Ignore BasedOnStyle for formats it doesn't match
     Given a file named ".vale" with:
     """

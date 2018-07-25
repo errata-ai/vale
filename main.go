@@ -19,8 +19,9 @@ var version = "master"
 
 func main() {
 	var glob string
+	var path string
 
-	config := core.LoadConfig()
+	config := core.NewConfig()
 	app := cli.NewApp()
 	app.Name = "vale"
 	app.Usage = "A command-line linter for prose."
@@ -31,6 +32,11 @@ func main() {
 			Value:       "*",
 			Usage:       `a glob pattern (e.g., --glob='*.{md,txt}')`,
 			Destination: &glob,
+		},
+		cli.StringFlag{
+			Name:        "config",
+			Usage:       `a file path (e.g., --config='some/file/path')`,
+			Destination: &path,
 		},
 		cli.StringFlag{
 			Name:        "output",
@@ -107,6 +113,7 @@ func main() {
 		var err error
 		var hasAlerts bool
 
+		config = core.LoadConfig(config, path)
 		if c.NArg() > 0 || core.Stat() {
 			linter := lint.Linter{
 				Config: config, CheckManager: check.NewManager(config)}
