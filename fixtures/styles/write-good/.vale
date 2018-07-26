@@ -1,4 +1,3 @@
-StylesPath = ../../../styles
 MinAlertLevel = suggestion
 
 [*.{cc,md}]

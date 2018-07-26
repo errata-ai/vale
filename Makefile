@@ -70,7 +70,7 @@ setup:
 	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
 
 rules:
-	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/*.yml
+	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/**/*.yml
 
 data:
 	go-bindata -ignore=\\.DS_Store -pkg="data" -o data/data.go data/*.{dic,aff}

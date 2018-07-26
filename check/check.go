@@ -63,10 +63,10 @@ func NewManager(config *core.Config) *Manager {
 		return &mgr
 	}
 
-	loadedStyles = append(loadedStyles, "vale")
+	loadedStyles = append(loadedStyles, defaultStyles...)
 	baseDir := mgr.Config.StylesPath
 	for _, style = range mgr.Config.GBaseStyles {
-		if style == "vale" {
+		if core.StringInSlice(style, loadedStyles) {
 			// We've already loaded this style.
 			continue
 		}
@@ -726,11 +726,16 @@ func (mgr *Manager) loadCheck(fName string, fp string) error {
 }
 
 func (mgr *Manager) loadDefaultRules() {
-	for _, chk := range defaultRules {
-		b, err := rule.Asset("rule/" + chk + ".yml")
-		if err != nil {
-			continue
+	for _, style := range defaultStyles {
+		rules, _ := rule.AssetDir(filepath.Join("rule", style))
+		for _, name := range rules {
+			b, err := rule.Asset(filepath.Join("rule", style, name))
+			if err != nil {
+				continue
+			}
+			identifier := strings.Join([]string{
+				style, strings.Split(name, ".")[0]}, ".")
+			core.CheckError(mgr.addCheck(b, identifier))
 		}
-		core.CheckError(mgr.addCheck(b, "vale."+chk))
 	}
 }

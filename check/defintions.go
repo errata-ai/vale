@@ -134,14 +134,11 @@ type Spelling struct {
 	Threshold int
 }
 
-var defaultRules = []string{
-	"Annotations",
-	"Editorializing",
-	"Hedging",
-	"Litotes",
-	"Redundancy",
-	"Repetition",
-	"Uncomparables",
+var defaultStyles = []string{
+	"proselint",
+	"write-good",
+	"Joblint",
+	"vale",
 }
 
 var extensionPoints = []string{
