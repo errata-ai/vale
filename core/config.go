@@ -82,7 +82,6 @@ func NewConfig() *Config {
 	cfg.SBaseStyles = make(map[string][]string)
 	cfg.SChecks = make(map[string]map[string]bool)
 	cfg.MinAlertLevel = 1
-	cfg.GBaseStyles = []string{"vale"}
 	cfg.RuleToLevel = make(map[string]string)
 	cfg.Parsers = make(map[string]string)
 	cfg.BlockIgnores = make(map[string][]string)
