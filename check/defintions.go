@@ -135,10 +135,10 @@ type Spelling struct {
 }
 
 var defaultStyles = []string{
-	"proselint",
-	"write-good",
 	"Joblint",
+	"proselint",
 	"vale",
+	"write-good",
 }
 
 var extensionPoints = []string{
