@@ -1,6 +1,4 @@
-# Vale: Your Style, Our Editor
-
-[![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/k9r5sijmtxedg0kn?svg=true)](https://ci.appveyor.com/project/jdkato/vale-2k8ha) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/errata-ai/vale.svg)](http://isitmaintained.com/project/errata-ai/vale "Average time to resolve an issue") [![release](https://img.shields.io/github/release/errata-ai/vale.svg)](https://github.com/errata-ai/vale/releases/latest)
+# Vale: Your Style, Our Editor [![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/k9r5sijmtxedg0kn?svg=true)](https://ci.appveyor.com/project/jdkato/vale-2k8ha) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale) [![release](https://img.shields.io/github/release/errata-ai/vale.svg)](https://github.com/errata-ai/vale/releases/latest)
 
 ![vale-demo](https://user-images.githubusercontent.com/8785025/39656657-59e62c26-4fb6-11e8-9f48-ba230400ed55.png)
 
