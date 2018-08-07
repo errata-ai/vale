@@ -1,5 +1,5 @@
 extends: existence
-message: "'%s' is a weasal word!"
+message: "'%s' is a weasel word!"
 ignorecase: true
 level: warning
 tokens:

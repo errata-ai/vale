@@ -81,7 +81,7 @@ Feature: Config
     """
     test.md:1:11:vale.Editorializing:Consider removing 'very'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
     """
     And the exit status should be 1
 
@@ -97,7 +97,7 @@ Feature: Config
     [*.py]
     BasedOnStyles = write-good
     write-good.E-Prime = NO
-    write-good.Weasal = NO
+    write-good.Weasel = NO
     """
     When I run vale "."
     Then the output should contain exactly:
@@ -124,7 +124,7 @@ Feature: Config
     Then the output should contain exactly:
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
     """
     And the exit status should be 1
 
@@ -136,16 +136,16 @@ Feature: Config
 
     [*]
     BasedOnStyles = write-good
-    write-good.Weasal = NO
+    write-good.Weasel = NO
 
     [*.py]
-    write-good.Weasal = YES
+    write-good.Weasel = YES
     """
     When I run vale "test.py test.md"
     Then the output should contain exactly:
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
     """
     And the exit status should be 1
 
@@ -162,11 +162,11 @@ Feature: Config
     When I run vale "test.py test.md"
     Then the output should contain exactly:
     """
-    test.md:1:11:write-good.Weasal:'very' is a weasal word!
+    test.md:1:11:write-good.Weasel:'very' is a weasel word!
     test.md:1:36:TheEconomist.UnnecessaryWords:'There is' - See section 'Unnecessary words'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:3:TheEconomist.UnnecessaryWords:'There is' - See section 'Unnecessary words'
-    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
     test.py:1:49:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'
     """
     And the exit status should be 1
@@ -264,11 +264,11 @@ Feature: Config
     MinAlertLevel = error
 
     [*.{md,py}]
-    write-good.Weasal = error
+    write-good.Weasel = error
     """
     When I run vale "test.py"
     Then the output should contain exactly:
     """
-    test.py:1:37:write-good.Weasal:'Very' is a weasal word!
+    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
     """
     And the exit status should be 1

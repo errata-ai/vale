@@ -1,5 +1,5 @@
 // XXX: This is an annotation
-// And this uses too many weasal words like obviously and very.
+// And this uses too many weasel words like obviously and very.
 
 #include <vector>
 

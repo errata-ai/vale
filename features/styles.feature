@@ -3,8 +3,8 @@ Feature: Styles
     When I apply style "write-good"
     Then the output should contain exactly:
       """
-      test.cc:1:4:write-good.Weasal:'Remarkably' is a weasal word!
-      test.cc:1:15:write-good.Weasal:'few' is a weasal word!
+      test.cc:1:4:write-good.Weasel:'Remarkably' is a weasel word!
+      test.cc:1:15:write-good.Weasel:'few' is a weasel word!
       test.cc:8:27:write-good.Cliches:'at loose ends' is a cliché
       test.cc:11:40:write-good.Passive:'was killed'
       test.cc:18:6:write-good.Illusions:'the' is repeated!
@@ -12,8 +12,8 @@ Feature: Styles
       test.cc:28:21:write-good.ThereIs:Don't start a sentence with '// There is'
       test.cc:31:21:write-good.So:Don't start a sentence with '; so'
       test.cc:34:14:write-good.So:Don't start a sentence with '// So'
-      test.md:1:1:write-good.Weasal:'Remarkably' is a weasal word!
-      test.md:1:12:write-good.Weasal:'few' is a weasal word!
+      test.md:1:1:write-good.Weasel:'Remarkably' is a weasel word!
+      test.md:1:12:write-good.Weasel:'few' is a weasel word!
       test.md:3:12:write-good.Passive:'was killed'
       test.md:5:1:write-good.Illusions:'the' is repeated!
       test.md:10:1:write-good.Illusions:'the' is repeated!
@@ -21,10 +21,10 @@ Feature: Styles
       test.md:23:15:write-good.So:Don't start a sentence with '; so'
       test.md:25:1:write-good.ThereIs:Don't start a sentence with 'There is'
       test.md:27:1:write-good.ThereIs:Don't start a sentence with 'There are'
-      test.md:29:18:write-good.Weasal:'simply' is a weasal word!
-      test.md:31:18:write-good.Weasal:'extremely' is a weasal word!
+      test.md:29:18:write-good.Weasel:'simply' is a weasel word!
+      test.md:31:18:write-good.Weasel:'extremely' is a weasel word!
       test.md:33:8:write-good.Passive:'been said'
-      test.md:33:23:write-good.Weasal:'few' is a weasal word!
+      test.md:33:23:write-good.Weasel:'few' is a weasel word!
       test.md:35:1:write-good.TooWordy:'As a matter of fact' is too wordy
       test.md:37:32:write-good.TooWordy:'impacted' is too wordy
       test.md:39:23:write-good.Cliches:'at loose ends' is a cliché
