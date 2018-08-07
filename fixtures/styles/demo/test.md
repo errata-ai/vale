@@ -26,3 +26,9 @@ Python has for-loops (not `for` loops or for loops).
 A meet up on Sunday before the reception. We should meet up and talk. Let's meet up at 5pm. All of our local meet-ups are organized by members of the community in their own town. They vary in style as much as the individual cities themselves vary. The main thread that brings people together is caring about great communication and users of their product. We invite you to join a meet up in your local community.
 
 FOOOOOO
+
+There's was nothing to be frightened of. This is another sentence.
+
+We're starting a new paragraph. A good test is hard to come by.
+
+Here's another one!
