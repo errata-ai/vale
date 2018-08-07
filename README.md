@@ -5,7 +5,7 @@
 
 Vale is a natural language linter that supports plain text, markup (Markdown, reStructuredText, AsciiDoc, and HTML), and source code comments. Vale doesn't attempt to offer a one-size-fits-all collection of rules&mdash;instead, it strives to make customization as easy as possible.
 
-Check out [project website](https://valelint.github.io/docs/) to learn more!
+Check out [project website](https://errata.ai/vale/getting-started/) to learn more!
 
 ## Highlights
 
