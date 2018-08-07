@@ -28,6 +28,7 @@ Feature: Styles
       test.md:35:1:write-good.TooWordy:'As a matter of fact' is too wordy
       test.md:37:32:write-good.TooWordy:'impacted' is too wordy
       test.md:39:23:write-good.Cliches:'at loose ends' is a cliché
+      test.md:41:1:write-good.So:Don't start a sentence with 'So,'
       test.txt:1:8:write-good.E-Prime:Avoid using "is"
       test.txt:3:12:write-good.E-Prime:Avoid using "was"
       test.txt:5:1:write-good.E-Prime:Avoid using "I'm"
