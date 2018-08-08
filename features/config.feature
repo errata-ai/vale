@@ -2,7 +2,7 @@ Feature: Config
   Background:
     Given a file named "test.md" with:
     """
-    This is a very important sentence. There is a sentence here too.
+    This is a very important sentence. There is a sentence here too. javascript
 
     """
     And a file named "test.py" with:
@@ -163,16 +163,15 @@ Feature: Config
     MinAlertLevel = warning
 
     [*]
-    BasedOnStyles = proselint, write-good
+    BasedOnStyles = Joblint, write-good
     write-good.E-Prime = NO
     """
     When I run vale "test.py test.md"
     Then the output should contain exactly:
     """
-    test.md:1:11:proselint.Very:Remove 'very'.
     test.md:1:11:write-good.Weasel:'very' is a weasel word!
+    test.md:1:66:Joblint.TechTerms:Use 'JavaScript' instead of 'javascript'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:proselint.Very:Remove 'Very'.
     test.py:1:37:write-good.Weasel:'Very' is a weasel word!
     """
     And the exit status should be 1
