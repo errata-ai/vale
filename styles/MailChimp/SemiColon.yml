@@ -1,7 +1,0 @@
-extends: existence
-message: "Go easy on semicolons."
-link: http://styleguide.mailchimp.com/grammar-and-mechanics/#header-4-semicolons
-level: warning
-nonword: true
-tokens:
-  - '\w+;'

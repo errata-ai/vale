@@ -1,7 +1,0 @@
-extends: existence
-message: "Use exclamation points sparingly, and never more than one at a time."
-link: http://styleguide.mailchimp.com/grammar-and-mechanics/#header-4-exclamation-points
-level: error
-nonword: true
-tokens:
-  - '\w+!{2,}'

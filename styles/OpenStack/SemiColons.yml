@@ -1,7 +1,0 @@
-extends: existence
-message: Avoid using semicolons in sentences.
-link: https://docs.openstack.org/contributor-guide/writing-style/punctuation.html
-level: warning
-nonword: true
-tokens:
-  - '\w+;'

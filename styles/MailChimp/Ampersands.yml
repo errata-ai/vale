@@ -1,7 +1,0 @@
-extends: existence
-message: "Don't use ampersands unless one is part of a company or brand name."
-link: http://styleguide.mailchimp.com/grammar-and-mechanics/#header-4-ampersands
-level: warning
-nonword: true
-tokens:
-  - '\w+\s&\s\w+'

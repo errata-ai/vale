@@ -1,9 +1,0 @@
-extends: existence
-ignorecase: true
-level: warning
-message: "Consider using a gender-neutral term instead of '%s'"
-tokens:
-  - his
-  - her(?:s)
-  - he
-  - she

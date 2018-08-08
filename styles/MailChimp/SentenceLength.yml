@@ -1,7 +1,0 @@
-message: "Write short sentences (less than 25 words)."
-extends: occurrence
-link: http://styleguide.mailchimp.com/writing-for-accessibility/#header-3-use-plain-language
-scope: sentence
-level: warning
-max: 25
-token: \b(\w+)\b

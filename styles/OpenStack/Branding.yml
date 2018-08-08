@@ -1,8 +1,0 @@
-extends: substitution
-message: Use “%s” instead of “%s”
-level: error
-ignorecase: true
-swap:
-  # Since there's a lot of occurrences of things like "openstack-docs," we
-  # have to be more precise than just \b
-  '\bopen\s?stack(?:\s|$)': OpenStack

@@ -1,8 +1,0 @@
-extends: existence
-message: Do not use colons in headings if it is not explicitly required.
-link: https://docs.openstack.org/contributor-guide/writing-style/punctuation.html
-level: warning
-scope: heading
-nonword: true
-tokens:
-  - '\w+:'

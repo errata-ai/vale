@@ -1,6 +1,0 @@
-extends: existence
-message: "Spell out numbers below 10 and use numerals for numbers 10 and above"
-link: https://contribute.jquery.org/style-guide/prose/#grammar
-level: error
-tokens:
-  - '[0-9]'

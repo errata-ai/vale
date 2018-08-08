@@ -1,9 +1,0 @@
-extends: existence
-message: 'Don’t refer to people using age-related descriptors like "%s."'
-link: http://styleguide.mailchimp.com/writing-about-people/#header-3-age
-level: warning
-ignorecase: true
-tokens:
-  - young
-  - old
-  - elderly

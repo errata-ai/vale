@@ -1,8 +1,0 @@
-extends: substitution
-message: Use '%s'
-level: error
-swap:
-  '(?:eg)': e.g.
-  '(?:ie)': i.e.
-  '(?:e\.g\.,)\s*': e.g.
-  '(?:i\.e\.,)\s*': i.e.

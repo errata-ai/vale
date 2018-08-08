@@ -1,8 +1,0 @@
-extends: existence
-message: "'%s' should have one space."
-link: 'https://github.com/Homebrew/brew/blob/master/docs/Prose-Style-Guidelines.md#typographical-conventions'
-level: error
-nonword: true
-tokens:
-  - '[a-z][.?!][A-Z]'
-  - '[.?!] {2,}[A-Z]'

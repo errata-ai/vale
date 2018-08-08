@@ -1,8 +1,0 @@
-extends: existence
-message: "Spell out a number when it begins a sentence."
-link: http://styleguide.mailchimp.com/grammar-and-mechanics/#header-3-numbers
-level: error
-scope: sentence
-nonword: true
-tokens:
-  - '^\d+.+'

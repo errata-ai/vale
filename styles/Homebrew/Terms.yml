@@ -1,8 +1,0 @@
-extends: substitution
-message: Use '%s' instead of '%s'.
-link: 'https://github.com/Homebrew/brew/blob/master/docs/Prose-Style-Guidelines.md#terminology-words-and-word-styling'
-level: error
-swap:
-  Pull Request: pull request
-  repo: repository
-  Rubocop: RuboCop

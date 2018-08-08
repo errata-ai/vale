@@ -41,12 +41,19 @@ Feature: Config
     And the exit status should be 0
 
   Scenario: External config
-    When I lint with config "../../fixtures/styles/GCC"
+    When I lint with config "../../fixtures/styles/demo"
     Then the output should contain exactly:
       """
-      test.md:50:1:GCC.Terms:Use 'Red Hat' instead of 'RedHat'
+      test.md:15:60:demo.Spellcheck:Did you really mean 'codeblock'?
+      test.md:34:29:demo.Filters:Did you really mean 'TODO'?
+      test.md:36:3:demo.Filters:Did you really mean 'TODO'?
+      test.md:36:16:demo.Filters:Did you really mean 'FIXME'?
+      test.md:40:21:demo.Filters:Did you really mean 'FIXME'?
+      test.md:42:9:demo.Spellcheck:Did you really mean 'Monokai'?
+      test.md:44:5:demo.Filters:Did you really mean 'TODO'?
+      test.md:46:3:demo.Filters:Did you really mean 'TODO'?
       """
-    And the exit status should be 1
+    And the exit status should be 0
 
   Scenario: Ignore BasedOnStyle for formats it doesn't match
     Given a file named ".vale" with:
@@ -156,18 +163,17 @@ Feature: Config
     MinAlertLevel = warning
 
     [*]
-    BasedOnStyles = TheEconomist, write-good
+    BasedOnStyles = proselint, write-good
     write-good.E-Prime = NO
     """
     When I run vale "test.py test.md"
     Then the output should contain exactly:
     """
+    test.md:1:11:proselint.Very:Remove 'very'.
     test.md:1:11:write-good.Weasel:'very' is a weasel word!
-    test.md:1:36:TheEconomist.UnnecessaryWords:'There is' - See section 'Unnecessary words'
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:3:TheEconomist.UnnecessaryWords:'There is' - See section 'Unnecessary words'
+    test.py:1:37:proselint.Very:Remove 'Very'.
     test.py:1:37:write-good.Weasel:'Very' is a weasel word!
-    test.py:1:49:TheEconomist.Punctuation:Use 'eg' instead of 'e.g.'
     """
     And the exit status should be 1
 

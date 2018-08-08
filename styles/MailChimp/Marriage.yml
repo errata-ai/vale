@@ -1,7 +1,0 @@
-extends: existence
-message: 'Avoid “%s.”'
-link: http://styleguide.mailchimp.com/writing-about-people/#header-3-gender-and-sexuality
-level: warning
-ignorecase: true
-tokens:
-  - (?:same-sex|gay) marriage

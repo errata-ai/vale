@@ -1,7 +1,0 @@
-extends: existence
-message: Do not start a heading with “%s”
-link: https://docs.openstack.org/contributor-guide/writing-style/headings.html#general-guidelines
-level: error
-scope: heading
-tokens:
-  - '^(?:a|an|the).+'

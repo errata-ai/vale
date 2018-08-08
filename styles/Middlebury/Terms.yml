@@ -1,6 +1,0 @@
-extends: existence
-message: "Avoid using '%s'"
-level: error
-ignorecase: true
-tokens:
-  - Oriental
