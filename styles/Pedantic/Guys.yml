@@ -1,0 +1,6 @@
+extends: existence
+ignorecase: true
+level: warning
+message: "'guys' may be insensitive"
+tokens:
+  - guys
