@@ -98,4 +98,4 @@ Run Vale on text with an assigned syntax:
 $ vale --ext=.md 'this is some `very` interesting text'
 ```
 
-See `vale --help` and [Configuration](https://valelint.github.io/docs/config/) for more information.
+See `vale --help` and [Configuration](https://errata.ai/vale/config/) for more information.
