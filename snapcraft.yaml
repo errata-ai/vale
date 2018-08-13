@@ -1,5 +1,5 @@
 name: vale
-version: "v0.11.2"
+version: "v1.0.1"
 summary: A customizable, syntax-aware linter for prose.
 description: |
   A syntax-aware linter for prose built with speed and extensibility in mind.
