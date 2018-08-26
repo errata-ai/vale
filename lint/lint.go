@@ -145,6 +145,13 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 // TODO: remove dependencies on `asciidoctor` and `rst2html`.
 func (l Linter) lintFile(src string) *core.File {
 	file := core.NewFile(src, l.Config)
+	if len(file.Checks) == 0 && len(file.BaseStyles) == 0 {
+		if len(l.Config.GBaseStyles) == 0 && len(l.Config.GChecks) == 0 {
+			// There's nothing to do; bail early.
+			return file
+		}
+	}
+
 	if file.Command != "" {
 		// We've been given a custom command to execute.
 		parts := strings.Split(file.Command, " ")
@@ -181,6 +188,7 @@ func (l Linter) lintFile(src string) *core.File {
 	} else {
 		l.lintLines(file)
 	}
+
 	return file
 }
 
