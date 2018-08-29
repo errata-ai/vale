@@ -23,3 +23,26 @@ brew:
     name: homebrew-vale
   description: A customizable, syntax-aware linter for prose.
   homepage: 'https://github.com/errata-ai/vale'
+snapcraft:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  replacements:
+    amd64: 64-bit
+    386: 32-bit
+    darwin: macOS
+    linux: Linux
+  summary: A customizable, syntax-aware linter for prose.
+  description: |
+    A syntax-aware linter for prose built with speed and extensibility in mind.
+  confinement: strict
+  grade: stable
+  apps:
+    vale:
+      command: bin/vale
+  parts:
+    go:
+      source-tag: go1.9.4
+    vale:
+      source: .
+      plugin: go
+      go-importpath: github.com/errata-ai/vale
+      after: [go]
