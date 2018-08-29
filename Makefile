@@ -40,7 +40,7 @@ compare:
 	benchcmp old.txt new.txt && \
 	benchstat old.txt new.txt
 
-ci: test lint
+ci: test
 
 lint:
 	gometalinter --vendor --disable-all \
@@ -48,7 +48,6 @@ lint:
 		--enable=ineffassign \
 		--enable=gosimple \
 		--enable=staticcheck \
-		--enable=gofmt \
 		--enable=goimports \
 		--enable=dupl \
 		--enable=misspell \
