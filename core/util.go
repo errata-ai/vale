@@ -19,6 +19,7 @@ import (
 // ExeDir is our starting location.
 var ExeDir string
 
+// IsLetter returns `true` if s contains all letter characters and false if not.
 func IsLetter(s string) bool {
 	for _, r := range s {
 		if !unicode.IsLetter(r) {
