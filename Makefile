@@ -64,7 +64,6 @@ setup:
 	go get github.com/aclements/go-misc/benchmany
 	go get -u github.com/alecthomas/gometalinter
 	go get -u github.com/jteeuwen/go-bindata/...
-	gometalinter --install
 	bundle install
 	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
 
