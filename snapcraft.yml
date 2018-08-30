@@ -1,0 +1,18 @@
+name: vale
+version: "v1.0.2"
+summary: A customizable, syntax-aware linter for prose.
+description: |
+  A syntax-aware linter for prose built with speed and extensibility in mind.
+confinement: strict
+grade: stable
+apps:
+  vale:
+    command: bin/vale
+parts:
+  go:
+    source-tag: go1.9.4
+  vale:
+    source: .
+    plugin: go
+    go-importpath: github.com/errata-ai/vale
+    after: [go]

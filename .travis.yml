@@ -1,10 +1,6 @@
 dist: trusty
 sudo: required
 language: go
-addons:
-  apt:
-    packages:
-    - snapcraft
 go:
   - 1.9.x
   - "1.10"
