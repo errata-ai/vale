@@ -309,7 +309,7 @@ func checkConsistency(txt string, chk Consistency, f *core.File, r *regexp.Regex
 
 func checkCapitalization(txt string, chk Capitalization, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
-	if !chk.Check(txt) {
+	if !chk.Check(txt, chk.Exceptions) {
 		alerts = append(alerts, makeAlert(chk.Definition, []int{0, len(txt)}, txt))
 	}
 	return alerts
@@ -397,7 +397,9 @@ func (mgr *Manager) addCapitalizationCheck(chkName string, chkDef Capitalization
 		} else {
 			tc = transform.NewTitleConverter(transform.APStyle)
 		}
-		chkDef.Check = func(s string) bool { return title(s, tc) }
+		chkDef.Check = func(s string, ignore []string) bool {
+			return title(s, ignore, tc)
+		}
 	} else if f, ok := varToFunc[chkDef.Match]; ok {
 		chkDef.Check = f
 	} else {
@@ -405,7 +407,9 @@ func (mgr *Manager) addCapitalizationCheck(chkName string, chkDef Capitalization
 		if !core.CheckError(err) {
 			return
 		}
-		chkDef.Check = re.MatchString
+		chkDef.Check = func(s string, ignore []string) bool {
+			return re.MatchString(s) || core.StringInSlice(s, ignore)
+		}
 	}
 	fn := func(text string, file *core.File) []core.Alert {
 		return checkCapitalization(text, chkDef, file)

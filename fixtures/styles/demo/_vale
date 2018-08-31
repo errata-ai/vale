@@ -7,6 +7,8 @@ demo.CheckLinks = NO
 demo.Reading = NO
 demo.Spellcheck = NO
 demo.Filters = NO
+demo.SentenceCase = NO
+demo.TitleCase = NO
 
 [*.md]
 demo.Reading = YES

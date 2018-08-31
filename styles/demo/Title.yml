@@ -1,5 +1,0 @@
-extends: capitalization
-message: "'%s' should be titlecased"
-level: warning
-scope: heading.adoc
-match: $title

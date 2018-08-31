@@ -10,6 +10,14 @@ Feature: Checks
       test.java:13:12:vale.Annotations:'FIXME' left in text
       """
 
+  Scenario: SentenceCase
+    When I test "checks/SentenceCase"
+    Then the output should contain exactly:
+      """
+      test.md:5:3:demo.SentenceCase:'this isn't in sentence case' should be sentence-cased
+      test.md:11:3:demo.SentenceCase:'This Does Not Comply' should be sentence-cased
+      """
+
   Scenario: Editorializing
     When I test "checks/Editorializing"
     Then the output should contain exactly:

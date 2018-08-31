@@ -41,7 +41,6 @@ Feature: Styles
     Then the output should contain exactly:
       """
       test.adoc:1:1:demo.SentenceLength:Sentences should be less than 25 words
-      test.adoc:3:4:demo.Title:'Level 1 section title' should be titlecased
       test.html:5:43:demo.EndingPreposition:Don't end a sentence with 'by.'
       test.html:8:30:demo.CommasPerSentence:More than 3 commas!
       test.html:10:27:demo.Spacing:'.M' should have one space
@@ -77,7 +76,6 @@ Feature: Styles
       test.rst:9:1:demo.ParagraphLength:Paragraphs should be less than 150 words
       test.rst:20:25:demo.Spelling:Inconsistent spelling of 'center'
       test.rst:24:32:demo.Spelling:Inconsistent spelling of 'colour'
-      test.rst:26:1:demo.Sentence:'Section Title' should be in sentence case
       """
 
   Scenario: Lint against Joblint

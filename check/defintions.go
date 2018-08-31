@@ -104,9 +104,11 @@ type Capitalization struct {
 	Definition `mapstructure:",squash"`
 	// `match` (`string`): $title, $sentence, $lower, $upper, or a pattern.
 	Match string
-	Check func(string) bool
+	Check func(string, []string) bool
 	// `style` (`string`): AP or Chicago; only applies when match is set to $title.
 	Style string
+	// `exceptions` (`array`): An array of strings to be ignored.
+	Exceptions []string
 }
 
 // Readability checks the reading grade level of text.
