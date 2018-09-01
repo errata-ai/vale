@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 
@@ -33,6 +34,8 @@ type File struct {
 	Scanner    *bufio.Scanner    // used by lintXXX functions
 	Sequences  []string          // tracks various info (e.g., defined abbreviations)
 	Summary    bytes.Buffer      // holds content to be included in summarization checks
+
+	history map[string]int
 }
 
 // An Alert represents a potential error in prose.
@@ -145,6 +148,7 @@ func NewFile(src string, config *Config) *File {
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Lines: lines,
 		Comments: make(map[string]bool), Content: content, Command: command,
+		history: make(map[string]int),
 	}
 
 	return &file
@@ -201,7 +205,15 @@ func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad int) {
 	if a.Span[0] > 0 {
 		f.ChkToCtx[a.Check], _ = Substitute(ctx, substring, '#')
 		if !a.Hide {
-			f.Alerts = append(f.Alerts, a)
+			// Ensure that we're not double-reporting an Alert:
+			entry := strings.Join([]string{
+				strconv.Itoa(a.Line),
+				strconv.Itoa(a.Span[0]),
+				a.Check}, "-")
+			if _, found := f.history[entry]; !found {
+				f.Alerts = append(f.Alerts, a)
+				f.history[entry] = 1
+			}
 		}
 	}
 }
