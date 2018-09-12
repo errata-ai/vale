@@ -10,18 +10,27 @@ Check out [project website](https://errata.ai/vale/getting-started/) to learn mo
 
 There are a few options to choose from:
 
-- [Homebrew](http://brew.sh):
+- [Homebrew](http://brew.sh) (macOS):
 
     ```bash
     $ brew tap ValeLint/vale
     $ brew install vale
     ```
-- [Chocolatey](https://chocolatey.org/packages/vale/):
+- [Chocolatey](https://chocolatey.org/packages/vale/) (Windows):
 
      ```shell
      C:\> choco install vale
      ```
+- [Go](https://golang.org/):
 
+    ```shell
+    $ go get github.com/errata-ai/vale
+    ```
+- [snapcraft](https://snapcraft.io/) (Linux):
+
+    ```shell
+    $ snap install --edge vale
+    ```
 - A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/errata-ai/vale/releases).
 - Manually on Windows, macOS, or Linux by downloading an executable from the [releases page](https://github.com/errata-ai/vale/releases).
 
