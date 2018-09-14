@@ -1,12 +1,12 @@
 # Vale: Your Style, Our Editor [![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/k9r5sijmtxedg0kn?svg=true)](https://ci.appveyor.com/project/jdkato/vale-2k8ha) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale) [![Snap Status](https://build.snapcraft.io/badge/errata-ai/vale.svg)](https://build.snapcraft.io/user/errata-ai/vale)
 
-> :star2: We're now offering [**Integration Assistance**](https://errata.ai/about/)! This is a great way to support the project while also getting the time-consuming tasks (e.g., creating a Vale-compatible version of your house style or setting up a CI service) out of the way. :star2:
+> :star2: We're now offering [**Integration Assistance**](https://errata.ai/about/)! This is a great way to support the project while also getting the time-consuming tasks (e.g., creating a Vale-compatible version of your house style or setting up a CI service) out of the way.
 
 ![vale-demo](https://user-images.githubusercontent.com/8785025/39656657-59e62c26-4fb6-11e8-9f48-ba230400ed55.png)
 
 Vale is a natural language linter that supports plain text, markup (Markdown, reStructuredText, AsciiDoc, and HTML), and source code comments. Vale doesn't attempt to offer a one-size-fits-all collection of rules&mdash;instead, it strives to make customization as easy as possible.
 
-Check out [project website](https://errata.ai/vale/getting-started/) to learn more!
+Check out [project website](https://errata.ai/vale/getting-started/) or [our blog post](https://medium.com/@errata.ai/introducing-vale-an-nlp-powered-linter-for-prose-63c4de31be00) to learn more!
 
 ## Installation
 
