@@ -10,7 +10,8 @@ before_install:
   - export PATH=~/bin:"$PATH"
   - pip install --user docutils
   - gem install asciidoctor
-  - pip install -r docs/requirements.txt
+  # Docs
+  - pip install --user -r docs/requirements.txt
   - gem install awesome_bot
 install:
   - make setup
