@@ -10,12 +10,24 @@ before_install:
   - export PATH=~/bin:"$PATH"
   - pip install --user docutils
   - gem install asciidoctor
+  - pip install -r docs/requirements.txt
+  - gem install awesome_bot
 install:
   - make setup
   - make build
 script:
   - make test
+  - vale docs/content
+  - awesome_bot --allow-dupe docs/content/*.md
 after_script:
   - make compare
 after_success:
   - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
+  - mkdocs build --verbose --clean
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: site
+  on:
+    branch: master
