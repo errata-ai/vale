@@ -1,8 +1,13 @@
 ## Introduction
 
-Vale is built around the notion of "styles," which are directories containing individual "rule" definitions&mdash;for example, you might have a structure like
+Vale has a powerful extension system that doesn't require knowledge of any programming language. Instead, it exposes its functionality through simple
+[YAML](http://yaml.org) files.
 
-```none
+The core component of Vale's extension system are collections of writing guidelines called *styles*. These guidelines are expressed through *rules*, which are YAML files enforcing a particular writing construct&mdash;e.g., ensuring a certain readability level, sentence length, or heading style.
+
+Styles are organized in a hierarchical folder structure at a user-specified location (see [Configuration](/vale/config/) for more details). For example,
+
+```
 styles/
 ├── base/
 │   ├── ComplexWords.yml
@@ -16,15 +21,39 @@ styles/
     ...
 ```
 
-where *base*, *blog*, and *docs* are your styles. The [YAML](http://yaml.org/) files are rule definitions that include the following keys:
+where *base*, *blog*, and *docs* are your styles.
 
-- `extends`: The type of check you're extending (see [Creating a Style](https://valelint.github.io/docs/styles/#creating-a-style)).
-- `message`: A message to be displayed to the user.
-- `level`: A severity level (suggestion, warning, or error).
-- `scope`: The type of text the rule operates on (see [Formats](https://valelint.github.io/docs/formats/) to learn about scoping).
-- `code`: `true` to include the content of code spans and `false` (the default) to ignore them.
+## Extension Points
 
-Many checks also include their own specific settings, which are discussed in more detail below.
+The building blocks behind Vale's styles are its rules, which utilize extension points to perform specific tasks.
+
+The basic structure of a rule consists of a small header (shown below) followed by extension-specific arguments.
+
+```yaml
+# All rules should define the following header keys:
+#
+# `extends` indicates the extension point being used (see below for information
+# on the possible values).
+extends: existence
+# `message` is shown to the user when the rule is broken.
+#
+# Many extension points accept format specifiers (%s), which are replaced by
+# extracted values. See the exention-specific sections below for more details.
+message: "Consider removing '%s'"
+# `level` assigns the rule's severity.
+#
+# The accepted values are suggestion, warning, and error.
+level: warning
+# `scope` specifies where this rule should apply -- e.g., headings, sentences, etc.
+#
+# See the Markup section for more information on scoping.
+scope: heading
+# `code` determines whether or not the content of code spans -- e.g., `foo` for
+# Markdown -- is ignored.
+code: false
+# `link` gives the source for this rule.
+link: 'https://errata.ai/'
+```
 
 ## Creating a Style
 

@@ -1,13 +1,15 @@
 ## Basics
 
-Vale looks for its configuration in a file named `.vale.ini` or `_vale.ini`. This file may be located in the current working directory, a parent directory or `$HOME`. If more than one configuration file is present, the closest one takes precedence.
-
-The basic structure of a configuration file is as follows:
-
 ```ini
+# Example Vale config file (`.vale.ini` or `_vale.ini`)
+
 # Core settings
-StylesPath = path/to/my/project/styles/directory
-MinAlertLevel = warning # suggestion, warning or error
+StylesPath = ci/vale/styles
+
+# The minimum alert level to display (suggestion, warning, or error).
+#
+# CI builds will only fail on error-level alerts.
+MinAlertLevel = warning
 
 # Global settings (applied to every syntax)
 [*]
@@ -17,13 +19,22 @@ BasedOnStyles = vale, MyCustomStyle
 vale.Editorializing = YES
 # You can also change the level associated with a rule
 vale.Hedging = error
-...
 
 # Syntax-specific settings
 # These overwrite any conflicting global settings
 [*.{md,txt}]
 ...
 ```
+
+Vale expects its configuration to be in a file named `.vale.ini` or `_vale.ini`. It'll start looking for this file in the same directory as the file that's being linted. If it can't find one, it'll search up to 6 levels up the directory tree. After 6 levels, it'll look for a global configuration file in the OS equivalent of `$HOME` (see below).
+
+| OS      | Search Locations                                      |
+|---------|------------------------------------------------------|
+| Windows | `$HOME`, `%UserProfile%`, or `%HomeDrive%%HomePath%` |
+| macOS   | `$HOME`                                              |
+| Linux   | `$HOME`                                              |
+
+If more than one configuration file is present, the closest one takes precedence.
 
 ## Using Comments
 
@@ -47,26 +58,4 @@ more text here...
 This is some text
 
 <!-- vale Style.Rule = YES -->
-```
-
-## Examples
-
-Let's say we're working on a project with Python source code and reStructuredText documentation. Assuming we're using styles named `base` (with general style rules) and `ProjectName` (with project-specific rules), we could have the following configuration:
-
-```ini
-StylesPath = styles
-
-[*.{rst,py}]
-BasedOnStyles = base, ProjectName
-```
-
-If we add another style named `docs` with rules we only want to apply to our documentation, we could change it to:
-
-```ini
-[*.rst]
-BasedOnStyles = base, ProjectName, docs
-
-[*.py]
-BasedOnStyles = base, ProjectName
-docs.SomeRule = YES # there's actually one rule we want
 ```

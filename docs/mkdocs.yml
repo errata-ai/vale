@@ -6,26 +6,26 @@ site_url: https://errata-ai.github.io/vale/
 # Repository
 repo_name: errata-ai/vale
 repo_url: https://github.com/errata-ai/vale
-docs_dir: docs/content
+docs_dir: content
+edit_uri: edit/master/docs/content/
 
 # Copyright
-copyright: 'Copyright &copy; 2018 Joseph Kato'
+copyright: 'Copyright &copy; 2016 - 2018 Joseph Kato'
 
-pages:
+nav:
 - Getting Started: index.md
 - Usage: usage.md
 - Configuration: config.md
-- File Formats: formats.md
-- Custom Styles: styles.md
-- Style Showcase: showcase.md
+- Markup: formats.md
+- Styles: styles.md
 - Examples: examples.md
 
 theme:
   name: material
   favicon: 'img/vale.png'
-  logo: 'img/vale-alt.png'
+  logo: 'img/vale.png'
   palette:
-    primary: 'red'
+    primary: 'white'
     accent: 'light blue'
 
 extra_css:

@@ -1,34 +1,46 @@
 dist: trusty
 sudo: required
-language: go
-go:
-  - 1.9.x
-  - "1.10"
-before_install:
-  - export BUNDLE_GEMFILE=$PWD/Gemfile
-  - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
-  - export PATH=~/bin:"$PATH"
-  - pip install --user docutils
-  - gem install asciidoctor
-  # Docs
-  - pip install --user -r docs/requirements.txt
-  - gem install awesome_bot
-install:
-  - make setup
-  - make build
-script:
-  - make test
-  - vale docs/content
-  - awesome_bot --allow-dupe docs/content/*.md
-after_script:
-  - make compare
-after_success:
-  - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
-  - mkdocs build --verbose --clean
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  local_dir: site
-  on:
-    branch: master
+matrix:
+  include:
+    # Documentation-related steps:
+    - language: python
+      python: 2.7.15
+      before_install:
+        - cd docs
+      install:
+        - go get github.com/ValeLint/vale
+        - pip install -r requirements.txt
+        - gem install awesome_bot
+      script:
+        - vale content
+        # - awesome_bot --allow-dupe content/*.md
+      after_success:
+        - mkdocs build --verbose --clean
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        local_dir: docs/site
+        on:
+          branch: master
+
+    # Core steps:
+    - language: go
+      go:
+        - 1.9.x
+        - "1.10"
+      before_install:
+        - export BUNDLE_GEMFILE=$PWD/Gemfile
+        - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
+        - export PATH=~/bin:"$PATH"
+        - pip install --user docutils
+        - gem install asciidoctor
+      install:
+        - make setup
+        - make build
+      script:
+        - make test
+      after_script:
+        - make compare
+      after_success:
+        - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
