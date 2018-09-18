@@ -1,0 +1,6 @@
+extends: existence
+message: 'Punctuation should be inside the quotes.'
+level: error
+nonword: true
+tokens:
+  - '"[^"]+"[.,?]'

@@ -1,0 +1,5 @@
+extends: existence
+message: 'Avoid hyphens in ages unless it clarifies the text.'
+level: warning
+tokens:
+  - '\d{1,3}-year-old'

@@ -1,0 +1,21 @@
+dist: trusty
+sudo: required
+language: python
+install:
+  - pip install -r requirements.txt
+  - gem install awesome_bot
+  - go get github.com/ValeLint/vale
+script:
+  - vale -v
+  - vale content
+  - awesome_bot --allow-dupe content/*.md
+after_success:
+  - python load_styles.py
+  - mkdocs build --verbose --clean --strict
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: site
+  on:
+    branch: master

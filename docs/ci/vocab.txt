@@ -1,0 +1,24 @@
+# Words to ignore
+AsciiDoc
+AsciiDoctor
+docutils
+e.g.
+Flesch
+GitHub-Flavored
+Gunning Fog
+Haskell
+Homebrew
+i.e.
+Kincaid
+Liau
+Linode
+Linters
+Lua
+macOS
+MkDocs
+pre
+reStructuredText
+Sass
+Signavio
+SMOG
+Tox

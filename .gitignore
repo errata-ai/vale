@@ -11,6 +11,7 @@ site
 target
 dist
 _vendor-*
+docs/public/
 
 # Files
 *.o

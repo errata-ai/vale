@@ -1,0 +1,16 @@
+extends: substitution
+message: Prefer %s over '%s.'
+level: warning
+ignorecase: true
+swap:
+  user testing: "'usability testing'"
+  back-end: "'back end'"
+  open-source: "'open source'"
+  dropdown: "'drop-down' or 'drop down'"
+  citizen: "'people' or 'The public'"
+  combating: "'working against' or 'fighting'"
+  dialogue: "'speaking(ing)'"
+  execute: "'run' or 'do'"
+  (?:illegals|illegal aliens): "'undocumented immigrants'"
+  countering: "'answering' or 'responding'"
+  simple: "'straightforward', 'uncomplicated', or 'clear'"

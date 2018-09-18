@@ -1,0 +1,27 @@
+.right {
+  right: 20px;
+}
+
+.card {
+  display: inline-block;
+  width: 300px;
+  height: 200px;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.20);
+  margin-bottom: 15px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.text {
+  background: #FFF;
+  padding-left: 15px;
+  /*padding-right: 15px;*/
+  min-height: 120px;
+}
+
+@media (max-width: 1250px) {
+  .card {
+    width: 100%;
+    max-width: none;
+  }
+}
