@@ -1,44 +1,23 @@
 ## About
 
-Vale is an open source linter for prose—no matter if it's plain text, markup or source-code comments. It's built around a plugin system that allows it to lint against arbitrary rules. In practice, this means that it can help you adhere to entire editorial style guides or simply break writer-specific bad habits.
+**Vale** is a free, open-source linter for prose built with speed and extensibility in mind.
+
+Unlike most writing aids, Vale's primary purpose isn't to provide its own advice; it's designed to
+enforce an existing style guide through its easy-to-use [extension system](/vale/styles).
+
+No matter if you're working with a small in-house standard or a large editorial style guide, Vale
+will help you maintain consistent and error-free writing.
 
 ![Vale Screenshot](img/vale-demo.png)
 
 ## Installation
 
-Vale works on Windows, macOS, and Linux. Installation is straightforward and there are a few options to choose from, as discussed below.
+Vale runs on Windows, macOS, and Linux. It can be installed via one of the package managers listed below or manually by downloading an executable from the [releases page](https://github.com/errata-ai/vale/releases).
 
-**Windows Installer**
-
-!!! warning "NOTE"
-
-    You may be warned about the package coming from an "unidentified developer." If you're not comfortable with this, you can install manually (see below).
-
-The easiest way to install on Windows is to use the Windows Installer package, `vale.msi` (which you'll find on the [releases page](https://github.com/ValeLint/vale/releases)).
-
-**Homebrew (macOS)**
-
-The easiest way to install on macOS is through [Homebrew](https://brew.sh/):
-
-```bash
-$ brew tap ValeLint/vale
-$ brew install vale
-```
-
-**Manually (Windows, macOS & Linux)**
-
-Download a binary from the [releases page](https://github.com/ValeLint/vale/releases) for your OS.
-
-You can put it anywhere you want. If you're not sure how to get started, check out one of our guides below.
-
-- [Getting Started with Vale (Windows)](#) (Coming soon.)
-- [Getting Started with Vale (macOS)](https://jdkato.github.io/2017/02/26/getting-started-with-vale-mac.html)
-- [Getting Started with Vale (Ubuntu)](#) (Coming soon.)
-
-**Using Go (Windows, macOS & Linux)**
-
-If you have [Go](https://golang.org/) installed and configured, you can install with `go get`:
-
-```bash
-$ go get github.com/ValeLint/vale
-```
+<div id="quickstart">
+    <span data-qs-package="brew">brew tap ValeLint/vale</span>
+    <span data-qs-package="brew">brew install vale</span>
+    <span data-qs-package="go">go get github.com/errata-ai/vale</span>
+    <span data-qs-package="choco">choco install vale</span>
+    <span data-qs-package="snap">snap install --edge vale</span>
+</div>

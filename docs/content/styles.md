@@ -25,7 +25,7 @@ where *base*, *blog*, and *docs* are your styles.
 
 ## Extension Points
 
-The building blocks behind Vale's styles are its rules, which utilize extension points to perform specific tasks.
+The building blocks behind Vale's styles are rules, which utilize extension points to perform specific tasks.
 
 The basic structure of a rule consists of a small header (shown below) followed by extension-specific arguments.
 
@@ -59,62 +59,65 @@ link: 'https://errata.ai/'
 
 `checks` offer a high-level way to extend Vale. They perform operations such as checking for consistency, counting occurrences, and suggesting changes.
 
-[Vale](https://github.com/ValeLint/vale/tree/master/rule) and its [reference styles](https://github.com/ValeLint/vale/tree/master/styles) are examples of how you can write your own rules.
-
 !!! tip "NOTE"
 
     Vale uses Go's [`regexp` package](https://golang.org/pkg/regexp/syntax/) to evaluate all patterns in rule definitions. This means that lookarounds and backreferences are not supported.
 
 ### `existence`
 
+**Example Definition:**
+
 ```yaml
-extends: existence
-message: "Consider removing '%s'"
-ignorecase: true
-level: warning
+--8<-- "api/existence/example.yml"
+```
+
+**Key Summary:**
+
+--8<-- "api/existence/keys.md"
+
+The most general extension point is `existence`. As its name implies, it looks
+for the "existence" of particular tokens.
+
+These tokens can be anything from simple phrases (as in the above example) to complex regular expressions&mdash;e.g., [the number of spaces between sentences](https://github.com/errata-ai/vale-boilerplate/blob/master/src/18F/Spacing.yml) and [the position of punctuation after quotes](https://github.com/errata-ai/vale-boilerplate/blob/master/src/18F/Quotes.yml).
+
+You may define the tokens as elements of lists named either `tokens`
+(shown above) or `raw`. The former converts its elements into a word-bounded,
+non-capturing group. For instance,
+
+```yaml
 tokens:
-  - appear to be
+  - appears to be
   - arguably
 ```
 
-The most common extension point is the `existence` check. As its name implies, it looks for the *existence* of particular strings.
+becomes `\b(?:appears to be|arguably)\b`.
 
-You may define these strings as elements of lists named either `tokens` or `raw`. The former converts its elements into a word-bounded group by default. For instance,
-
-```yaml
-message: "Consider removing '%s'"
-tokens:
-  - foo
-  - bar
-  - baz
-```
-becomes `\b(?:foo|bar|baz)\b`. You can also use the keys `ignorecase` and `nonword` to add `(?!)` and drop the word boundaries, respectively.
-
-`raw`, on the other hand, simply concatenates its elements&mdash;so, something like
+`raw`, on the other hand, simply concatenates its elements&mdash;so, something
+like
 
 ```yaml
 raw:
   - '(?:foo)\sbar'
-  - '(baz)'
+  - '(baz)'</code></pre>
 ```
-becomes `(?:foo)\sbar(baz)`.
 
-An `existence` expects its `message` to include a `%s` format specifier, which will be populated with the matched string. So, using the above example, "Consider removing 'foo'" will be printed if we find an occurrence of "foo."
+becomes `(?:foo)\sbar(baz)`.
 
 
 ### `substitution`
 
+**Example Definition:**
+
 ```yaml
-extends: substitution
-message: Consider using '%s' instead of '%s'
-ignorecase: true
-level: warning
-swap:
-  abundance: plenty
-  accelerate: speed up
+--8<-- "api/substitution/example.yml"
 ```
 
-A `substitution` check associates a string with a preferred form. If we want to suggest the use of "plenty" instead of "abundance," for example, we'd write:
+**Key Summary:**
+
+--8<-- "api/substitution/keys.md"
+
+`substitution` associates a string with a preferred form. If we want to suggest
+the use of "plenty" instead of "abundance," for example, we'd write:
 
 ```yaml
 swap:
@@ -129,9 +132,9 @@ swap:
   '(give|gave) rise to': lead to # this is bad!
 ```
 
-Like the `existence` check, `substitution` accepts the keys `ignorecase` and `nonword`.
+Like `existence`, `substitution` accepts the keys `ignorecase` and `nonword`.
 
-A `substitution` check can have one or two `%s` format specifiers in its `message`. This allows us to do either of the following:
+`substitution` can have one or two `%s` format specifiers in its message. This allows us to do either of the following:
 
 ```yaml
 message: "Consider using '%s' instead of '%s'"
@@ -141,142 +144,130 @@ message: "Consider using '%s'"
 
 ### `occurrence`
 
+**Example Definition:**
+
 ```yaml
-extends: occurrence
-message: "Sentences should be less than 25 words"
-scope: sentence
-level: suggestion
-max: 25
-token: '\b(\w+)\b'
+--8<-- "api/occurrence/example.yml"
 ```
 
-An `occurrence` check limits the number of times a particular token can appear in a given scope. In the example above, we're limiting the number of words per sentence.
+**Key Summary:**
 
-This is the only check that doesn't accept a format specifier in its message.
+--8<-- "api/occurrence/keys.md"
+
+`occurrence` limits the number of times a particular token can appear in a given scope. In the example above, we're limiting the number of words per sentence.
+
+This is the only extension point that doesn't accept a format specifier in its message.
 
 ### `repetition`
 
+**Example Definition:**
+
 ```yaml
-extends: repetition
-message: "'%s' is repeated!"
-level: error
-scope: paragraph
-ignorecase: true
-tokens:
-  - '\b(\w+)\b'
+--8<-- "api/repetition/example.yml"
 ```
 
-A `repetition`  check  looks for repeated occurrences of its tokens. If `ignorecase` is set to `true`, it'll convert all tokens to lower case for comparison purposes.
+**Key Summary:**
+
+--8<-- "api/repetition/keys.md"
+
+`repetition` looks for repeated occurrences of its tokens. If `ignorecase` is set to `true`, it'll convert all tokens to lower case for comparison purposes.
 
 ### `consistency`
 
+**Example Definition:**
+
 ```yaml
-extends: consistency
-message: "Inconsistent spelling of '%s'"
-level: warning
-scope: text
-ignorecase: true
-either:
-  advisor: adviser
-  centre: center
+--8<-- "api/consistency/example.yml"
 ```
 
-A `consistency` check will ensure that a key and its value (e.g., "advisor" and "adviser") don't both occur in its scope.
+**Key Summary:**
+
+--8<-- "api/consistency/keys.md"
+
+`consistency` will ensure that a key and its value (e.g., "advisor" and "adviser") don't both occur in its scope.
 
 ### `conditional`
 
+**Example Definition:**
+
 ```yaml
-extends: conditional
-message: "'%s' has no definition"
-level: warning
-scope: text
-first: \b([A-Z]{3,5})\b
-second: (?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)
-exceptions:
-  - ABC
+--8<-- "api/conditional/example.yml"
 ```
 
-A `conditional` check ensures that the existence of `first` implies the existence of `second`. For example, consider the following text:
+**Key Summary:**
 
-<!-- vale off -->
+--8<-- "api/conditional/keys.md"
 
-> According to Wikipedia, the World Health Organization (WHO) is a specialized agency of the United Nations that is concerned with international public health. We can now use WHO because it has been defined, but we can't use DAFB because people may not know what it represents. We can use `DAFB` when it's presented as code, though.
+`conditional` ensures that the existence of `first` implies the existence of `second`. For example, consider the following text:
 
-<!-- vale on -->
+<!-- vale 18F.UnexpandedAcronyms = NO -->
+
+> According to Wikipedia, the World Health Organization (WHO) is a specialized agency of the United Nations that is concerned with international public health. We can now use WHO because it has been defined, but we can't use DAFB because people may not know what it represents. We can use DAFB when it's presented as code, though.
+
+<!-- vale 18F.UnexpandedAcronyms = YES -->
 
 Running `vale` on the above text with our example rule yields the following:
 
-```none
+```shell
 test.md:1:224:vale.UnexpandedAcronyms:'DAFB' has no definition
 ```
 
-A `conditional` check also takes an optional `exceptions` list. Any token listed as an exception won't be flagged.
+`conditional` also takes an optional `exceptions` list. Any token listed as an exception won't be flagged.
 
 ### `capitalization`
 
+**Example Definition:**
+
 ```yaml
-extends: capitalization
-message: "'%s' should be in title case"
-level: warning
-scope: heading
-# $title, $sentence, $lower, $upper, or a pattern.
-match: $title
-style: AP # AP or Chicago; only applies when match is set to $title.
+--8<-- "api/capitalization/example.yml"
 ```
 
-`capitalization` checks that the text in the specified scope matches the case
-of `match`. There are a few pre-defined variables that can be passed as matches:
+**Key Summary:**
 
-<!-- vale 18F.UnexpandedAcronyms = NO -->
+--8<-- "api/capitalization/keys.md"
+
+`capitalization` checks that the text in the specified scope matches the case of `match`. There are a few pre-defined variables that can be passed as matches:
 
 - `$title`: "The Quick Brown Fox Jumps Over the Lazy Dog."
 - `$sentence`: "The quick brown fox jumps over the lazy dog."
 - `$lower`: "the quick brown fox jumps over the lazy dog."
 - `$upper`: "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG."
 
-Additionally, when using `match: $title`, you can specify a style of either `AP` or
-`Chicago`.
+Additionally, when using `match: $title`, you can specify a style of either AP or Chicago.
 
 ### `readability`
 
+**Example Definition:**
+
 ```yaml
-extends: readability
-message: "Grade level (%s) too high!"
-level: warning
-grade: 8
-metrics:
-  - Flesch-Kincaid
-  - Gunning Fog
+--8<-- "api/readability/example.yml"
 ```
 
-`readability` calculates a readability score according the specified metrics.
-The supported tests are Gunning Fog, Coleman-Liau, Flesch-Kincaid, SMOG, and
-Automated Readability.
+**Key Summary:**
 
-If more than one is listed (as seen above), the scores will be averaged. This is
-also the only extension point that doesn't accept a `scope`, as readability is
-always calculated using the entire document.
+--8<-- "api/readability/keys.md"
 
-`grade` is the highest acceptable score. Using the example above, a warning will
-be issued if `grade` exceeds 8.
+`readability` calculates a readability score according the specified metrics. The supported tests are Gunning-Fog, Coleman-Liau, Flesch-Kincaid, SMOG, and Automated Readability.
 
-<!-- vale 18F.UnexpandedAcronyms = YES -->
+If more than one is listed (as seen above), the scores will be averaged. This is also the only extension point that doesn't accept a scope, as readability is always calculated using the entire document.
+
+`grade `is the highest acceptable score. Using the example above, a warning will be issued if `grade` exceeds 8.
 
 ### `spelling`
 
+**Example Definition:**
+
 ```yaml
-extends: spelling
-message: "Did you really mean '%s'?"
-level: error
-ignore: ci/vocab.txt
+--8<-- "api/spelling/example.yml"
 ```
 
-`spelling` implements spell checking based on Hunspell-compatible dictionaries. By default, Vale includes `en_US-web`&mdash;an up-to-date, actively maintained dictionary. However, you may also specify your own via the `dic` and `aff` keys (the fully-qualified paths are required; e.g., `/usr/share/hunspell/en_US.dic`).
+**Key Summary:**
 
-`spelling` also accepts an `ignore` file, which consists of one word per line to
-be ignored during spell checking.
+--8<-- "api/spelling/keys.md"
 
-Additionally, you may further customize the spell-checking experience by defining *filters*:
+`spelling` implements spell checking based on Hunspell-compatible dictionaries. By default, Vale includes [en_US-web](https://github.com/errata-ai/en_US-web)—an up-to-date, actively maintained dictionary. However, you may also specify your own via the `dic` and `aff` keys (the fully-qualified paths are required; e.g., `/usr/share/hunspell/en_US.dic`).
+
+`spelling` also accepts an `ignore` file, which consists of one word per line to be ignored during spell checking. You may further customize the spell-checking experience by defining *filters*:
 
 ```yaml
 extends: spelling
@@ -293,5 +284,3 @@ filters:
   - '[pP]y.*\b'  # Ignore all words starting with 'py' -- e.g., 'PyYAML'.
 ignore: ci/vocab.txt
 ```
-
-

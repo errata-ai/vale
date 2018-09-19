@@ -19,6 +19,14 @@
   min-height: 120px;
 }
 
+.md-typeset pre {
+    position: relative;
+    margin: 0;
+    border-radius: 0.2rem;
+    line-height: 1.4;
+    -webkit-overflow-scrolling: touch;
+}
+
 @media (max-width: 1250px) {
   .card {
     width: 100%;

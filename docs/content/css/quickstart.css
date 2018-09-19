@@ -1,0 +1,103 @@
+/**
+ * quickstart.js
+ *
+ * @author Ines Montani <ines@ines.io>
+ * @version 0.0.1
+ * @license MIT
+ */
+
+.qs {
+    border: 1px solid #ddd;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.qs-input {
+    /* Hide inputs while keeping them focussable */
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: -9999px;
+}
+
+.qs-label {
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    margin: 0 0.5rem 0.75rem 0;
+    font-weight: bold;
+}
+
+.qs-label:hover {
+    background: #f6f6f6;
+}
+
+.qs-input:focus + .qs-label {
+    border: 1px solid #4e7efc;
+    outline: none;
+}
+
+.qs-input--radio:checked + .qs-label {
+    color: #fff;
+    border-color: #2595FF;
+    background: #2595FF;
+}
+
+.qs-input--checkbox + .qs-label:before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+    margin-right: 1rem;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.qs-input--checkbox:checked + .qs-label:before {
+    /* Embed "check" icon here for simplicity  */
+    background: #4e7efc url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4gICAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTkgMTYuMTcybDEwLjU5NC0xMC41OTQgMS40MDYgMS40MDYtMTIgMTItNS41NzgtNS41NzggMS40MDYtMS40MDZ6Ii8+PC9zdmc+);
+    background-size: contain;
+    border-color: #4e7efc;
+}
+
+.qs-group {
+    border: none;
+    padding: 0 1rem
+}
+
+.qs-legend {
+    color: #949e9b;
+    padding: 1rem 0 0.5rem;
+}
+
+.qs-code {
+    background: #111;
+    color: #fff;
+    padding: 0.75em 0;
+    overflow: auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 1rem 0 0;
+}
+
+.qs-results {
+    font-size: 1.6rem;
+    display: block;
+    font: normal normal 1.1rem Consolas, "Andale Mono", Menlo, Monaco, Courier, monospace;
+    line-height: 2;
+    padding: 1em 2em;
+}
+
+.qs-results > span {
+    display: block;
+}
+
+.qs-results > span:before {
+    color: #2595FF;
+    margin-right: 1em;
+    content: "$";
+}

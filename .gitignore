@@ -23,3 +23,5 @@ docs/public/
 *~
 .bundle
 .vagrant
+
+docs/content/styles.md

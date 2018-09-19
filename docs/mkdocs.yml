@@ -30,9 +30,12 @@ theme:
 
 extra_css:
   - 'css/style.css'
+  - 'css/quickstart.css'
 
-# extra_javascript:
-#  - 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'
+extra_javascript:
+  - 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'
+  - 'js/quickstart.min.js'
+  - 'js/install.js'
 
 # Extensions
 markdown_extensions:
@@ -53,3 +56,6 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tasklist(custom_checkbox=true)
   - pymdownx.tilde
+  - pymdownx.snippets:
+      check_paths: true
+      base_path: 'content'
