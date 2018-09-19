@@ -4,58 +4,13 @@ level: warning
 first: \b([A-Z]{3,5})\b
 second: (?:\b[A-Z][a-z]+[']? )+\(([A-Z]{3,5})\)
 exceptions:
-  - ABC
-  - ADD
-  - ADHD
-  - AIDS
-  - APA
-  - API
-  - CBS
-  - CIA
-  - CSI
-  - CSS
-  - CST
-  - CLI
-  - ESPN
-  - EST
-  - FAQ
-  - FBI
-  - FIXME
-  - GOV
-  - GNU
-  - HIV
-  - HR
   - HTML
   - HTTP
   - HTTPS
   - JSON
-  - LAN
-  - MIT
-  - MLA
-  - MLB
-  - MTV
-  - NAACP
-  - NASA
-  - NATO
-  - NBA
-  - NBC
-  - NCAA
-  - NCAAB
-  - NCAAF
-  - NFL
-  - NHL
+  - NAME
+  - TYPE
+  - SMOG
   - NOTE
-  - PDF
-  - PGA
-  - PPV
-  - PST
-  - SGML
-  - SSN
-  - TNT
-  - TODO
-  - URL
-  - USA
-  - USSR
+  - CLI
   - YAML
-  - XML
-  - XXX

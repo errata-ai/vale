@@ -63,6 +63,9 @@ link: 'https://errata.ai/'
 
     Vale uses Go's [`regexp` package](https://golang.org/pkg/regexp/syntax/) to evaluate all patterns in rule definitions. This means that lookarounds and backreferences are not supported.
 
+
+<!-- vale 18F.Clarity = NO -->
+
 ### `existence`
 
 **Example Definition:**
@@ -200,11 +203,11 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 `conditional` ensures that the existence of `first` implies the existence of `second`. For example, consider the following text:
 
-<!-- vale 18F.UnexpandedAcronyms = NO -->
+<!-- vale off -->
 
 > According to Wikipedia, the World Health Organization (WHO) is a specialized agency of the United Nations that is concerned with international public health. We can now use WHO because it has been defined, but we can't use DAFB because people may not know what it represents. We can use DAFB when it's presented as code, though.
 
-<!-- vale 18F.UnexpandedAcronyms = YES -->
+<!-- vale on -->
 
 Running `vale` on the above text with our example rule yields the following:
 
@@ -228,10 +231,14 @@ test.md:1:224:vale.UnexpandedAcronyms:'DAFB' has no definition
 
 `capitalization` checks that the text in the specified scope matches the case of `match`. There are a few pre-defined variables that can be passed as matches:
 
+<!-- vale off -->
+
 - `$title`: "The Quick Brown Fox Jumps Over the Lazy Dog."
 - `$sentence`: "The quick brown fox jumps over the lazy dog."
 - `$lower`: "the quick brown fox jumps over the lazy dog."
 - `$upper`: "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG."
+
+<!-- vale on -->
 
 Additionally, when using `match: $title`, you can specify a style of either AP or Chicago.
 
@@ -284,3 +291,5 @@ filters:
   - '[pP]y.*\b'  # Ignore all words starting with 'py' -- e.g., 'PyYAML'.
 ignore: ci/vocab.txt
 ```
+
+<!-- vale 18F.Clarity = YES -->
