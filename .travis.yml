@@ -12,6 +12,7 @@ matrix:
         - pip install -r requirements.txt
         - gem install awesome_bot
       script:
+        - go run api.go
         - vale content
         - awesome_bot --allow-dupe content/*.md
       after_success:
