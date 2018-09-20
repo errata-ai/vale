@@ -17,6 +17,8 @@ mkdocs
 pre
 restructuredtext
 sass
+shortcode
+shortcodes
 signavio
 smog
 tox
