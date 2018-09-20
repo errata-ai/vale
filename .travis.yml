@@ -9,6 +9,7 @@ matrix:
         - cd docs
       install:
         - go get github.com/ValeLint/vale
+        - go get github.com/olekukonko/tablewriter
         - pip install -r requirements.txt
         - gem install awesome_bot
       script:
