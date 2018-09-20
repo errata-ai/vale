@@ -258,7 +258,7 @@ Additionally, when using `match: $title`, you can specify a style of either AP o
 
 If more than one is listed (as seen above), the scores will be averaged. This is also the only extension point that doesn't accept a scope, as readability is always calculated using the entire document.
 
-`grade `is the highest acceptable score. Using the example above, a warning will be issued if `grade` exceeds 8.
+`grade` is the highest acceptable score. Using the example above, a warning will be issued if `grade` exceeds 8.
 
 ### `spelling`
 
