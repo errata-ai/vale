@@ -9,7 +9,7 @@ You'll need [Python 2.7+](https://www.python.org/downloads/) installed. Then, ju
 ```bash
 $ git clone https://github.com/errata-ai/vale.git
 $ cd docs
-$ pip install -r docs/requirements.txt
+$ pip install -r requirements.txt
 $ mkdocs serve
 ```
 
