@@ -122,7 +122,7 @@ func loadConfig(names, paths []string) (*ini.File, string, error) {
 			}
 			for _, name := range names {
 				loc := path.Join(dir, name)
-				if FileExists(loc) {
+				if FileExists(loc) && !IsDir(loc) {
 					configPath = loc
 					break
 				}
@@ -137,7 +137,7 @@ func loadConfig(names, paths []string) (*ini.File, string, error) {
 
 // LoadConfig reads the .vale/_vale file.
 func LoadConfig(cfg *Config, path string) *Config {
-	names := []string{".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini"}
+	names := []string{".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini", ""}
 	home, _ := homedir.Dir()
 
 	uCfg, path, err := loadConfig(names, []string{path, "", home})
