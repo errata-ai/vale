@@ -57,7 +57,7 @@ $ vale --glob='!*.txt' directory
 <p>
 <a href="https://github.com/TimKam/atomic-vale"><img alt="Atom Logo" src="../img/atom.png" title="Atom" width="68" height="68"></a>
 
-<a href="https://github.com/ValeLint/SubVale"><img alt="Sublime Text Logo" src="../img/sublime.png" title="Sublime Text" width="64" height="64"></a>
+<a href="https://packagecontrol.io/packages/SublimeLinter-contrib-vale"><img alt="Sublime Text Logo" src="../img/sublime.png" title="Sublime Text" width="64" height="64"></a>
 
 <a href="https://github.com/w0rp/ale"><img alt="Vim Logo" src="../img/vim.png" title="Vim (ALE)" width="64" height="64"></a>
 
