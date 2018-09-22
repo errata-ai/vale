@@ -81,12 +81,14 @@ func main() {
 			Destination: &config.Relative,
 		},
 	}
+
 	app.Commands = []cli.Command{
 		{
 			Name:    "dump-config",
 			Aliases: []string{"dc"},
 			Usage:   "Dumps configuration options to stdout and exits",
 			Action: func(c *cli.Context) error {
+				config = core.LoadConfig(config, path)
 				fmt.Println(core.DumpConfig(config))
 				return nil
 			},
