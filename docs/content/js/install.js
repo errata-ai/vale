@@ -4,7 +4,6 @@ const groups = [
         title: 'Package Manager',
         options: [
           {id: 'brew', title: 'Homebrew', checked: true},
-          {id: 'snap', title: 'Snapcraft'},
           {id: 'go', title: 'Go'}
         ]
       },

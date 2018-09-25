@@ -1,4 +1,4 @@
-# Vale: Your Style, Our Editor [![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/k9r5sijmtxedg0kn?svg=true)](https://ci.appveyor.com/project/jdkato/vale-2k8ha) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale) [![Snap Status](https://build.snapcraft.io/badge/errata-ai/vale.svg)](https://snapcraft.io/vale)
+# Vale: Your Style, Our Editor [![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/k9r5sijmtxedg0kn?svg=true)](https://ci.appveyor.com/project/jdkato/vale-2k8ha) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale)
 
 > :star2: We're now offering [**Integration Assistance**](https://errata.ai/about/)! This is a great way to support the project while also getting the time-consuming tasks (e.g., creating a Vale-compatible version of your house style or setting up a CI service) out of the way.
 
@@ -24,11 +24,7 @@ There are a few options to choose from:
     ```shell
     $ go get github.com/errata-ai/vale
     ```
-- [snapcraft](https://snapcraft.io/) (Linux):
 
-    ```shell
-    $ snap install --edge --classic vale
-    ```
 - A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/errata-ai/vale/releases).
 - Manually on Windows, macOS, or Linux by downloading an executable from the [releases page](https://github.com/errata-ai/vale/releases).
 
