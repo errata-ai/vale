@@ -29,7 +29,7 @@ matrix:
     # Core steps:
     - language: go
       go:
-        - "1.10.0"
+        - 1.9.x
       before_install:
         - export BUNDLE_GEMFILE=$PWD/Gemfile
         - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
@@ -63,6 +63,3 @@ matrix:
         - sudo snap install --edge --classic vale
       script:
         - cucumber
-      
-      
-
