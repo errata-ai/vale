@@ -53,7 +53,7 @@ matrix:
       before_install:
         - export BUNDLE_GEMFILE=$PWD/Gemfile
         - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
-        - export PATH=~/bin:"$PATH"
+        - export PATH=~/bin:/snap/bin:"$PATH"
         - pip install --user docutils
         - gem install asciidoctor
       install:
