@@ -29,8 +29,7 @@ matrix:
     # Core steps:
     - language: go
       go:
-        - 1.9.x
-        - "1.10"
+        - "1.10.0"
       before_install:
         - export BUNDLE_GEMFILE=$PWD/Gemfile
         - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
@@ -46,3 +45,24 @@ matrix:
         - make compare
       after_success:
         - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
+    
+    # Snap:
+    - language: go
+      go:
+        - 1.9.x
+      before_install:
+        - export BUNDLE_GEMFILE=$PWD/Gemfile
+        - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
+        - export PATH=~/bin:"$PATH"
+        - pip install --user docutils
+        - gem install asciidoctor
+      install:
+        - bundle install
+        - gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
+        - sudo apt-get --yes install snapd
+        - sudo snap install --edge --classic vale
+      script:
+        - cucumber
+      
+      
+
