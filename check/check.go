@@ -55,40 +55,48 @@ func NewManager(config *core.Config) *Manager {
 
 	// loadedStyles keeps track of the styles we've loaded as we go.
 	loadedStyles := []string{}
-
-	// First we load Vale's built-in rules.
-	mgr.loadDefaultRules()
 	if mgr.Config.StylesPath == "" {
 		// If we're not given a StylesPath, there's nothing left to look for.
+		mgr.loadDefaultRules(loadedStyles)
 		return &mgr
 	}
 
-	loadedStyles = append(loadedStyles, defaultStyles...)
 	baseDir := mgr.Config.StylesPath
 	for _, style = range mgr.Config.GBaseStyles {
+		p := filepath.Join(baseDir, style)
 		if core.StringInSlice(style, loadedStyles) {
 			// We've already loaded this style.
 			continue
+		} else if core.StringInSlice(style, defaultStyles) && !core.IsDir(p) {
+			continue
 		}
 		// Now we load all styles specified at the global ("*") level.
-		mgr.loadExternalStyle(filepath.Join(baseDir, style))
+		mgr.loadExternalStyle(p)
 		loadedStyles = append(loadedStyles, style)
 	}
 
 	for _, styles := range mgr.Config.SBaseStyles {
 		for _, style := range styles {
-			if !core.StringInSlice(style, loadedStyles) {
+			p := filepath.Join(baseDir, style)
+			if core.StringInSlice(style, defaultStyles) && !core.IsDir(p) {
+				continue
+			} else if !core.StringInSlice(style, loadedStyles) {
 				// Now we load all styles specified at a syntax level
 				//(e.g., "*.md"), assuming we didn't already load it at the
 				// global level.
-				mgr.loadExternalStyle(filepath.Join(baseDir, style))
+				mgr.loadExternalStyle(p)
 				loadedStyles = append(loadedStyles, style)
 			}
 		}
 	}
 
+	// Finally, after reading the user's `StylesPath`, we load our built-in
+	// styles:
+	mgr.loadDefaultRules(loadedStyles)
+	loadedStyles = append(loadedStyles, defaultStyles...)
+
 	for _, chk := range mgr.Config.Checks {
-		// Finally, we load any remaining individual rules.
+		// Load any remaining individual rules.
 		if !strings.Contains(chk, ".") {
 			// A rule must be associated with a style (i.e., "Style[.]Rule").
 			continue
@@ -729,8 +737,13 @@ func (mgr *Manager) loadCheck(fName string, fp string) error {
 	return nil
 }
 
-func (mgr *Manager) loadDefaultRules() {
+func (mgr *Manager) loadDefaultRules(loaded []string) {
 	for _, style := range defaultStyles {
+		if core.StringInSlice(style, loaded) {
+			// The user has a style on their `StylesPath` with the same name as
+			// a built-in style.
+			continue
+		}
 		rules, _ := rule.AssetDir(filepath.Join("rule", style))
 		for _, name := range rules {
 			b, err := rule.Asset(filepath.Join("rule", style, name))

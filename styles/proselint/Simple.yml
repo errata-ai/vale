@@ -1,0 +1,5 @@
+message: "'%s' left in text"
+extends: existence
+level: warning
+tokens:
+  - very
