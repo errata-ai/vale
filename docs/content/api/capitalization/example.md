@@ -1,8 +1,0 @@
-```yml
-extends: capitalization
-message: "'%s' should be in title case"
-level: warning
-scope: heading
-match: $title
-style: AP
-```

@@ -1,9 +1,0 @@
-```yml
-extends: readability
-message: "Grade level (%s) too high!"
-level: warning
-grade: 8
-metrics:
-  - Flesch-Kincaid
-  - Gunning Fog
-```

@@ -70,7 +70,16 @@ link: 'https://errata.ai/'
 
 **Example Definition:**
 
---8<-- "api/existence/example.md"
+```yaml
+extends: existence
+message: Consider removing '%s'
+level: warning
+code: false
+ignorecase: true
+tokens:
+    - appears to be
+    - arguably
+```
 
 **Key Summary:**
 
@@ -109,7 +118,15 @@ becomes `(?:foo)\sbar(baz)`.
 
 **Example Definition:**
 
---8<-- "api/substitution/example.md"
+```yaml
+extends: substitution
+message: Consider using '%s' instead of '%s'
+ignorecase: true
+level: warning
+swap:
+  abundance: plenty
+  accelerate: speed up
+```
 
 **Key Summary:**
 
@@ -145,7 +162,14 @@ message: "Consider using '%s'"
 
 **Example Definition:**
 
---8<-- "api/occurrence/example.md"
+```yaml
+extends: occurrence
+message: "Sentences should be less than 25 words"
+scope: sentence
+level: suggestion
+max: 25
+token: '\b(\w+)\b'
+```
 
 **Key Summary:**
 
@@ -159,7 +183,15 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 **Example Definition:**
 
---8<-- "api/repetition/example.md"
+```yaml
+extends: repetition
+message: "'%s' is repeated!"
+level: error
+scope: paragraph
+ignorecase: true
+tokens:
+  - '\b(\w+)\b'
+```
 
 **Key Summary:**
 
@@ -171,7 +203,16 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 **Example Definition:**
 
---8<-- "api/consistency/example.md"
+```yaml
+extends: consistency
+message: "Inconsistent spelling of '%s'"
+level: warning
+scope: text
+ignorecase: true
+either:
+  advisor: adviser
+  centre: center
+```
 
 **Key Summary:**
 
@@ -183,7 +224,16 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 **Example Definition:**
 
---8<-- "api/conditional/example.md"
+```yaml
+extends: conditional
+message: "'%s' has no definition"
+level: warning
+scope: text
+first: \b([A-Z]{3,5})\b
+second: (?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)
+exceptions:
+  - ABC
+```
 
 **Key Summary:**
 
@@ -209,7 +259,14 @@ test.md:1:224:vale.UnexpandedAcronyms:'DAFB' has no definition
 
 **Example Definition:**
 
---8<-- "api/capitalization/example.md"
+```yaml
+extends: capitalization
+message: "'%s' should be in title case"
+level: warning
+scope: heading
+match: $title
+style: AP
+```
 
 **Key Summary:**
 
@@ -232,7 +289,15 @@ Additionally, when using `match: $title`, you can specify a style of either AP o
 
 **Example Definition:**
 
---8<-- "api/readability/example.md"
+```yaml
+extends: readability
+message: "Grade level (%s) too high!"
+level: warning
+grade: 8
+metrics:
+  - Flesch-Kincaid
+  - Gunning Fog
+```
 
 **Key Summary:**
 
@@ -249,7 +314,10 @@ If more than one is listed (as seen above), the scores will be averaged. This is
 **Example Definition:**
 
 ```yaml
---8<-- "api/spelling/example.yml"
+extends: spelling
+message: "Did you really mean '%s'?"
+level: error
+ignore: ci/vocab.txt
 ```
 
 **Key Summary:**

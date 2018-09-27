@@ -1,6 +1,0 @@
-```yml
-extends: spelling
-message: "Did you really mean '%s'?"
-level: error
-ignore: ci/vocab.txt
-```
