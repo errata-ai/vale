@@ -1,3 +1,4 @@
+```yml
 extends: consistency
 message: "Inconsistent spelling of '%s'"
 level: warning
@@ -6,3 +7,4 @@ ignorecase: true
 either:
   advisor: adviser
   centre: center
+```

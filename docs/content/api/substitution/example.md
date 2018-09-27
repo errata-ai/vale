@@ -1,3 +1,4 @@
+```yml
 extends: substitution
 message: Consider using '%s' instead of '%s'
 ignorecase: true
@@ -5,3 +6,4 @@ level: warning
 swap:
   abundance: plenty
   accelerate: speed up
+```

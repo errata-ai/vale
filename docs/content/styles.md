@@ -70,9 +70,7 @@ link: 'https://errata.ai/'
 
 **Example Definition:**
 
-```yaml
---8<-- "api/existence/example.yml"
-```
+--8<-- "api/existence/example.md"
 
 **Key Summary:**
 
@@ -111,9 +109,7 @@ becomes `(?:foo)\sbar(baz)`.
 
 **Example Definition:**
 
-```yaml
---8<-- "api/substitution/example.yml"
-```
+--8<-- "api/substitution/example.md"
 
 **Key Summary:**
 
@@ -149,9 +145,7 @@ message: "Consider using '%s'"
 
 **Example Definition:**
 
-```yaml
---8<-- "api/occurrence/example.yml"
-```
+--8<-- "api/occurrence/example.md"
 
 **Key Summary:**
 
@@ -165,9 +159,7 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 **Example Definition:**
 
-```yaml
---8<-- "api/repetition/example.yml"
-```
+--8<-- "api/repetition/example.md"
 
 **Key Summary:**
 
@@ -179,9 +171,7 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 **Example Definition:**
 
-```yaml
---8<-- "api/consistency/example.yml"
-```
+--8<-- "api/consistency/example.md"
 
 **Key Summary:**
 
@@ -193,9 +183,7 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 **Example Definition:**
 
-```yaml
---8<-- "api/conditional/example.yml"
-```
+--8<-- "api/conditional/example.md"
 
 **Key Summary:**
 
@@ -221,9 +209,7 @@ test.md:1:224:vale.UnexpandedAcronyms:'DAFB' has no definition
 
 **Example Definition:**
 
-```yaml
---8<-- "api/capitalization/example.yml"
-```
+--8<-- "api/capitalization/example.md"
 
 **Key Summary:**
 
@@ -246,9 +232,7 @@ Additionally, when using `match: $title`, you can specify a style of either AP o
 
 **Example Definition:**
 
-```yaml
---8<-- "api/readability/example.yml"
-```
+--8<-- "api/readability/example.md"
 
 **Key Summary:**
 

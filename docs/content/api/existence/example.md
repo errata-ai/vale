@@ -1,3 +1,4 @@
+```yml
 extends: existence
 message: Consider removing '%s'
 level: warning
@@ -6,3 +7,4 @@ ignorecase: true
 tokens:
     - appears to be
     - arguably
+```
