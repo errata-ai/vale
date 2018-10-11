@@ -64,6 +64,8 @@ type Config struct {
 	Parsers       map[string]string          // A map of syntax -> commands
 	Path          string                     // The location of the config file
 
+	SecToPat map[string]glob.Glob
+
 	// Command-line configuration
 	Output    string // (optional) output style ("line" or "CLI")
 	Wrap      bool   // (optional) wrap output when CLI style
@@ -86,6 +88,7 @@ func NewConfig() *Config {
 	cfg.Parsers = make(map[string]string)
 	cfg.BlockIgnores = make(map[string][]string)
 	cfg.TokenIgnores = make(map[string][]string)
+	cfg.SecToPat = make(map[string]glob.Glob)
 	return &cfg
 }
 
@@ -179,9 +182,17 @@ func LoadConfig(cfg *Config, path string) *Config {
 		if sec == "*" || sec == "DEFAULT" {
 			continue
 		}
+		pat, err := glob.Compile(sec)
+		if CheckError(err)  {
+			cfg.SecToPat[sec] = pat
+		}
 		syntaxOpts := make(map[string]bool)
 		for _, k := range uCfg.Section(sec).KeyStrings() {
 			if k == "BasedOnStyles" {
+				pat, err := glob.Compile(sec)
+				if _, found := cfg.SecToPat[sec]; !found && CheckError(err) {
+					cfg.SecToPat[sec] = pat
+				}
 				cfg.SBaseStyles[sec] = uCfg.Section(sec).Key(k).Strings(",")
 			} else if k == "IgnorePatterns" || k == "BlockIgnores" {
 				cfg.BlockIgnores[sec] = uCfg.Section(sec).Key(k).Strings(",")

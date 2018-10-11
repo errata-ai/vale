@@ -104,13 +104,31 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 	filesChan := make(chan *core.File)
 	errc := make(chan error, 1)
 	ignore := []string{".", "_"}
+	nonGlobal := len(l.Config.GBaseStyles) == 0 && len(l.Config.GChecks) == 0
+	seen := make(map[string]bool)
+
 	go func() {
 		wg := sizedwaitgroup.New(5)
 		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
+			ext := filepath.Ext(fp)
 			if err != nil || fi.IsDir() {
 				return nil
-			} else if !glob.Match(fp) || core.HasAnyPrefix(fi.Name(), ignore) {
+			} else if skip, found := seen[ext]; found && skip {
 				return nil
+			} else if !glob.Match(fp) || core.HasAnyPrefix(fi.Name(), ignore) {
+				seen[ext] = true
+				return nil
+			} else if nonGlobal {
+				found := false
+				for _, pat := range l.Config.SecToPat {
+					if pat.Match(fp) {
+						found = true
+					}
+				}
+				if !found {
+					seen[ext] = true
+					return nil
+				}
 			}
 			wg.Add()
 			go func(fp string) {

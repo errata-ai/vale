@@ -116,8 +116,7 @@ func NewFile(src string, config *Config) *File {
 
 	baseStyles := config.GBaseStyles
 	for sec, styles := range config.SBaseStyles {
-		pat, err := glob.Compile(sec)
-		if CheckError(err) && pat.Match(src) {
+		if pat, found := config.SecToPat[sec]; found && pat.Match(src) {
 			baseStyles = styles
 			break
 		}
@@ -125,8 +124,7 @@ func NewFile(src string, config *Config) *File {
 
 	checks := make(map[string]bool)
 	for sec, smap := range config.SChecks {
-		pat, err := glob.Compile(sec)
-		if CheckError(err) && pat.Match(src) {
+		if pat, found := config.SecToPat[sec]; found && pat.Match(src) {
 			checks = smap
 			break
 		}
