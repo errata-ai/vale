@@ -17,27 +17,11 @@ commands and options are discussed below.
 
     ```shell
     $ vale new existence
-    # Save as MyRule.yml on your StylesPath
-    # See https://errata-ai.github.io/vale/styles/ for more info
-    # "suggestion", "warning" or "error"
-    level: warning
-    # Text describing this rule (generally longer than 'message').
-    description: '...'
-    # A link the source or reference.
-    link: '...'
-    extends: existence
-    # "%s" will be replaced by the active token
-    message: "found '%s'!"
-    ignorecase: false
-    tokens:
-      - XXX
-      - FIXME
-      - TODO
-      - NOTE
+    ...
     ```
 
     The `new` command generates an example implementation for the given
-    extension point (`existence` in the example above).
+    extension point.
 
 - `-h` / `--help`:
 
