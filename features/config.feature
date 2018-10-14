@@ -40,6 +40,21 @@ Feature: Config
     """
     And the exit status should be 0
 
+  Scenario: External config (direct)
+    When I lint with config "../../fixtures/styles/demo/_vale"
+    Then the output should contain exactly:
+      """
+      test.md:15:60:demo.Spellcheck:Did you really mean 'codeblock'?
+      test.md:34:29:demo.Filters:Did you really mean 'TODO'?
+      test.md:36:3:demo.Filters:Did you really mean 'TODO'?
+      test.md:36:16:demo.Filters:Did you really mean 'FIXME'?
+      test.md:40:21:demo.Filters:Did you really mean 'FIXME'?
+      test.md:42:9:demo.Spellcheck:Did you really mean 'Monokai'?
+      test.md:44:5:demo.Filters:Did you really mean 'TODO'?
+      test.md:46:3:demo.Filters:Did you really mean 'TODO'?
+      """
+    And the exit status should be 0
+
   Scenario: External config
     When I lint with config "../../fixtures/styles/demo"
     Then the output should contain exactly:

@@ -127,6 +127,9 @@ func loadConfig(names, paths []string) (*ini.File, string, error) {
 				loc := path.Join(dir, name)
 				if FileExists(loc) && !IsDir(loc) {
 					configPath = loc
+					if name == "" {
+						dir = filepath.Dir(configPath)
+					}
 					break
 				}
 			}
