@@ -255,7 +255,7 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 		style = strings.Split(name, ".")[0]
 		run = false
 
-		if chk.Code && hasCode {
+		if chk.Code && hasCode && !l.Config.Simple {
 			txt = blk.Raw
 		} else {
 			txt = blk.Text

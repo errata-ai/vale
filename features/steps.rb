@@ -11,6 +11,11 @@ When(/^I run command "(.*)"$/) do |cmd|
   step %(I run `#{exe} #{cmd}`)
 end
 
+When(/^I lint simple "(.*)"$/) do |flag|
+  step %(I cd to "../../fixtures/formats")
+  step %(I run `#{exe} --ignore-syntax #{flag}`)
+end
+
 When(/^I lint "(.*)"$/) do |file|
   step %(I cd to "../../fixtures/formats")
   step %(I run `#{exe} #{file}`)

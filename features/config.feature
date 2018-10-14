@@ -85,6 +85,26 @@ Feature: Config
     """
     And the exit status should be 0
 
+  Scenario: Ignore syntax
+    When I lint simple "test.md"
+    Then the output should contain exactly:
+    """
+    test.md:3:1:vale.Annotations:'NOTE' left in text
+    test.md:8:5:vale.Annotations:'NOTE' left in text
+    test.md:18:4:vale.Annotations:'XXX' left in text
+    test.md:20:9:vale.Annotations:'XXX' left in text
+    test.md:29:5:vale.Annotations:'XXX' left in text
+    test.md:32:1:vale.Annotations:'XXX' left in text
+    test.md:34:29:vale.Annotations:'TODO' left in text
+    test.md:36:3:vale.Annotations:'TODO' left in text
+    test.md:36:10:vale.Annotations:'XXX' left in text
+    test.md:36:16:vale.Annotations:'FIXME' left in text
+    test.md:40:21:vale.Annotations:'FIXME' left in text
+    test.md:44:5:vale.Annotations:'TODO' left in text
+    test.md:46:3:vale.Annotations:'TODO' left in text
+    """
+    And the exit status should be 0
+
   Scenario: Specify BasedOnStyle on a per-syntax basis
     Given a file named ".vale" with:
     """

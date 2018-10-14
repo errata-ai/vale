@@ -33,6 +33,7 @@ type File struct {
 	RealExt    string            // actual file extension
 	Scanner    *bufio.Scanner    // used by lintXXX functions
 	Sequences  []string          // tracks various info (e.g., defined abbreviations)
+	Simple     bool
 	Summary    bytes.Buffer      // holds content to be included in summarization checks
 
 	history map[string]int
@@ -146,7 +147,7 @@ func NewFile(src string, config *Config) *File {
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Lines: lines,
 		Comments: make(map[string]bool), Content: content, Command: command,
-		history: make(map[string]int),
+		history: make(map[string]int), Simple: config.Simple,
 	}
 
 	return &file
@@ -169,7 +170,7 @@ func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
 		return pos, []int{0, 0}
 	}
 
-	if f.Format == "markup" {
+	if f.Format == "markup" && !f.Simple {
 		lines = f.Lines
 	} else {
 		lines = strings.SplitAfter(ctx, "\n")
