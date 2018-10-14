@@ -3,7 +3,7 @@ package check
 import "fmt"
 
 var baseTemplate = `# Save as MyRule.yml on your StylesPath
-# See https://valelint.github.io/docs/styles/ for more info
+# See https://errata-ai.github.io/vale/styles/ for more info
 # "suggestion", "warning" or "error"
 level: warning
 # Text describing this rule (generally longer than 'message').
@@ -76,6 +76,19 @@ scope: heading
 match: $title
 style: AP # AP or Chicago; only applies when match is set to $title.`
 
+var readabilityTemplate = `extends: readability
+message: "Grade level (%s) too high!"
+level: warning
+grade: 8
+metrics:
+  - Flesch-Kincaid
+  - Gunning Fog`
+
+var spellingTemplate = `extends: spelling
+message: "Did you really mean '%s'?"
+level: error
+ignore: ci/vocab.txt`
+
 var checkToTemplate = map[string]string{
 	"existence":      existenceTemplate,
 	"substitution":   substitutionTemplate,
@@ -84,6 +97,8 @@ var checkToTemplate = map[string]string{
 	"consistency":    consistencyTemplate,
 	"repetition":     repetitionTemplate,
 	"capitalization": capitalizationTemplate,
+    "readability":    readabilityTemplate,
+    "spelling":       spellingTemplate,
 }
 
 // GetTemplate makes a template for the given extension point.
