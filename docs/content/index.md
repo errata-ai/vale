@@ -14,7 +14,7 @@ will help you maintain consistent and error-free writing.
 
 Vale runs on Windows, macOS, and Linux. It can be installed via one of the package managers listed below or manually by downloading an executable from the [releases page](https://github.com/errata-ai/vale/releases).
 
-<!-- vale docs.Branding = NO -->
+<!-- vale off -->
 
 <div id="quickstart">
     <span data-qs-package="brew">brew tap ValeLint/vale</span>
@@ -23,4 +23,4 @@ Vale runs on Windows, macOS, and Linux. It can be installed via one of the packa
     <span data-qs-package="docker">docker pull jdkato/vale</span>
 </div>
 
-<!-- vale docs.Branding = YES -->
+<!-- vale on -->
