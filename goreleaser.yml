@@ -24,4 +24,9 @@ brew:
   description: A customizable, syntax-aware linter for prose.
   homepage: 'https://github.com/errata-ai/vale'
 dockers:
-  - image: jdkato/vale
+  # You can have multiple Docker images.
+  -
+    image: jdkato/vale
+    tag_templates:
+      - "{{ .Tag }}-{{ .Env.GO_VERSION }}"
+      - latest
