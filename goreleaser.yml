@@ -28,5 +28,4 @@ dockers:
   -
     image: jdkato/vale
     tag_templates:
-      - "{{ .Tag }}-{{ .Env.GO_VERSION }}"
       - latest
