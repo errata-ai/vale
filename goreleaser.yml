@@ -25,5 +25,3 @@ brew:
   homepage: 'https://github.com/errata-ai/vale'
 dockers:
   - image: jdkato/vale
-    latest: true
-    tag_template: '{{ .Version }}-{{ .Env.GOVERSION }}'
