@@ -1,4 +1,4 @@
-# Vale: Your Style, Our Editor [![Build Status](https://travis-ci.org/errata-ai/vale.svg?branch=master)](https://travis-ci.org/errata-ai/vale) [![Build status](https://ci.appveyor.com/api/projects/status/k9r5sijmtxedg0kn?svg=true)](https://ci.appveyor.com/project/jdkato/vale-2k8ha) [![Go Report Card](https://goreportcard.com/badge/github.com/errata-ai/vale)](https://goreportcard.com/report/github.com/errata-ai/vale)
+# Vale: Your Style, Our Editor [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?style=flat-square&amp;logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://goreportcard.com/badge/github.com/gojp/goreportcard?style=flat-square)](https://goreportcard.com/report/github.com/errata-ai/vale) [![Thanks](https://img.shields.io/badge/say-thanks-ff69b4.svg?style=flat-square&amp;logo=gratipay&amp;logoColor=white)](#say-thanks)
 
 > :star2: We're now offering [**Integration Assistance**](https://errata.ai/about/)! This is a great way to support the project while also getting the time-consuming tasks (e.g., creating a Vale-compatible version of your house style or setting up a CI service) out of the way.
 
@@ -108,3 +108,21 @@ $ vale --ext=.md 'this is some `very` interesting text'
 ```
 
 See `vale --help` and [Usage](https://errata-ai.github.io/vale/usage/) for more information.
+
+## Say thanks
+
+Hi!
+
+My name is [Joseph Kato](https://github.com/jdkato).
+
+In my spare time, I develop and maintain a few [open-source tools](https://github.com/errata-ai) for collaborative writing. If you'd like to support my work, you can donate via PayPal or make use of my [consulting services](https://errata.ai/about/).
+
+| PayPal | Consulting |
+|:-----------------:|:-------:|
+| [Donate with PayPal][donate-card-url] | [Tell us what you need](https://errata.ai/about/) |
+| <img src="https://user-images.githubusercontent.com/8785025/46446617-4681bd00-c732-11e8-9683-37a1979df769.png" width="100px"/> | <img src="https://user-images.githubusercontent.com/8785025/46446894-b2b0f080-c733-11e8-807a-9f8b2f41b246.png" width="100px"/> |
+
+I appreciate your support! _Thank you!_
+
+[donate-card-url]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BYUW6FHU86M62
+
