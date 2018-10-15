@@ -11,7 +11,7 @@ Feature: Styles
       test.cc:21:25:write-good.ThereIs:Don't start a sentence with '// There are'
       test.cc:28:21:write-good.ThereIs:Don't start a sentence with '// There is'
       test.cc:31:21:write-good.So:Don't start a sentence with '; so'
-      test.cc:34:14:write-good.So:Don't start a sentence with '// So'
+      test.cc:34:17:write-good.So:Don't start a sentence with 'So'
       test.md:1:1:write-good.Weasel:'Remarkably' is a weasel word!
       test.md:1:12:write-good.Weasel:'few' is a weasel word!
       test.md:3:12:write-good.Passive:'was killed'
