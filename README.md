@@ -25,6 +25,12 @@ There are a few options to choose from:
     $ go get github.com/errata-ai/vale
     ```
 
+- [Docker](https://hub.docker.com/r/jdkato/vale/):
+
+    ```shell
+    $ docker pull jdkato/vale
+    ```
+
 - A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/errata-ai/vale/releases).
 - Manually on Windows, macOS, or Linux by downloading an executable from the [releases page](https://github.com/errata-ai/vale/releases).
 
@@ -101,4 +107,4 @@ Run Vale on text with an assigned syntax:
 $ vale --ext=.md 'this is some `very` interesting text'
 ```
 
-See `vale --help` and [Configuration](https://errata.ai/vale/config/) for more information.
+See `vale --help` and [Usage](https://errata-ai.github.io/vale/usage/) for more information.
