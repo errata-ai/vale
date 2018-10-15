@@ -35,8 +35,8 @@ bench:
 
 compare:
 	cd lint && \
-	benchmany -n 10 -o new.txt ${CURR_SHA} && \
-	benchmany -n 10 -o old.txt ${LAST_TAG} && \
+	benchmany -n 5 -o new.txt ${CURR_SHA} && \
+	benchmany -n 5 -o old.txt ${LAST_TAG} && \
 	benchcmp old.txt new.txt && \
 	benchstat old.txt new.txt
 
