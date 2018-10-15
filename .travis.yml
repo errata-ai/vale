@@ -28,6 +28,8 @@ matrix:
 
     # Core steps:
     - language: go
+      services:
+        - docker
       go:
         - 1.9.x
       before_install:
@@ -44,4 +46,5 @@ matrix:
       after_script:
         - make compare
       after_success:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
