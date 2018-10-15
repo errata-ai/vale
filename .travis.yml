@@ -28,6 +28,9 @@ matrix:
 
     # Core steps:
     - language: go
+      cache:
+        directories:
+          - vendor/bundle
       services:
         - docker
       go:
