@@ -43,9 +43,13 @@ matrix:
         - gem install asciidoctor
       install:
         - make setup
+        - make rules
         - make build
       script:
         - make test
+        # Stash changes made by `make rules`. Otherwise, `make compare` and
+        # GoReleaser fail.
+        - git stash
       after_script:
         - make compare
       after_success:
