@@ -149,7 +149,7 @@ func ruleJoblintAcronymsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Acronyms.yml", size: 287, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Acronyms.yml", size: 287, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -169,7 +169,7 @@ func ruleJoblintBenefitsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Benefits.yml", size: 644, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Benefits.yml", size: 644, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -189,7 +189,7 @@ func ruleJoblintBroYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Bro.yml", size: 309, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Bro.yml", size: 309, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -209,7 +209,7 @@ func ruleJoblintCompetitiveYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Competitive.yml", size: 413, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Competitive.yml", size: 413, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -229,7 +229,7 @@ func ruleJoblintDerogatoryYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Derogatory.yml", size: 275, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Derogatory.yml", size: 275, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -249,7 +249,7 @@ func ruleJoblintDevenvYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/DevEnv.yml", size: 361, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/DevEnv.yml", size: 361, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -269,7 +269,7 @@ func ruleJoblintDumbtitlesYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/DumbTitles.yml", size: 335, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/DumbTitles.yml", size: 335, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -289,7 +289,7 @@ func ruleJoblintGenderedYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Gendered.yml", size: 669, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Gendered.yml", size: 669, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -309,7 +309,7 @@ func ruleJoblintHairYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Hair.yml", size: 213, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Hair.yml", size: 213, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -329,7 +329,7 @@ func ruleJoblintLegacytechYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/LegacyTech.yml", size: 321, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/LegacyTech.yml", size: 321, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -349,7 +349,7 @@ func ruleJoblintMeritocracyYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Meritocracy.yml", size: 129, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Meritocracy.yml", size: 129, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -369,7 +369,7 @@ func ruleJoblintProfanityYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Profanity.yml", size: 205, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Profanity.yml", size: 205, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -389,7 +389,7 @@ func ruleJoblintReassureYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Reassure.yml", size: 272, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Reassure.yml", size: 272, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -409,7 +409,7 @@ func ruleJoblintSexualisedYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Sexualised.yml", size: 243, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Sexualised.yml", size: 243, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -429,7 +429,7 @@ func ruleJoblintStarterYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Starter.yml", size: 334, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Starter.yml", size: 334, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -449,7 +449,7 @@ func ruleJoblintTechtermsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/TechTerms.yml", size: 156, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/TechTerms.yml", size: 156, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -469,7 +469,7 @@ func ruleJoblintVisionaryYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/Joblint/Visionary.yml", size: 432, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/Joblint/Visionary.yml", size: 432, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -489,7 +489,7 @@ func ruleProselintAirlineseYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Airlinese.yml", size: 172, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Airlinese.yml", size: 172, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -509,7 +509,7 @@ func ruleProselintAnimallabelsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/AnimalLabels.yml", size: 1175, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/AnimalLabels.yml", size: 1175, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -529,7 +529,7 @@ func ruleProselintAnnotationsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Annotations.yml", size: 124, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Annotations.yml", size: 124, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -549,7 +549,7 @@ func ruleProselintApologizingYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Apologizing.yml", size: 124, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Apologizing.yml", size: 124, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -569,7 +569,7 @@ func ruleProselintArchaismsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Archaisms.yml", size: 714, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Archaisms.yml", size: 714, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -589,7 +589,7 @@ func ruleProselintButYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/But.yml", size: 116, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/But.yml", size: 116, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -609,7 +609,7 @@ func ruleProselintClichesYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Cliches.yml", size: 18163, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Cliches.yml", size: 18163, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -629,7 +629,7 @@ func ruleProselintCorporatespeakYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/CorporateSpeak.yml", size: 641, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/CorporateSpeak.yml", size: 641, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -649,7 +649,7 @@ func ruleProselintCurrencyYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Currency.yml", size: 126, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Currency.yml", size: 126, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -669,7 +669,7 @@ func ruleProselintCursingYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Cursing.yml", size: 197, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Cursing.yml", size: 197, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -689,7 +689,7 @@ func ruleProselintDatecaseYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/DateCase.yml", size: 151, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/DateCase.yml", size: 151, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -709,7 +709,7 @@ func ruleProselintDatemidnightYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/DateMidnight.yml", size: 130, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/DateMidnight.yml", size: 130, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -729,7 +729,7 @@ func ruleProselintDateredundancyYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/DateRedundancy.yml", size: 284, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/DateRedundancy.yml", size: 284, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -749,7 +749,7 @@ func ruleProselintDatespacingYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/DateSpacing.yml", size: 148, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/DateSpacing.yml", size: 148, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -769,7 +769,7 @@ func ruleProselintDenzienlabelsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/DenzienLabels.yml", size: 2478, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/DenzienLabels.yml", size: 2478, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -789,12 +789,12 @@ func ruleProselintDiacriticalYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Diacritical.yml", size: 2044, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Diacritical.yml", size: 2044, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _ruleProselintGenderbiasYml = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x7c\x95\x41\x6e\xe3\x3a\x0c\x86\xf7\x3e\x05\x37\x0f\x4d\x17\x6f\x0e\xe0\x4d\x16\x73\x8c\xa2\x0b\xc6\xa2\x6d\x4e\x65\xca\x20\xa5\x7a\x02\xf4\xf0\x03\x49\x4e\x9a\x41\xac\xd1\xa6\xb5\xfe\x0f\xd4\x4f\x8a\x54\xe8\x77\x24\x71\xd6\x83\xa5\x8b\x45\x8e\x29\x72\x90\x6e\x21\x33\x9c\xa8\x87\x9f\x41\x8c\x1d\x29\x24\x63\x99\xe0\xe5\x3f\x7b\x01\x16\x8b\x84\x0e\xc2\x58\xbe\x7f\x74\x3c\x49\x50\x1a\xd0\xa8\x87\xa8\x89\x3a\x4f\x9f\xe4\x7b\x20\xd5\xa0\x9d\x6d\xb8\xf6\x1d\xc0\xe9\xdc\xa3\x4f\x8b\x20\x7d\x95\xbf\xfc\xda\xc3\x7d\x4d\x8a\x2e\x61\x24\x7b\x04\x2b\x97\xec\x08\xec\x00\x90\xf5\x74\xee\x97\x37\xa4\x77\xf9\xda\x42\xfd\xe7\xc6\xae\xec\x43\x3c\xd9\x6b\xe6\x64\x98\x43\x0b\xdd\xc5\x0a\xa6\x38\x07\x25\xb3\x87\xf3\xee\xab\x8a\x1d\xc0\x80\x0b\x29\x36\xc2\x55\x11\xc2\x4a\x8a\xf1\x16\x77\x98\xff\x61\xb5\x8a\x95\x0b\x32\xe5\xe3\x0f\xd1\x85\x96\x0b\x65\x30\xd7\xfd\x46\x76\x00\x2e\x7c\xe7\xf6\x54\x85\x21\xc8\x27\x93\x4e\x54\x0f\x70\x8a\x63\x6c\x19\x29\x22\xed\x56\x46\x56\x6a\x16\x37\x8b\x23\x4f\xf3\x03\x6d\x33\xb5\x32\xdc\xc5\x0a\x2a\xd9\xdc\x8a\x3b\xb2\x5a\xfc\xff\x4a\xa8\x60\x31\x39\x92\xfd\xfe\x26\xd4\x0b\x4e\x0d\x3b\x1b\x5a\x24\x18\x82\xf7\x34\xdc\x0b\xee\xd1\x5d\xc1\xe3\x76\x25\x7d\xbe\xca\xba\xbf\x53\x9e\x3f\xe8\xe8\xb6\x61\x08\x49\x23\x85\x64\x05\x14\xe7\x83\xba\x43\xf0\x92\xd8\xbb\x3c\x1b\x0b\x0a\x4e\x25\xf0\x82\xec\x9b\xc5\xcb\x22\x0c\xa8\xca\xa4\x56\x60\x01\x14\x07\x1b\x8f\xcf\x4e\xe6\x64\x97\x2c\xde\x80\x9d\x27\x09\x69\x9a\x0f\xec\x58\xd4\x20\xd3\xae\x57\xf8\x83\xe5\xd8\x38\xcc\x29\xc7\xca\x7a\x25\x17\x74\xc7\xb5\xc8\x62\x1a\x71\x88\x49\xa9\xb0\x54\x2d\x4f\xac\xfe\x69\x56\x6e\xe2\x16\x16\x92\x0c\xb3\x73\xbe\xd5\x4b\x2c\x91\x74\x21\xc7\xa8\xd7\x0e\x40\x68\x3b\x6e\xfe\xbc\x7e\x85\xa4\x82\x9e\x6d\x6f\x8b\xb0\x5c\x92\x2b\x38\x16\x16\xe5\xe1\x9d\xa8\x62\xa6\x84\xd2\xba\xa0\xd8\xcc\xeb\x53\x72\x69\xb5\x88\x13\xcb\xd4\x01\xac\x81\x62\x63\xf4\xab\x58\x18\xcf\x43\x2b\x97\x2a\x42\x18\x47\x1e\x6e\xfd\xae\xb4\xb6\x47\x3f\xd2\x30\x0b\x0f\x8c\x52\x61\x43\x4f\xcd\xf4\x8b\xb8\x92\x5a\x10\x08\x5a\x3f\x61\xa5\xb0\xfa\xdc\x14\x46\xfa\xd9\x74\x66\xc1\x3b\xbe\x39\xb2\x48\x1b\xaa\x3b\x9d\x7b\x32\x7b\x3d\xff\x9d\xee\xe8\xf3\x54\x03\xc6\xfc\x9b\x80\x92\x53\x8e\xca\x97\xa6\xab\x22\x7e\xbf\x4c\x5d\x1e\x47\x8e\xad\x17\xb4\x88\x65\x40\xca\x6d\x81\x0b\x79\x62\x9f\xc8\xba\x7d\xa7\x6c\x60\x92\xc8\x16\xdf\xec\xfd\xc1\xee\x7d\x7b\x3f\x37\xe8\x47\xb3\x73\xb2\x58\x0d\xfe\x09\x00\x00\xff\xff\xa1\x67\xdc\x0b\xee\x06\x00\x00")
+var _ruleProselintGenderbiasYml = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x7c\x95\x41\x6e\xe3\x3a\x0c\x86\xf7\x3e\x05\x37\x0f\x4d\x17\x6f\x0e\xe0\x4d\x16\x73\x8c\xa2\x0b\x46\xa2\x6d\x4e\x65\xca\x20\xa5\x7a\x02\xf4\xf0\x03\x59\x4e\x9a\x41\xac\xd1\xa6\xb5\xfe\x0f\xd4\x4f\x8a\x54\xe8\x77\x22\xf1\xd6\x83\xe5\x8b\x25\x4e\x39\x71\x94\x6e\x26\x33\x1c\xa9\x87\x9f\x51\x8c\x3d\x29\x64\x63\x19\xe1\xe5\x3f\x7b\x01\x16\x4b\x84\x1e\xe2\xb0\x7d\xff\xe8\x78\x94\xa8\xe4\xd0\xa8\x87\xa4\x99\xba\x40\x9f\x14\x7a\x20\xd5\xa8\x9d\xad\xb8\xf4\x1d\xc0\xe9\xdc\x63\xc8\xb3\x20\x7d\x6d\x7f\xf9\xb5\x87\xfb\x1a\x15\x7d\xc6\x44\xf6\x08\x56\x2e\xdb\x11\xd8\x01\x20\xeb\xe9\xdc\xcf\x6f\x48\xef\xf2\xb5\xc6\xfa\xcf\x8d\x5d\x38\xc4\x74\xb2\xd7\xc2\x89\x9b\x62\x0b\xdd\xc5\x0a\xe6\x34\x45\x25\xb3\x87\xf3\xee\xab\x8a\x1d\x80\xc3\x99\x14\x1b\xe1\xaa\x08\x71\x21\xc5\x74\x8b\xeb\xa6\x7f\x58\xad\x62\xe5\xa2\x8c\xe5\xf8\x43\x74\xa6\xf9\x42\x05\x2c\x75\xbf\x91\x1d\x80\x8f\xdf\xb9\x3d\x55\xc1\x45\x71\x4c\x3a\x52\x3d\xc0\x2b\x0e\xa9\x65\x64\x13\x69\xb7\x32\xb0\x52\xb3\xb8\x45\x1c\x78\x9c\x1e\x68\x9b\xa8\x95\xe1\x2e\x56\x50\xc9\xa6\x56\xdc\x81\xd5\xd2\xff\x57\x42\x05\x4b\xd9\x93\xec\xf7\x37\xa2\x5e\x70\x6c\xd8\x59\xd1\x12\x81\x8b\x21\x90\xbb\x17\x3c\xa0\xbf\x42\xc0\xf5\x4a\xfa\x7c\x95\x75\x7f\xa7\x02\x7f\xd0\xd1\x6d\x83\x8b\x59\x13\xc5\x6c\x1b\x28\x3e\x44\xf5\x87\xe0\x25\x73\xf0\x65\x36\x66\x14\x1c\xb7\xc0\x33\x72\x68\x16\xaf\x88\xe0\x50\x95\x49\x6d\x83\x05\x50\x3c\xac\x3c\x3c\x3b\x99\xb2\x5d\x8a\x78\x03\x76\x9e\x24\xe6\x71\x3a\xb0\x63\x49\xa3\x8c\xbb\x5e\xe1\x0f\x96\x63\xe3\x30\xe5\x12\xab\xe8\x95\x9c\xd1\x1f\xd7\xa2\x88\x79\x40\x97\xb2\xd2\xc6\x52\xb5\x3c\xb2\x86\xa7\x59\xb9\x89\x6b\x9c\x49\x0a\xcc\xde\x87\x56\x2f\xb1\x24\xd2\x99\x3c\xa3\x5e\x3b\x00\xa1\xf5\xb8\xf9\xcb\xfa\x15\xb3\x0a\x06\xb6\xbd\x2d\xe2\x7c\xc9\x7e\xc3\x71\x63\x51\x1e\xde\x89\x2a\x16\x4a\x28\x2f\x33\x8a\x4d\xbc\x3c\x25\x97\x17\x4b\x38\xb2\x8c\x1d\xc0\x12\x29\x35\x46\xbf\x8a\x1b\x13\xd8\xb5\x72\xa9\x22\xc4\x61\x60\x77\xeb\x77\xa5\xa5\x3d\xfa\x89\xdc\x24\xec\x18\xa5\xc2\x86\x81\x9a\xe9\x6f\xe2\x42\x6a\x51\x20\x6a\xfd\x84\x85\xe2\x12\x4a\x53\x18\xe9\x67\xd3\x99\xc5\xe0\xf9\xe6\xc8\x12\xad\xa8\xfe\x74\xee\xc9\xec\xf5\xfc\x77\xba\x43\x28\x53\x0d\x98\xca\x6f\x02\x4a\x49\x39\x29\x5f\x9a\xae\x36\xf1\xfb\x65\xea\xca\x38\x72\x6a\xbd\xa0\x9b\xb8\x0d\xc8\x76\x5b\xe0\x63\x99\xd8\x27\xb2\x6e\xdf\x29\x73\x4c\x92\xd8\xd2\x9b\xbd\x3f\xd8\xbd\x6f\xef\xe7\x46\xfd\x68\x76\x4e\x11\xab\xc1\x3f\x01\x00\x00\xff\xff\x71\x10\x3f\xd6\xee\x06\x00\x00")
 
 func ruleProselintGenderbiasYmlBytes() ([]byte, error) {
 	return bindataRead(
@@ -809,7 +809,7 @@ func ruleProselintGenderbiasYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/GenderBias.yml", size: 1774, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/GenderBias.yml", size: 1774, mode: os.FileMode(420), modTime: time.Unix(1540487477, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -829,7 +829,7 @@ func ruleProselintGrouptermsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/GroupTerms.yml", size: 2173, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/GroupTerms.yml", size: 2173, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -849,7 +849,7 @@ func ruleProselintHedgingYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Hedging.yml", size: 152, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Hedging.yml", size: 152, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -869,7 +869,7 @@ func ruleProselintHyperboleYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Hyperbole.yml", size: 124, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Hyperbole.yml", size: 124, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -889,7 +889,7 @@ func ruleProselintIllusionsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Illusions.yml", size: 115, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Illusions.yml", size: 115, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -909,7 +909,7 @@ func ruleProselintJargonYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Jargon.yml", size: 199, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Jargon.yml", size: 199, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -929,7 +929,7 @@ func ruleProselintLgbtoffensiveYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/LGBTOffensive.yml", size: 247, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/LGBTOffensive.yml", size: 247, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -949,7 +949,7 @@ func ruleProselintLgbttermsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/LGBTTerms.yml", size: 596, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/LGBTTerms.yml", size: 596, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -969,7 +969,7 @@ func ruleProselintMalapropismsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Malapropisms.yml", size: 169, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Malapropisms.yml", size: 169, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -989,7 +989,7 @@ func ruleProselintNeedlessYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Needless.yml", size: 8985, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Needless.yml", size: 8985, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1009,7 +1009,7 @@ func ruleProselintNonwordsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Nonwords.yml", size: 1129, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Nonwords.yml", size: 1129, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1029,7 +1029,7 @@ func ruleProselintOxymoronsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Oxymorons.yml", size: 454, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Oxymorons.yml", size: 454, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1049,7 +1049,7 @@ func ruleProselintPValueYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/P-Value.yml", size: 157, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/P-Value.yml", size: 157, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1069,7 +1069,7 @@ func ruleProselintRassyndromeYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/RASSyndrome.yml", size: 382, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/RASSyndrome.yml", size: 382, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1089,7 +1089,7 @@ func ruleProselintSkunkedYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Skunked.yml", size: 250, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Skunked.yml", size: 250, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1109,7 +1109,7 @@ func ruleProselintSpellingYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Spelling.yml", size: 343, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Spelling.yml", size: 343, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1129,7 +1129,7 @@ func ruleProselintTypographyYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Typography.yml", size: 220, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Typography.yml", size: 220, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1149,7 +1149,7 @@ func ruleProselintUncomparablesYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Uncomparables.yml", size: 687, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Uncomparables.yml", size: 687, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1169,7 +1169,7 @@ func ruleProselintVeryYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/proselint/Very.yml", size: 90, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/proselint/Very.yml", size: 90, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1189,7 +1189,7 @@ func ruleValeAnnotationsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/vale/Annotations.yml", size: 128, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/vale/Annotations.yml", size: 128, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1209,7 +1209,7 @@ func ruleValeEditorializingYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/vale/Editorializing.yml", size: 662, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/vale/Editorializing.yml", size: 662, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1229,7 +1229,7 @@ func ruleValeHedgingYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/vale/Hedging.yml", size: 427, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/vale/Hedging.yml", size: 427, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1249,7 +1249,7 @@ func ruleValeLitotesYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/vale/Litotes.yml", size: 651, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/vale/Litotes.yml", size: 651, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1269,7 +1269,7 @@ func ruleValeRedundancyYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/vale/Redundancy.yml", size: 1447, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/vale/Redundancy.yml", size: 1447, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1289,7 +1289,7 @@ func ruleValeRepetitionYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/vale/Repetition.yml", size: 95, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/vale/Repetition.yml", size: 95, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1309,7 +1309,7 @@ func ruleValeUncomparablesYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/vale/Uncomparables.yml", size: 687, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/vale/Uncomparables.yml", size: 687, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1329,7 +1329,7 @@ func ruleWriteGoodClichesYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/write-good/Cliches.yml", size: 16201, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/write-good/Cliches.yml", size: 16201, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1349,7 +1349,7 @@ func ruleWriteGoodEPrimeYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/write-good/E-Prime.yml", size: 347, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/write-good/E-Prime.yml", size: 347, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1369,12 +1369,12 @@ func ruleWriteGoodIllusionsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/write-good/Illusions.yml", size: 101, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/write-good/Illusions.yml", size: 101, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _ruleWriteGoodPassiveYml = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x4c\x55\x5d\xce\xe3\x3a\x08\x7d\xef\x2a\xaa\x4f\xba\xea\xfd\xd1\xdd\x40\xb7\x32\x9d\x07\x37\x21\xb1\x55\xc7\xf6\x80\x5d\x7f\x1a\x75\xf1\xa3\x36\x1c\x9c\x27\x0e\x04\x30\x1c\x83\x43\xdf\x95\xd2\x2c\xd7\x33\x7d\x07\xa9\x94\x26\x3a\x6d\x24\xe2\x56\xba\x9e\xbf\x2e\x7f\xc9\xe5\xeb\x14\xd6\x94\x99\x26\x27\x74\x3d\x57\x6e\x74\x8a\xf4\xa4\x78\x3d\x77\xc7\x29\xa4\xf5\xc4\xae\x5f\x4f\xe7\xf3\xff\xe7\xdb\xfd\x6f\xb7\xbd\x1c\xd3\xab\x13\xd3\xeb\x4e\x21\xad\xaf\x20\xaf\x3b\x51\x7a\x75\xf7\x06\xff\xdc\xee\x37\xf9\xf7\x54\xf3\x83\x92\xec\x51\x97\x1f\xb7\xfe\xf3\x3f\x9a\x2f\x1f\xcd\xf5\xf7\xa7\x0f\xbc\x93\xab\x0a\xa6\xbc\x91\x42\xfb\xb8\x36\xa0\x04\x37\x21\x20\x95\x61\x86\x9c\x11\x17\x6a\x05\x8c\xa4\x9f\x63\xee\x6a\xca\x0c\xd0\x56\x5f\x01\x93\xfa\x31\x02\x38\xbb\x79\x72\x52\xa1\x59\xc9\x7c\x88\x6b\x21\x02\x71\x32\xa4\x41\x16\x3d\x39\x8b\x98\x7c\x16\x4d\x34\xc5\x96\xd6\x1d\xa1\xf5\x29\x23\x82\xa9\x28\x6a\xbb\x9c\xc9\xe9\x51\x73\x78\x6a\x8d\x73\x4e\x7b\xdc\xcc\x4e\xbb\x9b\x99\xdc\xa6\x7e\x1c\x9e\x04\x6b\x4b\x8f\x1d\xb5\xfd\x48\x72\xa0\x68\x71\x31\x02\x6a\xde\x85\xf4\xa8\x25\xa8\x04\x8d\x8b\xd1\xb8\x58\xf5\x4b\xe6\x03\xf9\x4b\x66\x5a\x51\xd7\x92\x79\xb5\x22\xde\x4a\xb6\x9b\x59\x32\x8b\x7b\x98\x62\x04\x2d\x76\x15\x0b\xe7\xdf\xfa\x7d\x24\xb1\xd4\x87\x54\x2b\x5b\xcc\xca\xa8\xcf\x93\xe3\x59\x51\x54\x30\xaa\xf4\xda\x98\x47\x13\xbe\xf1\x6e\x79\x80\xf8\x47\x02\x0b\x8f\x14\x00\x90\x3d\x3a\x1d\xbb\xe8\x82\x5a\xc8\x69\x60\x24\x87\x59\x00\x6d\x91\x16\x18\xec\x8b\xca\xb0\xfa\x0a\x2f\xdc\xfe\xe6\xe6\xbd\xc9\x8d\x9c\xfa\x6f\xea\xbf\x05\x91\x82\xc2\xb6\x20\xd5\x38\xdc\x50\x5b\x7e\x12\xdb\x44\xbd\x15\x1b\x93\xb7\x32\x02\x3e\x9a\x37\xc2\x0a\x5a\x2a\xa8\xba\x70\x06\xed\x45\xa7\xf0\x57\x53\x2a\x98\xdc\xee\xc4\xc1\x24\xc8\xe5\x80\x11\xe7\x66\x72\xa7\x59\x70\x88\xe8\xde\x0b\x06\x57\xb0\xf5\x02\x8a\xb0\xe9\x42\x70\xf1\x56\xbb\x78\xf7\x34\xa8\xe5\x8a\xcf\x06\xb4\x61\xf1\x58\x76\xf1\xb9\x02\x58\x3a\xdb\x0a\xf1\xda\x9f\xd8\x7d\x4a\xc4\x20\x48\x44\xcd\x31\xc0\x62\xfd\x6c\xe3\xad\x91\xac\x73\x26\x63\x9a\xc5\x0e\x2b\xa8\xb2\x58\x7f\x05\x8f\x87\x14\x24\x2e\x76\x44\xb1\x07\x47\x8a\x91\x2d\x65\x30\x59\x94\x5b\xa9\x19\xfb\x2b\x35\x83\x82\x7a\xb8\x8f\xb7\xf2\x1c\xb8\x4d\x0f\x83\x48\x56\x87\xf1\x60\x03\x3b\x66\x32\x4b\x37\x72\x7a\xb6\xe7\x43\xba\xb1\xdd\xdb\x06\xa0\xb1\x63\xee\xea\x78\x0d\xab\xcf\x07\xcc\xf6\xb0\x1d\xc6\xb2\x7a\x6e\xba\x16\x15\x04\x57\x9c\x53\x39\x5b\x97\x2d\xcd\xc4\x83\x81\x56\x6c\xef\x5b\xc1\x28\x75\xcd\x6f\xe5\xf7\x50\xbd\xf9\xbd\x95\x91\x60\xfc\xa4\x7a\x86\x64\x00\xbc\x37\xdd\x36\xa4\xf3\x98\x84\xfe\x21\xf6\x4f\x00\x00\x00\xff\xff\x3c\x36\xf5\x89\x77\x07\x00\x00")
+var _ruleWriteGoodPassiveYml = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x4c\x55\xdd\xae\xdb\x30\x08\xbe\xef\x53\x58\x47\x9a\xba\x1f\xed\x3c\x40\xdf\x63\x57\xeb\x2e\x68\x42\x62\xab\x8e\xed\x81\x1d\x9f\x33\xf5\xe1\xa7\x36\x40\x72\xc5\x07\x01\x0c\x9f\xc1\xc1\x8f\x8a\x69\xe4\x8b\xc3\x8f\xc0\x15\xd3\x80\xa7\x05\x99\x61\xc6\x8b\x7b\x3b\x7f\xe1\xb3\x5b\xe0\xd3\xdd\xd0\x15\x60\x0e\x2b\xba\x35\x87\x01\xdf\xdd\x2f\x46\x07\x43\x35\x8b\x0b\x93\xfb\xcc\xcd\x0d\x90\xde\xdf\x4e\x61\x4e\x99\x70\x00\xc6\x8b\xab\xd4\xf0\x14\x71\xc5\x78\x71\x1d\x28\x85\x34\x9f\x08\xfa\xe5\xe4\xdc\x4f\x77\xbd\x7d\x85\xe5\x01\x84\x8f\x8e\x84\x8f\x1b\x86\x34\x3f\x02\x3f\x6e\x88\xe9\xd1\xe1\x09\xbe\x5d\x6f\x57\xfe\x7e\xaa\xf9\x8e\x89\xb7\xa8\xf3\xef\x6b\xff\xf3\x03\xc7\xf3\x4b\x83\xfe\xfc\xf4\x82\x37\x84\x2a\x60\xc8\x0b\x0a\xb4\x8f\x73\x53\x94\xd4\x8d\x51\x91\xc8\x30\xaa\x1c\x35\x2e\xd4\xaa\x30\xa2\x7c\x8e\xb9\x8b\x29\x93\x82\x36\xfb\xaa\x30\x89\x1f\x69\x00\x65\x18\x07\xe0\xaa\x9a\x95\x4c\x87\xb8\x16\xa2\x22\x4a\x86\x24\xc8\xa2\x07\xb0\x88\xc1\x67\x96\x44\x43\x6c\x69\xde\x90\xb6\x3e\x64\x8d\x20\x2c\x82\xda\x26\x47\x04\x39\x6a\x0c\xab\xd4\x38\xe6\xb4\xc5\x8d\x04\xd2\xdd\x48\x08\x8b\xf8\x51\x58\x51\xad\x2d\xdd\x37\xd4\xb6\x23\x11\x94\xa2\x09\x62\x54\x28\x79\x27\x94\xa3\xa6\x20\x52\x69\x9c\x8c\xc6\xc9\xaa\x9f\x32\x1d\xc8\x9f\x32\xe1\xac\x75\x4d\x99\x66\x2b\xe2\xa9\x64\xbb\x99\x29\x13\xc3\xdd\x14\x23\x68\xb2\xab\x98\x28\xff\x93\xef\x7b\x12\x4b\x7d\x48\x35\x93\xc5\xcc\xa4\xf5\x79\x04\x1a\x05\x45\x01\x7b\x95\x5e\x1a\xf3\xda\x84\x6f\xb4\x59\xee\x4a\xfc\x3d\x29\x0b\xf7\x14\x14\x68\xf6\x08\x32\x76\x11\x82\x58\x10\x24\x30\x22\xe8\x2c\x28\x6d\x11\x27\x35\xd8\x17\x91\x61\xf6\x55\xbd\xf4\xf6\x17\x18\xb7\x26\x17\x04\xf1\x5f\xc4\x7f\x09\xcc\x45\x0b\x5b\x02\x57\xe3\x70\xd1\xda\xf2\x8a\x64\x13\xf5\x54\x6c\x4c\x9e\xca\x1e\xf0\xd2\xbc\x11\x56\xb4\xa5\xa2\x55\x17\xca\x4a\x7b\x91\x29\xfc\xdb\x84\x0a\x42\xd8\x9c\x28\x98\x54\x72\x29\xe8\x88\x53\x33\xb9\xd1\xcc\x7a\x08\xcb\xde\xb3\x0e\x2e\xeb\xd6\xb3\x52\xa4\x9b\xce\xa8\x2e\xde\x6a\x67\x0f\xab\x41\x29\x97\x7d\x36\x20\x0d\xb3\xd7\x65\x67\x9f\xab\x02\x4b\x67\x5b\xc1\x5e\xfa\x63\xbb\x4f\x8e\x3a\x08\x1c\xb5\xe6\x18\xd4\x62\xfd\x2c\xfb\x5b\xc3\x59\xe6\x8c\xf7\x69\x66\x3b\xac\x68\x95\xc5\xfa\x2b\xfa\x78\x70\xd1\xc4\xc5\x8e\x28\xf6\xe0\x70\x31\xb2\xb9\xec\x4c\x16\xe1\x96\x6b\xd6\xfd\xe5\x9a\x95\x82\x7a\xb8\x8f\xa7\xb2\xee\xb8\x0d\x77\x83\x9a\xac\xee\xc6\x83\x4d\xd9\x31\x93\x59\xba\x91\xd3\xb3\x3d\x1f\xdc\x8d\xed\xde\x16\x05\x12\xbb\xcf\x5d\xdd\x5f\xc3\xea\xf3\x01\x93\x3d\x6c\x87\xb1\xac\x9e\x9a\xac\x45\x55\x82\xab\x9e\x53\x29\x5b\x97\x2d\x8d\x48\x3b\x03\xad\xd8\xde\xb7\xa2\xa3\xd4\x25\xbf\x95\xdf\x43\xf5\xe6\xf7\x54\xf6\x04\xfb\x4f\xaa\x67\x95\xa4\x40\xdf\x9b\x6e\x1b\xd2\x69\x9f\x84\xfe\x22\xf6\x7f\x00\x00\x00\xff\xff\xc1\x5f\x47\xb4\xaa\x07\x00\x00")
 
 func ruleWriteGoodPassiveYmlBytes() ([]byte, error) {
 	return bindataRead(
@@ -1389,7 +1389,7 @@ func ruleWriteGoodPassiveYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/write-good/Passive.yml", size: 1911, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/write-good/Passive.yml", size: 1962, mode: os.FileMode(420), modTime: time.Unix(1540487556, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1409,7 +1409,7 @@ func ruleWriteGoodSoYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/write-good/So.yml", size: 113, mode: os.FileMode(420), modTime: time.Unix(1539635540, 0)}
+	info := bindataFileInfo{name: "rule/write-good/So.yml", size: 113, mode: os.FileMode(420), modTime: time.Unix(1540487477, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1429,7 +1429,7 @@ func ruleWriteGoodThereisYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/write-good/ThereIs.yml", size: 142, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/write-good/ThereIs.yml", size: 142, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1449,7 +1449,7 @@ func ruleWriteGoodToowordyYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/write-good/TooWordy.yml", size: 3647, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/write-good/TooWordy.yml", size: 3647, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1469,7 +1469,7 @@ func ruleWriteGoodWeaselYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "rule/write-good/Weasel.yml", size: 2759, mode: os.FileMode(420), modTime: time.Unix(1537302025, 0)}
+	info := bindataFileInfo{name: "rule/write-good/Weasel.yml", size: 2759, mode: os.FileMode(420), modTime: time.Unix(1538068123, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
