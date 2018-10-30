@@ -142,11 +142,11 @@ func loadConfig(names, paths []string) (*ini.File, string, error) {
 }
 
 // LoadConfig reads the .vale/_vale file.
-func LoadConfig(cfg *Config, path string) *Config {
+func LoadConfig(cfg *Config, upath string) *Config {
 	names := []string{".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini", ""}
 	home, _ := homedir.Dir()
 
-	uCfg, path, err := loadConfig(names, []string{path, "", home})
+	uCfg, path, err := loadConfig(names, []string{upath, "", home})
 	if err != nil {
 		return cfg
 	}
@@ -186,7 +186,7 @@ func LoadConfig(cfg *Config, path string) *Config {
 			continue
 		}
 		pat, err := glob.Compile(sec)
-		if CheckError(err)  {
+		if CheckError(err) {
 			cfg.SecToPat[sec] = pat
 		}
 		syntaxOpts := make(map[string]bool)
