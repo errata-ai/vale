@@ -582,9 +582,13 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 	}
 
 	if chkDef.Ignore != "" {
-		vocab, _ := filepath.Abs(chkDef.Ignore)
+		vocab := filepath.Join(mgr.Config.StylesPath, chkDef.Ignore)
 		_, exists := model.AddWordListFile(vocab)
-		core.CheckError(exists)
+		if exists != nil {
+			vocab, _ = filepath.Abs(chkDef.Ignore)
+			_, exists = model.AddWordListFile(vocab)
+			core.CheckError(exists)
+		}
 	}
 
 	if !chkDef.Custom {
