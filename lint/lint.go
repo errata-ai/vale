@@ -74,7 +74,6 @@ func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
 
 	done := make(chan core.File)
 	defer close(done)
-
 	for _, src := range input {
 		if !(core.IsDir(src) || core.FileExists(src)) {
 			continue
@@ -103,7 +102,6 @@ func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
 func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan *core.File, <-chan error) {
 	filesChan := make(chan *core.File)
 	errc := make(chan error, 1)
-	ignore := []string{".", "_"}
 	nonGlobal := len(l.Config.GBaseStyles) == 0 && len(l.Config.GChecks) == 0
 	seen := make(map[string]bool)
 
@@ -115,7 +113,7 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 				return nil
 			} else if skip, found := seen[ext]; found && skip {
 				return nil
-			} else if !glob.Match(fp) || core.HasAnyPrefix(fi.Name(), ignore) {
+			} else if !glob.Match(fp) {
 				seen[ext] = true
 				return nil
 			} else if nonGlobal {
