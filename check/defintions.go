@@ -131,7 +131,7 @@ type Spelling struct {
 	Dic string
 	// `filters` (`array`): An array of patterns to ignore during spell checking.
 	Filters []*regexp.Regexp
-	// `ignore` (`string`): A relative path to a personal vocabulary file.
+	// `ignore` (`string`): A relative path (from `StylesPath`) to a personal vocabulary file consisting of one word per line to ignore.
 	Ignore    string
 	Threshold int
 }

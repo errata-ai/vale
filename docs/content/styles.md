@@ -340,7 +340,8 @@ custom: true
 # A "filter" is a regular expression specifying words to ignore during spell
 # checking.
 filters:
-  - '[pP]y.*\b'  # Ignore all words starting with 'py' -- e.g., 'PyYAML'.
+  # Ignore all words starting with 'py' -- e.g., 'PyYAML'.
+  - '[pP]y.*\b'
 # Vale will search for this file under $StylesPath -- so, vocab.txt is assumed
 # to be $StylesPath/vocab.txt.
 ignore: vocab.txt
