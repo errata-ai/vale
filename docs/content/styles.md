@@ -341,7 +341,9 @@ custom: true
 # checking.
 filters:
   - '[pP]y.*\b'  # Ignore all words starting with 'py' -- e.g., 'PyYAML'.
-ignore: ci/vocab.txt
+# Vale will search for this file under $StylesPath -- so, vocab.txt is assumed
+# to be $StylesPath/vocab.txt.
+ignore: vocab.txt
 ```
 
 <!-- vale 18F.Clarity = YES -->
