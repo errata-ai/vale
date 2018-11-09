@@ -21,6 +21,7 @@ Vale runs on Windows, macOS, and Linux. It can be installed via one of the packa
     <span data-qs-package="brew">brew install vale</span>
     <span data-qs-package="go">go get github.com/errata-ai/vale</span>
     <span data-qs-package="docker">docker pull jdkato/vale</span>
+    <span data-qs-package="goreleaser">curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s v1.0.6</span>
 </div>
 
 <!-- vale on -->
