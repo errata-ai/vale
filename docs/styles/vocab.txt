@@ -7,6 +7,7 @@ flesch
 gunning fog
 haskell
 homebrew
+ignorecase
 kincaid
 liau
 linode
@@ -14,11 +15,15 @@ linters
 lua
 macos
 mkdocs
+nonword
 pre
+rcs
 restructuredtext
 sass
+sccs
 shortcode
 shortcodes
 signavio
 smog
+tch
 tox

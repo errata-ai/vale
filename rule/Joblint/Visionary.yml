@@ -4,12 +4,12 @@ description: "Terms like '%s' often indicate that a non technical person (perhap
 ignorecase: true
 level: warning
 tokens:
-  - 'blue[ -]*sk(y|ies)'
-  - 'enlighten(ed|ing)?'
+  - 'blue[ -]*sk(?:y|ies)'
+  - 'enlighten(?:ed|ing)?'
   - 'green[ -]*fields?'
   - 'incentivi[sz]e'
   - 'paradigm'
   - 'producti[sz]e'
-  - 'reach(ed|ing)? out'
-  - 'synerg(y|ize|ise)'
-  - 'visionar(y|ies)'
+  - 'reach(?:ed|ing)? out'
+  - 'synerg(?:y|ize|ise)'
+  - 'visionar(?:y|ies)'

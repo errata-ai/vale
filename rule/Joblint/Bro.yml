@@ -4,10 +4,10 @@ description: "Bro culture terminology can really reduce the number of people lik
 ignorecase: true
 level: error
 tokens:
-  - 'brogramm(er|ers|ing)'
+  - 'brogramm(?:er|ers|ing)'
   - 'crank'
   - 'crush'
   - 'hard[ -]*core'
   - 'hella'
-  - 'mak(e|ing) it rain'
+  - 'mak(?:e|ing) it rain'
   - 'skillz'

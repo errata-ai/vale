@@ -4,7 +4,7 @@ description: "When you use '%s,' you're being discriminatory."
 ignorecase: true
 level: error
 tokens:
-  - 'bia?tch(es)?'
+  - 'bia?tch(?:es)?'
   - 'bimbos?'
   - 'hoes?'
   - 'hunks?'

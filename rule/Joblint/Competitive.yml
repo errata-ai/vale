@@ -13,5 +13,5 @@ tokens:
   - 'super[ -]*stars?'
   - 'the best'
   - 'reach the top'
-  - 'top of .{2,8} (game|class)'
+  - 'top of .{2,8} (?:game|class)'
   - 'win'

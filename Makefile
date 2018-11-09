@@ -28,7 +28,7 @@ install:
 test:
 	go test -race ./core ./lint ./check
 	cucumber
-	misspell -error -i inexpense,seldomly,compensative,perjorative rule styles
+	./bin/vale --glob='!*{Needless,Diacritical,DenzienLabels,AnimalLabels}.yml' rule styles
 
 bench:
 	go test -bench=. -benchmem ./core ./lint ./check
@@ -58,7 +58,6 @@ lint:
 		./core ./lint ./ui ./check
 
 setup:
-	go get -u github.com/client9/misspell/cmd/misspell
 	go get golang.org/x/perf/cmd/benchstat
 	go get golang.org/x/tools/cmd/benchcmp
 	go get github.com/aclements/go-misc/benchmany

@@ -4,5 +4,5 @@ description: "The use of '%s' indicates that you\'re only looking for male devel
 ignorecase: true
 level: error
 tokens:
-  - 'beard(ed|s|y)?'
-  - 'grizzl(ed|y)'
+  - 'beard(?:ed|s|y)?'
+  - 'grizzl(?:ed|y)'
