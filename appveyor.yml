@@ -23,7 +23,7 @@ build_script:
   - cmd: make setup
   - cmd: make build-win
 test_script:
-  - cmd: make ci
+  - cmd: make test
 after_test:
   - cmd: make compare
 artifacts:

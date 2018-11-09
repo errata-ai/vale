@@ -6,7 +6,7 @@ CURR_SHA=$(shell git rev-parse --verify HEAD)
 
 LDFLAGS=-ldflags "-s -w -X main.version=$(LAST_TAG)"
 
-.PHONY: data test lint ci cross install bump rules setup bench compare release
+.PHONY: data test lint cross install bump rules setup bench compare release
 
 all: build
 
@@ -28,6 +28,8 @@ install:
 test:
 	go test -race ./core ./lint ./check
 	cucumber
+
+spell:
 	./bin/vale --glob='!*{Needless,Diacritical,DenzienLabels,AnimalLabels}.yml' rule styles
 
 bench:
@@ -39,8 +41,6 @@ compare:
 	benchmany -n 5 -o old.txt ${LAST_TAG} && \
 	benchcmp old.txt new.txt && \
 	benchstat old.txt new.txt
-
-ci: test
 
 lint:
 	gometalinter --vendor --disable-all \

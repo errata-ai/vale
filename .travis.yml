@@ -47,6 +47,7 @@ matrix:
         - make build
       script:
         - make test
+        - make spell
         # Stash changes made by `make rules`. Otherwise, `make compare` and
         # GoReleaser fail.
         - git stash
