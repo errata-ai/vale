@@ -32,3 +32,12 @@ Feature: Misc
     test.md:1:39:vale.Editorializing:Consider removing 'very'
     test.md:1:57:vale.Editorializing:Consider removing 'very'
     """
+
+  Scenario: Spelling
+    When I test "spelling"
+    Then the output should contain exactly:
+      """
+      test.md:4:1:Spelling.Ignore:'HTTPie' is a typo!
+      test.md:4:59:Spelling.Ignores:Did you really mean 'CLI'?
+      test.md:4:59:Spelling.Ignore:'CLI' is a typo!
+      """

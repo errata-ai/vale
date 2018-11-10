@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"github.com/ValeLint/gospell"
@@ -581,11 +582,11 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 		model, err = gospell.NewGoSpell(affloc, dicloc)
 	}
 
-	if chkDef.Ignore != "" {
-		vocab := filepath.Join(mgr.Config.StylesPath, chkDef.Ignore)
+	for _, ignore := range chkDef.Ignore {
+		vocab := filepath.Join(mgr.Config.StylesPath, ignore)
 		_, exists := model.AddWordListFile(vocab)
 		if exists != nil {
-			vocab, _ = filepath.Abs(chkDef.Ignore)
+			vocab, _ = filepath.Abs(ignore)
 			_, exists = model.AddWordListFile(vocab)
 			core.CheckError(exists)
 		}
@@ -667,6 +668,19 @@ func (mgr *Manager) makeCheck(generic map[string]interface{}, extends, chkName s
 				}
 			}
 			delete(generic, "filters")
+		}
+
+		if generic["ignore"] != nil {
+			// Backwards compatibility: we need to be able to accept a single
+			// or an array.
+			if reflect.TypeOf(generic["ignore"]).String() == "string" {
+				def.Ignore = append(def.Ignore, generic["ignore"].(string))
+			} else {
+				for _, ignore := range generic["ignore"].([]interface{}) {
+					def.Ignore = append(def.Ignore, ignore.(string))
+				}
+			}
+			delete(generic, "ignore")
 		}
 
 		if err := mapstructure.Decode(generic, &def); err == nil {
