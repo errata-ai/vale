@@ -38,6 +38,5 @@ Feature: Misc
     Then the output should contain exactly:
       """
       test.md:4:1:Spelling.Ignore:'HTTPie' is a typo!
-      test.md:4:59:Spelling.Ignores:Did you really mean 'CLI'?
       test.md:4:59:Spelling.Ignore:'CLI' is a typo!
       """
