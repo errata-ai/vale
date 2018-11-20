@@ -3,6 +3,10 @@
 Vale has a powerful extension system that doesn't require knowledge of any programming language. Instead, it exposes its functionality through simple
 [YAML](http://yaml.org) files.
 
+!!! tip "NOTE"
+
+    Vale expects its external rules to have an extension of `.yml`, not `.yaml`, etc.
+
 The core component of Vale's extension system are collections of writing guidelines called *styles*. These guidelines are expressed through *rules*, which are YAML files enforcing a particular writing construct&mdash;e.g., ensuring a certain readability level, sentence length, or heading style.
 
 Styles are organized in a hierarchical folder structure at a user-specified location (see [Configuration](/vale/config/) for more details). For example,
