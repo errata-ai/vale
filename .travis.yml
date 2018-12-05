@@ -15,7 +15,7 @@ matrix:
       script:
         - go run api.go
         - vale content
-        - awesome_bot --allow-dupe content/*.md
+        - awesome_bot --allow-dupe --allow-redirect content/*.md
       after_success:
         - mkdocs build --verbose --clean
       deploy:
