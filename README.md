@@ -115,14 +115,6 @@ Hi!
 
 My name is [Joseph Kato](https://github.com/jdkato).
 
-In my spare time, I develop and maintain a few [open-source tools](https://github.com/errata-ai) for collaborative writing. If you'd like to support my work, you can donate via PayPal or make use of my [consulting services](https://errata.ai/about/).
+In my spare time, I develop and maintain a few [open-source tools](https://github.com/errata-ai) for collaborative writing. If you'd like to support my work, you can donate via [Square's Cash App](https://cash.me/$jdkato) or make use of my documentation-related [consulting services](https://errata.ai/about/).
 
-| PayPal | Consulting |
-|:-----------------:|:-------:|
-| [Donate with PayPal][donate-card-url] | [Tell us what you need](https://errata.ai/about/) |
-| <img src="https://user-images.githubusercontent.com/8785025/46446617-4681bd00-c732-11e8-9683-37a1979df769.png" width="100px"/> | <img src="https://user-images.githubusercontent.com/8785025/46446894-b2b0f080-c733-11e8-807a-9f8b2f41b246.png" width="100px"/> |
-
-I appreciate your support! _Thank you!_
-
-[donate-card-url]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BYUW6FHU86M62
-
+I appreciate the support! _Thank you!_
