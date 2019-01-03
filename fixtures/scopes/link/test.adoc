@@ -1,0 +1,3 @@
+Don't use https://asciidoctor.org[here]. here is okay, though
+
+This is better https://asciidoctor.org[Asciidoctor].

@@ -41,7 +41,6 @@ Feature: Styles
     Then the output should contain exactly:
       """
       test.adoc:1:1:demo.SentenceLength:Sentences should be less than 25 words
-      test.html:5:43:demo.EndingPreposition:Don't end a sentence with 'by.'
       test.html:8:30:demo.CommasPerSentence:More than 3 commas!
       test.html:10:27:demo.Spacing:'.M' should have one space
       test.html:10:35:demo.Hyphen:'Randomly-' doesn't need a hyphen

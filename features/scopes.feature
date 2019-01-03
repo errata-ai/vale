@@ -1,4 +1,22 @@
 Feature: Scopes
+  Scenario: Attr
+    When I test scope "attr"
+    Then the output should contain exactly:
+      """
+      test.adoc:3:16:rules.Alt:alt text should be less than 125 characters.
+      test.md:3:3:rules.Alt:alt text should be less than 125 characters.
+      test.rst:4:10:rules.Alt:alt text should be less than 125 characters.
+      """
+
+  Scenario: Link
+    When I test scope "link"
+    Then the output should contain exactly:
+      """
+      test.adoc:1:35:rules.Link:Don't use 'here' as the content of a link.
+      test.md:5:35:rules.Link:Don't use 'here' as the content of a link.
+      test.rst:1:40:rules.Link:Don't use 'here' as the content of a link.
+      """
+
   Scenario: Heading
     When I test scope "heading"
     Then the output should contain exactly:

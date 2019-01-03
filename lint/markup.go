@@ -75,7 +75,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	var txt, attr, raw string
 	var tokt html.TokenType
 	var tok html.Token
-	var inBlock, inline, skip, skipClass bool
+	var inBlock, inline, skip, skipClass, isLink bool
 
 	lines := len(f.Lines) + offset
 	buf := bytes.NewBufferString("")
@@ -111,13 +111,17 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			skip, inBlock = false, false
 		} else if tokt == html.StartTagToken {
 			inline = core.StringInSlice(txt, inlineTags)
-			// skip = (txt == "tt" || txt == "code")
 			skip = core.StringInSlice(txt, skipped)
 			tagHistory = append(tagHistory, txt)
+			isLink = txt == "a"
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
 		} else if tokt == html.TextToken {
 			queue = append(queue, txt)
+			if isLink {
+				l.lintText(f, NewBlock(ctx, txt, txt, "link"), lines, 0)
+				isLink = false
+			}
 			if !inBlock {
 				txt, raw, skip = clean(txt, f.NormedExt, skip, skipClass, inline)
 				buf.WriteString(txt)
@@ -145,8 +149,9 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 
 		if tok.Data == "img" {
 			for _, a := range tok.Attr {
-				if a.Key == "alt" || a.Key == "title" {
-					l.lintScope(f, ctx, a.Val, a.Val, tagHistory, lines)
+				if a.Key == "alt" {
+					block := NewBlock(ctx, a.Val, a.Val, "text.attr."+a.Key)
+					l.lintText(f, block, lines, 0)
 				}
 			}
 		}
