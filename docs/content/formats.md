@@ -9,11 +9,11 @@ Vale is "syntax aware," which means that it's capable of both applying rules to 
 
 The table below summarizes all available scopes.
 
-|   Format   |                             Scopes                            |
-|:----------:|---------------------------------------------------------------|
-|   markup   | `heading`, `table.header`, `table.cell`, `list`, `paragraph`, `sentence`  |
-|    code    | `comment.line`, `comment.block`                                   |
-| plain text | `text`                                                          |
+|   Format   |                             Scopes                                                       |
+|:----------:|------------------------------------------------------------------------------------------|
+|   markup   | `heading`, `table.header`, `table.cell`, `list`, `paragraph`, `sentence`, `link`, `alt`  |
+|    code    | `comment.line`, `comment.block`                                                          |
+| plain text | `text`                                                                                   |
 
 ## Markdown
 
