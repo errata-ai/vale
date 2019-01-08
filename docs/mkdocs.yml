@@ -10,7 +10,7 @@ docs_dir: content
 edit_uri: edit/master/docs/content/
 
 # Copyright
-copyright: 'Copyright &copy; 2016 - 2018 Joseph Kato'
+copyright: 'Copyright &copy; 2016 - 2019 Joseph Kato'
 
 nav:
 - Getting Started: index.md
