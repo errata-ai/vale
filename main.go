@@ -84,11 +84,11 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name:    "dump-config",
-			Aliases: []string{"dc"},
-			Usage:   "Dumps configuration options to stdout and exits",
+			Name:    "ls-config",
+			Aliases: []string{"dc", "dump-config", "ls"},
+			Usage:   "Prints configuration options to stdout and exits",
 			Action: func(c *cli.Context) error {
-				config = core.LoadConfig(config, path)
+				config, _ = core.LoadConfig(config, path)
 				fmt.Println(core.DumpConfig(config))
 				return nil
 			},
@@ -115,8 +115,12 @@ func main() {
 		var err error
 		var hasAlerts bool
 
-		config = core.LoadConfig(config, path)
-		if c.NArg() > 0 || core.Stat() {
+		config, err = core.LoadConfig(config, path)
+		if err != nil {
+			fmt.Println("WARNING: No configuration file found.\n\n" +
+				"See https://github.com/errata-ai/vale#usage for more information.")
+			return nil
+		} else if c.NArg() > 0 || core.Stat() {
 			linter := lint.Linter{
 				Config: config, CheckManager: check.NewManager(config)}
 
@@ -146,10 +150,10 @@ func main() {
 			}
 
 			return err
+		} else {
+			cli.ShowAppHelp(c)
+			return nil
 		}
-
-		cli.ShowAppHelp(c)
-		return nil
 	}
 
 	core.ExeDir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
