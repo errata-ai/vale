@@ -52,7 +52,7 @@ Vale ships with styles for [proselint](https://github.com/amperser/proselint), [
 - [X] No need to install and configure npm (Node.js), pip (Python), or other language-specific tools. With Vale, you get all the functionality in a single, standalone binary available for Windows, macOS, and Linux.
 - [X] Easily combine, mismatch, or otherwise customize each style.
 
-To use one of these styles, you'll need to create a [config file](hhttps://errata-ai.github.io/vale/config/) alone the lines of the following:
+To use one of these styles, you'll need to create a [config file](https://errata-ai.github.io/vale/config/) alone the lines of the following:
 
 ```ini
 # This goes in a file named either `.vale.ini` or `_vale.ini`.
