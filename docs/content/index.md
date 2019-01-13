@@ -57,29 +57,29 @@ example Markdown file:
 ```md
 ## Getting Started
 
-Rule #1: Don't start sentences with "so":
+Rule 1: Don't start sentences with "so":
 
-So, this is an example sentence.
+> So, this is an example sentence.
 
-Rule #2: Don't start a sentence with "there is" or "there are":
+Rule 2: Don't start a sentence with "there is" or "there are":
 
-There are many ways to start a sentence.
+> There are many ways to start a sentence.
 ```
 
 Finally, let's run Vale and check its output:
 
-```shell
+```bash
 # Our working directory contains our config file and the test Markdown file.
 $ ls -a
 .         ..        .vale.ini test.md
 $ vale test.md
 
  test.md
- 5:1   error    Don't start a sentence with     write-good.So
+ 5:1   error    Do not start a sentence with     write-good.So
                 'So,'
- 9:1   error    Don't start a sentence with     write-good.ThereIs
+ 9:1   error    Do not start a sentence with     write-good.ThereIs
                 'There are'
- 9:11  warning  'many' is a weasel word!        write-good.Weasel
+ 9:11  warning  'many' is a weasel word!         write-good.Weasel
 
 ✖ 2 errors, 1 warning and 0 suggestions in 1 file.
 ```
