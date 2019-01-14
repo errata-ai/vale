@@ -1,4 +1,15 @@
-## Basics
+Vale has three configuration components:
+
+- A `.vale.ini` (required): This is where you'll control the majority of Vale's behavior, including
+  what files to lint and how to lint them. See the next section for more information.
+
+- A `StylesPath` directory (optional): This is where you'll store all of Vale's optional external
+  resources.
+
+- [Custom styles](/vale/styles) (optional): Custom styles are a means of teaching Vale new
+  guidelines to lint against.
+
+## `.vale.ini`
 
 ```ini
 # Example Vale config file (`.vale.ini` or `_vale.ini`)
@@ -14,7 +25,7 @@ MinAlertLevel = warning
 # Global settings (applied to every syntax)
 [*]
 # List of styles to load
-BasedOnStyles = vale, MyCustomStyle
+BasedOnStyles = write-good, Joblint
 # Style.Rule = {YES, NO} to enable or disable a specific rule
 vale.Editorializing = YES
 # You can also change the level associated with a rule
@@ -35,6 +46,69 @@ Vale expects its configuration to be in a file named `.vale.ini` or `_vale.ini`.
 | Linux   | `$HOME`                                              |
 
 If more than one configuration file is present, the closest one takes precedence.
+
+### Available options
+
+- `StylesPath` (core):
+
+    ```ini
+    # Here's an example of a relative path:
+    #
+    # .vale.ini
+    # ci/
+    # ├── vale/
+    # │   ├── styles/
+    StylesPath = ci/vale/styles
+    ```
+
+    `StylesPath` specifies where Vale should look for its external resources
+    (e.g., styles and ignore files). The path value may be absolute or relative
+    to the location of the parent `.vale.ini` file.
+
+- `MinAlertLevel` (core):
+
+    ```ini
+    MinAlertLevel = suggestion
+    ```
+
+    `MinAlertLevel` specifies the minimum alert severity that Vale will report. The options are
+    "suggestion", "warning", or "error" (defaults to "suggestion").
+
+- `IgnoredScopes` (core):
+
+    ```ini
+    # By default, `code` and `tt` are ignored.
+    IgnoredScopes = code, tt
+    ```
+
+    `IgnoredScopes` specifies inline-level HTML tags to ignore. In other words, these tags may
+    occur in an active scope (see `SkippedScopes`) but their content still won't raise any alerts.
+
+- `SkippedScopes` (core):
+
+    ```ini
+    # By default, `script`, `style`, `pre`, and `figure` are ignored.
+    SkippedScopes = script, style, pre, figure
+    ```
+
+    `SkippedScopes` specifies block-level HTML tags to ignore. Any content in these scopes will be
+    ignored.
+
+- `WordTemplate` (core):
+
+    ```ini
+    WordTemplate = `\b(?:%s)\b`
+    ```
+
+    `WordTemplate` specifies what Vale will consider to be an individual word.
+
+- `BasedOnStyles` (syntax-specific):
+
+    ```ini
+    BasedOnStyles = Joblint, write-good
+    ```
+
+    `BasedOnStyles` specifies [styles](/vale/styles) that should have all of their rules enabled.
 
 ## Using Comments
 
