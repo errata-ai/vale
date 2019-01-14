@@ -1,4 +1,21 @@
 Feature: Scopes
+
+  Scenario: Blockquote
+    When I test scope "blockquote"
+    Then the output should contain exactly:
+      """
+      test.adoc:5:12:rules.Quote:Don't use 'here' in a blockquote.
+      test.md:3:20:rules.Quote:Don't use 'here' in a blockquote.
+      test.rst:3:22:rules.Quote:Don't use 'here' in a blockquote.
+      """
+
+  Scenario: Skip
+    When I test scope "skip"
+    Then the output should contain exactly:
+      """
+      test.md:3:1:vale.Annotations:'TODO' left in text
+      """
+
   Scenario: Attr
     When I test scope "attr"
     Then the output should contain exactly:

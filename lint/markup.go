@@ -66,9 +66,10 @@ var inlineTags = []string{
 	"b", "big", "i", "small", "abbr", "acronym", "cite", "dfn", "em", "kbd",
 	"strong", "a", "br", "img", "span", "sub", "sup", "code", "tt"}
 var tagToScope = map[string]string{
-	"th": "text.table.header",
-	"td": "text.table.cell",
-	"li": "text.list",
+	"th":         "text.table.header",
+	"td":         "text.table.cell",
+	"li":         "text.list",
+	"blockquote": "text.blockquote",
 }
 
 func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int) {
@@ -80,6 +81,11 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	lines := len(f.Lines) + offset
 	buf := bytes.NewBufferString("")
 	act := bytes.NewBufferString("")
+
+	// The user has specified a custom list of tags to ignore.
+	if len(l.Config.SkippedScopes) > 0 {
+		skipTags = l.Config.SkippedScopes
+	}
 
 	// queue holds each segment of text we encounter in a block, which we then
 	// use to sequentially update our context.

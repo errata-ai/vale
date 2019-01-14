@@ -53,6 +53,7 @@ type Config struct {
 	GBaseStyles   []string                   // Global base style
 	GChecks       map[string]bool            // Global checks
 	IgnoredScopes []string                   // A list of HTML tags to ignore
+	SkippedScopes []string                   // A list of HTML blocks to ignore
 	BlockIgnores  map[string][]string        // A list of blocks to ignore
 	TokenIgnores  map[string][]string        // A list of tokens to ignore
 	MinAlertLevel int                        // Lowest alert level to display
@@ -166,6 +167,8 @@ func LoadConfig(cfg *Config, upath string) (*Config, error) {
 			cfg.IgnoredScopes = core.Key(k).Strings(",")
 		} else if k == "WordTemplate" {
 			cfg.WordTemplate = core.Key(k).String()
+		} else if k == "SkippedScopes" {
+			cfg.SkippedScopes = core.Key(k).Strings(",")
 		}
 	}
 
