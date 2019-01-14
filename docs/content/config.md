@@ -47,7 +47,7 @@ Vale expects its configuration to be in a file named `.vale.ini` or `_vale.ini`.
 
 If more than one configuration file is present, the closest one takes precedence.
 
-### Available options
+### Available Options
 
 - `StylesPath` (core):
 
