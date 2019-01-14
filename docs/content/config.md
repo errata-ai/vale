@@ -72,7 +72,7 @@ If more than one configuration file is present, the closest one takes precedence
     ```
 
     `MinAlertLevel` specifies the minimum alert severity that Vale will report. The options are
-    "suggestion", "warning", or "error" (defaults to "suggestion").
+    "suggestion," "warning," or "error" (defaults to "suggestion").
 
 - `IgnoredScopes` (core):
 
