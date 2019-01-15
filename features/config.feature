@@ -70,6 +70,25 @@ Feature: Config
       """
     And the exit status should be 0
 
+  Scenario: Non-Existent Config
+    When I test "/misc/one/two/three/four"
+    Then the output should contain exactly:
+      """
+      WARNING: No configuration file found.
+
+      See https://github.com/errata-ai/vale#usage for more information.
+      """
+    And the exit status should be 0
+
+  Scenario: Fall back to root config
+    When I test "/misc/one/two/three"
+    Then the output should contain exactly:
+      """
+      four/test.yml:1:7:docs.Spelling:Did you really mean 'foos'?
+      test.yml:1:7:docs.Spelling:Did you really mean 'foos'?
+      """
+    And the exit status should be 0
+
   Scenario: Ignore BasedOnStyle for formats it doesn't match
     Given a file named ".vale" with:
     """
