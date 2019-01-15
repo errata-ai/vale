@@ -110,6 +110,29 @@ If more than one configuration file is present, the closest one takes precedence
 
     `BasedOnStyles` specifies [styles](/vale/styles) that should have all of their rules enabled.
 
+- `BlockIgnores` (syntax-specific):
+
+    ```ini
+    BlockIgnores = (?s) *({< file [^>]* >}.*?{</ ?file >})
+    ```
+
+    `BlockIgnores` allow you to exclude certain block-level sections of text
+    that don't have an associated HTML tag that could be used with
+    `SkippedScopes`. See [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup)
+    for more information.
+
+- `TokenIgnores` (syntax-specific):
+
+    ```ini
+    TokenIgnores = (\$+[^\n$]+\$+)
+    ```
+
+    `TokenIgnores` allow you to exclude certain inline-level sections of text
+    that don't have an associated HTML tag that could be used with
+    `IgnoredScopes`. See
+    [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup)
+    for more information.
+
 ## Using Comments
 
 !!! tip "NOTE"
