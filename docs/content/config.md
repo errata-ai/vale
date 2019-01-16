@@ -133,9 +133,13 @@ If more than one configuration file is present, the closest one takes precedence
     [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup)
     for more information.
 
-## Ignoring parts of your documents
+## Ignoring Parts of Your Documents
 
-Ignore parts of your HTML and Markdown documents using HTML style comments:
+!!! tip "NOTE"
+
+    Vale currently does not support comment-based configuration in AsciiDoc documents.
+
+Ignore parts of your HTML and Markdown documents using HTML-style comments:
 
 ```html
 <!-- vale off -->
@@ -164,4 +168,4 @@ This is some text
 
 ```
 
-Vale also ignores specific tags for each supported [markup language](markup/).
+Vale also ignores specific tags for each supported [markup language](/vale/formats).
