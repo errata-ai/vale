@@ -155,8 +155,7 @@ This is some text
 
 Ignore parts of your reStructuredText documents:
 
-```
-
+```rst
 .. vale off
 
 This is some text
@@ -165,4 +164,4 @@ This is some text
 
 ```
 
-Vale also ignore specific tags for each supported [markup language](markup/).
+Vale also ignores specific tags for each supported [markup language](markup/).
