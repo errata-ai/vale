@@ -123,11 +123,15 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
 		} else if tokt == html.TextToken {
-			queue = append(queue, txt)
 			if isLink {
-				l.lintText(f, NewBlock(ctx, txt, txt, "link"), lines, 0)
+				// NOTE: We need to create a "temporary" context because this
+				// text is actually linted twice: once as a 'link' and once as
+				// part of the overall paragraph. See issue #105 for more info.
+				tempCtx := updateContext(ctx, queue)
+				l.lintText(f, NewBlock(tempCtx, txt, txt, "link"), lines, 0)
 				isLink = false
 			}
+			queue = append(queue, txt)
 			if !inBlock {
 				txt, raw, skip = clean(txt, f.NormedExt, skip, skipClass, inline)
 				buf.WriteString(txt)
@@ -141,11 +145,11 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			if content != "" {
 				l.lintScope(f, ctx, content, actual, tagHistory, lines)
 			}
-			for _, s := range queue {
-				ctx = updateCtx(ctx, s, html.TextToken)
-			}
+
+			ctx = updateContext(ctx, queue)
 			queue = []string{}
 			tagHistory = []string{}
+
 			buf.Reset()
 			act.Reset()
 		}
@@ -195,6 +199,13 @@ func codify(ext, text string) string {
 		return "``" + text + "``"
 	}
 	return text
+}
+
+func updateContext(ctx string, queue []string) string {
+	for _, s := range queue {
+		ctx = updateCtx(ctx, s, html.TextToken)
+	}
+	return ctx
 }
 
 func clean(txt, ext string, skip, skipClass, inline bool) (string, string, bool) {

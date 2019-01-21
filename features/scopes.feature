@@ -30,8 +30,11 @@ Feature: Scopes
     Then the output should contain exactly:
       """
       test.adoc:1:35:rules.Link:Don't use 'here' as the content of a link.
+      test.adoc:5:57:rules.Link:Don't use 'here' as the content of a link.
       test.md:5:35:rules.Link:Don't use 'here' as the content of a link.
+      test.md:7:57:rules.Link:Don't use 'here' as the content of a link.
       test.rst:1:40:rules.Link:Don't use 'here' as the content of a link.
+      test.rst:5:54:rules.Link:Don't use 'here' as the content of a link.
       """
 
   Scenario: Heading
