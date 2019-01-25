@@ -116,9 +116,10 @@ func main() {
 		var hasAlerts bool
 
 		config, err = core.LoadConfig(config, path)
-		if err != nil {
-			fmt.Println("WARNING: No configuration file found.\n\n" +
-				"See https://github.com/errata-ai/vale#usage for more information.")
+		if err != nil && config.Output == "CLI" {
+			fmt.Println("WARNING: Missing or invalid config file.\n\n" +
+				"See https://github.com/errata-ai/vale#usage for " +
+				"information about creating a config file.")
 			return nil
 		} else if c.NArg() > 0 || core.Stat() {
 			linter := lint.Linter{

@@ -4,68 +4,73 @@ exe = 'vale'
 if OS.windows?
   exe += '.exe'
 end
-exe += ' --output=line --sort --normalize --relative'
+cmd = (exe + ' --output=line --sort --normalize --relative')
 
-When(/^I run command "(.*)"$/) do |cmd|
+When(/^I run command "(.*)"$/) do |c|
   step %(I cd to "../../fixtures/formats")
-  step %(I run `#{exe} #{cmd}`)
+  step %(I run `#{cmd} #{c}`)
 end
 
 When(/^I lint simple "(.*)"$/) do |flag|
   step %(I cd to "../../fixtures/formats")
-  step %(I run `#{exe} --ignore-syntax #{flag}`)
+  step %(I run `#{cmd} --ignore-syntax #{flag}`)
 end
 
 When(/^I lint "(.*)"$/) do |file|
   step %(I cd to "../../fixtures/formats")
-  step %(I run `#{exe} #{file}`)
+  step %(I run `#{cmd} #{file}`)
 end
 
 When(/^I lint with config "(.*)"$/) do |file|
   step %(I cd to "../../fixtures/formats")
-  step %(I run `#{exe} --config='#{file}' test.md`)
+  step %(I run `#{cmd} --config='#{file}' test.md`)
 end
 
 When(/^I test "(.*)"$/) do |dir|
+  step %(I cd to "../../fixtures/#{dir}")
+  step %(I run `#{cmd} .`)
+end
+
+When(/^I inspect "(.*)"$/) do |dir|
   step %(I cd to "../../fixtures/#{dir}")
   step %(I run `#{exe} .`)
 end
 
 When(/^I test comments for "(.*)"$/) do |ext|
   step %(I cd to "../../fixtures/comments")
-  step %(I run `#{exe} test#{ext}`)
+  step %(I run `#{cmd} test#{ext}`)
 end
 
 When(/^I test patterns for "(.*)"$/) do |file|
   step %(I cd to "../../fixtures/patterns")
-  step %(I run `#{exe} #{file}`)
+  step %(I run `#{cmd} #{file}`)
 end
 
 When(/^I test scope "(.*)"$/) do |scope|
   step %(I cd to "../../fixtures/scopes/#{scope}")
-  step %(I run `#{exe} .`)
+  step %(I run `#{cmd} .`)
 end
 
 When(/^I apply style "(.*)"$/) do |style|
   step %(I cd to "../../fixtures/styles/#{style}")
-  step %(I run `#{exe} .`)
+  step %(I run `#{cmd} .`)
 end
 
 When(/^I run vale "(.*)"$/) do |file|
-  step %(I run `#{exe} #{file}`)
+  step %(I run `#{cmd} #{file}`)
 end
 
 When(/^I test glob "(.*)"$/) do |glob|
   step %(I cd to "../../fixtures/formats")
-  step %(I run `#{exe} --glob='#{glob}' .`)
+  step %(I run `#{cmd} --glob='#{glob}' .`)
 end
 
 When(/^I run cat "([^\s]+)" "([^\s]+)"$/) do |file, ext|
   step %(I cd to "../../fixtures/formats")
   if OS.windows?
-    step %(I run `PowerShell -Command Get-Content #{file} | #{exe} --ext='#{ext}'`)
+    step %(I run `PowerShell -Command Get-Content #{file} | #{cmd} --ext='#{ext}'`)
   else
-    step %(I run `bash -c 'cat #{file} | #{exe} --ext="#{ext}"'`)
+    step %(I run `bash -c 'cat #{file} | #{cmd} --ext="#{ext}"'`)
   end
 end
 
@@ -73,8 +78,8 @@ When(/^I lint string "(.*)"$/) do |string|
   step %(I cd to "../../fixtures/formats")
   if OS.windows?
     # FIXME: How do we pass a string with spaces on AppVeyor?
-    step %(I run `#{exe} "#{string}"`)
+    step %(I run `#{cmd} "#{string}"`)
   else
-    step %(I run `#{exe} '#{string}'`)
+    step %(I run `#{cmd} '#{string}'`)
   end
 end

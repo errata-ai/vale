@@ -71,12 +71,19 @@ Feature: Config
     And the exit status should be 0
 
   Scenario: Non-Existent Config
+    When I inspect "/misc/one/two/three/four"
+    Then the output should contain exactly:
+      """
+      WARNING: Missing or invalid config file.
+
+      See https://github.com/errata-ai/vale#usage for information about creating a config file.
+      """
+    And the exit status should be 0
+
+  Scenario: Non-Existent Config
     When I test "/misc/one/two/three/four"
     Then the output should contain exactly:
       """
-      WARNING: No configuration file found.
-
-      See https://github.com/errata-ai/vale#usage for more information.
       """
     And the exit status should be 0
 
