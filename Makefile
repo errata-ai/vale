@@ -30,7 +30,7 @@ test:
 	cucumber
 
 spell:
-	./bin/vale --glob='!*{Needless,Diacritical,DenzienLabels,AnimalLabels}.yml' rule styles
+	./bin/vale --glob='!*{Needless,Diacritical,DenizenLabels,AnimalLabels}.yml' rule styles
 
 bench:
 	go test -bench=. -benchmem ./core ./lint ./check

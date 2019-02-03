@@ -140,7 +140,7 @@ Feature: Styles
       test.md:39:14:proselint.Oxymorons:'exact estimate' is an oxymoron.
       test.md:41:38:proselint.GenderBias:Consider using 'lawyer' instead of 'lady lawyer'.
       test.md:43:11:proselint.Skunked:'impassionate' is a bit of a skunked term — impossible to use without issue.
-      test.md:45:21:proselint.DenzienLabels:Did you mean 'Hong Konger'?
+      test.md:45:21:proselint.DenizenLabels:Did you mean 'Hong Konger'?
       test.md:47:13:proselint.AnimalLabels:Consider using 'avine' instead of 'bird-like'.
       test.md:49:20:proselint.Typography:Consider using the '©' symbol instead of '(C)'.
       test.md:49:40:proselint.Typography:Consider using the '™' symbol instead of '(tm)'.
