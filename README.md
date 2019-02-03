@@ -40,7 +40,9 @@ There are a few options to choose from:
 - Emacs&mdash;[abingham/flycheck-vale](https://github.com/abingham/flycheck-vale)
 - Sublime Text&mdash;[SublimeLinter-contrib-vale](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
 - Visual Studio Code&mdash;[lunaryorn/vscode-vale](https://marketplace.visualstudio.com/items?itemName=lunaryorn.vale)
-- Vim&mdash;via [ALE](https://github.com/w0rp/ale) (thanks to @[chew-z](https://github.com/chew-z))
+- Vim:
+  - Via [ALE](https://github.com/w0rp/ale) (thanks to @[chew-z](https://github.com/chew-z))
+  - Via [Neomake](https://github.com/neomake/neomake)
 
 ## Usage
 
