@@ -40,7 +40,7 @@ commands and options are discussed below.
     ```
 
     The `--glob` option specifies the type of files Vale will search. It
-    accepts the [standard GNU/Linux syntax](http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm).
+    accepts the [standard GNU/Linux syntax](https://github.com/gobwas/glob).
     Additionally, any pattern prefixed with an `!` will be negated. For example,
 
     ```shell
