@@ -75,14 +75,7 @@ link: 'https://errata.ai/'
 **Example Definition:**
 
 ```yaml
-extends: existence
-message: Consider removing '%s'
-level: warning
-code: false
-ignorecase: true
-tokens:
-    - appears to be
-    - arguably
+`template{'extends': 'existence'}`
 ```
 
 **Key Summary:**
@@ -123,13 +116,7 @@ becomes `(?:foo)\sbar(baz)`.
 **Example Definition:**
 
 ```yaml
-extends: substitution
-message: Consider using '%s' instead of '%s'
-ignorecase: true
-level: warning
-swap:
-  abundance: plenty
-  accelerate: speed up
+`template{'extends': 'substitution'}`
 ```
 
 **Key Summary:**
@@ -167,12 +154,7 @@ message: "Consider using '%s'"
 **Example Definition:**
 
 ```yaml
-extends: occurrence
-message: "Sentences should be less than 25 words"
-scope: sentence
-level: suggestion
-max: 25
-token: '\b(\w+)\b'
+`template{'extends': 'occurrence'}`
 ```
 
 **Key Summary:**
@@ -188,13 +170,7 @@ This is the only extension point that doesn't accept a format specifier in its m
 **Example Definition:**
 
 ```yaml
-extends: repetition
-message: "'%s' is repeated!"
-level: error
-scope: paragraph
-ignorecase: true
-tokens:
-  - '\b(\w+)\b'
+`template{'extends': 'repetition'}`
 ```
 
 **Key Summary:**
@@ -208,14 +184,7 @@ tokens:
 **Example Definition:**
 
 ```yaml
-extends: consistency
-message: "Inconsistent spelling of '%s'"
-level: warning
-scope: text
-ignorecase: true
-either:
-  advisor: adviser
-  centre: center
+`template{'extends': 'consistency'}`
 ```
 
 **Key Summary:**
@@ -229,14 +198,7 @@ either:
 **Example Definition:**
 
 ```yaml
-extends: conditional
-message: "'%s' has no definition"
-level: warning
-scope: text
-first: \b([A-Z]{3,5})\b
-second: (?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)
-exceptions:
-  - ABC
+`template{'extends': 'conditional'}`
 ```
 
 **Key Summary:**
@@ -264,12 +226,7 @@ test.md:1:224:vale.UnexpandedAcronyms:'DAFB' has no definition
 **Example Definition:**
 
 ```yaml
-extends: capitalization
-message: "'%s' should be in title case"
-level: warning
-scope: heading
-match: $title
-style: AP
+`template{'extends': 'capitalization'}`
 ```
 
 **Key Summary:**
@@ -294,13 +251,7 @@ Additionally, when using `match: $title`, you can specify a style of either AP o
 **Example Definition:**
 
 ```yaml
-extends: readability
-message: "Grade level (%s) too high!"
-level: warning
-grade: 8
-metrics:
-  - Flesch-Kincaid
-  - Gunning Fog
+`template{'extends': 'readability'}`
 ```
 
 **Key Summary:**
@@ -318,10 +269,7 @@ If more than one is listed (as seen above), the scores will be averaged. This is
 **Example Definition:**
 
 ```yaml
-extends: spelling
-message: "Did you really mean '%s'?"
-level: error
-ignore: ci/vocab.txt
+`template{'extends': 'spelling'}`
 ```
 
 **Key Summary:**

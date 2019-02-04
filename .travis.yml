@@ -1,22 +1,26 @@
-dist: trusty
+dist: xenial
 sudo: required
 matrix:
   include:
     # Documentation-related steps:
     - language: python
-      python: 2.7.15
+      python: 3.7
       before_install:
         - cd docs
       install:
         - go get github.com/ValeLint/vale
         - go get github.com/olekukonko/tablewriter
-        - pip install -r requirements.txt
+        - pip install pipenv
         - gem install awesome_bot
       script:
+        - pipenv sync
         - go run api.go
         - vale content
         - awesome_bot --allow-dupe --allow-redirect content/*.md
       after_success:
+        # Build our data sources:
+        - markdata --directives='content/directives' content
+        # Build our site:
         - mkdocs build --verbose --clean
       deploy:
         provider: pages

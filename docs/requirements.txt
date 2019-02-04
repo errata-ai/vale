@@ -1,2 +1,0 @@
-pymdown-extensions>=2.6.11
-mkdocs-material>=3

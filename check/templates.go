@@ -1,29 +1,17 @@
 package check
 
-import "fmt"
-
-var baseTemplate = `# Save as MyRule.yml on your StylesPath
-# See https://errata-ai.github.io/vale/styles/ for more info
-# "suggestion", "warning" or "error"
-level: warning
-# Text describing this rule (generally longer than 'message').
-description: '...'
-# A link the source or reference.
-link: '...'
-%s`
-
 var existenceTemplate = `extends: existence
-# "%s" will be replaced by the active token
-message: "found '%s'!"
-ignorecase: false
+message: Consider removing '%s'
+level: warning
+code: false
+ignorecase: true
 tokens:
-  - XXX
-  - FIXME
-  - TODO
-  - NOTE`
+    - appears to be
+    - arguably`
 
 var substitutionTemplate = `extends: substitution
 message: Consider using '%s' instead of '%s'
+level: warning
 ignorecase: false
 # swap maps tokens in form of bad: good
 swap:
@@ -32,6 +20,7 @@ swap:
 
 var occurrenceTemplate = `extends: occurrence
 message: "More than 3 commas!"
+level: error
 # Here, we're counting the number of times a comma appears in a sentence.
 # If it occurs more than 3 times, we'll flag it.
 scope: sentence
@@ -41,6 +30,7 @@ token: ','`
 
 var conditionalTemplate = `extends: conditional
 message: "'%s' has no definition"
+level: error
 scope: text
 ignorecase: false
 # Ensures that the existence of 'first' implies the existence of 'second'.
@@ -53,6 +43,7 @@ exceptions:
 
 var consistencyTemplate = `extends: consistency
 message: "Inconsistent spelling of '%s'"
+level: error
 scope: text
 ignorecase: true
 nonword: false
@@ -63,14 +54,14 @@ either:
 
 var repetitionTemplate = `extends: repetition
 message: "'%s' is repeated!"
-scope: paragraph
-ignorecase: false
-# Will flag repeated occurrences of the same token (e.g., "this this").
+level: error
+alpha: true
 tokens:
   - '[^\s]+'`
 
 var capitalizationTemplate = `extends: capitalization
 message: "'%s' should be in title case"
+level: warning
 scope: heading
 # $title, $sentence, $lower, $upper, or a pattern.
 match: $title
@@ -97,14 +88,14 @@ var checkToTemplate = map[string]string{
 	"consistency":    consistencyTemplate,
 	"repetition":     repetitionTemplate,
 	"capitalization": capitalizationTemplate,
-    "readability":    readabilityTemplate,
-    "spelling":       spellingTemplate,
+	"readability":    readabilityTemplate,
+	"spelling":       spellingTemplate,
 }
 
 // GetTemplate makes a template for the given extension point.
 func GetTemplate(name string) string {
 	if template, ok := checkToTemplate[name]; ok {
-		return fmt.Sprintf(baseTemplate, template)
+		return template
 	}
 	return ""
 }
