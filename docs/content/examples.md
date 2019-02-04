@@ -1,4 +1,4 @@
-## Open-source projects
+## Projects
 
 - [Vale's own documentation](https://github.com/errata-ai/vale/tree/master/docs): Vale + MkDocs (Markdown)+ Travis CI.
 - [Write the Docs](https://github.com/writethedocs/www): Vale + Sphinx (reStructuredText) + tox + Travis CI.
