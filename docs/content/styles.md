@@ -80,7 +80,7 @@ link: 'https://errata.ai/'
 
 **Key Summary:**
 
---8<-- "api/existence/keys.md"
+`document{'path': 'api/existence/keys.md'}`
 
 The most general extension point is `existence`. As its name implies, it looks
 for the "existence" of particular tokens.
@@ -121,7 +121,7 @@ becomes `(?:foo)\sbar(baz)`.
 
 **Key Summary:**
 
---8<-- "api/substitution/keys.md"
+`document{'path': 'api/substitution/keys.md'}`
 
 `substitution` associates a string with a preferred form. If we want to suggest
 the use of "plenty" instead of "abundance," for example, we'd write:
@@ -159,7 +159,7 @@ message: "Consider using '%s'"
 
 **Key Summary:**
 
---8<-- "api/occurrence/keys.md"
+`document{'path': 'api/occurrence/keys.md'}`
 
 `occurrence` limits the number of times a particular token can appear in a given scope. In the example above, we're limiting the number of words per sentence.
 
@@ -175,7 +175,7 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 **Key Summary:**
 
---8<-- "api/repetition/keys.md"
+`document{'path': 'api/repetition/keys.md'}`
 
 `repetition` looks for repeated occurrences of its tokens. If `ignorecase` is set to `true`, it'll convert all tokens to lower case for comparison purposes.
 
@@ -189,7 +189,7 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 **Key Summary:**
 
---8<-- "api/consistency/keys.md"
+`document{'path': 'api/consistency/keys.md'}`
 
 `consistency` will ensure that a key and its value (e.g., "advisor" and "adviser") don't both occur in its scope.
 
@@ -203,7 +203,7 @@ This is the only extension point that doesn't accept a format specifier in its m
 
 **Key Summary:**
 
---8<-- "api/conditional/keys.md"
+`document{'path': 'api/conditional/keys.md'}`
 
 `conditional` ensures that the existence of `first` implies the existence of `second`. For example, consider the following text:
 
@@ -231,7 +231,7 @@ test.md:1:224:vale.UnexpandedAcronyms:'DAFB' has no definition
 
 **Key Summary:**
 
---8<-- "api/capitalization/keys.md"
+`document{'path': 'api/capitalization/keys.md'}`
 
 `capitalization` checks that the text in the specified scope matches the case of `match`. There are a few pre-defined variables that can be passed as matches:
 
@@ -256,7 +256,7 @@ Additionally, when using `match: $title`, you can specify a style of either AP o
 
 **Key Summary:**
 
---8<-- "api/readability/keys.md"
+`document{'path': 'api/readability/keys.md'}`
 
 `readability` calculates a readability score according the specified metrics. The supported tests are Gunning-Fog, Coleman-Liau, Flesch-Kincaid, SMOG, and Automated Readability.
 
@@ -274,7 +274,7 @@ If more than one is listed (as seen above), the scores will be averaged. This is
 
 **Key Summary:**
 
---8<-- "api/spelling/keys.md"
+`document{'path': 'api/spelling/keys.md'}`
 
 `spelling` implements spell checking based on Hunspell-compatible dictionaries. By default, Vale includes [en_US-web](https://github.com/errata-ai/en_US-web)—an up-to-date, actively maintained dictionary. However, you may also specify your own via the `dic` and `aff` keys (the fully-qualified paths are required; e.g., `/usr/share/hunspell/en_US.dic`).
 
