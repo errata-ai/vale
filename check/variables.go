@@ -22,6 +22,8 @@ func title(s string, ignore []string, tc *transform.TitleConverter) bool {
 	for i, word := range strings.Fields(s) {
 		if word == expected[i] || core.StringInSlice(word, ignore) {
 			count++
+		} else if word == strings.ToUpper(word) {
+			count++
 		}
 		words++
 	}
@@ -32,7 +34,7 @@ func sentence(s string, ignore []string) bool {
 	count := 0.0
 	words := 0.0
 	for i, w := range strings.Fields(s) {
-		if core.StringInSlice(w, ignore) {
+		if core.StringInSlice(w, ignore) || w == strings.ToUpper(w) {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) {
 			return false
