@@ -51,6 +51,10 @@ var options = blackfriday.Options{Extensions: commonExtensions}
 var reFrontMatter = regexp.MustCompile(
 	`^(?s)(?:---|\+\+\+)\n(.+?)\n(?:---|\+\+\+)`)
 
+// Convert extended info strings -- e.g., ```callout{'title': 'NOTE'} -- that
+// might confuse Blackfriday into normal "```".
+var reExInfo = regexp.MustCompile("```" + `.+`)
+
 // HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
 
@@ -267,6 +271,7 @@ func (l Linter) lintHTML(f *core.File) {
 
 func (l Linter) prep(content, block, inline, ext string) string {
 	s := reFrontMatter.ReplaceAllString(content, block)
+	s = reExInfo.ReplaceAllString(s, "```")
 
 	for syntax, regexes := range l.Config.TokenIgnores {
 		sec, err := glob.Compile(syntax)

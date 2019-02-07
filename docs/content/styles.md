@@ -64,7 +64,7 @@ link: 'https://errata.ai/'
 `checks` offer a high-level way to extend Vale. They perform operations such as checking for consistency, counting occurrences, and suggesting changes.
 
 ```callout{'title': 'NOTE', 'classes': ['tip']}
-Vale uses Go's [`regexp` package](https://golang.org/pkg/regexp/syntax/) to evaluate all patterns in rule definitions. This means that lookarounds and backreferences are not supported.
+Vale uses Go's [`regexp` package](https://golang.org/pkg/regexp/syntax/) to evaluate all patterns in rule definitions. This means that lookarounds and backreferences aren't supported.
 ```
 
 <!-- vale 18F.Clarity = NO -->
