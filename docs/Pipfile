@@ -7,7 +7,7 @@ name = "pypi"
 pymdown-extensions = ">=2.6.11"
 mkdocs-material = ">=3"
 markdata = "*"
-html3 = "*"
+markdown = "*"
 
 [dev-packages]
 

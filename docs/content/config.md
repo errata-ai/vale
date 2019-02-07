@@ -135,9 +135,9 @@ If more than one configuration file is present, the closest one takes precedence
 
 ## Ignoring Parts of Your Documents
 
-!!! tip "NOTE"
-
-    Vale currently does not support comment-based configuration in AsciiDoc documents.
+```callout{'title': 'NOTE', 'classes': ['tip']}
+Vale currently does not support comment-based configuration in AsciiDoc documents.
+```
 
 Ignore parts of your HTML and Markdown documents using HTML-style comments:
 

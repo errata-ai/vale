@@ -3,9 +3,9 @@
 Vale has a powerful extension system that doesn't require knowledge of any programming language. Instead, it exposes its functionality through simple
 [YAML](http://yaml.org) files.
 
-!!! tip "NOTE"
-
-    Vale expects its external rules to have an extension of `.yml`, not `.yaml`, etc.
+```callout{'title': 'NOTE', 'classes': ['tip']}
+Vale expects its external rules to have an extension of `.yml`, not `.yaml`, etc.
+```
 
 The core component of Vale's extension system are collections of writing guidelines called *styles*. These guidelines are expressed through *rules*, which are YAML files enforcing a particular writing construct&mdash;e.g., ensuring a certain readability level, sentence length, or heading style.
 
@@ -63,10 +63,9 @@ link: 'https://errata.ai/'
 
 `checks` offer a high-level way to extend Vale. They perform operations such as checking for consistency, counting occurrences, and suggesting changes.
 
-!!! tip "NOTE"
-
-    Vale uses Go's [`regexp` package](https://golang.org/pkg/regexp/syntax/) to evaluate all patterns in rule definitions. This means that lookarounds and backreferences are not supported.
-
+```callout{'title': 'NOTE', 'classes': ['tip']}
+Vale uses Go's [`regexp` package](https://golang.org/pkg/regexp/syntax/) to evaluate all patterns in rule definitions. This means that lookarounds and backreferences are not supported.
+```
 
 <!-- vale 18F.Clarity = NO -->
 
