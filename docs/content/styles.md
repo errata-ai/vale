@@ -104,7 +104,7 @@ like
 ```yaml
 raw:
   - '(?:foo)\sbar'
-  - '(baz)'</code></pre>
+  - '(baz)'
 ```
 
 becomes `(?:foo)\sbar(baz)`.
