@@ -84,7 +84,7 @@ Vale uses Go's [`regexp` package](https://golang.org/pkg/regexp/syntax/) to eval
 The most general extension point is `existence`. As its name implies, it looks
 for the "existence" of particular tokens.
 
-These tokens can be anything from simple phrases (as in the above example) to complex regular expressions&mdash;e.g., [the number of spaces between sentences](https://github.com/errata-ai/vale-boilerplate/blob/master/src/18F/Spacing.yml) and [the position of punctuation after quotes](https://github.com/errata-ai/vale-boilerplate/blob/master/src/18F/Quotes.yml).
+These tokens can be anything from simple phrases (as in the above example) to complex regular expressions&mdash;e.g., [the number of spaces between sentences](https://github.com/testthedocs/vale-styles/blob/master/18F/Spacing.yml) and [the position of punctuation after quotes](https://github.com/testthedocs/vale-styles/blob/master/18F/Quotes.yml).
 
 You may define the tokens as elements of lists named either `tokens`
 (shown above) or `raw`. The former converts its elements into a word-bounded,
