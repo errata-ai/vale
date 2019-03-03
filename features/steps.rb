@@ -6,6 +6,10 @@ if OS.windows?
 end
 cmd = (exe + ' --output=line --sort --normalize --relative')
 
+Given(/^on Unix$/) do
+  pending unless OS.posix?
+end
+
 When(/^I run command "(.*)"$/) do |c|
   step %(I cd to "../../fixtures/formats")
   step %(I run `#{cmd} #{c}`)
@@ -43,6 +47,11 @@ end
 
 When(/^I test patterns for "(.*)"$/) do |file|
   step %(I cd to "../../fixtures/patterns")
+  step %(I run `#{cmd} #{file}`)
+end
+
+When(/^I test plugins for "(.*)"$/) do |file|
+  step %(I cd to "../../fixtures/plugins")
   step %(I run `#{cmd} #{file}`)
 end
 

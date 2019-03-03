@@ -54,6 +54,9 @@ func NewManager(config *core.Config) *Manager {
 
 	mgr := Manager{AllChecks: make(map[string]Check), Config: config}
 
+	// Load our external plugins:
+	mgr = loadPlugins(mgr)
+
 	// loadedStyles keeps track of the styles we've loaded as we go.
 	loadedStyles := []string{}
 	if mgr.Config.StylesPath == "" {
@@ -98,7 +101,7 @@ func NewManager(config *core.Config) *Manager {
 
 	for _, chk := range mgr.Config.Checks {
 		// Load any remaining individual rules.
-		if !strings.Contains(chk, ".") {
+		if !strings.Contains(chk, ".") || strings.HasPrefix(chk, "plugins") {
 			// A rule must be associated with a style (i.e., "Style[.]Rule").
 			continue
 		}

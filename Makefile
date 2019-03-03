@@ -71,3 +71,8 @@ rules:
 
 data:
 	go-bindata -ignore=\\.DS_Store -pkg="data" -o data/data.go data/*.{dic,aff}
+
+
+plugins:
+	cd styles/plugins/ && \
+	go build -buildmode=plugin Example.go
