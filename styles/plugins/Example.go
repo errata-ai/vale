@@ -1,6 +1,7 @@
-/* WordDensity.go
+/* An example plugin showing how to arbitrarily extend Vale via Golang.
 
- */
+See https://errata-ai.github.io/vale/plugins/ for more information.
+*/
 package main
 
 import (
@@ -21,7 +22,9 @@ var Level = "warning"
 
 // Rule is the entry point to your custom rule.
 //
-//
+// You need to return a slice of Alerts specifying the rule's name
+// (`Check`), level (`Severity`), location (`span`), and message
+// (`Message`).
 func Rule(text string, file *core.File) []core.Alert {
 	alerts := []core.Alert{}
 	pos := strings.Index(text, "The")
