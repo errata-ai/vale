@@ -19,30 +19,22 @@ func loadPlugins(mgr Manager) Manager {
 	}
 
 	for _, filename := range plugins {
-		p, _ := plugin.Open(filename)
-
-		symbol, err := p.Lookup("Rule")
-		if err != nil {
-			panic(err)
-		}
-		level, err := p.Lookup("Level")
-		if err != nil {
-			panic(err)
-		}
-		scope, err := p.Lookup("Scope")
-		if err != nil {
-			panic(err)
-		}
-
-		chk := Check{Rule: symbol.(func(string, *core.File) []core.Alert)}
-		chk.Scope = core.Selector{Value: *scope.(*string)}
+		f, _ := plugin.Open(filename)
 
 		base := filepath.Base(filename)
 		name := "plugins." + strings.TrimSuffix(base, filepath.Ext(base))
+
+		symbol, err := f.Lookup("Plugin")
+		if err != nil {
+			panic(err)
+		}
+		p := symbol.(func() core.Plugin)()
+
+		chk := Check{Rule: p.Rule, Scope: core.Selector{p.Scope}}
 		if l, ok := mgr.Config.RuleToLevel[name]; ok {
 			chk.Level = core.LevelToInt[l]
 		} else {
-			chk.Level = core.LevelToInt[*level.(*string)]
+			chk.Level = core.LevelToInt[p.Level]
 		}
 		mgr.AllChecks[name] = chk
 	}

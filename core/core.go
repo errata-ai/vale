@@ -52,6 +52,13 @@ type Alert struct {
 	Match       string // the actual matched text
 }
 
+// A Plugin provides a means of extending Vale.
+type Plugin struct {
+	Scope string
+	Level string
+	Rule  func(string, *File) []Alert
+}
+
 // A Selector represents a named section of text.
 type Selector struct {
 	Value string // e.g., text.comment.line.py
@@ -195,7 +202,11 @@ func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
 }
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
-func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad int) {
+func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad, level int) {
+	if a.Severity == "" {
+		a.Severity = AlertLevels[level]
+	}
+
 	substring := txt[a.Span[0]:a.Span[1]]
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old

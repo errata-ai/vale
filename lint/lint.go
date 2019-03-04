@@ -289,7 +289,7 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 		}
 
 		for _, a := range chk.Rule(txt, f) {
-			f.AddAlert(a, ctx, txt, lines, pad)
+			f.AddAlert(a, ctx, txt, lines, pad, chk.Level)
 		}
 	}
 }
