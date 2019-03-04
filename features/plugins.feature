@@ -5,5 +5,6 @@ Feature: Plugins
     When I test plugins for "test.md"
     Then the output should contain exactly:
       """
-      test.md:1:1:plugins.Example:Don't use 'The'!
+      test.md:1:4:plugins.Example:Capitalize your headings!
+      test.md:15:5:plugins.Example:Capitalize your headings!
       """

@@ -13,7 +13,7 @@ import (
 // Scope determines where this rule applies.
 //
 // See https://errata-ai.github.io/vale/formats/.
-var Scope = "summary"
+var Scope = "heading"
 
 // Level specifies the importance of this rule.
 //
@@ -27,14 +27,13 @@ var Level = "warning"
 // (`Message`).
 func Rule(text string, file *core.File) []core.Alert {
 	alerts := []core.Alert{}
-	pos := strings.Index(text, "The")
-	if pos >= 0 {
+	if strings.ToLower(text) == text {
 		alerts = append(alerts,
 			core.Alert{
 				Check: "plugins.Example",
 				Severity: Level,
-				Span: []int{pos, pos + 3},
-				Message: "Don't use 'The'!"})
+				Span: []int{0, len(text)},
+				Message: "Capitalize your headings!"})
 	}
 	return alerts
 }
