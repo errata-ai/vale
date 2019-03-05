@@ -18,6 +18,7 @@ nav:
 - Configuration: config.md
 - Markup: formats.md
 - Styles: styles.md
+- Plugins: plugins.md
 - Examples: examples.md
 
 theme:
