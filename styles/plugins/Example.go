@@ -32,9 +32,6 @@ func Plugin() core.Plugin {
 			if strings.ToLower(text) == text {
 				alerts = append(alerts,
 					core.Alert{
-						// The name of our plugin. All plugins should specify
-						// the "plugins" base style.
-						Check: "plugins.Example",
 						// The location of our alert relative to `text`.
 						Span:    []int{0, len(text)},
 						Message: "Capitalize your headings!"})

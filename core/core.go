@@ -34,7 +34,7 @@ type File struct {
 	Scanner    *bufio.Scanner    // used by lintXXX functions
 	Sequences  []string          // tracks various info (e.g., defined abbreviations)
 	Simple     bool
-	Summary    bytes.Buffer      // holds content to be included in summarization checks
+	Summary    bytes.Buffer // holds content to be included in summarization checks
 
 	history map[string]int
 }
@@ -201,12 +201,18 @@ func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
 	return count, loc
 }
 
-// AddAlert calculates the in-text location of an Alert and adds it to a File.
-func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad, level int) {
+// FormatAlert ensures that all required fields have data.
+func FormatAlert(a *Alert, level int, name string) {
 	if a.Severity == "" {
 		a.Severity = AlertLevels[level]
 	}
+	if a.Check == "" {
+		a.Check = name
+	}
+}
 
+// AddAlert calculates the in-text location of an Alert and adds it to a File.
+func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad int) {
 	substring := txt[a.Span[0]:a.Span[1]]
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old
