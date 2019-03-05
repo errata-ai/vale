@@ -33,7 +33,7 @@ func Plugin() core.Plugin {
 				alerts = append(alerts,
 					core.Alert{
 						// The name of our plugin. All plugins should specify
-						// the "plugin" base style.
+						// the "plugins" base style.
 						Check: "plugins.Example",
 						// The location of our alert relative to `text`.
 						Span:    []int{0, len(text)},
