@@ -40,7 +40,7 @@ This will produce a shared object (`MyPlugin.so`) containing your plugin's logic
 You'll want to commit your plugin's source file (`.go`) into version control,
 but not its shared object (`.so`). This means that if you're using a CI service,
 you'll need to build your plugin(s) prior to running Vale. One way to do this is
-by creating a Makefile:
+by creating a `Makefile`:
 
 ```cmake
 plugins:
