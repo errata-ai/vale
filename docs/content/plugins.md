@@ -46,7 +46,7 @@ by creating a `Makefile`:
 plugins:
 	cd styles/plugins/ && \
 	go build -buildmode=plugin MyPlugin.go && \
-	go build -buildmode=plugin MyOtherPlugin.go && \
+	go build -buildmode=plugin MyOtherPlugin.go
 ```
 
 You can then run `make plugins` as a CI step.
