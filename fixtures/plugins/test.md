@@ -50,3 +50,7 @@ is *TODO* by
 [img-monokai]: https://
 
 RedHat
+
+Click on the dialog bar.
+
+We can say dialog box though!

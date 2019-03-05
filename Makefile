@@ -75,4 +75,5 @@ data:
 
 plugins:
 	cd styles/plugins/ && \
-	go build -buildmode=plugin Example.go
+	go build -buildmode=plugin Example.go && \
+	go build -buildmode=plugin Sequence.go

@@ -22,9 +22,10 @@ func loadPlugins(mgr Manager) Manager {
 		f, _ := plugin.Open(filename)
 
 		base := filepath.Base(filename)
-		name := "plugins." + strings.TrimSuffix(base, filepath.Ext(base))
+		symb := strings.TrimSuffix(base, filepath.Ext(base))
+		name := "plugins." + symb
 
-		symbol, err := f.Lookup("Plugin")
+		symbol, err := f.Lookup(symb)
 		if err != nil {
 			panic(err)
 		}

@@ -22,9 +22,9 @@ With plugins, you have complete access to Go and its [standard library](https://
 Plugins require Go >= v1.8.0.
 ```
 
-To create your own plugin, simply export the `Plugin` function as shown in the
-example above. The `Rule` implementation can be as complex as you need and use
-any aspect of the Go programming language.
+To create your own plugin, simply export a function returing a `Plugin` as
+shown in the example above. The `Rule` implementation can be as complex as you
+need and use any aspect of the Go programming language.
 
 After you've created your plugin, place it in `StylesPath/plugins` and compile
 it using `-buildmode=plugin`:
