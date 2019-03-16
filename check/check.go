@@ -211,8 +211,7 @@ func checkOccurrence(txt string, chk Occurrence, f *core.File, r *regexp.Regexp,
 	occurrences := len(locs)
 	if occurrences > lim {
 		loc = []int{locs[0][0], locs[occurrences-1][1]}
-		a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: loc,
-			Link: chk.Link}
+		a := makeAlert(chk.Definition, loc, txt)
 		a.Message = chk.Message
 		a.Description = chk.Description
 		alerts = append(alerts, a)
@@ -244,8 +243,7 @@ func checkRepetition(txt string, chk Repetition, f *core.File, r *regexp.Regexp)
 		if hit && count > chk.Max {
 			if !strings.Contains(txt[ploc[0]:loc[1]], "\n") {
 				floc := []int{ploc[0], loc[1]}
-				a := core.Alert{Check: chk.Name, Severity: chk.Level, Span: floc,
-					Link: chk.Link}
+				a := makeAlert(chk.Definition, floc, txt)
 				a.Message, a.Description = formatMessages(chk.Message,
 					chk.Description, curr)
 				alerts = append(alerts, a)
