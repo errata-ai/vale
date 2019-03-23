@@ -12,8 +12,9 @@ func TestFormatFromExt(t *testing.T) {
 		".cxx":   {".c", "code"},
 		".mdown": {".md", "markup"},
 	}
+	m := map[string]string{}
 	for ext, format := range extToFormat {
-		normExt, f := FormatFromExt(ext)
+		normExt, f := FormatFromExt(ext, m)
 		assert.Equal(t, format[0], normExt)
 		assert.Equal(t, format[1], f)
 	}
