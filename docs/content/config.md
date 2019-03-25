@@ -22,6 +22,11 @@ StylesPath = ci/vale/styles
 # CI builds will only fail on error-level alerts.
 MinAlertLevel = warning
 
+# The "formats" section allows you to associate an "unknown" format
+# with one of Vale's supported formats.
+[formats]
+mdx = md
+
 # Global settings (applied to every syntax)
 [*]
 # List of styles to load
@@ -34,7 +39,7 @@ vale.Hedging = error
 # Syntax-specific settings
 # These overwrite any conflicting global settings
 [*.{md,txt}]
-...
+vale.Editorializing = NO
 ```
 
 Vale expects its configuration to be in a file named `.vale.ini` or `_vale.ini`. It'll start looking for this file in the same directory as the file that's being linted. If it can't find one, it'll search up to 6 levels up the directory tree. After 6 levels, it'll look for a global configuration file in the OS equivalent of `$HOME` (see below).

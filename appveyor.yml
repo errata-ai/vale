@@ -7,10 +7,11 @@ init:
   - cmd: set PATH=C:\MinGW\bin;%PATH%
   - cmd: copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
 install:
-  - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby22\bin;%cd%;%PATH%
+  - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby24\bin;%cd%;%PATH%
   - cinst ansicon
   - pip install docutils
   - gem install asciidoctor
+  - asciidoctor --version
   - curl -fsSL -o C:\wix310-binaries.zip http://static.wixtoolset.org/releases/v3.10.3.3007/wix310-binaries.zip
   - 7z x C:\wix310-binaries.zip -y -r -oC:\wix310
   - set PATH=C:\wix310;%PATH%

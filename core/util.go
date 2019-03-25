@@ -222,8 +222,12 @@ func Indent(text, indent string) string {
 
 // FormatFromExt takes a file extension and returns its [normExt, format]
 // list, if supported.
-func FormatFromExt(path string) (string, string) {
-	ext := filepath.Ext(path)
+func FormatFromExt(path string, mapping map[string]string) (string, string) {
+	ext := strings.Trim(filepath.Ext(path), ".")
+	if format, found := mapping[ext]; found {
+		ext = format
+	}
+	ext = "." + ext
 	for r, f := range FormatByExtension {
 		m, _ := regexp.MatchString(r, ext)
 		if m {

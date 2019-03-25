@@ -25,10 +25,6 @@ build-win:
 install:
 	go install ${LDFLAGS}
 
-test:
-	go test -race ./core ./lint ./check
-	cucumber
-
 spell:
 	./bin/vale --glob='!*{Needless,Diacritical,DenizenLabels,AnimalLabels}.yml' rule styles
 
@@ -72,8 +68,11 @@ rules:
 data:
 	go-bindata -ignore=\\.DS_Store -pkg="data" -o data/data.go data/*.{dic,aff}
 
-
 plugins:
 	cd styles/plugins/ && \
 	go build -buildmode=plugin Example.go && \
 	go build -buildmode=plugin Sequence.go
+
+test:
+	go test -race ./core ./lint ./check
+	cucumber

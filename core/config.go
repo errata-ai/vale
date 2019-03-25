@@ -63,6 +63,7 @@ type Config struct {
 	StylesPath    string                     // Directory with Rule.yml files
 	WordTemplate  string                     // The template used in YAML -> regexp list conversions
 	Parsers       map[string]string          // A map of syntax -> commands
+	Formats       map[string]string          // A map of unknown -> known formats
 	Path          string                     // The location of the config file
 
 	SecToPat map[string]glob.Glob
@@ -87,6 +88,7 @@ func NewConfig() *Config {
 	cfg.MinAlertLevel = 1
 	cfg.RuleToLevel = make(map[string]string)
 	cfg.Parsers = make(map[string]string)
+	cfg.Formats = make(map[string]string)
 	cfg.BlockIgnores = make(map[string][]string)
 	cfg.TokenIgnores = make(map[string][]string)
 	cfg.SecToPat = make(map[string]glob.Glob)
@@ -155,6 +157,7 @@ func LoadConfig(cfg *Config, upath string) (*Config, error) {
 	cfg.Path = path
 	core := uCfg.Section("")
 	global := uCfg.Section("*")
+	formats := uCfg.Section("formats")
 
 	// Default settings
 	for _, k := range core.KeyStrings() {
@@ -171,6 +174,10 @@ func LoadConfig(cfg *Config, upath string) (*Config, error) {
 			cfg.SkippedScopes = core.Key(k).Strings(",")
 		}
 	}
+	// Format mappings
+	for _, k := range formats.KeyStrings() {
+		cfg.Formats[k] = formats.Key(k).String()
+	}
 
 	// Global settings
 	cfg.GBaseStyles = global.Key("BasedOnStyles").Strings(",")
@@ -185,7 +192,7 @@ func LoadConfig(cfg *Config, upath string) (*Config, error) {
 
 	// Syntax-specific settings
 	for _, sec := range uCfg.SectionStrings() {
-		if sec == "*" || sec == "DEFAULT" {
+		if sec == "*" || sec == "DEFAULT" || sec == "formats" {
 			continue
 		}
 		pat, err := glob.Compile(sec)

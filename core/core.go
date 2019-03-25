@@ -114,10 +114,10 @@ func NewFile(src string, config *Config) *File {
 	if FileExists(src) {
 		fbytes, _ = ioutil.ReadFile(src)
 		scanner = bufio.NewScanner(bytes.NewReader(fbytes))
-		ext, format = FormatFromExt(src)
+		ext, format = FormatFromExt(src, config.Formats)
 	} else {
 		scanner = bufio.NewScanner(strings.NewReader(src))
-		ext, format = FormatFromExt(config.InExt)
+		ext, format = FormatFromExt(config.InExt, config.Formats)
 		fbytes = []byte(src)
 		src = "stdin" + ext
 	}
