@@ -49,7 +49,7 @@ commands and options are discussed below.
     ```
 
     This option takes precedence over any patterns defined in a
-    [configuration file]((https://errata-ai.github.io/vale/config/)).
+    [configuration file](https://errata-ai.github.io/vale/config/).
 
 - `--config`:
 
