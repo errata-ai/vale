@@ -56,8 +56,6 @@ matrix:
         # Stash changes made by `make rules`. Otherwise, `make compare` and
         # GoReleaser fail.
         - git stash
-      after_script:
-        - make compare
       after_success:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
