@@ -123,7 +123,7 @@ My name is [Joseph Kato](https://github.com/jdkato).
 
 In my spare time, I develop and maintain a few [open-source tools](https://github.com/errata-ai) for collaborative writing.
 
-If you'd like to support my work, you can donate via [Square's Cash App](https://cash.me/$jdkato) or make use of my documentation-related [consulting services](https://errata.ai/about/). Alternatively, I'd greatly appreciate a simple note explaining how you're using my software (which you can send via the ['Say Thanks' project](https://saythanks.io/to/jdkato)).
+If you'd like to support my work, you can donate via [Square's Cash App](https://cash.me/$jdkato) or make use of my documentation-related [consulting services](https://errata.ai). Alternatively, I'd greatly appreciate a simple note explaining how you're using my software (which you can send via the ['Say Thanks' project](https://saythanks.io/to/jdkato)).
 
 
 
