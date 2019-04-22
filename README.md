@@ -75,7 +75,7 @@ See [Getting Started](https://errata-ai.github.io/vale/) for more information.
 
 While the built-in styles are useful, Vale is really designed to [meet custom needs](https://errata-ai.github.io/vale/styles/). This is done by using Vale's extension points (called "checks") that can be customized to perform many different kinds of tasks, including [calculating readability](https://github.com/errata-ai/vale/blob/master/styles/demo/Reading.yml), [measuring sentence length](https://github.com/errata-ai/vale/blob/master/styles/demo/SentenceLength.yml), and [enforcing a particular heading style](https://github.com/errata-ai/vale-boilerplate/blob/master/src/18F/Headings.yml).
 
-See the [`vale-boilerplate`](https://github.com/errata-ai/vale-boilerplate) project for a complete example of a Vale-compatible style guide.
+See the [Microsoft](https://github.com/errata-ai/vale-boilerplate) project for a complete example of a Vale-compatible style guide.
 
 ###### Using the CLI
 
