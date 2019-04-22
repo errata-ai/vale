@@ -1,7 +1,5 @@
 # Vale: Your style, our editor [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?style=flat-square&amp;logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://goreportcard.com/badge/github.com/gojp/goreportcard?style=flat-square)](https://goreportcard.com/report/github.com/errata-ai/vale) [![downloads](https://img.shields.io/github/downloads/errata-ai/vale/total.svg?style=flat-square)](https://github.com/errata-ai/vale/releases) [![Thanks](https://img.shields.io/badge/say-thanks-ff69b4.svg?style=flat-square&amp;logo=gratipay&amp;logoColor=white)](#say-thanks)
 
-> :star2: We're now offering [**Integration Assistance**](https://errata.ai/about/)! This is a great way to support the project while also getting the time-consuming tasks (e.g., creating a Vale-compatible version of your house style or setting up a CI service) out of the way.
-
 ![vale-demo](https://user-images.githubusercontent.com/8785025/39656657-59e62c26-4fb6-11e8-9f48-ba230400ed55.png)
 
 Vale is a natural language linter that supports plain text, markup (Markdown, reStructuredText, AsciiDoc, and HTML), and source code comments. Vale doesn't attempt to offer a one-size-fits-all collection of rules&mdash;instead, it strives to make customization as easy as possible.
