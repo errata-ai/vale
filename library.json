@@ -2,6 +2,6 @@
     {
         "name": "Microsoft",
         "description": "A Vale-compatible implementation of the Microsoft Writing Style Guide.",
-        "url": "https://api.github.com/repos/errata-ai/Microsoft/releases"
+        "url": "https://api.github.com/repos/errata-ai/Microsoft/releases/latest"
     }
 ]
