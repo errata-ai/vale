@@ -2,6 +2,11 @@
 
 package check
 
+func loadPlugins(mgr Manager) Manager {
+	return mgr
+}
+
+/* TODO: Is this even worth it?
 import (
 	"path/filepath"
 	"plugin"
@@ -41,4 +46,4 @@ func loadPlugins(mgr Manager) Manager {
 	}
 
 	return mgr
-}
+}*/
