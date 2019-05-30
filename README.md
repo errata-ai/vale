@@ -37,7 +37,7 @@ There are a few options to choose from:
 - Atom&mdash;[TimKam/atomic-vale](https://github.com/TimKam/atomic-vale)
 - Emacs&mdash;[abingham/flycheck-vale](https://github.com/abingham/flycheck-vale)
 - Sublime Text&mdash;[SublimeLinter-contrib-vale](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
-- Visual Studio Code&mdash;[lunaryorn/vscode-vale](https://marketplace.visualstudio.com/items?itemName=lunaryorn.vale)
+- Visual Studio Code&mdash;[testthedocs/vscode-vale](https://github.com/testthedocs/vscode-vale)
 - Vim:
   - Via [ALE](https://github.com/w0rp/ale) (thanks to @[chew-z](https://github.com/chew-z))
   - Via [Neomake](https://github.com/neomake/neomake)
