@@ -7,5 +7,5 @@ RUN apk add --update \
   && pip install docutils \
   && rm -rf /var/cache/apk/*
 
-COPY dist/linux_amd64/vale /
+COPY bin/vale /
 ENTRYPOINT ["/vale"]

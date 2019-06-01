@@ -23,9 +23,10 @@ brew:
     name: homebrew-vale
   description: A customizable, syntax-aware linter for prose.
   homepage: 'https://github.com/errata-ai/vale'
-dockers:
-  # You can have multiple Docker images.
-  -
-    image: jdkato/vale
-    tag_templates:
-      - latest
+
+# dockers:
+#   # You can have multiple Docker images.
+#   -
+#     image: jdkato/vale
+#     tag_templates:
+#       - latest
