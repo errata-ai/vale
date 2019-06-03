@@ -8,6 +8,7 @@ Feature: Config
     And a file named "test.py" with:
     """
     # There is always something to say. Very good! (e.g., this is good)
+    # The centre issue is that everything is going to the center.
 
     """
 
@@ -278,12 +279,14 @@ Feature: Config
     [*]
     BasedOnStyles = vale
     write-good.ThereIs = YES
+    demo.Spelling = YES
     """
     When I run vale "test.py"
     Then the output should contain exactly:
     """
     test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
     test.py:1:37:vale.Editorializing:Consider removing 'Very'
+    test.py:2:55:demo.Spelling:Inconsistent spelling of 'center'
     """
     And the exit status should be 1
 
