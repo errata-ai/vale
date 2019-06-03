@@ -253,6 +253,14 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 		style = strings.Split(name, ".")[0]
 		run = false
 
+		if strings.Count(name, ".") > 1 {
+			// NOTE: This fixes the loading issue with consistency checks.
+			//
+			// See #129.
+			list := strings.Split(name, ".")
+			name = strings.Join([]string{list[0], list[1]}, ".")
+		}
+
 		if chk.Code && hasCode && !l.Config.Simple {
 			txt = blk.Raw
 		} else {
