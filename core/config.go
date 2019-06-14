@@ -162,7 +162,8 @@ func LoadConfig(cfg *Config, upath string) (*Config, error) {
 	// Default settings
 	for _, k := range core.KeyStrings() {
 		if k == "StylesPath" {
-			cfg.StylesPath = DeterminePath(path, core.Key(k).MustString(""))
+			canidate := filepath.FromSlash(core.Key(k).MustString(""))
+			cfg.StylesPath = DeterminePath(path, canidate)
 		} else if k == "MinAlertLevel" {
 			level := core.Key(k).In("warning", AlertLevels)
 			cfg.MinAlertLevel = LevelToInt[level]
