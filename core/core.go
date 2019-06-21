@@ -119,7 +119,7 @@ func NewFile(src string, config *Config) *File {
 		scanner = bufio.NewScanner(strings.NewReader(src))
 		ext, format = FormatFromExt(config.InExt, config.Formats)
 		fbytes = []byte(src)
-		src = "stdin" + ext
+		src = "stdin" + config.InExt
 	}
 
 	baseStyles := config.GBaseStyles
