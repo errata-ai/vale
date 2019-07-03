@@ -1,6 +1,0 @@
-sudo: required
-dist: trusty
-language: generic
-script:
-  - make -e docker-ci
-
