@@ -1,0 +1,14 @@
+extends: existence
+message: Use a numeral plus the units.
+link: https://docs.microsoft.com/en-us/style-guide/numbers
+nonword: true
+level: error
+raw:
+  - '\b[a-zA-Z]+\s'
+tokens:
+  - centimeters
+  - grams
+  - inches
+  - minutes
+  - pixels
+  - pounds

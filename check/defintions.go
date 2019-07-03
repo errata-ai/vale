@@ -141,6 +141,7 @@ var defaultStyles = []string{
 	"proselint",
 	"vale",
 	"write-good",
+	"Microsoft",
 }
 
 var extensionPoints = []string{
