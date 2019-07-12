@@ -14,3 +14,4 @@ demo.TitleCase = NO
 demo.Reading = YES
 demo.Spellcheck = YES
 demo.Filters = YES
+demo.Smart = YES

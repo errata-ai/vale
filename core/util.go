@@ -191,10 +191,6 @@ func initialPosition(ctx, sub string, loc []int) (int, string) {
 
 // sanitizer replaces a set of unicode characters with ASCII equivalents.
 var sanitizer = strings.NewReplacer(
-	"\u201c", `"`,
-	"\u201d", `"`,
-	"\u2018", "'",
-	"\u2019", "'",
 	"&rsquo;", "'",
 	"\r\n", "\n",
 	"\r", "\n")
