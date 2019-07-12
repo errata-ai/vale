@@ -1,5 +1,9 @@
 ## About
 
+```callout{'title': 'Heads up!', 'classes': ['success']}
+**Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features.
+```
+
 **Vale** is a free, open-source linter for prose built with speed and extensibility in mind.
 
 Unlike most writing aids, Vale's primary purpose isn't to provide its own advice; it's designed to

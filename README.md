@@ -1,4 +1,6 @@
-# Vale: Your style, our editor [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?style=flat-square&amp;logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://goreportcard.com/badge/github.com/gojp/goreportcard?style=flat-square)](https://goreportcard.com/report/github.com/errata-ai/vale) [![downloads](https://img.shields.io/github/downloads/errata-ai/vale/total.svg?style=flat-square)](https://github.com/errata-ai/vale/releases) [![Thanks](https://img.shields.io/badge/say-thanks-ff69b4.svg?style=flat-square&amp;logo=gratipay&amp;logoColor=white)](#say-thanks)
+# Vale: Your style, our editor [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?style=flat-square&amp;logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://goreportcard.com/badge/github.com/gojp/goreportcard?style=flat-square)](https://goreportcard.com/report/github.com/errata-ai/vale) [![downloads](https://img.shields.io/github/downloads/errata-ai/vale/total.svg?style=flat-square)](https://github.com/errata-ai/vale/releases)
+
+> **:boom: Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features.  
 
 ![vale-demo](https://user-images.githubusercontent.com/8785025/39656657-59e62c26-4fb6-11e8-9f48-ba230400ed55.png)
 
@@ -112,17 +114,3 @@ $ vale --ext=.md 'this is some `very` interesting text'
 ```
 
 See `vale --help` and [Usage](https://errata-ai.github.io/vale/usage/) for more information.
-
-## Say thanks
-
-Hi!
-
-My name is [Joseph Kato](https://github.com/jdkato).
-
-In my spare time, I develop and maintain a few [open-source tools](https://github.com/errata-ai) for collaborative writing.
-
-If you'd like to support my work, you can donate via [Square's Cash App](https://cash.me/$jdkato) or make use of my documentation-related [consulting services](https://errata.ai). Alternatively, I'd greatly appreciate a simple note explaining how you're using my software (which you can send via the ['Say Thanks' project](https://saythanks.io/to/jdkato)).
-
-
-
-I appreciate the support! _Thank you!_
