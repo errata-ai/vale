@@ -238,38 +238,6 @@ Feature: Config
     """
     And the exit status should be 1
 
-  Scenario: Override a built-in style
-    Given a file named "_vale" with:
-      """
-      StylesPath = ../../styles/
-      MinAlertLevel = warning
-
-      [*]
-      BasedOnStyles = proselint
-      """
-    When I run vale "test.md"
-    Then the output should contain exactly:
-      """
-      test.md:1:11:proselint.Simple:'very' left in text
-      """
-    And the exit status should be 0
-
-  Scenario: Don't override a built-in style
-    Given a file named "_vale" with:
-      """
-      MinAlertLevel = warning
-
-      [*]
-      BasedOnStyles = proselint
-      """
-    When I run vale "test.md"
-    Then the output should contain exactly:
-      """
-      test.md:1:11:proselint.Very:Remove 'very'.
-      test.md:1:77:proselint.Jargon:'agendize' is jargon.
-      """
-    And the exit status should be 1
-
   Scenario: Load individual rules
     Given a file named "_vale" with:
     """
