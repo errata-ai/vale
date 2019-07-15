@@ -1,6 +1,6 @@
 # Vale: Your style, our editor [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?style=flat-square&amp;logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://goreportcard.com/badge/github.com/gojp/goreportcard?style=flat-square)](https://goreportcard.com/report/github.com/errata-ai/vale) [![downloads](https://img.shields.io/github/downloads/errata-ai/vale/total.svg?style=flat-square)](https://github.com/errata-ai/vale/releases)
 
-> **:boom: Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features, including integration with **Google Docs** and **Google Chrome**.
+> **:boom: Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features, including add-ons for **Google Docs** and **Google Chrome**.
 
 ![vale-demo](https://user-images.githubusercontent.com/8785025/39656657-59e62c26-4fb6-11e8-9f48-ba230400ed55.png)
 
@@ -40,11 +40,15 @@ There are a few options to choose from:
 
 ## Usage
 
-###### Using pre-made styles
+###### Using the built-in styles
 
-Vale has a number of pre-made, community-maintained styles for popular style guides and writing tools.
+Vale ships with styles for [proselint](https://github.com/amperser/proselint), [write-good](https://github.com/btford/write-good), and [Joblint](https://github.com/rowanmanning/joblint). The benefits of using these styles over their original implementations include:
 
-To use one of these styles, you'll need to [install a style(s)](https://github.com/errata-ai/styles) and create a [config file](https://errata-ai.github.io/vale/config/) similar to the following:
+- [X] [Improved support for markup](https://errata-ai.github.io/vale/formats/), including the ability to ignore code and target only certain sections of text (e.g., checking headers for a specific capitalization style).
+- [X] No need to install and configure npm (Node.js), pip (Python), or other language-specific tools. With Vale, you get all the functionality in a single, standalone binary available for Windows, macOS, and Linux.
+- [X] Easily combine, mismatch, or otherwise customize each style.
+
+To use one of these styles, you'll need to create a [config file](https://errata-ai.github.io/vale/config/) along the lines of the following:
 
 ```ini
 # This goes in a file named either `.vale.ini` or `_vale.ini`.
@@ -55,8 +59,6 @@ MinAlertLevel = warning # suggestion, warning or error
 # Only Markdown and .txt files; change to whatever you're using.
 [*.{md,txt}]
 # List of styles to load.
-#
-# These should be isntalled at <StylesPath>.
 BasedOnStyles = proselint, write-good, Joblint
 # Style.Rule = {YES, NO, suggestion, warning, error} to
 # enable/disable a rule or change its level.

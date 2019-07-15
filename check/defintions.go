@@ -136,7 +136,12 @@ type Spelling struct {
 	Threshold int
 }
 
-var defaultStyles = []string{"vale"}
+var defaultStyles = []string{
+	"vale",
+	"write-good",
+	"proselint",
+	"Joblint",
+}
 
 var extensionPoints = []string{
 	"capitalization",

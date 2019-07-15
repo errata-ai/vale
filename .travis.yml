@@ -48,7 +48,6 @@ matrix:
       install:
         - make setup
         - make rules
-        - make spath
         - make build
       script:
         - make test
