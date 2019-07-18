@@ -352,3 +352,51 @@ Feature: Config
     test.py:1:37:write-good.Weasel:'Very' is a weasel word!
     """
     And the exit status should be 1
+
+  Scenario: Overwrite MinAlertLevel (suggestion)
+    Given a file named "_vale" with:
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
+
+      [*]
+      BasedOnStyles = write-good
+      """
+    When I assign minAlertLevel "suggestion" "test.md"
+    Then the output should contain exactly:
+      """
+      test.md:1:6:write-good.E-Prime:Avoid using "is"
+      test.md:1:11:write-good.Weasel:'very' is a weasel word!
+      """
+    And the exit status should be 0
+
+  Scenario: Overwrite MinAlertLevel (error)
+    Given a file named "_vale" with:
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
+
+      [*]
+      BasedOnStyles = write-good
+      """
+    When I assign minAlertLevel "error" "test.md"
+    Then the output should contain exactly:
+      """
+      """
+    And the exit status should be 0
+
+  Scenario: Don't overwrite MinAlertLevel
+    Given a file named "_vale" with:
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
+
+      [*]
+      BasedOnStyles = write-good
+      """
+    When I run vale "test.md"
+    Then the output should contain exactly:
+      """
+      test.md:1:11:write-good.Weasel:'very' is a weasel word!
+      """
+    And the exit status should be 0

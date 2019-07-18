@@ -69,6 +69,10 @@ When(/^I run vale "(.*)"$/) do |file|
   step %(I run `#{cmd} #{file}`)
 end
 
+When(/^I assign minAlertLevel "([^\s]+)" "([^\s]+)"$/) do |level, file|
+  step %(I run `#{cmd} --minAlertLevel='#{level}' #{file}`)
+end
+
 When(/^I test glob "(.*)"$/) do |glob|
   step %(I cd to "../../fixtures/formats")
   step %(I run `#{cmd} --glob='#{glob}' .`)

@@ -145,13 +145,15 @@ func loadConfig(names, paths []string) (*ini.File, string, error) {
 }
 
 // LoadConfig reads the .vale/_vale file.
-func LoadConfig(cfg *Config, upath string) (*Config, error) {
+func LoadConfig(cfg *Config, upath, min string) (*Config, error) {
 	names := []string{".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini", ""}
 	home, _ := homedir.Dir()
 
 	uCfg, path, err := loadConfig(names, []string{upath, "", home})
 	if err != nil {
 		return cfg, err
+	} else if StringInSlice(min, AlertLevels) {
+		cfg.MinAlertLevel = LevelToInt[min]
 	}
 
 	cfg.Path = path
@@ -165,8 +167,10 @@ func LoadConfig(cfg *Config, upath string) (*Config, error) {
 			canidate := filepath.FromSlash(core.Key(k).MustString(""))
 			cfg.StylesPath = DeterminePath(path, canidate)
 		} else if k == "MinAlertLevel" {
-			level := core.Key(k).In("warning", AlertLevels)
-			cfg.MinAlertLevel = LevelToInt[level]
+			if !StringInSlice(min, AlertLevels) {
+				level := core.Key(k).In("suggestion", AlertLevels)
+				cfg.MinAlertLevel = LevelToInt[level]
+			}
 		} else if k == "IgnoredScopes" {
 			cfg.IgnoredScopes = core.Key(k).Strings(",")
 		} else if k == "WordTemplate" {

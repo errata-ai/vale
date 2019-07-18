@@ -20,6 +20,7 @@ var version = "master"
 func main() {
 	var glob string
 	var path string
+	var minAlertLevel string
 
 	config := core.NewConfig()
 	app := cli.NewApp()
@@ -37,6 +38,11 @@ func main() {
 			Name:        "config",
 			Usage:       `a file path (e.g., --config='some/file/path')`,
 			Destination: &path,
+		},
+		cli.StringFlag{
+			Name:        "minAlertLevel",
+			Usage:       `The lowest alert level to display`,
+			Destination: &minAlertLevel,
 		},
 		cli.StringFlag{
 			Name:        "output",
@@ -88,7 +94,7 @@ func main() {
 			Aliases: []string{"dc", "dump-config", "ls"},
 			Usage:   "Prints configuration options to stdout and exits",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(config, path)
+				config, _ = core.LoadConfig(config, path, minAlertLevel)
 				fmt.Println(core.DumpConfig(config))
 				return nil
 			},
@@ -115,7 +121,7 @@ func main() {
 		var err error
 		var hasAlerts bool
 
-		config, err = core.LoadConfig(config, path)
+		config, err = core.LoadConfig(config, path, minAlertLevel)
 		if err != nil && config.Output == "CLI" {
 			fmt.Println("WARNING: Missing or invalid config file.\n\n" +
 				"See https://github.com/errata-ai/vale#usage for " +
