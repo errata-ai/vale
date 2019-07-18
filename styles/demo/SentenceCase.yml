@@ -7,3 +7,5 @@ exceptions:
   - Section
   - Level
   - Title
+indicators:
+  - ":"

@@ -407,6 +407,10 @@ func (mgr *Manager) addCapitalizationCheck(chkName string, chkDef Capitalization
 		chkDef.Check = func(s string, ignore []string) bool {
 			return title(s, ignore, tc)
 		}
+	} else if chkDef.Match == "$sentence" {
+		chkDef.Check = func(s string, ignore []string) bool {
+			return sentence(s, ignore, chkDef.Indicators)
+		}
 	} else if f, ok := varToFunc[chkDef.Match]; ok {
 		chkDef.Check = f
 	} else {

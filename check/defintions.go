@@ -109,6 +109,9 @@ type Capitalization struct {
 	Style string
 	// `exceptions` (`array`): An array of strings to be ignored.
 	Exceptions []string
+	// `indicators` (`array`): An array of suffixes that indicate the next
+	// token should be ignored.
+	Indicators []string
 }
 
 // Readability checks the reading grade level of text.

@@ -30,11 +30,34 @@ func title(s string, ignore []string, tc *transform.TitleConverter) bool {
 	return (count / words) > 0.8
 }
 
-func sentence(s string, ignore []string) bool {
+func hasAnySuffix(s string, suffixes []string) bool {
+	for _, sf := range suffixes {
+		if strings.HasSuffix(s, sf) {
+			return true
+		}
+	}
+	return false
+}
+
+func sentence(s string, exceptions []string, indicators []string) bool {
 	count := 0.0
 	words := 0.0
-	for i, w := range strings.Fields(s) {
-		if core.StringInSlice(w, ignore) || w == strings.ToUpper(w) {
+
+	tokens := strings.Fields(s)
+	for i, w := range tokens {
+		prev := ""
+		if i-1 >= 0 {
+			prev = tokens[i-1]
+		}
+
+		if strings.Contains(w, "-") {
+			// NOTE: This is necessary for works like 'Top-level'.
+			//
+			// TODO: Should we use `prose.WordTokenizer`?
+			w = strings.Split(w, "-")[0]
+		}
+
+		if core.StringInSlice(w, exceptions) || w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) {
 			return false
@@ -43,13 +66,13 @@ func sentence(s string, ignore []string) bool {
 		}
 		words++
 	}
+
 	return (count / words) > 0.8
 }
 
 var varToFunc = map[string]func(string, []string) bool{
-	"$lower":    lower,
-	"$upper":    upper,
-	"$sentence": sentence,
+	"$lower": lower,
+	"$upper": upper,
 }
 
 var readabilityMetrics = []string{
