@@ -169,7 +169,7 @@ Ignore parts of your reStructuredText documents:
 
 This is some text
 
-..vale on
+.. vale on
 
 ```
 
