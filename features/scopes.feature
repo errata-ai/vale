@@ -14,6 +14,8 @@ Feature: Scopes
     Then the output should contain exactly:
       """
       test.md:3:1:vale.Annotations:'TODO' left in text
+      test.rst:3:1:vale.Annotations:'TODO' left in text
+      test.rst:7:1:vale.Annotations:'TODO' left in text
       """
 
   Scenario: Attr
