@@ -39,4 +39,5 @@ Feature: Misc
       """
       test.md:4:1:Spelling.Ignore:'HTTPie' is a typo!
       test.md:4:59:Spelling.Ignore:'CLI' is a typo!
+      test.rst:8:139:Spelling.Ignores:Did you really mean 'substring'?
       """

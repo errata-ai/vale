@@ -118,7 +118,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		} else if tokt == html.StartTagToken && core.StringInSlice(txt, skipTags) {
 			inBlock = true
 		} else if inBlock && core.StringInSlice(txt, skipTags) {
-			skip, inBlock = false, false
+			inBlock = false
 		} else if tokt == html.StartTagToken {
 			inline = core.StringInSlice(txt, inlineTags)
 			skip = core.StringInSlice(txt, skipped)
@@ -127,6 +127,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
 		} else if tokt == html.TextToken {
+			skip = skip || shouldBeSkipped(tagHistory, f.NormedExt)
 			if isLink {
 				// NOTE: We need to create a "temporary" context because this
 				// text is actually linted twice: once as a 'link' and once as
@@ -146,7 +147,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
 			content := buf.String()
 			actual := act.String()
-			if content != "" {
+			if strings.TrimSpace(content) != "" {
 				l.lintScope(f, ctx, content, actual, tagHistory, lines)
 			}
 
@@ -194,6 +195,22 @@ func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lin
 	// processed above) in our Summary content.
 	f.Summary.WriteString(raw + " ")
 	l.lintProse(f, ctx, txt, raw, lines, 0)
+}
+
+// HACK: We need to look for inserted `spans` within `tt` tags.
+//
+// See https://github.com/errata-ai/vale/issues/140.
+func shouldBeSkipped(tagHistory []string, ext string) bool {
+	if ext == ".rst" {
+		n := len(tagHistory)
+		for i := n - 1; i >= 0; i-- {
+			if tagHistory[i] == "span" {
+				continue
+			}
+			return tagHistory[i] == "tt" && i+1 != n
+		}
+	}
+	return false
 }
 
 func codify(ext, text string) string {

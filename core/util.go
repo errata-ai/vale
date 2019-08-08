@@ -18,6 +18,7 @@ import (
 
 // ExeDir is our starting location.
 var ExeDir string
+var code = regexp.MustCompile("`?`[^`@\n]+``?")
 
 // IsLetter returns `true` if s contains all letter characters and false if not.
 func IsLetter(s string) bool {
@@ -172,6 +173,12 @@ func initialPosition(ctx, sub string, loc []int) (int, string) {
 		// code spans).
 		return JaroWinkler(ctx, sub)
 	}
+
+	temp := ctx
+	for _, s := range code.FindAllString(temp, -1) {
+		ctx, _ = Substitute(ctx, s, '@')
+	}
+
 	pat := `(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:\b|_|$)`
 	txt := strings.TrimSpace(ctx[Max(idx-1, 0):Min(idx+len(sub)+1, len(ctx))])
 	if match, err := regexp.MatchString(pat, txt); err != nil || !match {

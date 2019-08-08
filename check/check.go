@@ -749,10 +749,9 @@ func (mgr *Manager) loadCheck(fName string, fp string) error {
 
 		style := filepath.Base(filepath.Dir(fp))
 		chkName := style + "." + strings.Split(fName, ".")[0]
-		if _, ok := mgr.AllChecks[chkName]; ok {
-			return fmt.Errorf("(%s): duplicate check", chkName)
+		if _, ok := mgr.AllChecks[chkName]; !ok {
+			return mgr.addCheck(f, chkName)
 		}
-		return mgr.addCheck(f, chkName)
 	}
 	return nil
 }
