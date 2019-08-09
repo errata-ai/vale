@@ -20,6 +20,13 @@ import (
 // reCodeBlock is used to convert Sphinx-style code directives to the regular
 // `::` for rst2html.
 var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (\w+)`)
+
+// HACK: We replace custom Sphinx directives with `.. code::`.
+//
+// This isn't ideal, but it appears to be necessary.
+//
+// See https://github.com/errata-ai/vale/issues/119.
+var reSphinx = regexp.MustCompile(`.. glossary::`)
 var rstArgs = []string{
 	"--quiet",
 	"--halt=5",
@@ -343,6 +350,7 @@ func (l Linter) lintRST(f *core.File, python string, rst2html string) {
 	}
 
 	s := l.prep(f.Content, "\n::\n\n%s\n", "``$1``", ".rst")
+	s = reSphinx.ReplaceAllString(s, ".. code::")
 	cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(s, "::"))
 	cmd.Stdout = &out
 
