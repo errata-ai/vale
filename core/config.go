@@ -1,6 +1,8 @@
 package core
 
 import (
+	"bufio"
+	"io"
 	"os"
 	"path"
 	"path/filepath"
@@ -8,7 +10,8 @@ import (
 
 	"github.com/gobwas/glob"
 	"github.com/mitchellh/go-homedir"
-	ini "gopkg.in/ini.v1"
+	"github.com/spf13/afero"
+	"gopkg.in/ini.v1"
 )
 
 // Glob represents a glob pattern passed via `--glob`.
@@ -49,24 +52,28 @@ var LevelToInt = map[string]int{
 // Config holds Vale's configuration, both from the CLI and its config file.
 type Config struct {
 	// General configuration
+	BlockIgnores  map[string][]string        // A list of blocks to ignore
 	Checks        []string                   // All checks to load
+	Formats       map[string]string          // A map of unknown -> known formats
 	GBaseStyles   []string                   // Global base style
 	GChecks       map[string]bool            // Global checks
 	IgnoredScopes []string                   // A list of HTML tags to ignore
-	SkippedScopes []string                   // A list of HTML blocks to ignore
-	BlockIgnores  map[string][]string        // A list of blocks to ignore
-	TokenIgnores  map[string][]string        // A list of tokens to ignore
 	MinAlertLevel int                        // Lowest alert level to display
+	Parsers       map[string]string          // A map of syntax -> commands
+	Path          string                     // The location of the config file
 	RuleToLevel   map[string]string          // Single-rule level changes
 	SBaseStyles   map[string][]string        // Syntax-specific base styles
 	SChecks       map[string]map[string]bool // Syntax-specific checks
+	SkippedScopes []string                   // A list of HTML blocks to ignore
 	StylesPath    string                     // Directory with Rule.yml files
+	TokenIgnores  map[string][]string        // A list of tokens to ignore
+	Whitelist     map[string]struct{}        // Project-specific vocabulary (okay)
+	Blacklist     map[string]struct{}        // Project-specific vocabulary (avoid)
 	WordTemplate  string                     // The template used in YAML -> regexp list conversions
-	Parsers       map[string]string          // A map of syntax -> commands
-	Formats       map[string]string          // A map of unknown -> known formats
-	Path          string                     // The location of the config file
 
-	SecToPat map[string]glob.Glob
+	SecToPat     map[string]glob.Glob `json:"-"`
+	FsWrapper    *afero.Afero         `json:"-"`
+	FallbackPath string               `json:"-"`
 
 	// Command-line configuration
 	Output    string // (optional) output style ("line" or "CLI")
@@ -92,7 +99,67 @@ func NewConfig() *Config {
 	cfg.BlockIgnores = make(map[string][]string)
 	cfg.TokenIgnores = make(map[string][]string)
 	cfg.SecToPat = make(map[string]glob.Glob)
+	cfg.Whitelist = make(map[string]struct{})
+	cfg.Blacklist = make(map[string]struct{})
+	cfg.FsWrapper = &afero.Afero{Fs: afero.NewReadOnlyFs(afero.NewOsFs())}
 	return &cfg
+}
+
+func (c *Config) addWordListFile(name string, accept bool) error {
+	fd, err := os.Open(name)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+	return c.addWordList(fd, accept)
+}
+
+func (c *Config) addWordList(r io.Reader, accept bool) error {
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		word := strings.TrimSpace(scanner.Text())
+		if len(word) == 0 || word == "#" {
+			continue
+		} else if accept {
+			if _, ok := c.Whitelist[word]; !ok {
+				c.Whitelist[word] = struct{}{}
+			}
+		} else {
+			if _, ok := c.Blacklist[word]; !ok {
+				c.Blacklist[word] = struct{}{}
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func loadVocab(root string, config *Config) error {
+	root = filepath.Join(config.StylesPath, "Vocab", root)
+	err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
+		if filepath.Base(fp) == "accept.txt" {
+			config.addWordListFile(fp, true)
+		} else if filepath.Base(fp) == "reject.txt" {
+			config.addWordListFile(fp, false)
+		}
+		return nil
+	})
+	return err
+}
+
+func mergeValues(shadows []string) []string {
+	values := []string{}
+	for _, v := range shadows {
+		for _, s := range strings.Split(v, ",") {
+			entry := strings.TrimSpace(s)
+			if entry != "" && !StringInSlice(entry, values) {
+				values = append(values, entry)
+			}
+		}
+	}
+	return values
 }
 
 func validateLevel(key string, val string, cfg *Config) bool {
@@ -108,10 +175,8 @@ func validateLevel(key string, val string, cfg *Config) bool {
 // loadConfig loads the .vale file. It checks the current directory up to the
 // user's home directory, stopping on the first occurrence of a .vale or _vale
 // file.
-func loadConfig(names, paths []string) (*ini.File, string, error) {
+func loadConfig(names, paths []string) string {
 	var configPath, dir string
-	var iniFile *ini.File
-	var err error
 	var recur bool
 
 	for _, start := range paths {
@@ -140,23 +205,34 @@ func loadConfig(names, paths []string) (*ini.File, string, error) {
 		}
 	}
 
-	iniFile, err = ini.Load(configPath)
-	return iniFile, dir, err
+	return configPath
 }
 
 // LoadConfig reads the .vale/_vale file.
-func LoadConfig(cfg *Config, upath, min string) (*Config, error) {
+func LoadConfig(cfg *Config, upath string, min string, compat bool) (*Config, error) {
+	var base string
+	var uCfg *ini.File
+	var err error
+
 	names := []string{".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini", ""}
 	home, _ := homedir.Dir()
 
-	uCfg, path, err := loadConfig(names, []string{upath, "", home})
+	base = loadConfig(names, []string{"", home})
+	if compat && FileExists(base) && FileExists(upath) {
+		uCfg, err = ini.ShadowLoad(upath, base)
+		cfg.Path = upath
+	} else {
+		base = loadConfig(names, []string{upath, "", home})
+		uCfg, err = ini.ShadowLoad(base)
+		cfg.Path = base
+	}
+
 	if err != nil {
 		return cfg, err
 	} else if StringInSlice(min, AlertLevels) {
 		cfg.MinAlertLevel = LevelToInt[min]
 	}
 
-	cfg.Path = path
 	core := uCfg.Section("")
 	global := uCfg.Section("*")
 	formats := uCfg.Section("formats")
@@ -164,19 +240,35 @@ func LoadConfig(cfg *Config, upath, min string) (*Config, error) {
 	// Default settings
 	for _, k := range core.KeyStrings() {
 		if k == "StylesPath" {
+			paths := core.Key(k).ValueWithShadows()
+			if compat && len(paths) == 2 {
+				basePath := DeterminePath(base, filepath.FromSlash(paths[1]))
+				mockPath := DeterminePath(upath, filepath.FromSlash(paths[0]))
+				if basePath != mockPath {
+					baseFs := cfg.FsWrapper.Fs
+					mockFs := afero.NewMemMapFs()
+					if CheckError(CopyDir(baseFs, basePath, mockFs, mockPath)) {
+						cfg.FsWrapper.Fs = afero.NewCopyOnWriteFs(baseFs, mockFs)
+						cfg.FallbackPath = basePath
+					}
+				}
+			}
 			canidate := filepath.FromSlash(core.Key(k).MustString(""))
-			cfg.StylesPath = DeterminePath(path, canidate)
+			cfg.StylesPath = DeterminePath(cfg.Path, canidate)
 		} else if k == "MinAlertLevel" {
 			if !StringInSlice(min, AlertLevels) {
 				level := core.Key(k).In("suggestion", AlertLevels)
 				cfg.MinAlertLevel = LevelToInt[level]
 			}
 		} else if k == "IgnoredScopes" {
-			cfg.IgnoredScopes = core.Key(k).Strings(",")
+			cfg.IgnoredScopes = mergeValues(core.Key(k).ValueWithShadows())
 		} else if k == "WordTemplate" {
 			cfg.WordTemplate = core.Key(k).String()
 		} else if k == "SkippedScopes" {
-			cfg.SkippedScopes = core.Key(k).Strings(",")
+			cfg.SkippedScopes = mergeValues(core.Key(k).ValueWithShadows())
+		} else if k == "Project" {
+			// TODO: Should we do this in `check`?
+			loadVocab(core.Key(k).String(), cfg)
 		}
 	}
 	// Format mappings
@@ -185,7 +277,7 @@ func LoadConfig(cfg *Config, upath, min string) (*Config, error) {
 	}
 
 	// Global settings
-	cfg.GBaseStyles = global.Key("BasedOnStyles").Strings(",")
+	cfg.GBaseStyles = mergeValues(global.Key("BasedOnStyles").ValueWithShadows())
 	for _, k := range global.KeyStrings() {
 		if k == "BasedOnStyles" {
 			continue
@@ -211,11 +303,11 @@ func LoadConfig(cfg *Config, upath, min string) (*Config, error) {
 				if _, found := cfg.SecToPat[sec]; !found && CheckError(err) {
 					cfg.SecToPat[sec] = pat
 				}
-				cfg.SBaseStyles[sec] = uCfg.Section(sec).Key(k).Strings(",")
+				cfg.SBaseStyles[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
 			} else if k == "IgnorePatterns" || k == "BlockIgnores" {
-				cfg.BlockIgnores[sec] = uCfg.Section(sec).Key(k).Strings(",")
+				cfg.BlockIgnores[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
 			} else if k == "TokenIgnores" {
-				cfg.TokenIgnores[sec] = uCfg.Section(sec).Key(k).Strings(",")
+				cfg.TokenIgnores[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
 			} else if k == "Parser" {
 				cfg.Parsers[sec] = uCfg.Section(sec).Key(k).String()
 			} else {

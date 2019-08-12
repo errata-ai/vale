@@ -73,6 +73,17 @@ When(/^I assign minAlertLevel "([^\s]+)" "([^\s]+)"$/) do |level, file|
   step %(I run `#{cmd} --minAlertLevel='#{level}' #{file}`)
 end
 
+When(/^I inherit from "(.*)"$/) do |file|
+  step %(I cd to "../../fixtures/configs")
+  step %(I run `#{cmd} --mode-compat --config='#{file}' test.md`)
+end
+
+When(/^I check inherited config "(.*)"$/) do |file|
+  step %(I cd to "../../fixtures/configs")
+  step %(I run `#{cmd} --mode-compat --config='#{file}' dc`)
+end
+
+
 When(/^I test glob "(.*)"$/) do |glob|
   step %(I cd to "../../fixtures/formats")
   step %(I run `#{cmd} --glob='#{glob}' .`)

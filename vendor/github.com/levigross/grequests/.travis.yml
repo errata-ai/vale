@@ -1,0 +1,24 @@
+language: go
+
+matrix:
+  fast_finish: true
+  include:
+  - go: 1.9
+  - go: "1.10"
+  - go: "1.11"
+  - go: master
+  allow_failures:
+  - go: master
+before_install:
+  - go get -u -v github.com/axw/gocov/gocov
+  - go get -u -v github.com/mattn/goveralls
+  - go get -u -v golang.org/x/lint/golint
+
+script:
+  - diff -u <(echo -n) <(gofmt -s -d ./)
+  - diff -u <(echo -n) <(go vet ./...)
+  - diff -u <(echo -n) <(golint ./...)
+  - go test -v -race -covermode=atomic -coverprofile=coverage.out
+
+after_success:
+  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN

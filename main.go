@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/errata-ai/vale/action"
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/lint"
@@ -21,6 +22,7 @@ func main() {
 	var glob string
 	var path string
 	var minAlertLevel string
+	var backup bool
 
 	config := core.NewConfig()
 	app := cli.NewApp()
@@ -36,7 +38,7 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:        "config",
-			Usage:       `a file path (e.g., --config='some/file/path')`,
+			Usage:       `a file path (e.g., --config='some/file/path/.vale.ini')`,
 			Destination: &path,
 		},
 		cli.StringFlag{
@@ -55,6 +57,12 @@ func main() {
 			Value:       ".txt",
 			Usage:       `extension to associate with stdin`,
 			Destination: &config.InExt,
+		},
+		cli.BoolFlag{
+			Name:        "mode-compat",
+			Usage:       `Respect local Vale configurations`,
+			Destination: &backup,
+			Hidden:      true,
 		},
 		cli.BoolFlag{
 			Name:        "no-wrap",
@@ -91,28 +99,99 @@ func main() {
 	app.Commands = []cli.Command{
 		{
 			Name:    "ls-config",
-			Aliases: []string{"dc", "dump-config", "ls"},
-			Usage:   "Prints configuration options to stdout and exits",
+			Aliases: []string{"dc"},
+			Usage:   "List the current configuration options",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(config, path, minAlertLevel)
-				fmt.Println(core.DumpConfig(config))
-				return nil
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.ListConfig(config, path)
 			},
 		},
 		{
-			Name:  "new",
+			Name:  "new-rule",
 			Usage: "Generates a template for the given extension point",
 			Action: func(c *cli.Context) error {
-				name := c.Args().First()
-				template := check.GetTemplate(name)
-				if template != "" {
-					fmt.Println(template)
-				} else {
-					fmt.Printf(
-						"'%s' not in %v!\n", name, check.GetExtenionPoints())
-				}
-				return nil
+				return action.GetTemplate(c.Args().First())
 			},
+		},
+		{
+			Name:  "new-project",
+			Usage: "Creates a vocabulary directory for the new project",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.AddProject(config, c.Args().First())
+			},
+			Hidden: true,
+		},
+		{
+			Name:  "remove-project",
+			Usage: "Deletes an existing vocabulary directory",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.RemoveProject(config, c.Args().First())
+			},
+			Hidden: true,
+		},
+		{
+			Name:  "edit-project",
+			Usage: "Renames a project from the current StylesPath.",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.EditProject(config, c.Args())
+			},
+			Hidden: true,
+		},
+		{
+			Name:  "ls-projects",
+			Usage: "List all current projects",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.ListDir(config, "Vocab")
+			},
+			Hidden: true,
+		},
+		{
+			Name:  "get-vocab",
+			Usage: "Get a vocab file for a project",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.GetVocab(config, c.Args())
+			},
+			Hidden: true,
+		},
+		{
+			Name:  "update-vocab",
+			Usage: "Update a vocab file for the given project",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.UpdateVocab(config, c.Args())
+			},
+			Hidden: true,
+		},
+		{
+			Name:  "ls-styles",
+			Usage: "List all installed styles",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.ListDir(config, "")
+			},
+		},
+		{
+			Name:  "ls-library",
+			Usage: "List all available styles",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.GetLibrary(config)
+			},
+			Hidden: true,
+		},
+		{
+			Name:  "install",
+			Usage: "Install the given style",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(config, path, minAlertLevel, backup)
+				return action.InstallStyle(config, c.Args())
+			},
+			Hidden: true,
 		},
 	}
 
@@ -121,7 +200,7 @@ func main() {
 		var err error
 		var hasAlerts bool
 
-		config, err = core.LoadConfig(config, path, minAlertLevel)
+		config, err = core.LoadConfig(config, path, minAlertLevel, backup)
 		if err != nil && config.Output == "CLI" {
 			fmt.Println("WARNING: Missing or invalid config file.\n\n" +
 				"See https://github.com/errata-ai/vale#usage for " +

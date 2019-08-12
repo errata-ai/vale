@@ -400,3 +400,58 @@ Feature: Config
       test.md:1:11:write-good.Weasel:'very' is a weasel word!
       """
     And the exit status should be 0
+
+  Scenario: Local overrides (lint)
+    When I inherit from "../../fixtures/configs/ini/.vale.ini"
+    Then the output should contain exactly:
+      """
+      test.md:3:11:proselint.Very:Remove 'very'.
+      test.md:3:16:Joblint.Visionary:Avoid using 'paradigm'
+      test.md:5:16:Joblint.LegacyTech:Avoid using 'Cobol'
+      test.md:7:7:proselint.Jargon:'agendize' is jargon.
+      """
+    And the exit status should be 1
+
+  Scenario: Local overrides (ls-config)
+    When I check inherited config "../../fixtures/configs/ini/.vale.ini"
+    Then the output should contain exactly:
+      """
+      {
+        "BlockIgnores": {},
+        "Checks": [
+          "Joblint.Visionary",
+          "proselint.Annotations"
+        ],
+        "Formats": {},
+        "GBaseStyles": [
+          "proselint",
+          "Joblint"
+        ],
+        "GChecks": {
+          "Joblint.Visionary": true,
+          "proselint.Annotations": false
+        },
+        "IgnoredScopes": null,
+        "MinAlertLevel": 0,
+        "Parsers": {},
+        "Path": "../../fixtures/configs/ini/.vale.ini",
+        "RuleToLevel": {},
+        "SBaseStyles": {},
+        "SChecks": {},
+        "SkippedScopes": null,
+        "StylesPath": "../../styles",
+        "TokenIgnores": {},
+        "Whitelist": {},
+        "Blacklist": {},
+        "WordTemplate": "",
+        "Output": "line",
+        "Wrap": false,
+        "NoExit": false,
+        "Sorted": true,
+        "Normalize": true,
+        "Simple": false,
+        "InExt": ".txt",
+        "Relative": true
+      }
+      """
+    And the exit status should be 0
