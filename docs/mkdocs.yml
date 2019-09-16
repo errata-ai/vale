@@ -31,12 +31,12 @@ theme:
 
 extra_css:
   - 'css/style.css'
-  - 'css/quickstart.css'
+  # - 'css/quickstart.css'
 
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'
-  - 'js/quickstart.min.js'
-  - 'js/install.js'
+  # - 'js/quickstart.min.js'
+  # - 'js/install.js'
 
 # Extensions
 markdown_extensions:
