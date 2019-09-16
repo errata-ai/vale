@@ -16,20 +16,8 @@ will help you maintain consistent and error-free writing.
 
 ## Installation
 
-Vale runs on Windows, macOS, and Linux. It can be installed via one of the package managers listed
-below or manually by downloading an executable from the
+Vale runs on Windows, macOS, and Linux. It can be installed by downloading an executable from the
 [releases page](https://github.com/errata-ai/vale/releases).
-
-<!-- vale off -->
-
-<div id="quickstart">
-    <span data-qs-package="brew">brew tap ValeLint/vale</span>
-    <span data-qs-package="brew">brew install vale</span>
-    <span data-qs-package="docker">docker pull jdkato/vale</span>
-    <span data-qs-package="goreleaser">curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh</span>
-</div>
-
-<!-- vale on -->
 
 ## Quickstart
 
