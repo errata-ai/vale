@@ -300,3 +300,12 @@ ignore:
 ```
 
 <!-- vale 18F.Clarity = YES -->
+
+## Default Style
+
+Vale comes with a single built-in style named `Vale` that implements two rules, as described in the table below.
+
+| Rule              | Scope  | Level   | Description                                                         |
+|-------------------|--------|---------|---------------------------------------------------------------------|
+| `Vale.Spelling`   | `text` | `error` | Spell checks text while respecting the words listed in a `$StylesPath/vocab.txt` ignore file. |
+| `Vale.Repetition` | `text` | `error` | Looks for instances of repeated words such as "the the" or "this this."            |

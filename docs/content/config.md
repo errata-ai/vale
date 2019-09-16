@@ -138,6 +138,14 @@ If more than one configuration file is present, the closest one takes precedence
     [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup)
     for more information.
 
+- `Transform` (syntax-specific):
+
+    ```ini
+    Transform = docbook-xsl-snapshot/html/docbook.xsl
+    ```
+
+    `Transform` specifies a version 1.0 XSL Transformation (XSLT) for converting to HTML. See [Formats#XML](https://errata-ai.github.io/vale/formats/#XML) for more information.
+
 ## Ignoring Parts of Your Documents
 
 ```callout{'title': 'NOTE', 'classes': ['tip']}
@@ -169,7 +177,7 @@ Ignore parts of your reStructuredText documents:
 
 This is some text
 
-..vale on
+.. vale on
 
 ```
 

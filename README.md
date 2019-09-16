@@ -10,7 +10,23 @@ Vale is a natural language linter that supports plain text, markup (Markdown, re
 
 Check out [project website](https://errata-ai.github.io/vale) or [our blog post](https://medium.com/@errata.ai/introducing-vale-an-nlp-powered-linter-for-prose-63c4de31be00) to learn more!
 
+* [Installation](#installation)
+* [Plugins for other software](#plugins-for-other-software)
+* [Usage](#usage)
+* [Used By](#used-by)
+
 ## Installation
+
+> **NOTE**: If you're installing Vale in a CI environment, the best way to ensure that your builds are reproducible is to install a fixed version.
+>
+> The recommended way to do this is via [GoDownloader](https://install.goreleaser.com/projects/):
+>
+> ```console
+> # Vale will be installed into `/bin/vale`.
+> $ curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s vX.Y.Z
+> ```
+>
+> where `vX.Y.Z` is your version of choice from the [releases page](https://github.com/errata-ai/vale/releases).
 
 There are a few options to choose from:
 
@@ -28,6 +44,7 @@ There are a few options to choose from:
     ```
 
 - A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/errata-ai/vale/releases).
+
 - Manually on Windows, macOS, or Linux by downloading an executable from the [releases page](https://github.com/errata-ai/vale/releases).
 
 ## Plugins for other software
@@ -42,13 +59,9 @@ There are a few options to choose from:
 
 ## Usage
 
-###### Using the built-in styles
+###### Using pre-made styles
 
-Vale ships with styles for [proselint](https://github.com/amperser/proselint), [write-good](https://github.com/btford/write-good), and [Joblint](https://github.com/rowanmanning/joblint). The benefits of using these styles over their original implementations include:
-
-- [X] [Improved support for markup](https://errata-ai.github.io/vale/formats/), including the ability to ignore code and target only certain sections of text (e.g., checking headers for a specific capitalization style).
-- [X] No need to install and configure npm (Node.js), pip (Python), or other language-specific tools. With Vale, you get all the functionality in a single, standalone binary available for Windows, macOS, and Linux.
-- [X] Easily combine, mismatch, or otherwise customize each style.
+Vale ships with its own built-in style, [`Vale`](https://errata-ai.github.io/vale/styles/#default-style), that implements spell check and other basic rules. There is also a library of officially-maintained styles available for download at [errata-ai/styles](https://github.com/errata-ai/styles).
 
 To use one of these styles, you'll need to create a [config file](https://errata-ai.github.io/vale/config/) along the lines of the following:
 
@@ -61,7 +74,9 @@ MinAlertLevel = warning # suggestion, warning or error
 # Only Markdown and .txt files; change to whatever you're using.
 [*.{md,txt}]
 # List of styles to load.
-BasedOnStyles = proselint, write-good, Joblint
+#
+# `Vale` is built-in; other styles need to be unzipped onto your StylesPath (defined above).
+BasedOnStyles = Vale, proselint
 # Style.Rule = {YES, NO, suggestion, warning, error} to
 # enable/disable a rule or change its level.
 write-good.E-Prime = NO
@@ -110,3 +125,16 @@ $ vale --ext=.md 'this is some `very` interesting text'
 ```
 
 See `vale --help` and [Usage](https://errata-ai.github.io/vale/usage/) for more information.
+
+## Used By
+
+The following companies/organizations use Vale:
+
+- [Cloud Elements](https://github.com/cloud-elements/devportal)
+- [CockroachDB](https://github.com/cockroachdb/docs)
+- [Crate.io](https://github.com/crate/crate-docs-utils)
+- [GOV.UK](https://github.com/alphagov/govuk-developer-docs)
+- [Linode](https://github.com/linode/docs)
+- [Plone](https://github.com/plone/docs-guide)
+- [Semmle](https://github.com/Semmle/ql/tree/master/docs/language)
+- [Write the Docs](https://github.com/writethedocs/www)

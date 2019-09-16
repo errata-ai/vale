@@ -26,7 +26,7 @@ below or manually by downloading an executable from the
     <span data-qs-package="brew">brew tap ValeLint/vale</span>
     <span data-qs-package="brew">brew install vale</span>
     <span data-qs-package="docker">docker pull jdkato/vale</span>
-    <span data-qs-package="goreleaser">curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh</span>
+    <span data-qs-package="goreleaser">curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh</span>
 </div>
 
 <!-- vale on -->
