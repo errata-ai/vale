@@ -11,51 +11,19 @@ Vale is a natural language linter that supports plain text, markup (Markdown, re
 Check out [project website](https://errata-ai.github.io/vale) or [our blog post](https://medium.com/@errata.ai/introducing-vale-an-nlp-powered-linter-for-prose-63c4de31be00) to learn more!
 
 * [Installation](#installation)
-* [Plugins for other software](#plugins-for-other-software)
 * [Usage](#usage)
 * [Used By](#used-by)
 
 ## Installation
 
-> **NOTE**: If you're installing Vale in a CI environment, the best way to ensure that your builds are reproducible is to install a fixed version.
->
-> The recommended way to do this is via [GoDownloader](https://install.goreleaser.com/projects/):
->
-> ```console
-> # Vale will be installed into `/bin/vale`.
-> $ curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s vX.Y.Z
-> ```
->
-> where `vX.Y.Z` is your version of choice from the [releases page](https://github.com/errata-ai/vale/releases).
+The recommended way to install Vale is through [GoDownloader](https://install.goreleaser.com/projects/):
 
-There are a few options to choose from:
+```console
+# Vale will be installed into `/bin/vale`.
+$ curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s vX.Y.Z
+```
 
-- [Homebrew](http://brew.sh) (macOS):
-
-    ```bash
-    $ brew tap ValeLint/vale
-    $ brew install vale
-    ```
-
-- [Docker](https://hub.docker.com/r/jdkato/vale/):
-
-    ```shell
-    $ docker pull jdkato/vale
-    ```
-
-- A Windows Installer package (`.msi`), which you'll find on the [releases page](https://github.com/errata-ai/vale/releases).
-
-- Manually on Windows, macOS, or Linux by downloading an executable from the [releases page](https://github.com/errata-ai/vale/releases).
-
-## Plugins for other software
-
-- Atom&mdash;[TimKam/atomic-vale](https://github.com/TimKam/atomic-vale)
-- Emacs&mdash;[abingham/flycheck-vale](https://github.com/abingham/flycheck-vale)
-- Sublime Text&mdash;[SublimeLinter-contrib-vale](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
-- Visual Studio Code&mdash;[testthedocs/vscode-vale](https://github.com/testthedocs/vscode-vale)
-- Vim:
-  - Via [ALE](https://github.com/w0rp/ale) (thanks to @[chew-z](https://github.com/chew-z))
-  - Via [Neomake](https://github.com/neomake/neomake)
+where `vX.Y.Z` is your version of choice from the [releases page](https://github.com/errata-ai/vale/releases).
 
 ## Usage
 
