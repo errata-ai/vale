@@ -30,14 +30,15 @@ after_test:
 artifacts:
   - path: vale.msi
     name: vale.msi
-deploy:
-  - provider: GitHub
-    artifact: vale.msi
-    draft: false
-    prerelease: false
-    auth_token:
-      secure: 'yRQKtmS08Vob2MlOvew+JQMHVkUYJijD88Eh59TBC98oxX6avivBwOWZXQMNPd1n'
-    on:
-      branch:
-        - master
-      appveyor_repo_tag: true
+
+# deploy:
+#   - provider: GitHub
+#     artifact: vale.msi
+#     draft: false
+#     prerelease: false
+#     auth_token:
+#       secure: 'yRQKtmS08Vob2MlOvew+JQMHVkUYJijD88Eh59TBC98oxX6avivBwOWZXQMNPd1n'
+#     on:
+#       branch:
+#         - master
+#       appveyor_repo_tag: true

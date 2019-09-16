@@ -56,5 +56,5 @@ matrix:
         # GoReleaser fail.
         - git stash
       after_success:
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
+        - # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - # test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
