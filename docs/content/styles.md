@@ -160,7 +160,9 @@ message: "Consider using '%s'"
 
 `document{'path': 'api/occurrence/keys.md'}`
 
-`occurrence` limits the number of times a particular token can appear in a given scope. In the example above, we're limiting the number of words per sentence.
+`occurrence` enforces the maximum or minimum number of times a particular token can appear in a given scope.
+
+In the example above, we're limiting the number of words per sentence.
 
 This is the only extension point that doesn't accept a format specifier in its message.
 
