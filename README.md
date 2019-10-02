@@ -12,7 +12,7 @@ Check out [project website](https://errata-ai.github.io/vale) or [our blog post]
 
 * [Installation](#installation)
 * [Usage](#usage)
-* [Used By](#used-by)
+* [Styles](#styles)
 
 ## Installation
 
@@ -27,38 +27,7 @@ where `vX.Y.Z` is your version of choice from the [releases page](https://github
 
 ## Usage
 
-###### Using pre-made styles
-
-Vale ships with its own built-in style, [`Vale`](https://errata-ai.github.io/vale/styles/#default-style), that implements spell check and other basic rules. There is also a library of officially-maintained styles available for download at [errata-ai/styles](https://github.com/errata-ai/styles).
-
-To use one of these styles, you'll need to create a [config file](https://errata-ai.github.io/vale/config/) along the lines of the following:
-
-```ini
-# This goes in a file named either `.vale.ini` or `_vale.ini`.
-
-StylesPath = path/to/some/directory
-MinAlertLevel = warning # suggestion, warning or error
-
-# Only Markdown and .txt files; change to whatever you're using.
-[*.{md,txt}]
-# List of styles to load.
-#
-# `Vale` is built-in; other styles need to be unzipped onto your StylesPath (defined above).
-BasedOnStyles = Vale, proselint
-# Style.Rule = {YES, NO, suggestion, warning, error} to
-# enable/disable a rule or change its level.
-write-good.E-Prime = NO
-```
-
-See [Getting Started](https://errata-ai.github.io/vale/) for more information.
-
-###### Creating your own style
-
-While the built-in styles are useful, Vale is really designed to [meet custom needs](https://errata-ai.github.io/vale/styles/). This is done by using Vale's extension points (called "checks") that can be customized to perform many different kinds of tasks, including [calculating readability](https://github.com/errata-ai/vale/blob/master/styles/demo/Reading.yml), [measuring sentence length](https://github.com/errata-ai/vale/blob/master/styles/demo/SentenceLength.yml), and [enforcing a particular heading style](https://github.com/errata-ai/vale-boilerplate/blob/master/src/18F/Headings.yml).
-
-See the [Microsoft](https://github.com/errata-ai/vale-boilerplate) project for a complete example of a Vale-compatible style guide.
-
-###### Using the CLI
+### Using the CLI
 
 Run Vale on a single file:
 
@@ -94,6 +63,39 @@ $ vale --ext=.md 'this is some `very` interesting text'
 
 See `vale --help` and [Usage](https://errata-ai.github.io/vale/usage/) for more information.
 
-###### Third-party integrations
+### Third-party integrations
 
 If you'd like to use Vale with another application (such as a text editor), be sure to check out Vale's native desktop application [Vale Server](https://errata.ai/vale-server/). The available integrations currently inlcude **Visual Studio Code**, **Sublime Text 3**, **Atom**, **Google Docs**, and **Google Chrome**.
+
+## Styles
+
+### Using pre-made styles
+
+Vale ships with its own built-in style, [`Vale`](https://errata-ai.github.io/vale/styles/#default-style), that implements spell check and other basic rules. There is also a library of officially-maintained styles available for download at [errata-ai/styles](https://github.com/errata-ai/styles).
+
+To use one of these styles, you'll need to create a [config file](https://errata-ai.github.io/vale/config/) along the lines of the following:
+
+```ini
+# This goes in a file named either `.vale.ini` or `_vale.ini`.
+
+StylesPath = path/to/some/directory
+MinAlertLevel = warning # suggestion, warning or error
+
+# Only Markdown and .txt files; change to whatever you're using.
+[*.{md,txt}]
+# List of styles to load.
+#
+# `Vale` is built-in; other styles need to be unzipped onto your StylesPath (defined above).
+BasedOnStyles = Vale, proselint
+# Style.Rule = {YES, NO, suggestion, warning, error} to
+# enable/disable a rule or change its level.
+write-good.E-Prime = NO
+```
+
+See [Getting Started](https://errata-ai.github.io/vale/) for more information.
+
+### Creating your own style
+
+While the built-in styles are useful, Vale is really designed to [meet custom needs](https://errata-ai.github.io/vale/styles/). This is done by using Vale's extension points (called "checks") that can be customized to perform many different kinds of tasks, including [calculating readability](https://github.com/errata-ai/vale/blob/master/styles/demo/Reading.yml), [measuring sentence length](https://github.com/errata-ai/vale/blob/master/styles/demo/SentenceLength.yml), and [enforcing a particular heading style](https://github.com/errata-ai/vale-boilerplate/blob/master/src/18F/Headings.yml).
+
+See the [Microsoft](https://github.com/errata-ai/vale-boilerplate) project for a complete example of a Vale-compatible style guide.
