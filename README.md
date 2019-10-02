@@ -94,15 +94,6 @@ $ vale --ext=.md 'this is some `very` interesting text'
 
 See `vale --help` and [Usage](https://errata-ai.github.io/vale/usage/) for more information.
 
-## Used By
+###### Third-party integrations
 
-The following companies/organizations use Vale:
-
-- [Cloud Elements](https://github.com/cloud-elements/devportal)
-- [CockroachDB](https://github.com/cockroachdb/docs)
-- [Crate.io](https://github.com/crate/crate-docs-utils)
-- [GOV.UK](https://github.com/alphagov/govuk-developer-docs)
-- [Linode](https://github.com/linode/docs)
-- [Plone](https://github.com/plone/docs-guide)
-- [Semmle](https://github.com/Semmle/ql/tree/master/docs/language)
-- [Write the Docs](https://github.com/writethedocs/www)
+If you'd like to use Vale with another application (such as a text editor), be sure to check out Vale's native desktop application [Vale Server](https://errata.ai/vale-server/). The available integrations currently inlcude **Visual Studio Code**, **Sublime Text 3**, **Atom**, **Google Docs**, and **Google Chrome**.

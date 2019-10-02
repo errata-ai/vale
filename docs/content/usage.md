@@ -129,20 +129,4 @@ commands and options are discussed below.
 
     The `--version` option prints Vale's version.
 
-## Editor Integration
-
-<!-- vale docs.Branding = NO -->
-
-<p>
-<a href="https://github.com/TimKam/atomic-vale"><img alt="Atom Logo" src="../img/atom.png" title="Atom" width="68" height="68"></a>
-
-<a href="https://packagecontrol.io/packages/SublimeLinter-contrib-vale"><img alt="Sublime Text Logo" src="../img/sublime.png" title="Sublime Text" width="64" height="64"></a>
-
-<a href="https://github.com/w0rp/ale"><img alt="Vim Logo" src="../img/vim.png" title="Vim (ALE)" width="64" height="64"></a>
-
-<a href="https://github.com/abingham/flycheck-vale"><img alt="Emacs Logo" src="../img/emacs.png" title="Emacs" width="64" height="64"></a>
-
-<a href="https://github.com/testthedocs/vscode-vale"><img alt="VS Code Logo" src="../img/vscode.png" title="Visual Studio Code" width="64" height="64"></a>
-</p>
-
 <!-- vale docs.Branding = YES -->
