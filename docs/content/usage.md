@@ -136,6 +136,6 @@ commands and options are discussed below.
     ...
     ```
 
-    The `--debug` option instructs Vale to print debugging information to stdout.
+    The `--debug` option instructs Vale to print debugging information to `stdout`.
 
 <!-- vale docs.Branding = YES -->
