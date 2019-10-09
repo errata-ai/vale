@@ -129,4 +129,13 @@ commands and options are discussed below.
 
     The `--version` option prints Vale's version.
 
+- `--debug`:
+
+    ```shell
+    $ vale --debug test.md
+    ...
+    ```
+
+    The `--debug` option instructs Vale to print debugging information to stdout.
+
 <!-- vale docs.Branding = YES -->
