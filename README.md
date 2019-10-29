@@ -65,7 +65,7 @@ See `vale --help` and [Usage](https://errata-ai.github.io/vale/usage/) for more 
 
 ### Third-party integrations
 
-If you'd like to use Vale with another application (such as a text editor), be sure to check out Vale's native desktop application [Vale Server](https://errata.ai/vale-server/). The available integrations currently inlcude **Visual Studio Code**, **Sublime Text 3**, **Atom**, **Google Docs**, and **Google Chrome**.
+If you'd like to use Vale with another application (such as a text editor), be sure to check out Vale's native desktop application [Vale Server](https://errata.ai/vale-server/). The available integrations currently include **Visual Studio Code**, **Sublime Text 3**, **Atom**, **Google Docs**, and **Google Chrome**.
 
 ## Styles
 
