@@ -1,6 +1,0 @@
----
-extends: spelling
-message: "Did you really mean '%s'?"
-custom: true
-filters:
-  - '[a-z]+' # We only want to check numbers

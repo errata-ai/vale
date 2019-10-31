@@ -1,4 +1,0 @@
-extends: spelling
-message: "Did you really mean '%s'?"
-filters:
-  - 'Vale.*\b'

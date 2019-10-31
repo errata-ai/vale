@@ -1,5 +1,0 @@
----
-extends: spelling
-message: "'%s' is a typo!"
-custom: true
-ignore: Spelling/ignore/base.txt

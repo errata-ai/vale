@@ -2,23 +2,28 @@ dist: xenial
 sudo: required
 language: python
 python: 3.7
+
 before_install:
   - cd docs
+
 install:
-  - go get github.com/errata-ai/vale
-  - go get github.com/olekukonko/tablewriter
+  - curl -sL https://install.goreleaser.com/github.com/ValeLint/vale.sh | bash
+  - export PATH="./bin:$PATH"
+  - vale -v
+
   - pip install pipenv
   - gem install awesome_bot
+
 script:
-  - pipenv sync
-  # - go run api.go
-  - vale content
   - awesome_bot --allow-dupe --allow-redirect content/*.md
+
 after_success:
   # Build our data sources:
+  - pipenv sync
   - markdata --directives='content/directives' content
   # Build our site:
   - mkdocs build --verbose --clean
+
 deploy:
   provider: pages
   skip_cleanup: true

@@ -1,8 +1,0 @@
-extends: existence
-message: "'%s' should have one space"
-level: warning
-scope: paragraph
-nonword: true
-tokens:
-  - '[.?!][A-Z]'
-  - '[.?!] {2,}[A-Z]'

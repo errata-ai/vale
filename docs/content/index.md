@@ -36,6 +36,8 @@ If you want to use Vale with a CI service such as Travis CI, CircleCI, or Jenkin
 ```console
 # Vale will be installed to `/bin/vale`.
 $ curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s vX.Y.Z
+$ export PATH="./bin:$PATH"
+$ vale -v
 ```
 where `vX.Y.Z` is your version of choice from the [releases page](https://github.com/errata-ai/vale/releases).
 
