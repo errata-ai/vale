@@ -4,15 +4,15 @@
 **Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features.
 ```
 
-**Vale** is a cross-platform (macOS, Windows, and Linux),command-line linter for prose built with speed and extensibility in mind.
+![Vale Screenshot](img/vale-demo.png)
+
+**Vale** is a cross-platform (macOS, Windows, and Linux), command-line linter for prose built with speed and extensibility in mind.
 
 Unlike most writing-related software, Vale's primary purpose isn't to provide its own advice; it's designed to
 enforce an existing style guide through its YAML-based [extension system](/vale/styles).
 
 No matter if you're working with a small in-house standard or a large editorial style guide, Vale
 will help you maintain consistent and error-free writing.
-
-![Vale Screenshot](img/vale-demo.png)
 
 ## Installation
 
