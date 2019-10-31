@@ -1,6 +1,0 @@
-message: "alt text should be less than 125 characters."
-extends: occurrence
-scope: alt
-level: suggestion
-max: 125
-token: '[\w\s]'

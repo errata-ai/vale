@@ -1,60 +1,29 @@
 dist: xenial
 sudo: required
-matrix:
-  include:
-    # Documentation-related steps:
-    - language: python
-      python: 3.7
-      before_install:
-        - cd docs
-      install:
-        - go get github.com/errata-ai/vale
-        - go get github.com/olekukonko/tablewriter
-        - pip install pipenv
-        - gem install awesome_bot
-      script:
-        - pipenv sync
-        # - go run api.go
-        - vale content
-        - awesome_bot --allow-dupe --allow-redirect content/*.md
-      after_success:
-        # Build our data sources:
-        - markdata --directives='content/directives' content
-        # Build our site:
-        - mkdocs build --verbose --clean
-      deploy:
-        provider: pages
-        skip_cleanup: true
-        github_token: $GITHUB_TOKEN
-        local_dir: docs/site
-        on:
-          branch: master
+language: python
+python: 3.7
+before_install:
+  - cd docs
+install:
+  - go get github.com/errata-ai/vale
+  - go get github.com/olekukonko/tablewriter
+  - pip install pipenv
+  - gem install awesome_bot
+script:
+  - pipenv sync
+  # - go run api.go
+  - vale content
+  - awesome_bot --allow-dupe --allow-redirect content/*.md
+after_success:
+  # Build our data sources:
+  - markdata --directives='content/directives' content
+  # Build our site:
+  - mkdocs build --verbose --clean
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: docs/site
+  on:
+    branch: master
 
-    # Core steps:
-    - language: go
-      cache:
-        directories:
-          - vendor/bundle
-      services:
-        - docker
-      go:
-        - 1.11.x
-      before_install:
-        - export BUNDLE_GEMFILE=$PWD/Gemfile
-        - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
-        - export PATH=~/bin:"$PATH"
-        - pip install --user docutils
-        - gem install asciidoctor
-      install:
-        - make setup
-        - make rules
-        - make build
-      script:
-        - make test
-        - make spell
-        # Stash changes made by `make rules`. Otherwise, `make compare` and
-        # GoReleaser fail.
-        - git stash
-      after_success:
-        - # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - # test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash

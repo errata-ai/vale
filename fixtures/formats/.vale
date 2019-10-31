@@ -1,7 +1,0 @@
-MinAlertLevel = suggestion
-
-[formats]
-mdx = md
-
-[*]
-vale.Annotations = YES

@@ -1,8 +1,0 @@
-extends: existence
-message: "Avoid using '%s'"
-description: "Tech people know their acronyms; you come across as not very tech-savvy if you expand them."
-ignorecase: true
-level: warning
-tokens:
-  - 'cascading[ -]?style[ -]?sheets'
-  - 'hyper[ -]?text([ -]?mark[ -]?up([ -]?language)?)?'

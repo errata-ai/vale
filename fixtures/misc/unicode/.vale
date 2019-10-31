@@ -1,4 +1,0 @@
-MinAlertLevel = suggestion
-
-[*.{rst,txt,py}]
-BasedOnStyles = vale

@@ -1,6 +1,0 @@
-When plastic straining is NOTE occuring (ie when λ >0), we can compute the
-consistent the.
-
-So what is XXX needed are measures in addition to reading speed, TODO which will
-more
-[October 25, 2006.]

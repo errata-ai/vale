@@ -1,3 +1,0 @@
-valelint
-for-loops
-sysadmin

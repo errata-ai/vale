@@ -1,6 +1,0 @@
-message: "Titles should be less than 50 characters."
-extends: occurrence
-scope: title
-level: suggestion
-max: 50
-token: '[\w\s]'

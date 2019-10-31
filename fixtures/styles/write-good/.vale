@@ -1,9 +1,0 @@
-StylesPath = ../../../styles
-MinAlertLevel = suggestion
-
-[*.{cc,md}]
-BasedOnStyles = write-good
-write-good.E-Prime = NO
-
-[*.{txt}]
-write-good.E-Prime = YES
