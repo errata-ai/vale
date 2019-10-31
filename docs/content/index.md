@@ -4,9 +4,9 @@
 **Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features.
 ```
 
-**Vale** is a free, open-source linter for prose built with speed and extensibility in mind.
+**Vale** is a cross-platform (macOS, Windows, and Linux),command-line linter for prose built with speed and extensibility in mind.
 
-Unlike most writing aids, Vale's primary purpose isn't to provide its own advice; it's designed to
+Unlike most writing-related software, Vale's primary purpose isn't to provide its own advice; it's designed to
 enforce an existing style guide through its YAML-based [extension system](/vale/styles).
 
 No matter if you're working with a small in-house standard or a large editorial style guide, Vale
@@ -16,64 +16,39 @@ will help you maintain consistent and error-free writing.
 
 ## Installation
 
-Vale runs on Windows, macOS, and Linux. It can be installed by downloading an executable from the
-[releases page](https://github.com/errata-ai/vale/releases).
+Vale offers multiple options for installation, each of which best suits a particular use case.
 
-## Quickstart
+### Remote, collaborative use
 
-After installing Vale via one of the options listed above, you'll need to create a
-[configuration](/vale/config) file:
+One of Vale's strengths is its ability to help a company, project, or organization maintain consistency (capitalization styles, word choice, brand terminology, etc.) across multiple writers.
 
-```ini
-# This goes in a file named either `.vale.ini` or `_vale.ini`.
-#
-# Alerts are assigned a level of suggestion, warning, or error.
-MinAlertLevel = warning
+The benefits of the following installation methods are that every writer has access to the same Vale configuration without having to install and configure the tools themselves.
 
-# We only want to lint Markdown files.
-[*.md]
-# Vale comes with three built-in styles: write-good, proselint, and Joblint.
-#
-# Here, we specify that we want to enable all rules in the "write-good" style.
-BasedOnStyles = write-good
+#### Using Vale with GitHub
+
+If you want to lint the contents of a GitHub repository, the recommended approach is to use Vale's [official GitHub Action](https://github.com/errata-ai/vale-action).
+
+#### Using Vale with a continuous integration (CI) service
+
+If you want to use Vale with a CI service such as Travis CI, CircleCI, or Jenkins, the recommended approach is to use Vale's
+[GoDownloader](https://github.com/goreleaser/godownloader) script:
+
+```console
+# Vale will be installed to `/bin/vale`.
+$ curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s vX.Y.Z
 ```
+where `vX.Y.Z` is your version of choice from the [releases page](https://github.com/errata-ai/vale/releases).
 
-In this example, we're using Vale's built-in style for
-[`write-good`](https://github.com/btford/write-good), but you can also create your
-[own styles](/vale/styles).
+### Local use by a single writer
 
-Next, to verify that the installation was successful, we'll use the following
-example Markdown file:
+Vale can also be used locally by a single writer through their command line or a third-party integration.
 
-```md
-## Getting Started
+#### Using Vale with a text editor (or another third-party application)
 
-Rule 1: Don't start sentences with "so":
+Vale has a commercial desktop application, [Vale Server](https://errata.ai/vale-server/), that integrates with [many third-party applications](https://errata-ai.github.io/vale-server/docs/usage#step-5-using-a-client-application) (including Atom, Sublime Text, VS Code, and Google Docs) and allows writers to easily create and switch between multiple local Vale configurations.
 
-> So, this is an example sentence.
+It also [offers seamless integration](https://errata-ai.github.io/vale-server/docs/style#third-party-styles) with [LanguageTool](https://www.languagetool.org/), providing access to over 2,000 English grammar rules.
 
-Rule 2: Don't start a sentence with "there is" or "there are":
+#### Using Vale from the command line
 
-> There are many ways to start a sentence.
-```
-
-Finally, let's run Vale and check its output:
-
-```bash
-# Our working directory contains our config file and the test Markdown file.
-$ ls -a
-.         ..        .vale.ini test.md
-$ vale test.md
-
- test.md
- 5:1   error    Do not start a sentence with     write-good.So
-                'So,'
- 9:1   error    Do not start a sentence with     write-good.ThereIs
-                'There are'
- 9:11  warning  'many' is a weasel word!         write-good.Weasel
-
-✖ 2 errors, 1 warning and 0 suggestions in 1 file.
-```
-
-See [Usage](/vale/usage) for more information about using the command-line
-interface.
+Vale can be installed for local usage by downloading an executable from the [releases page](https://github.com/errata-ai/vale/releases) or by pulling the [latest Docker container](https://cloud.docker.com/repository/docker/jdkato/vale).
