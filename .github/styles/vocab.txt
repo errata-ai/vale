@@ -14,8 +14,10 @@ linode
 linters
 lua
 macos
+markdata
 mkdocs
 nonword
+pipenv
 pre
 rcs
 restructuredtext
