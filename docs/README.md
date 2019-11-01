@@ -1,6 +1,6 @@
-# Docs [![Build Status](https://travis-ci.org/ValeLint/docs.svg?branch=master)](https://travis-ci.org/ValeLint/docs)
+# Docs
 
-This repository houses the documentation for Vale, which is a static site built using a combination of [Markdown](https://commonmark.org/), [Markdata](https://github.com/errata-ai/markdata), and [MkDocs](http://www.mkdocs.org/).
+This directory houses the documentation for Vale, which is a static site built using a combination of [Markdown](https://commonmark.org/), and [MkDocs](http://www.mkdocs.org/).
 
 ### Running Locally
 
@@ -13,7 +13,3 @@ $ pipenv install
 $ pipenv shell
 $ mkdocs serve
 ```
-
-### Linting
-
-Coming soon.
