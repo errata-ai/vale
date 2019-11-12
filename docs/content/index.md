@@ -57,6 +57,6 @@ Vale can be installed for local usage. To install the CLI, use one of the follow
 
 - Download an executable from the [releases page](https://github.com/errata-ai/vale/releases)
 - Pulling the [latest Docker container](https://cloud.docker.com/repository/docker/jdkato/vale)
-- On macOS: run `brew install vale`
+- On macOS: run `brew install ValeLint/vale/vale`
 
 **Note:** Depending on the type of file that you lint, you might need to install [extra tools](https://errata-ai.github.io/vale/formats/#formats).
