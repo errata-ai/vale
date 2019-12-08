@@ -1,0 +1,42 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:src="http://nwalsh.com/xmlns/litprog/fragment"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          version="5.0" xml:id="copy.rdfa.attributes">
+<refmeta>
+<refentrytitle>copy.rdfa.attributes</refentrytitle>
+<refmiscinfo class="other" otherclass="datatype">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>copy.rdfa.attributes</refname>
+<refpurpose>Copy RDFA attributes to HTML output</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment xml:id="copy.rdfa.attributes.frag">
+<xsl:param name="copy.rdfa.attributes" select="1"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsection><info><title>Description</title></info>
+
+<para>RDFa (or Resource Description Framework in Attributes) is a
+W3C Recommendation that adds a set of attribute-level extensions
+to HTML, XHTML and various XML-based document types for
+embedding rich metadata within Web documents. RDFa Lite is a
+core subset of attributes also defined as a W3C Recommendation.</para>
+
+<para>DocBook 5.1 added support for the RDFa Lite attributes to
+the DocBook schema.  Those attributes are <tag>vocab</tag>,
+<tag>typeof</tag>, <tag>property</tag>, <tag>resource</tag>,
+<tag>prefix</tag>.</para>
+
+<para>If the parameter <parameter>copy.rdfa.attributes</parameter> is nonzero,
+any RDFa Lite attributes appearing on elements in the XML source will
+be copied through to the corresponding element in the generated HTML.
+If the parameter is zero, then those attributes are not copied though.
+The default value is "1".</para>
+
+</refsection>
+</refentry>

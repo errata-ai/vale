@@ -1,0 +1,13 @@
+StylesPath = ../../scopes
+MinAlertLevel = suggestion
+
+[*]
+rules.Heading = YES
+rules.H2 = YES
+rules.H3 = YES
+
+[*.md]
+rules.MinH2 = YES
+
+[*.xml]
+Transform = ../../XSL/docbook-xsl-snapshot/html/docbook.xsl

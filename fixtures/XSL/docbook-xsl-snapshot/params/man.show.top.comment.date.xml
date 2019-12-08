@@ -1,0 +1,36 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:src="http://nwalsh.com/xmlns/litprog/fragment"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          version="5.0" xml:id="man.show.top.comment.date">
+<refmeta>
+<refentrytitle>man.show.top.comment.date</refentrytitle>
+<refmiscinfo class="other" otherclass="datatype">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>man.show.top.comment.date</refname>
+<refpurpose>Include metadata date in top comment section</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment xml:id="man.show.top.comment.date.frag">
+<xsl:param name="man.show.top.comment.date">1</xsl:param></src:fragment>
+</refsynopsisdiv>
+
+<refsection><info><title>Description</title></info>
+
+<para>If non-zero, the metadata date is included in the group of metadata
+comments at the top of the generated man page file.  That group includes
+Title, Author, etc.  If the value is zero, then that date comment
+is omitted.  The default value is 1.</para>
+
+<para>If the refentry page info does not include a date element,
+then the current date is used, that is, the date the man page was generated from 
+the refentry. In archiving systems, this can trigger a change of version that
+is not desired when no changes were actually made.  This parameter allows you to
+omit the top comment date in the generated man page.
+</para>
+
+</refsection>
+</refentry>

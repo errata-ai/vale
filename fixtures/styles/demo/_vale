@@ -1,0 +1,17 @@
+StylesPath = ../../../styles
+MinAlertLevel = suggestion
+
+[*]
+BasedOnStyles = demo
+demo.CheckLinks = NO
+demo.Reading = NO
+demo.Spellcheck = NO
+demo.Filters = NO
+demo.SentenceCase = NO
+demo.TitleCase = NO
+
+[*.md]
+demo.Reading = YES
+demo.Spellcheck = YES
+demo.Filters = YES
+demo.Smart = YES

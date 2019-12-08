@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<!--  This file is part of the DITA Open Toolkit project. See the accompanying LICENSE file for applicable license.  -->
+
+<topic id="dita-otprojecthome" xml:lang="en-US">
+  <title>DITA Open Toolkit Example TODO <keyword keyref="release"/></title>
+  <shortdesc><term>DITA Open Toolkit</term>, or <term>DITA-OT</term> for short, is a set of Java-based, open-source
+    tools that provide processing for content authored in the <term>Darwin Information Typing
+    Architecture</term>.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>OASIS</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+
+    <note>While the DITA standard is owned and developed by OASIS, the DITA Open Toolkit project is governed separately.
+      DITA-OT is an independent, open-source implementation of the DITA standard TODO.</note>
+
+    <section>
+      <title>DITA-OT documentation NOTE</title>
+      <p>The DITA Open Toolkit documentation provides information about installing, running, configuring and extending
+        the toolkit NOTE.</p>
+      <ul>
+        <li>See the <xref keyref="release-notes"/> for information on the changes in the current release.</li>
+        <li>
+          <xref keyref="installing-client"/> shows how to install the toolkit and run a build to verify the
+          installation.</li>
+        <li><xref keyref="alternative-input-formats"/> introduces the new input formats supported in DITA-OT³.</li>
+        <li><xref keyref="building-output"/> provides information about transforming content, and the
+          available output formats.</li>
+        <li><xref keyref="parameters"/> explains how to adjust the behavior of DITA Open Toolkit via
+            <cmdname>dita</cmdname> command arguments and options, DITA-OT parameter settings, and configuration
+          properties.</li>
+        <li><xref keyref="customizing"/> provides more advanced information on extending DITA-OT. <xref
+            keyref="html-customization"/> and <xref keyref="pdf-customization"/> describe some of the most common
+          customization scenarios. More advanced solutions are described in <xref keyref="custom-plugins"/>.</li>
+        <li>The <xref keyref="troubleshooting-overview"/> section contains information about resolving problems that you
+          might encounter.</li>
+        <li><xref keyref="reference"/> topics provide additional information about the DITA-OT architecture, API and
+          specification support, and other <xref keyref="dita-and-dita-ot-resources"/>.</li>
+      </ul>
+    </section>
+  </body>
+</topic>

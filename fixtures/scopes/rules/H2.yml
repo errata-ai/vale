@@ -1,0 +1,7 @@
+message: "'%s' left in text"
+extends: existence
+ignorecase: false
+scope: heading.h2
+level: error
+tokens:
+  - TWO

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - Gentext &amp; Localization" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/../.."/>
+  <import file="../tools/build-shared.xml"/>
+
+  <target name="all">
+    <echo>Adding missing translations from English master localization...</echo>
+    <xslt style="../../gentext/xsl/xsl-primary-is-locale.xsl" destdir="." basedir="../../gentext/locale" force="true">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+      <param name="en.locale.file" expression="en.xml"/>
+      <include name="*.xml"/>
+      <mapper type="flatten"/>
+    </xslt>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir=".">
+        <include name="*.xml"/>
+	<exclude name="build.xml"/>
+	<exclude name="l10n.xml"/>
+      </fileset>
+    </delete>
+  </target>
+
+</project>

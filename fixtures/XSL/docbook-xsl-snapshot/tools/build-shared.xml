@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - Shared settings" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/.."/>
+  <property name="libs" value="${dbroot.dir}/tools/lib"/>
+  <property name="saxon9.jar" value="${libs}/saxon9he.jar"/>
+  <property name="saxon.jar" value="${libs}/saxon.jar"/>
+  <property name="xalan.jar" value="${libs}/xalan/xalan.jar"/>
+  <property name="xerces.jar" value="${libs}/xercesImpl.jar"/>
+  <property name="saxon-ant.jar" value="${libs}/saxon9-ant.jar"/>
+  <property name="jing.jar" value="${libs}/jing.jar"/>
+  <property name="ant-contrib.jar" value="${libs}/ant-contrib-1.0b3.jar"/>
+
+  <property name="extensions.jar"
+            value="${dbroot.dir}/extensions/saxon65.jar"/>
+
+  <taskdef name="jing"
+           classname="com.thaiopensource.relaxng.util.JingTask"
+           classpath="${jing.jar}"/>
+
+  <path id="saxon9.classpath">
+    <pathelement location="${saxon9.jar}"/>
+    <pathelement location="${saxon-ant.jar}"/>
+  </path>
+
+  <path id="saxon.classpath">
+    <pathelement location="${xerces.jar}"/>
+    <pathelement location="${saxon.jar}"/>
+    <pathelement location="${extensions.jar}"/>
+  </path>
+
+  <path id="xalan.classpath">
+    <pathelement location="${xerces.jar}"/>
+    <pathelement location="${xalan.jar}"/>
+    <pathelement location="${libs}/xalan/serializer.jar"/>
+    <pathelement location="${libs}/xalan/xsltc.jar"/>
+    <pathelement location="${extensions.jar}"/>
+  </path>
+
+  <path id="calabash.classpath">
+    <pathelement location="${saxon9.jar}"/>
+    <pathelement location="${saxon-ant.jar}"/>
+    <pathelement location="${extensions.jar}"/>
+    <pathelement location="${libs}/calabash.jar"/>
+    <pathelement location="${libs}/xmlresolver.jar"/>
+    <pathelement location="${libs}/commons-codec-1.3.jar"/>
+    <pathelement location="${libs}/commons-httpclient-3.1.jar"/>
+    <pathelement location="${libs}/commons-logging-1.1.1.jar"/>
+  </path>
+
+  <taskdef name="xslt2"
+           classname="net.sf.saxon.ant.AntTransform">
+    <classpath refid="saxon9.classpath"/>
+  </taskdef>
+
+  <target name="build-params">
+    <property name="file" value="param"/>
+    <!-- FIXME parameter checking -->
+    <xslt in="${file}.xweb" out=".${file}.profiled" style="../profiling/profile.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+      <param name="profile.condition" expression="${condition}"/>
+    </xslt>
+    <xslt in=".${file}.profiled" out=".${file}.stripped" style="../profiling/strip-attributes.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+      <param name="attributes" expression="condition"/>
+    </xslt>
+    <xslt in=".${file}.stripped" out=".${file}.dbkns" style="../../releasetools/xtangle.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+    </xslt>
+    <xslt in=".${file}.dbkns" out="${file}.xsl.tmp" style="../tools/xsl/build/fix-params-ns.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+    </xslt>
+    <xslt in="${file}.xsl.tmp" out="${file}.xsl" style="../tools/xsl/build/addnewline.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+    </xslt>
+  </target>
+
+  <target name="clean-params">
+    <property name="file" value="param"/>
+    <delete>
+      <fileset dir=".">
+	<include name=".${file}.profiled"/>
+	<include name=".${file}.stripped"/>
+	<include name=".${file}.dbkns"/>
+	<include name="${file}.xsl.tmp"/>
+	<include name="${file}.xsl"/>
+      </fileset>
+    </delete>
+  </target>
+
+</project>

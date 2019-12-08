@@ -1,0 +1,10 @@
+message: "'%s' left in text"
+extends: existence
+ignorecase: false
+scope: heading
+level: error
+tokens:
+  - XXX
+  - FIXME
+  - TODO
+  - NOTE

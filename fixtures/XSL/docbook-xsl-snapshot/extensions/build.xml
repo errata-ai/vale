@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - Extensions" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/../.."/>
+  <import file="../tools/build-shared.xml"/>
+
+  <target name="all" depends="copy">
+  </target>
+
+  <target name="copy" depends="build">
+    <echo>Copying extensions...</echo>
+    <copy todir="." flatten="true">
+      <fileset dir="../..">
+	<include name="xsl-saxon/saxon65.jar"/>
+	<include name="xsl-xalan/xalan27.jar"/>
+	<include name="xsl-webhelpindexer/webhelpindexer.jar"/>
+	<include name="xsl-webhelpindexer/lib/*.jar"/>
+	<include name="xsl-libxslt/python/xslt.py"/>
+	<include name="xsl-libxslt/python/python.py"/>
+	<include name="xsl-libxslt/python/README.LIBXSLT"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build">
+    <ant dir="../../xsl-saxon">
+      <property name="file.reference.saxon.jar" value="${saxon.jar}"/>
+    </ant>
+    <ant dir="../../xsl-xalan">
+      <property name="file.reference.xalan.jar" value="${xalan.jar}"/>
+    </ant>
+    <ant dir="../../xsl-webhelpindexer"/>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir=".">
+	<include name="saxon65.jar"/>
+	<include name="xalan27.jar"/>
+	<include name="webhelpindexer.jar"/>
+	<include name="*.jar"/>
+	<include name="xslt.py"/>
+	<include name="python.py"/>
+	<include name="README.LIBXSLT"/>
+      </fileset>
+    </delete>
+  </target>
+
+</project>

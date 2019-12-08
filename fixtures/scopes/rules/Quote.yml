@@ -1,0 +1,7 @@
+message: "Don't use '%s' in a blockquote."
+extends: existence
+ignorecase: true
+scope: blockquote
+level: error
+tokens:
+  - here

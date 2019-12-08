@@ -1,0 +1,35 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:src="http://nwalsh.com/xmlns/litprog/fragment"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          version="5.0" xml:id="stagedir.properties">
+<refmeta>
+<refentrytitle>stagedir.properties</refentrytitle>
+<refmiscinfo class="other" otherclass="datatype">attribute set</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>stagedir.properties</refname>
+<refpurpose>To add properties to the outer block of stage direction.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment xml:id="stagedir.properties.frag">
+<xsl:attribute-set name="stagedir.properties">
+  <xsl:attribute name="font-weight">bold</xsl:attribute>
+  <xsl:attribute name="font-style">italic</xsl:attribute>
+  <xsl:attribute name="space-before">1em</xsl:attribute>
+  <xsl:attribute name="space-after">1em</xsl:attribute>
+</xsl:attribute-set>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsection><info><title>Description</title></info>
+
+<para>These properties are added to the outer block containing the
+entire stagedir.
+Use this attribute-set to set the space above and below,
+and any indent for the whole stagedir.</para>
+</refsection>
+
+</refentry>

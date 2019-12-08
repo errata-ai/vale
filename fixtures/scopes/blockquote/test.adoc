@@ -1,0 +1,6 @@
+We can say here outside of a quote.
+
+[quote]
+____
+We can say here outside of a quote.
+____

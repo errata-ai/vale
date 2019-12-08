@@ -1,0 +1,16 @@
+<!-- Converted by db4-upgrade version 1.1 -->
+<article xmlns="http://docbook.org/ns/docbook" version="5.0">
+<info>
+<abstract>
+<para><emphasis role="strong">Note:</emphasis> This
+            document lists changes only since the 1.79.1 release.
+	  </para></abstract>
+</info><title>Changes since the 1.79.1 release</title>
+
+<section xml:id="Vsnapshot">
+<title>Release Notes: snapshot</title>
+<para>The following is a list of changes that have been made
+        since the 1.79.1 release.</para>
+
+</section>
+</article>

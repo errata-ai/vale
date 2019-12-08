@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - HTML" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/../.."/>
+  <import file="../tools/build-shared.xml"/>
+
+  <target name="all" depends="param, titlepage, profile">
+  </target>
+
+  <target name="param">
+    <echo>Building HTML parameters...</echo>
+    <antcall target="build-params">
+      <param name="condition" value="html"/>
+    </antcall>
+  </target>
+
+  <target name="titlepage">
+    <echo>Building HTML titlepage...</echo>
+    <xslt in="titlepage.templates.xml" out="titlepage.templates.xsl" style="../template/titlepage.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+    </xslt>
+  </target>
+
+  <target name="profile">
+    <echo>Building profiling version of HTML stylesheet...</echo>
+    <xslt in="docbook.xsl" out="profile-docbook.xsl" style="../profiling/xsl2profile.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+    </xslt>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir=".">
+	<include name="profile-docbook.xsl"/>
+	<include name="titlepage.templates.xsl"/>
+      </fileset>
+    </delete>
+    <antcall target="clean-params"/>
+  </target>
+
+</project>

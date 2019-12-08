@@ -1,0 +1,8 @@
+extends: existence
+message: "'%s' doesn't need a hyphen"
+level: error
+scope: text.html
+ignorecase: false
+nonword: true
+tokens:
+  - '\s[^\s-]+ly-'

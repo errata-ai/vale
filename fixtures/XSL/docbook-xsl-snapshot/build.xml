@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets" default="all">
+
+  <!-- 
+       This is an attempt to rewrite build process in Ant.
+       This is still work in progress.
+
+       If you want to build extensions, you must start Ant with property specifying path to your JDK, for example:
+
+           ant -Dplatform.home=c:\jdk1.6
+
+  -->
+
+  <property name="dbroot.dir" value="${ant.file}/.."/>
+  <import file="tools/build-shared.xml"/>
+
+  <target name="all" depends="build"/>
+
+  <target name="build">
+    <ant dir="common"/>
+    <ant dir="lib"/>
+    <ant dir="html"/>
+    <ant dir="fo"/>
+    <ant dir="manpages"/>
+    <ant dir="htmlhelp"/>
+    <ant dir="javahelp"/>
+    <ant dir="eclipse"/>
+    <!-- FIXME: <ant dir="roundtrip"/> -->
+    <!-- FIXME: <ant dir="slides"/> -->
+    <ant dir="website"/>
+    <ant dir="extensions"/>
+    <ant dir="xhtml"/>
+    <ant dir="xhtml-1_1"/>
+    <!-- <ant dir="webhelp"/> --> <!-- Webhelp is excluded as it builds only demo document not files needed for runtime -->
+    <ant dir="xhtml5"/>
+    <ant dir="epub3"/>
+  </target>
+
+  <target name="clean">
+    <ant dir="common" target="clean"/>
+    <ant dir="lib" target="clean"/>
+    <ant dir="html" target="clean"/>
+    <ant dir="fo" target="clean"/>
+    <ant dir="manpages" target="clean"/>
+    <ant dir="htmlhelp" target="clean"/>
+    <ant dir="javahelp" target="clean"/>
+    <ant dir="eclipse" target="clean"/>
+    <!-- <ant dir="roundtrip" target="clean"/> -->
+    <!-- <ant dir="slides" target="clean"/> -->
+    <ant dir="website" target="clean"/>
+    <ant dir="extensions" target="clean"/>
+    <ant dir="xhtml" target="clean"/>
+    <ant dir="xhtml-1_1" target="clean"/>
+    <!-- <ant dir="webhelp" target="clean"/> -->
+    <ant dir="xhtml5" target="clean"/>
+    <ant dir="epub3" target="clean"/>
+  </target>
+
+</project>

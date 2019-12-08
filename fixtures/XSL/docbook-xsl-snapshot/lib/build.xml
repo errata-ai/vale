@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - HTML" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/../.."/>
+  <import file="../tools/build-shared.xml"/>
+
+  <target name="all" depends="lib">
+  </target>
+
+  <target name="lib">
+    <echo>Building XSLT library...</echo>
+    <antcall target="build-params">
+      <param name="condition" value="lib"/>
+      <param name="file" value="lib"/>
+    </antcall>
+  </target>
+
+  <target name="clean">
+    <antcall target="clean-params">
+      <param name="file" value="lib"/>
+    </antcall>
+  </target>
+
+</project>

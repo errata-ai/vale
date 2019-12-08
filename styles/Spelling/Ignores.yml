@@ -1,0 +1,7 @@
+---
+extends: spelling
+message: "Did you really mean '%s'?"
+custom: true
+ignore:
+  - Spelling/ignore/base.txt
+  - Spelling/ignore/second.txt

@@ -1,0 +1,8 @@
+extends: substitution
+message: Use '%s' instead of '%s'
+level: error
+# We're only concerned with 'meet up' when it's used as a noun (rather than a
+# verb).
+pos: 'meet-ups?/NNS?|meet/NN ups?/\w+'
+swap:
+  'meet[- ]ups?': meetup(s)

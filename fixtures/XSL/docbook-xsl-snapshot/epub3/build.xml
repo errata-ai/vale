@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - EPUB3" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/../.."/>
+  <import file="../tools/build-shared.xml"/>
+
+  <target name="all" depends="titlepage">
+  </target>
+
+  <target name="titlepage">
+    <echo>Building EPUB3 titlepage...</echo>
+    <xslt in="titlepage.templates.xml" out="titlepage.templates.xsl" style="../template/titlepage.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+    </xslt>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir=".">
+	<include name="titlepage.templates.xsl"/>
+      </fileset>
+    </delete>
+  </target>
+
+</project>

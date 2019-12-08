@@ -1,0 +1,30 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:src="http://nwalsh.com/xmlns/litprog/fragment"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          version="5.0" xml:id="show.bookmarks">
+<refmeta>
+<refentrytitle>show.bookmarks</refentrytitle>
+<refmiscinfo class="other" otherclass="datatype">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>show.bookmarks</refname>
+<refpurpose>Display bookmarks in PDF output</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment xml:id="show.bookmarks.frag">
+<xsl:param name="show.bookmarks" select="1"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsection><info><title>Description</title></info>
+
+<para>If non-zero (default), then bookmarks are generated in PDF
+output.  If set to zero, bookmarks are turned off.
+</para>
+<para>See also <parameter>xsl1.1.bookmarks</parameter>.</para>
+
+</refsection>
+</refentry>

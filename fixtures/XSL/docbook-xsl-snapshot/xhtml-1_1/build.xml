@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - XHTML" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/../.."/>
+  <import file="../tools/build-shared.xml"/>
+
+  <target name="all" depends="html2xhtml">
+  </target>
+
+  <target name="html2xhtml">
+    <echo>Building XHTML 1.1 stylesheets from HTML ones...</echo>
+    <xslt style="html2xhtml.xsl" destdir="." basedir="../html">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+      <include name="*.xsl"/>
+      <mapper type="flatten"/>
+    </xslt>
+    <copy file="../html/docbook.css.xml" todir="."/>
+    <xslt in="../html/docbook.xsl" out="docbook-no-doctype.xsl" style="html2xhtml.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+      <include name="*.xsl"/>
+      <mapper type="flatten"/>
+      <param name="include.output.doctype" expression="0"/>
+    </xslt>
+
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir=".">
+	<include name="*.xsl"/>
+	<include name="docbook.css.xml"/>
+	<exclude name="html2xhtml.xsl"/>
+      </fileset>
+    </delete>
+  </target>
+
+</project>

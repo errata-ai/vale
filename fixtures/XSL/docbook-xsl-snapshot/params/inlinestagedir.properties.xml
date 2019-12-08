@@ -1,0 +1,38 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:src="http://nwalsh.com/xmlns/litprog/fragment"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          version="5.0" xml:id="inlinestagedir.properties">
+<refmeta>
+<refentrytitle>inlinestagedir.properties</refentrytitle>
+<refmiscinfo class="other" otherclass="datatype">attribute set</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>inlinestagedir.properties</refname>
+<refpurpose>Properties applied to the DocBook Publishers
+inlinestagedir element. </refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment xml:id="inlinestagedir.properties.frag">
+<xsl:attribute-set name="inlinestagedir.properties">
+  <xsl:attribute name="font-weight">bold</xsl:attribute>
+  <xsl:attribute name="font-style">italic</xsl:attribute>
+</xsl:attribute-set>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsection><info><title>Description</title></info>
+
+<para>This <literal>attribute set</literal> is applied
+to the <tag>fo:inline</tag> that contains the output of a 
+<tag>inlinestagedir</tag> element from DocBook Publishers.
+</para>
+
+<para>The XSL template that matches on <tag>inlinestagedir</tag>
+also adds square brackets around the text.</para>
+
+</refsection>
+</refentry>
+

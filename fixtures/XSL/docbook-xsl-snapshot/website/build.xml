@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - Website" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/../.."/>
+  <import file="../tools/build-shared.xml"/>
+
+  <target name="all" depends="param">
+  </target>
+
+  <target name="param">
+    <echo>Building Website parameters...</echo>
+    <antcall target="build-params">
+      <param name="condition" value="website"/>
+    </antcall>
+  </target>
+
+  <target name="clean">
+    <antcall target="clean-params"/>
+  </target>
+
+</project>

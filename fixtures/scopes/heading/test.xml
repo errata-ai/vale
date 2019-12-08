@@ -1,0 +1,26 @@
+<article xmlns='http://docbook.org/ns/docbook'>
+ <info>
+  <title>My first docbook document</title>
+  <author><personname>
+ <firstname>Seth</firstname>
+ <surname>Kenlon</surname>
+  </personname></author>
+  <publisher><publishername>opensource.com</publishername></publisher>
+  <pubdate>2017</pubdate>
+ </info>
+
+ <section id="intro">
+  <title>Introduction TODO</title>
+  <para>Introductory text goes here TODO.</para>
+  </section>
+
+ <section id="body">
+  <title>Section with a title</title>
+  <para>Main body text goes here XXX.</para>
+ </section>
+
+ <section id="conclusion">
+  <title>Conclusion XXX</title>
+  <para>Exciting and inspiring conclusion goes here XXX.</para>
+ </section>
+</article>

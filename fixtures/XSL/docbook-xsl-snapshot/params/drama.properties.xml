@@ -1,0 +1,31 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:src="http://nwalsh.com/xmlns/litprog/fragment"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          version="5.0" xml:id="drama.properties">
+<refmeta>
+<refentrytitle>drama.properties</refentrytitle>
+<refmiscinfo class="other" otherclass="datatype">attribute set</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>drama.properties</refname>
+<refpurpose>Properties applied to the DocBook Publishers drama element</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment xml:id="drama.properties.frag">
+<xsl:attribute-set name="drama.properties" use-attribute-sets="publishers.properties"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsection><info><title>Description</title></info>
+
+<para>This <literal>attribute set</literal> is applied to the output 
+block for the DocBook Publishers <tag>drama</tag> element.
+By default, it imports the attributes defined in the
+<tag>publishers.properties</tag> attribute-set.
+</para>
+
+</refsection>
+</refentry>

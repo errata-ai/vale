@@ -1,0 +1,11 @@
+extends: substitution
+message: Use '%s'
+ignorecase: false
+level: error
+swap:
+  '(?:eg)': e.g.,
+  '(?:ie)': i.e.,
+  '(?:e\.g\.)\s*': e.g.,
+  '(?:i\.e\.)\s*': i.e.,
+  '\d{1,2} ?[ap]m': a.m. or p.m.
+  '12 ?[ap]\.?m\.?': midnight or noon

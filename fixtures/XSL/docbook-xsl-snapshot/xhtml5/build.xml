@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - HTML5" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/../.."/>
+  <import file="../tools/build-shared.xml"/>
+
+  <target name="all" depends="html5">
+  </target>
+
+  <target name="html5">
+    <echo>Building HTML5 stylesheet...</echo>
+    <xslt in="../xhtml/docbook.xsl" out="xhtml-docbook.xsl" style="xhtml2xhtml5.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+    </xslt>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir=".">
+	<include name="xhtml-docbook.xsl"/>
+      </fileset>
+    </delete>
+  </target>
+
+</project>

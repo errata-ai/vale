@@ -1,0 +1,7 @@
+---
+extends: spelling
+message: "'%s' is a typo!"
+custom: true
+action:
+  name: suggest
+ignore: Spelling/ignore/base.txt

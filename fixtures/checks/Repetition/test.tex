@@ -1,0 +1,33 @@
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+\begin{homeworkProblem}[Section 2.3, exercise 1]
+    Let $f(x) = x^2 - 6$ and $p_0 = 1$. Use Newton's method to find $p_2$.\newline
+
+    \textbf{Solution}\newline
+
+    $f^{\prime}(x) = 2x$. So,\newline
+
+    $p_1 = 1 - \frac{1^2 - 6}{2(1)} = 3.5$ and \newline
+
+    $p_2 = 3.5 - \frac{(3.5)^2 - 6}{2(3.5)} = 2.60714$
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[Section 2.3, exercise 2]
+    Let $f(x) = -x^3 - \cos (x)$ and $p_0 = -1$. Use Newton's method to find $p_2$.
+    Could $p_0 = 0$ be used?\newline
+
+    \textbf{Solution}\newline
+
+    $f^{\prime}(x) = \sin (x) - 3x^2$. So,\newline
+
+    $p_1 = -1 - \frac{-(-1)^3 - \cos (-1)}{\sin (-1) - 3(-1)^2} = -0.8803329$ and \newline
+
+    $p_2 = -0.8803329 - \frac{-(-0.8803329)^3 - \cos (-0.8803329)}{\sin (-0.8803329) - 3(-0.8803329)^2} = -0.86568416$\newline
+
+    $p_0 = 0$ could not not be used because $f^{\prime}(0) = 0$.
+\end{homeworkProblem}
+\end{document}

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DocBook XSLT 1.0 stylesheets - Manpages" default="all">
+
+  <property name="dbroot.dir" value="${ant.file}/../.."/>
+  <import file="../tools/build-shared.xml"/>
+
+  <target name="all" depends="param, profile, synop">
+  </target>
+
+  <target name="param">
+    <echo>Building Manpages parameters...</echo>
+    <antcall target="build-params">
+      <param name="condition" value="manpages"/>
+    </antcall>
+  </target>
+
+  <target name="profile">
+    <echo>Building profiling version of Manpages stylesheet...</echo>
+    <xslt in="docbook.xsl" out="profile-docbook.xsl" style="../profiling/xsl2profile.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+    </xslt>
+  </target>
+
+  <target name="synop">
+    <echo>Building Manpages synopsis stylesheet...</echo>
+    <xslt in="synop.xsl" out="html-synop.xsl" style="../tools/xsl/build/html2roff.xsl">
+      <factory name="com.icl.saxon.TransformerFactoryImpl"/>
+      <classpath refid="saxon.classpath"/>
+    </xslt>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir=".">
+	<include name="profile-docbook.xsl"/>
+	<include name="html-synop.xsl"/>
+      </fileset>
+    </delete>
+    <antcall target="clean-params"/>
+  </target>
+
+</project>
