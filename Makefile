@@ -2,9 +2,8 @@ LAST_TAG=$(shell git describe --abbrev=0 --tags)
 CURR_SHA=$(shell git rev-parse --verify HEAD)
 
 LDFLAGS=-ldflags "-s -w -X main.version=$(LAST_TAG)"
-BUILD_DIR=./builds
 
-.PHONY: data test lint cross install bump rules setup bench compare release
+.PHONY: data test lint install rules setup bench compare release
 
 all: build
 
@@ -69,9 +68,6 @@ rules:
 data:
 	go-bindata -ignore=\\.DS_Store -pkg="data" -o data/data.go data/*.{dic,aff}
 
-spath:
-	bash script/stylesPath.sh
-
 test:
 	go test -race ./core ./lint ./check
 	cucumber
@@ -82,21 +78,3 @@ docker:
 	docker build -f Dockerfile -t jdkato/vale:latest .
 	docker tag jdkato/vale:latest jdkato/vale:latest
 	docker push jdkato/vale
-
-cross:
-	mkdir -p $(BUILD_DIR)
-
-	GOOS=linux GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/vale_$(LAST_TAG)_Linux_64-bit.tar.gz" ./vale
-
-	rm -rf vale
-
-	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/vale_$(LAST_TAG)_macOS_64-bit.tar.gz" ./vale
-
-	rm -rf vale
-
-	GOOS=windows GOARCH=amd64 go build ${LDFLAGS}
-	zip -r "$(BUILD_DIR)/vale_$(LAST_TAG)_Windows_64-bit.zip" ./vale.exe
-
-	rm -rf vale.exe
