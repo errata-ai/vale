@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.10
 
 # TODO: Install DITA-related deps
 #
@@ -9,8 +9,6 @@ RUN apk add --no-cache --update \
     && pip3 install docutils
 
 COPY bin/vale /bin
-# Compatibility
-COPY bin/vale /
 
 ENV PATH="/bin:${PATH}"
 ENTRYPOINT ["/bin/vale"]
