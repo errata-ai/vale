@@ -73,7 +73,7 @@ test:
 	cucumber
 
 docker:
-	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o bin/vale
+	GOOS=linux GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/vale
 	docker login -u jdkato -p ${DOCKER_PASS}
 	docker build -f Dockerfile -t jdkato/vale:latest .
 	docker tag jdkato/vale:latest jdkato/vale:latest
