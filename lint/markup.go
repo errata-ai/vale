@@ -363,38 +363,54 @@ func (l Linter) lintMarkdown(f *core.File) {
 	l.lintHTMLTokens(f, f.Content, html, 0)
 }
 
-func (l Linter) lintRST(f *core.File, python string, rst2html string) {
-	var out bytes.Buffer
-	var cmd *exec.Cmd
+func (l Linter) lintSphinx(f *core.File) {
+	file := filepath.Base(f.Path)
 
-	if runtime.GOOS == "windows" {
-		// rst2html is executable by default on Windows.
-		cmd = exec.Command(python, append([]string{rst2html}, rstArgs...)...)
-	} else {
-		cmd = exec.Command(rst2html, rstArgs...)
+	built := strings.Replace(file, filepath.Ext(file), ".html", 1)
+	built = filepath.Join(l.Config.SphinxBuild, "html", built)
+
+	html, err := ioutil.ReadFile(built)
+	if core.CheckError(err, l.Config.Debug) {
+		l.lintHTMLTokens(f, f.Content, html, 0)
 	}
+}
 
-	s := l.prep(f.Content, "\n::\n\n%s\n", "``$1``", ".rst")
-	s = reSphinx.ReplaceAllString(s, ".. code::")
+func (l Linter) lintRST(f *core.File, python string, rst2html string) {
+	if l.Config.SphinxBuild != "" {
+		l.lintSphinx(f)
+	} else {
+		var out bytes.Buffer
+		var cmd *exec.Cmd
 
-	cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(s, "::"))
-	cmd.Stdout = &out
-
-	errMsg := fmt.Sprintf(parseFail, rst2html)
-	if core.CheckErrorWithMsg(cmd.Run(), l.Config.Debug, errMsg) {
-		html := bytes.Replace(out.Bytes(), []byte("\r"), []byte(""), -1)
-		bodyStart := bytes.Index(html, []byte("<body>\n"))
-		if bodyStart < 0 {
-			bodyStart = -7
+		if runtime.GOOS == "windows" {
+			// rst2html is executable by default on Windows.
+			cmd = exec.Command(python, append([]string{rst2html}, rstArgs...)...)
+		} else {
+			cmd = exec.Command(rst2html, rstArgs...)
 		}
-		bodyEnd := bytes.Index(html, []byte("\n</body>"))
-		if bodyEnd < 0 || bodyEnd >= len(html) {
-			bodyEnd = len(html) - 1
-			if bodyEnd < 0 {
-				bodyEnd = 0
+
+		s := l.prep(f.Content, "\n::\n\n%s\n", "``$1``", ".rst")
+		s = reSphinx.ReplaceAllString(s, ".. code::")
+
+		cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(s, "::"))
+		cmd.Stdout = &out
+
+		errMsg := fmt.Sprintf(parseFail, rst2html)
+		if core.CheckErrorWithMsg(cmd.Run(), l.Config.Debug, errMsg) {
+			html := bytes.Replace(out.Bytes(), []byte("\r"), []byte(""), -1)
+			bodyStart := bytes.Index(html, []byte("<body>\n"))
+			if bodyStart < 0 {
+				bodyStart = -7
 			}
+			bodyEnd := bytes.Index(html, []byte("\n</body>"))
+			if bodyEnd < 0 || bodyEnd >= len(html) {
+				bodyEnd = len(html) - 1
+				if bodyEnd < 0 {
+					bodyEnd = 0
+				}
+			}
+			l.lintHTMLTokens(f, f.Content, html[bodyStart+7:bodyEnd], 0)
 		}
-		l.lintHTMLTokens(f, f.Content, html[bodyStart+7:bodyEnd], 0)
 	}
 }
 

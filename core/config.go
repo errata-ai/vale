@@ -74,6 +74,9 @@ type Config struct {
 	Whitelist     map[string]struct{}        // Project-specific vocabulary (okay)
 	WordTemplate  string                     // The template used in YAML -> regexp list conversions
 
+	SphinxBuild string // The location of Sphinx's `_build` path
+	SphinxAuto  string // Should we call `sphinx-build`?
+
 	SecToPat     map[string]glob.Glob `json:"-"`
 	FsWrapper    *afero.Afero         `json:"-"`
 	FallbackPath string               `json:"-"`
@@ -282,6 +285,11 @@ func LoadConfig(cfg *Config, upath string, min string, compat, rev bool) (*Confi
 			loadVocab(cfg.Project, cfg)
 		} else if k == "LTPath" {
 			cfg.LTPath = core.Key(k).String()
+		} else if k == "SphinxBuildPath" {
+			canidate := filepath.FromSlash(core.Key(k).MustString(""))
+			cfg.SphinxBuild = DeterminePath(cfg.Path, canidate)
+		} else if k == "SphinxAutoBuild" {
+			cfg.SphinxAuto = core.Key(k).MustString("")
 		} else {
 			CheckError(errors.New("unknown key: '"+k+"'"), cfg.Debug)
 		}

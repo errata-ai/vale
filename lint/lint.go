@@ -31,6 +31,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -68,12 +69,26 @@ func (l Linter) LintString(src string) ([]*core.File, error) {
 	return []*core.File{l.lintFile(src)}, nil
 }
 
+// SetupContent handles any necessary building, compiling, or pre-processing.
+func (l Linter) SetupContent() error {
+	if l.Config.SphinxAuto != "" {
+		parts := strings.Split(l.Config.SphinxAuto, " ")
+		return exec.Command(parts[0], parts[1:]...).Run()
+	}
+	return nil
+}
+
 // Lint src according to its format.
 func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
 	var linted []*core.File
 
 	done := make(chan core.File)
 	defer close(done)
+
+	if err := l.SetupContent(); err != nil {
+		return linted, err
+	}
+
 	for _, src := range input {
 		if !(core.IsDir(src) || core.FileExists(src)) {
 			continue
