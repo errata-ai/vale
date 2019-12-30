@@ -77,7 +77,7 @@ Vale can be installed for local usage. To install the CLI, use one of the follow
 
 - Download an executable from the [releases page](https://github.com/errata-ai/vale/releases).
 - Pull the [latest Docker container](https://cloud.docker.com/repository/docker/jdkato/vale).
-- Install with one of the following paackage managers:
+- Use one of the available package managers:
 
     [![Packaging status](https://repology.org/badge/vertical-allrepos/vale.svg)](https://repology.org/project/vale/versions)
 
