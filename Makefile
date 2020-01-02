@@ -57,7 +57,6 @@ setup:
 	go get golang.org/x/perf/cmd/benchstat
 	go get golang.org/x/tools/cmd/benchcmp
 	go get github.com/aclements/go-misc/benchmany
-	go get -u github.com/alecthomas/gometalinter
 	go get -u github.com/jteeuwen/go-bindata/...
 	bundle install
 	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
