@@ -25,6 +25,11 @@ When(/^I lint "(.*)"$/) do |file|
   step %(I run `#{cmd} #{file}`)
 end
 
+When(/^I lint Sphinx "(.*)"$/) do |file|
+  step %(I cd to "../../fixtures/formats/Sphinx")
+  step %(I run `#{cmd} #{file}`)
+end
+
 When(/^I lint file "([^\s]+)" as "([^\s]+)"$/) do |file, ext|
   step %(I cd to "../../fixtures/formats")
   step %(I run `#{cmd} --ext='#{ext}' #{file}`)

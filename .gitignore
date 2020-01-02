@@ -29,8 +29,6 @@ docs/content/styles.md
 action/action_closed.go
 rule/grammar_closed.go
 
-_build
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -255,6 +255,7 @@ func initialPosition(ctx, sub string, loc []int) (int, string) {
 			}
 		}
 	}
+
 	return utf8.RuneCountInString(ctx[:idx]) + 1, sub
 }
 

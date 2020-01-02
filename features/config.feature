@@ -461,6 +461,8 @@ Feature: Config
         "TokenIgnores": {},
         "Whitelist": {},
         "WordTemplate": "",
+        "SphinxBuild": "",
+        "SphinxAuto": "",
         "Debug": false,
         "InExt": ".txt",
         "NoExit": false,

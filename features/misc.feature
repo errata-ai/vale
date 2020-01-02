@@ -48,5 +48,6 @@ Feature: Misc
       test.html:14:96:Spelling.Ignores:Did you really mean 'TODO'?
       test.md:3:1:Spelling.Ignore:'HTTPie' is a typo!
       test.md:3:59:Spelling.Ignore:'CLI' is a typo!
+      test.md:3:96:Spelling.Ignore:'human-friendly' is a typo!
       test.rst:8:139:Spelling.Ignores:Did you really mean 'substring'?
       """
