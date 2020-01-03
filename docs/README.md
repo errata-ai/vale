@@ -78,3 +78,13 @@ Vale has a commercial desktop application, [Vale Server](https://errata.ai/vale-
 {% endtab %}
 {% endtabs %}
 
+**Using Vale from the command line**
+
+Vale can be installed for local usage. To install the CLI, use one of the following options:
+
+* Download an executable from the [releases page](https://github.com/errata-ai/vale/releases).
+* Pull the [latest Docker container](https://cloud.docker.com/repository/docker/jdkato/vale).
+* Use one of the available [package managers](https://repology.org/project/vale/versions):
+
+![](https://repology.org/badge/vertical-allrepos/vale.svg)
+
