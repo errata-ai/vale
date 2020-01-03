@@ -12,8 +12,6 @@ description: A quick introduction to installing and using Vale.
 
 Unlike most writing-related software, Vale's primary purpose isn't to provide its own advice; it's designed to enforce an existing style guide through its YAML-based [extension system](https://errata-ai.github.io/vale/styles):
 
-![](.gitbook/assets/flow.png)
-
 No matter if you're working with a small in-house standard or a large editorial style guide, Vale will help you maintain consistent and error-free writing.
 
 ## Installation
@@ -32,7 +30,7 @@ The benefits of these installation methods are that every writer has access to t
 
 #### **Using Vale with GitHub**
 
-![Example Vale output using GitHub&apos;s annotations UI.](https://user-images.githubusercontent.com/8785025/67726924-bf3e6180-f9a4-11e9-9c32-2233756731b9.png)
+![Example Vale output using GitHub&apos;s annotations UI](https://user-images.githubusercontent.com/8785025/67726924-bf3e6180-f9a4-11e9-9c32-2233756731b9.png)
 
 If you want to lint the contents of a GitHub repository, the recommended approach is to use Vale's [official GitHub Action](https://github.com/errata-ai/vale-action).
 
