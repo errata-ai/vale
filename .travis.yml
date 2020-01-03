@@ -3,32 +3,35 @@ sudo: required
 matrix:
   include:
     # Documentation-related steps:
-    - language: python
-      python: 3.7
-      before_install:
-        - cd docs
-      install:
-        - curl -sL https://install.goreleaser.com/github.com/ValeLint/vale.sh | bash
-        - export PATH="./bin:$PATH"
-        - vale -v
-
-        - pip install pipenv
-        - gem install awesome_bot
-      script:
-        - awesome_bot --allow-dupe --allow-redirect content/*.md
-      after_success:
-        - pipenv sync
-        # Build our data sources:
-        - markdata --directives='content/directives' content
-        # Build our site:
-        - mkdocs build --verbose --clean
-      deploy:
-        provider: pages
-        skip_cleanup: true
-        github_token: $GITHUB_TOKEN
-        local_dir: docs/site
-        on:
-          branch: v2
+    #
+    # [WIP ...]
+    #
+    #- language: python
+    #  python: 3.7
+    #  before_install:
+    #    - cd docs
+    #  install:
+    #    - curl -sL https://install.goreleaser.com/github.com/ValeLint/vale.sh | bash
+    #    - export PATH="./bin:$PATH"
+    #    - vale -v
+    #
+    #    - pip install pipenv
+    #    - gem install awesome_bot
+    #  script:
+    #    - awesome_bot --allow-dupe --allow-redirect content/*.md
+    #  after_success:
+    #    - pipenv sync
+    #    # Build our data sources:
+    #    - markdata --directives='content/directives' content
+    #    # Build our site:
+    #    - mkdocs build --verbose --clean
+    #  deploy:
+    #    provider: pages
+    #    skip_cleanup: true
+    #    github_token: $GITHUB_TOKEN
+    #    local_dir: docs/site
+    #    on:
+    #      branch: v2
 
     # Core steps:
     - language: go
