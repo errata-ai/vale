@@ -6,8 +6,6 @@ description: >-
 
 # Installation
 
-
-
 {% hint style="info" %}
 If you're using Vale with a markup format other than Markdown or HTML, you'll also need to install a [parser](https://errata-ai.github.io/vale/formats/#formats).
 {% endhint %}
