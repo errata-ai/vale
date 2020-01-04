@@ -410,3 +410,5 @@ Vale comes with a single built-in style named `Vale` that implements two rules, 
 
 ## Third-party styles
 
+Vale has a growing selection of pre-made styles available for download from its [style library](https://github.com/errata-ai/styles).
+
