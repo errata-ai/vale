@@ -1,8 +1,15 @@
 api
+apos
 asciidoc
 asciidoctor
+backreferences
 choco
+dita
 docutils
+endcode
+endhint
+endtab
+endtabs
 flesch
 gunning fog
 haskell
@@ -12,11 +19,14 @@ kincaid
 liau
 linode
 linters
+lookarounds
 lua
 macos
 markdata
 mkdocs
 nonword
+ot
+passthrough
 pipenv
 pre
 rcs
