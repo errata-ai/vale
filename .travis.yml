@@ -1,64 +1,30 @@
 dist: xenial
 sudo: required
-matrix:
-  include:
-    # Documentation-related steps:
-    #
-    # [WIP ...]
-    #
-    #- language: python
-    #  python: 3.7
-    #  before_install:
-    #    - cd docs
-    #  install:
-    #    - curl -sL https://install.goreleaser.com/github.com/ValeLint/vale.sh | bash
-    #    - export PATH="./bin:$PATH"
-    #    - vale -v
-    #
-    #    - pip install pipenv
-    #    - gem install awesome_bot
-    #  script:
-    #    - awesome_bot --allow-dupe --allow-redirect content/*.md
-    #  after_success:
-    #    - pipenv sync
-    #    # Build our data sources:
-    #    - markdata --directives='content/directives' content
-    #    # Build our site:
-    #    - mkdocs build --verbose --clean
-    #  deploy:
-    #    provider: pages
-    #    skip_cleanup: true
-    #    github_token: $GITHUB_TOKEN
-    #    local_dir: docs/site
-    #    on:
-    #      branch: v2
+language: go
+cache:
+  directories:
+    - vendor/bundle
+services:
+  - docker
+go:
+  - 1.13.x
+before_install:
+  - export BUNDLE_GEMFILE=$PWD/Gemfile
+  - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
+  - export PATH=$PATH:~/bin:$PWD/dita-ot-3.4/bin/
 
-    # Core steps:
-    - language: go
-      cache:
-        directories:
-          - vendor/bundle
-      services:
-        - docker
-      go:
-        - 1.13.x
-      before_install:
-        - export BUNDLE_GEMFILE=$PWD/Gemfile
-        - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
-        - export PATH=$PATH:~/bin:$PWD/dita-ot-3.4/bin/
+  - wget https://github.com/dita-ot/dita-ot/releases/download/3.4/dita-ot-3.4.zip
+  - unzip dita-ot-3.4.zip > /dev/null 2>&1
 
-        - wget https://github.com/dita-ot/dita-ot/releases/download/3.4/dita-ot-3.4.zip
-        - unzip dita-ot-3.4.zip > /dev/null 2>&1
-
-        - sudo apt-get install -y xsltproc
-        - pip install --user sphinx
-        - gem install asciidoctor
-      install:
-        - make setup
-        - # FIXME: make rules
-        - make build
-      script:
-        - make test
-      after_success:
-        - # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - # test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
+  - sudo apt-get install -y xsltproc
+  - pip install --user sphinx
+  - gem install asciidoctor
+install:
+  - make setup
+  - # FIXME: make rules
+  - make build
+script:
+  - make test
+after_success:
+  - # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - # test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
