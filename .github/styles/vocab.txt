@@ -4,6 +4,7 @@ asciidoc
 asciidoctor
 backreferences
 choco
+commercetools
 dita
 docutils
 endcode
@@ -38,4 +39,5 @@ shortcodes
 signavio
 smog
 tch
+testthedocs
 tox
