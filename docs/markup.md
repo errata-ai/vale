@@ -154,7 +154,7 @@ Similar to `BlockIgnores`, we just need to define a pattern:
 TokenIgnores = (\$+[^\n$]+\$+)
 ```
 
-See [Configuration](ini) for more details.
+See [Configuration](configuration.md) for more details.
 
 ## Markup-based configuration
 

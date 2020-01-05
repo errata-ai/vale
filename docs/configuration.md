@@ -133,7 +133,7 @@ If this is defined, Vale will re-build your site prior to linting any content --
 BasedOnStyles = Joblint, write-good
 ```
 
-`BasedOnStyles` specifies [styles](https://errata-ai.github.io/vale/styles) that should have all of their rules enabled.
+`BasedOnStyles` specifies [styles](styles.md) that should have all of their rules enabled.
 
 ### `BlockIgnores`
 
@@ -141,7 +141,7 @@ BasedOnStyles = Joblint, write-good
 BlockIgnores = (?s) *({< file [^>]* >}.*?{</ ?file >})
 ```
 
-`BlockIgnores` allow you to exclude certain block-level sections of text that don't have an associated HTML tag that could be used with `SkippedScopes`. See [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup) for more information.
+`BlockIgnores` allow you to exclude certain block-level sections of text that don't have an associated HTML tag that could be used with `SkippedScopes`. See [Non-Standard Markup](markup.md#non-standard-markup) for more information.
 
 ### `TokenIgnores`
 
@@ -149,7 +149,7 @@ BlockIgnores = (?s) *({< file [^>]* >}.*?{</ ?file >})
 TokenIgnores = (\$+[^\n$]+\$+)
 ```
 
-`TokenIgnores` allow you to exclude certain inline-level sections of text that don't have an associated HTML tag that could be used with `IgnoredScopes`. See [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup) for more information.
+`TokenIgnores` allow you to exclude certain inline-level sections of text that don't have an associated HTML tag that could be used with `IgnoredScopes`. See [Non-Standard Markup](markup.md#non-standard-markup) for more information.
 
 ### `Transform`
 
@@ -161,7 +161,7 @@ TokenIgnores = (\$+[^\n$]+\$+)
 Transform = docbook-xsl-snapshot/html/docbook.xsl
 ```
 
-`Transform` specifies a version 1.0 XSL Transformation \(XSLT\) for converting to HTML. See [Formats\#XML](https://errata-ai.github.io/vale/formats/#XML) for more information.
+`Transform` specifies a version 1.0 XSL Transformation \(XSLT\) for converting to HTML. See [Formats\#XML](markup.md#xml-markup) for more information.
 
 
 
