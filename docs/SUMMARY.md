@@ -24,7 +24,7 @@
 * [CockroachDB](https://github.com/cockroachdb/docs/tree/master/ci/vale)
 * [Homebrew](https://github.com/Homebrew/brew/tree/master/docs/vale-styles/Homebrew)
 * [VA.gov](https://github.com/department-of-veterans-affairs/vets-website/tree/32dda1b702ed4eb6baa7d4d8daea9f7b34c235a2/script/vale)
-* [Write the Docs](https://github.com/writethedocs/www)
-* [GOV.UK](https://github.com/writethedocs/www/tree/master/vale)
+* [Write the Docs](https://github.com/writethedocs/www/tree/master/vale)
+* [GOV.UK](https://github.com/alphagov/gds-vale-styles)
 * [commercetools](https://github.com/commercetools/commercetools-docs-kit/tree/master/packages/writing-style)
 
