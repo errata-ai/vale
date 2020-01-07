@@ -68,7 +68,7 @@ By default, listing blocks and inline literals are ignored.
 ### DITA \[`markup`\]
 
 {% hint style="info" %}
-**Note:**  You'll need to manually add the dita-ot-X.X.X/bin directory to your $PATH.
+**Note:** You'll need to manually add the dita-ot-X.X.X/bin directory to your $PATH.
 {% endhint %}
 
 Vale supports DITA through the [DITA Open Toolkit](https://www.dita-ot.org/).

@@ -107,7 +107,7 @@ WordTemplate = \b(?:%s)\b
 **Note**: This option requires Vale v2.0!
 {% endhint %}
 
-```
+```text
 SphinxBuildPath = _build
 ```
 
@@ -119,7 +119,7 @@ SphinxBuildPath = _build
 **Note**: This option requires Vale v2.0!
 {% endhint %}
 
-```
+```text
 SphinxAutoBuild = make html
 ```
 
@@ -162,6 +162,4 @@ Transform = docbook-xsl-snapshot/html/docbook.xsl
 ```
 
 `Transform` specifies a version 1.0 XSL Transformation \(XSLT\) for converting to HTML. See [Formats\#XML](markup.md#xml-markup) for more information.
-
-
 
