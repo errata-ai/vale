@@ -272,7 +272,7 @@ func main() {
 			config, path, minAlertLevel, backup, local)
 		if err != nil && config.Output == "CLI" {
 			fmt.Println("WARNING: Missing or invalid config file.\n\n" +
-				"See https://github.com/errata-ai/vale#usage for " +
+				"See https://errata-ai.gitbook.io/vale/#usage for " +
 				"information about creating a config file.")
 			return nil
 		} else if c.NArg() > 0 || core.Stat() {
