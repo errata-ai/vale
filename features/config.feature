@@ -80,7 +80,7 @@ Feature: Config
       """
       WARNING: Missing or invalid config file.
 
-      See https://github.com/errata-ai/vale#usage for information about creating a config file.
+      See https://errata-ai.gitbook.io/vale/getting-started/configuration for information about creating a config file.
       """
     And the exit status should be 0
 
