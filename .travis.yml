@@ -28,7 +28,7 @@ matrix:
         github_token: $GITHUB_TOKEN
         local_dir: docs/site
         on:
-          branch: master
+          branch: v1
 
     # Core steps:
     - language: go

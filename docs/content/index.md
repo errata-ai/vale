@@ -1,7 +1,7 @@
 ## About
 
 ```callout{'title': 'Heads up!', 'classes': ['success']}
-**Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features.
+This documentation is for v1 of Vale. Check out the v2 docs at [https://errata-ai.gitbook.io/vale/](https://errata-ai.gitbook.io/vale/)!
 ```
 
 **Vale** is a cross-platform (macOS, Windows, and Linux),command-line linter for prose built with speed and extensibility in mind.
