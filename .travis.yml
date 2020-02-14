@@ -14,8 +14,8 @@ matrix:
       script:
         - pipenv sync
         # - go run api.go
-        - vale content
-        - awesome_bot --allow-dupe --allow-redirect content/*.md
+        # - vale content
+        # - awesome_bot --allow-dupe --allow-redirect content/*.md
       after_success:
         # Build our data sources:
         - markdata --directives='content/directives' content
