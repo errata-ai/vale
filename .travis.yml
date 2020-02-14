@@ -9,7 +9,6 @@ matrix:
         - cd docs
       install:
         - go get github.com/errata-ai/vale
-        - go get github.com/olekukonko/tablewriter
         - pip install pipenv
         - gem install awesome_bot
       script:
