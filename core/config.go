@@ -267,8 +267,11 @@ func LoadConfig(cfg *Config, upath string, min string, compat, rev bool) (*Confi
 					}
 				}
 			}
-			canidate := filepath.FromSlash(core.Key(k).MustString(""))
-			cfg.StylesPath = DeterminePath(cfg.Path, canidate)
+			cfg.StylesPath = cfg.FallbackPath
+			if cfg.StylesPath == "" {
+				canidate := filepath.FromSlash(core.Key(k).MustString(""))
+				cfg.StylesPath = DeterminePath(cfg.Path, canidate)
+			}
 		} else if k == "MinAlertLevel" {
 			if !StringInSlice(min, AlertLevels) {
 				level := core.Key(k).In("suggestion", AlertLevels)

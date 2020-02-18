@@ -2,8 +2,8 @@ package check
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -50,7 +50,7 @@ type Manager struct {
 // NewManager creates a new Manager and loads the rule definitions (that is,
 // extended checks) specified by config.
 func NewManager(config *core.Config) *Manager {
-	var style, path string
+	var path string
 
 	mgr := Manager{AllChecks: make(map[string]Check), Config: config}
 
@@ -62,33 +62,9 @@ func NewManager(config *core.Config) *Manager {
 		return &mgr
 	}
 
-	baseDir := mgr.Config.StylesPath
-	for _, style = range mgr.Config.GBaseStyles {
-		p := filepath.Join(baseDir, style)
-		if core.StringInSlice(style, loadedStyles) {
-			// We've already loaded this style.
-			continue
-		} else if core.StringInSlice(style, defaultStyles) && !core.IsDir(p) {
-			continue
-		}
-		// Now we load all styles specified at the global ("*") level.
-		mgr.loadExternalStyle(p)
-		loadedStyles = append(loadedStyles, style)
-	}
-
+	loadedStyles = append(loadedStyles, mgr.loadStyles(mgr.Config.GBaseStyles, loadedStyles)...)
 	for _, styles := range mgr.Config.SBaseStyles {
-		for _, style := range styles {
-			p := filepath.Join(baseDir, style)
-			if core.StringInSlice(style, defaultStyles) && !core.IsDir(p) {
-				continue
-			} else if !core.StringInSlice(style, loadedStyles) {
-				// Now we load all styles specified at a syntax level
-				//(e.g., "*.md"), assuming we didn't already load it at the
-				// global level.
-				mgr.loadExternalStyle(p)
-				loadedStyles = append(loadedStyles, style)
-			}
-		}
+		loadedStyles = append(loadedStyles, mgr.loadStyles(styles, loadedStyles)...)
 	}
 
 	for _, chk := range mgr.Config.Checks {
@@ -102,7 +78,7 @@ func NewManager(config *core.Config) *Manager {
 			// If this rule isn't part of an already-loaded style, we load it
 			// individually.
 			fName := parts[1] + ".yml"
-			path = filepath.Join(baseDir, parts[0], fName)
+			path = filepath.Join(mgr.Config.StylesPath, parts[0], fName)
 			core.CheckError(mgr.loadCheck(fName, path), mgr.Config.Debug)
 		}
 	}
@@ -110,9 +86,6 @@ func NewManager(config *core.Config) *Manager {
 	// Finally, after reading the user's `StylesPath`, we load our built-in
 	// styles:
 	mgr.loadDefaultRules(loadedStyles)
-
-	loadedStyles = append(loadedStyles, defaultStyles...)
-
 	return &mgr
 }
 
@@ -765,7 +738,7 @@ func (mgr *Manager) addCheck(file []byte, chkName string) error {
 }
 
 func (mgr *Manager) loadExternalStyle(path string) {
-	err := filepath.Walk(path,
+	err := mgr.Config.FsWrapper.Walk(path,
 		func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {
 				return err
@@ -778,7 +751,7 @@ func (mgr *Manager) loadExternalStyle(path string) {
 
 func (mgr *Manager) loadCheck(fName string, fp string) error {
 	if strings.HasSuffix(fName, ".yml") {
-		f, err := ioutil.ReadFile(fp)
+		f, err := mgr.Config.FsWrapper.ReadFile(fp)
 		if !core.CheckError(err, mgr.Config.Debug) {
 			return err
 		}
@@ -811,6 +784,26 @@ func (mgr *Manager) loadDefaultRules(loaded []string) {
 		}
 	}
 	mgr.loadVocabRules(mgr.Config)
+}
+
+func (mgr *Manager) loadStyles(styles []string, loaded []string) []string {
+	var found []string
+
+	baseDir := mgr.Config.StylesPath
+	for _, style := range styles {
+		p := filepath.Join(baseDir, style)
+		if core.StringInSlice(style, loaded) || core.StringInSlice(style, defaultStyles) {
+			// We've already loaded this style.
+			continue
+		} else if found, _ := mgr.Config.FsWrapper.DirExists(p); !found {
+			core.CheckError(errors.New("missing style: '"+style+"'"), mgr.Config.Debug)
+			continue
+		}
+		mgr.loadExternalStyle(p)
+		found = append(found, style)
+	}
+
+	return found
 }
 
 func (mgr *Manager) loadVocabRules(config *core.Config) {

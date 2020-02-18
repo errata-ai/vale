@@ -12,6 +12,7 @@ target
 dist
 _vendor-*
 docs/public/
+fixtures/formats/Sphinx/_build/doctrees
 
 # Files
 *.o
@@ -24,8 +25,6 @@ docs/public/
 .bundle
 .vagrant
 
-docs/content/styles.md
-
 action/action_closed.go
 rule/grammar_closed.go
 
@@ -33,4 +32,6 @@ rule/grammar_closed.go
 __pycache__/
 *.py[cod]
 *$py.class
+
+
 
