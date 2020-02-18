@@ -14,7 +14,9 @@ import (
 	"github.com/errata-ai/vale/core"
 	"github.com/gobwas/glob"
 	"github.com/jdkato/regexp"
-	"github.com/russross/blackfriday"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	grh "github.com/yuin/goldmark/renderer/html"
 	"golang.org/x/net/html"
 )
 
@@ -63,14 +65,15 @@ var xsltArgs = []string{
 	"nop",
 }
 
-// Blackfriday configuration.
-var commonHTMLFlags = 0 | blackfriday.HTML_USE_XHTML
-var commonExtensions = 0 |
-	blackfriday.EXTENSION_NO_INTRA_EMPHASIS |
-	blackfriday.EXTENSION_TABLES |
-	blackfriday.EXTENSION_FENCED_CODE
-var renderer = blackfriday.HtmlRenderer(commonHTMLFlags, "", "")
-var options = blackfriday.Options{Extensions: commonExtensions}
+// Markdown configuration.
+var goldMd = goldmark.New(
+	goldmark.WithExtensions(
+		extension.GFM,
+	),
+	goldmark.WithRendererOptions(
+		grh.WithUnsafe(),
+	),
+)
 var reFrontMatter = regexp.MustCompile(
 	`^(?s)(?:---|\+\+\+)\n(.+?)\n(?:---|\+\+\+)`)
 
@@ -358,9 +361,12 @@ func (l Linter) prep(content, block, inline, ext string) string {
 }
 
 func (l Linter) lintMarkdown(f *core.File) {
+	var buf bytes.Buffer
+
 	s := l.prep(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
-	html := blackfriday.MarkdownOptions([]byte(s), renderer, options)
-	l.lintHTMLTokens(f, f.Content, html, 0)
+	if core.CheckError(goldMd.Convert([]byte(s), &buf), l.Config.Debug) {
+		l.lintHTMLTokens(f, f.Content, buf.Bytes(), 0)
+	}
 }
 
 func (l Linter) lintSphinx(f *core.File) {

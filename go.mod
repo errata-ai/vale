@@ -29,7 +29,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.0-20170719101040-be5337e7b39e
 	github.com/pierrec/lz4 v2.2.6+incompatible // indirect
 	github.com/remeh/sizedwaitgroup v0.0.0-20161123101944-4b44541c9359
-	github.com/russross/blackfriday v0.0.0-20151110051855-0b647d0506a6
+	github.com/russross/blackfriday v0.0.0-20151110051855-0b647d0506a6 // indirect
 	github.com/shogo82148/go-shuffle v0.0.0-20170226075450-4789c7c401f2 // indirect
 	github.com/shurcooL/sanitized_anchor_name v0.0.0-20170515013256-541ff5ee47f1 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a // indirect
@@ -38,6 +38,7 @@ require (
 	github.com/urfave/cli v1.19.1
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
 	github.com/xrash/smetrics v0.0.0-20170218160415-a3153f7040e9
+	github.com/yuin/goldmark v1.1.23
 	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80
 	gopkg.in/ini.v1 v1.28.0
 	gopkg.in/neurosnap/sentences.v1 v1.0.6 // indirect
