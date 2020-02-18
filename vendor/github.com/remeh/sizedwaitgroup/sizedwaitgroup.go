@@ -10,6 +10,7 @@
 package sizedwaitgroup
 
 import (
+	"context"
 	"math"
 	"sync"
 )
@@ -47,8 +48,26 @@ func New(limit int) SizedWaitGroup {
 //
 // See sync.WaitGroup documentation for more information.
 func (s *SizedWaitGroup) Add() {
-	s.current <- struct{}{}
+	s.AddWithContext(context.Background())
+}
+
+// AddWithContext increments the internal WaitGroup counter.
+// It can be blocking if the limit of spawned goroutines
+// has been reached. It will stop blocking when Done is
+// been called, or when the context is canceled. Returns nil on
+// success or an error if the context is canceled before the lock
+// is acquired.
+//
+// See sync.WaitGroup documentation for more information.
+func (s *SizedWaitGroup) AddWithContext(ctx context.Context) error {
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case s.current <- struct{}{}:
+		break
+	}
 	s.wg.Add(1)
+	return nil
 }
 
 // Done decrements the SizedWaitGroup counter.

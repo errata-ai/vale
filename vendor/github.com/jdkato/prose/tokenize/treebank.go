@@ -8,7 +8,7 @@ import (
 // TreebankWordTokenizer splits a sentence into words.
 //
 // This implementation is a port of the Sed script written by Robert McIntyre,
-// which is available at https://goo.gl/UGZrAc.
+// which is available at https://gist.github.com/jdkato/fc8b8c4266dba22d45ac85042ae53b1e.
 type TreebankWordTokenizer struct {
 }
 

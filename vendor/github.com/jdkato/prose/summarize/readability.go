@@ -30,6 +30,12 @@ func (d *Document) GunningFog() float64 {
 	return 0.4 * (x + 100.0*y)
 }
 
+// LIX computes readability measure
+// (https://en.wikipedia.org/wiki/Lix_(readability_test)) .
+func (d *Document) LIX() float64 {
+	return (d.NumWords / d.NumSentences) + ((d.NumLongWords * 100) / d.NumWords)
+}
+
 // SMOG computes the SMOG grade (https://en.wikipedia.org/wiki/SMOG).
 func (d *Document) SMOG() float64 {
 	return 1.0430*math.Sqrt(d.NumPolysylWords*30.0/d.NumSentences) + 3.1291

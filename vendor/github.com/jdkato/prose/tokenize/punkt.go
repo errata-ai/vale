@@ -38,9 +38,6 @@ type PunktSentenceTokenizer struct {
 
 // NewPunktSentenceTokenizer creates a new PunktSentenceTokenizer and loads
 // its English model.
-//
-// TODO: Change contructor to `NewPunktSentenceTokenizer(lang string)`, where
-// `lang` is one of the supported languages.
 func NewPunktSentenceTokenizer() *PunktSentenceTokenizer {
 	var pt PunktSentenceTokenizer
 	var err error

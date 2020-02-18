@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/ValeLint/gospell"
+	"github.com/client9/gospell"
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/data"
 	"github.com/errata-ai/vale/rule"

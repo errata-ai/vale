@@ -1,6 +1,11 @@
 package summarize
 
-import "github.com/montanaflynn/stats"
+import (
+	"strings"
+
+	"github.com/jdkato/prose/internal/util"
+	"github.com/montanaflynn/stats"
+)
 
 // WordDensity returns a map of each word and its density.
 func (d *Document) WordDensity() map[string]float64 {
@@ -10,6 +15,27 @@ func (d *Document) WordDensity() map[string]float64 {
 		density[word] = val
 	}
 	return density
+}
+
+// Keywords returns a Document's words in the form
+//
+//    map[word]count
+//
+// omitting stop words and normalizing case.
+func (d *Document) Keywords() map[string]int {
+	scores := map[string]int{}
+	for word, freq := range d.WordFrequency {
+		normalized := strings.ToLower(word)
+		if util.StringInSlice(normalized, stopWords) {
+			continue
+		}
+		if _, found := scores[normalized]; found {
+			scores[normalized] += freq
+		} else {
+			scores[normalized] = freq
+		}
+	}
+	return scores
 }
 
 // MeanWordLength returns the mean number of characters per word.

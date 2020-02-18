@@ -32,3 +32,7 @@ shuffle.Slice(float64s)
 ```
 
 See [godoc](https://godoc.org/github.com/shogo82148/go-shuffle) for more information.
+
+# LICENSE
+
+This software is released under the MIT License, see LICENSE.md.
