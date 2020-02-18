@@ -1,0 +1,16 @@
+{
+  "author": "jdkato",
+  "description": "Test tech job posts for issues with sexism, culture, expectations, and recruiter fails.",
+  "email": "support@errata.ai",
+  "lang": "en",
+  "url": "https://github.com/errata-ai/Joblint/releases/latest/download/Joblint.zip",
+  "feed": "https://github.com/errata-ai/Joblint/releases.atom",
+  "license": "MIT",
+  "issues": "https://github.com/errata-ai/Joblint/issues/new",
+  "name": "Joblint",
+  "sources": [
+    "https://joblint.org/"
+  ],
+  "vale_version": ">=1.0.0",
+  "coverage": 0.0
+}
