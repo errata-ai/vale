@@ -383,7 +383,7 @@ func (mgr *Manager) addReadabilityCheck(chkName string, chkDef Readability) {
 		// than a paragraph or including non-block level content (i.e.,
 		// headings, list items or table cells) doesn't make sense.
 		chkDef.Definition.Scope = "summary"
-		mgr.updateAllChecks(chkDef.Definition, fn)
+		mgr.updateAllChecks(chkDef.Definition, fn, "")
 	}
 }
 
@@ -416,7 +416,7 @@ func (mgr *Manager) addCapitalizationCheck(chkName string, chkDef Capitalization
 	fn := func(text string, file *core.File) []core.Alert {
 		return checkCapitalization(text, chkDef, file)
 	}
-	mgr.updateAllChecks(chkDef.Definition, fn)
+	mgr.updateAllChecks(chkDef.Definition, fn, "")
 }
 
 func (mgr *Manager) addConsistencyCheck(chkName string, chkDef Consistency) {
@@ -444,7 +444,7 @@ func (mgr *Manager) addConsistencyCheck(chkName string, chkDef Consistency) {
 			fn := func(text string, file *core.File) []core.Alert {
 				return checkConsistency(text, chkDef, file, re, subs)
 			}
-			mgr.updateAllChecks(chkDef.Definition, fn)
+			mgr.updateAllChecks(chkDef.Definition, fn, re.String())
 		}
 	}
 }
@@ -464,7 +464,7 @@ func (mgr *Manager) addExistenceCheck(chkName string, chkDef Existence) {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkExistence(text, chkDef, file, re)
 		}
-		mgr.updateAllChecks(chkDef.Definition, fn)
+		mgr.updateAllChecks(chkDef.Definition, fn, re.String())
 	}
 }
 
@@ -479,17 +479,22 @@ func (mgr *Manager) addRepetitionCheck(chkName string, chkDef Repetition) {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkRepetition(text, chkDef, file, re)
 		}
-		mgr.updateAllChecks(chkDef.Definition, fn)
+		mgr.updateAllChecks(chkDef.Definition, fn, re.String())
 	}
 }
 
 func (mgr *Manager) addOccurrenceCheck(chkName string, chkDef Occurrence) {
-	re, err := regexp.Compile(chkDef.Token)
+	regex := ""
+	if chkDef.Ignorecase {
+		regex += ignoreCase
+	}
+	regex += `(?:` + chkDef.Token + `)`
+	re, err := regexp.Compile(regex)
 	if core.CheckError(err, mgr.Config.Debug) {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkOccurrence(text, chkDef, file, re)
 		}
-		mgr.updateAllChecks(chkDef.Definition, fn)
+		mgr.updateAllChecks(chkDef.Definition, fn, re.String())
 	}
 }
 
@@ -513,7 +518,8 @@ func (mgr *Manager) addConditionalCheck(chkName string, chkDef Conditional) {
 	fn := func(text string, file *core.File) []core.Alert {
 		return checkConditional(text, chkDef, file, expression)
 	}
-	mgr.updateAllChecks(chkDef.Definition, fn)
+	// TODO: How do we support multiple patterns?
+	mgr.updateAllChecks(chkDef.Definition, fn, "")
 }
 
 func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
@@ -554,7 +560,7 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 		fn := func(text string, file *core.File) []core.Alert {
 			return checkSubstitution(text, chkDef, file, re, replacements)
 		}
-		mgr.updateAllChecks(chkDef.Definition, fn)
+		mgr.updateAllChecks(chkDef.Definition, fn, re.String())
 	}
 }
 
@@ -602,12 +608,17 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 	}
 
 	if core.CheckError(err, mgr.Config.Debug) {
-		mgr.updateAllChecks(chkDef.Definition, fn)
+		mgr.updateAllChecks(chkDef.Definition, fn, "")
 	}
 }
 
-func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn) {
-	chk := Check{Rule: fn, Extends: chkDef.Extends, Code: chkDef.Code}
+func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn, pattern string) {
+	chk := Check{
+		Rule:    fn,
+		Extends: chkDef.Extends,
+		Code:    chkDef.Code,
+		Pattern: pattern,
+	}
 	chk.Level = core.LevelToInt[chkDef.Level]
 	chk.Scope = core.Selector{Value: chkDef.Scope}
 	mgr.AllChecks[chkDef.Name] = chk
@@ -847,6 +858,11 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 		}, func(text string, file *core.File) []core.Alert {
 			return rule.CheckWithLT(
 				text, config.LTPath, file, config.Debug)
-		})
+		}, "")
 	}
+}
+
+// Compile returns a compiled check.
+func (mgr *Manager) Compile(name, path string) error {
+	return mgr.loadCheck(name, path)
 }

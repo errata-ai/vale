@@ -7,9 +7,10 @@ import (
 
 // A Check implements a single rule.
 type Check struct {
-	Extends string
 	Code    bool
+	Extends string
 	Level   int
+	Pattern string
 	Rule    ruleFn
 	Scope   core.Selector
 }
@@ -58,6 +59,8 @@ type Substitution struct {
 // Occurrence counts the number of times Token appears.
 type Occurrence struct {
 	Definition `mapstructure:",squash"`
+	// `ignorecase` (`bool`): Makes all matches case-insensitive.
+	Ignorecase bool
 	// `max` (`int`): The maximum amount of times `token` may appear in a given scope.
 	Max int
 	// `min` (`int`): The minimum amount of times `token` has to appear in a given scope.

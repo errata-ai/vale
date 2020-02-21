@@ -261,6 +261,16 @@ func main() {
 			},
 			Hidden: true,
 		},
+		{
+			Name:  "compile",
+			Usage: "Return a compiled regex for a given rule",
+			Action: func(c *cli.Context) error {
+				config, _ = core.LoadConfig(
+					config, path, minAlertLevel, backup, local)
+				return action.CompileRule(config, c.Args().First())
+			},
+			Hidden: true,
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {
