@@ -271,6 +271,14 @@ func main() {
 			},
 			Hidden: true,
 		},
+		{
+			Name:  "test",
+			Usage: "Return linting results for a single rule",
+			Action: func(c *cli.Context) error {
+				return action.TestRule(c.Args())
+			},
+			Hidden: true,
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {

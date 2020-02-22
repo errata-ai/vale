@@ -2,10 +2,13 @@ package action
 
 import (
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/lint"
+	"github.com/errata-ai/vale/ui"
 )
 
 // ListConfig prints Vale's active configuration.
@@ -40,5 +43,36 @@ func CompileRule(config *core.Config, path string) error {
 			}
 		}
 	}
+	return nil
+}
+
+// TestRule returns the linting results for a single rule
+func TestRule(args []string) error {
+	if len(args) == 2 && core.FileExists(args[0]) && core.FileExists(args[1]) {
+		rule, _ := ioutil.ReadFile(args[0])
+		text, _ := ioutil.ReadFile(args[1])
+
+		// Create a pre-filled configuration:
+		config := core.NewConfig()
+		config.MinAlertLevel = 0
+		config.GBaseStyles = append(config.GBaseStyles, "Test")
+
+		// Create our check manager:
+		mgr := check.Manager{
+			AllChecks: make(map[string]check.Check),
+			Config:    config}
+
+		mgr.AddCheck(rule, "Test.Rule")
+		linter := lint.Linter{Config: config, CheckManager: &mgr}
+
+		linted, err := linter.LintString(string(text))
+		_ = ui.PrintJSONAlerts(linted)
+
+		return err
+	} else if len(args) != 2 {
+		fmt.Println("missing argument")
+	}
+
+	fmt.Println("invalid arguments")
 	return nil
 }

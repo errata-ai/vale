@@ -863,6 +863,15 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 }
 
 // Compile returns a compiled check.
+//
+// TODO: Should we just expose `loadCheck`?
 func (mgr *Manager) Compile(name, path string) error {
 	return mgr.loadCheck(name, path)
+}
+
+// AddCheck adds the given check.
+//
+// TODO: Should we just expose `addCheck`?
+func (mgr *Manager) AddCheck(content []byte, chkName string) error {
+	return mgr.addCheck(content, chkName)
 }
