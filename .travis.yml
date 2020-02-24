@@ -13,6 +13,8 @@ before_install:
   - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
   - export PATH=$PATH:~/bin:$PWD/dita-ot-3.4/bin/
 
+  - curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s latest
+
   - wget https://github.com/dita-ot/dita-ot/releases/download/3.4/dita-ot-3.4.zip
   - unzip dita-ot-3.4.zip > /dev/null 2>&1
 
