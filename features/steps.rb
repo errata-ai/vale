@@ -88,8 +88,8 @@ When(/^I assign minAlertLevel "([^\s]+)" "([^\s]+)"$/) do |level, file|
   step %(I run `#{cmd} --minAlertLevel='#{level}' #{file}`)
 end
 
-When(/^I inherit from "(.*)"$/) do |file|
-  step %(I cd to "../../fixtures/configs")
+When(/^I inherit from "([^\s]+)" "([^\s]+)"$/) do |dir, file|
+  step %(I cd to "#{dir}")
   step %(I run `#{cmd} --mode-compat --config='#{file}' test.md`)
 end
 

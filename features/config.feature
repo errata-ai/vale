@@ -416,13 +416,25 @@ Feature: Config
       """
     And the exit status should be 0
 
-  Scenario: Local overrides (lint)
-    When I inherit from "../../fixtures/configs/ini/.vale.ini"
+  Scenario: Local overrides
+    When I inherit from "../../fixtures/configs" "ini/.vale.ini"
     Then the output should contain exactly:
       """
       test.md:3:11:proselint.Very:Remove 'very'.
       test.md:3:16:Joblint.Visionary:Avoid using 'paradigm'
       test.md:5:16:Joblint.LegacyTech:Avoid using 'Cobol'
       test.md:7:7:proselint.Jargon:'agendize' is jargon.
+      """
+    And the exit status should be 1
+
+  Scenario: Local overrides + projects
+    When I inherit from "../../fixtures/misc/filesystem/projects" "ini/.vale.ini"
+    Then the output should contain exactly:
+      """
+      test.md:3:16:proselint.Very:Remove 'very'.
+      test.md:5:6:Vale.Terms:Use 'Vale' instead of 'vale'.
+      test.md:5:11:Vale.Repetition:'is' is repeated!
+      test.md:5:26:Vale.Spelling:Did you really mean 'Javascript'?
+      test.md:5:26:Vale.Terms:Use 'JavaScript' instead of 'Javascript'.
       """
     And the exit status should be 1
