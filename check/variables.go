@@ -43,7 +43,7 @@ func sentence(s string, exceptions []string, indicators []string) bool {
 	count := 0.0
 	words := 0.0
 
-	tokens := strings.Fields(s)
+	tokens := strings.Fields(strings.TrimRight(s, "?!.:"))
 	for i, w := range tokens {
 		prev := ""
 		if i-1 >= 0 {
@@ -51,10 +51,14 @@ func sentence(s string, exceptions []string, indicators []string) bool {
 		}
 
 		if strings.Contains(w, "-") {
-			// NOTE: This is necessary for works like 'Top-level'.
-			//
-			// TODO: Should we use `prose.WordTokenizer`?
+			// NOTE: This is necessary for works like `Top-level`.
 			w = strings.Split(w, "-")[0]
+		} else if strings.Contains(w, "'") {
+			// NOTE: This is necessary for works like `Client's`.
+			w = strings.Split(w, "'")[0]
+		} else if strings.Contains(w, "’") {
+			// NOTE: This is necessary for works like `Client's`.
+			w = strings.Split(w, "’")[0]
 		}
 
 		if core.StringInSlice(w, exceptions) || w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) {

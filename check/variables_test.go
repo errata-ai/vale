@@ -18,6 +18,8 @@ func TestSentence(t *testing.T) {
 		{heading: "Top-level entities", match: true},
 		{heading: "Non-member Predicates", match: false},
 		{heading: "Non-member predicates", match: true},
+		{heading: "Client's key share and finish", match: true},
+		{heading: "Client’s key share and finish", match: true},
 		{
 			heading:    "Find the thief: Introduction",
 			match:      true,
