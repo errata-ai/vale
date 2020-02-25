@@ -41,6 +41,10 @@ vale.Editorializing = NO
 ```
 {% endcode %}
 
+{% hint style="info" %}
+You can also manually specify a path using the [`--config`](usage.md#config)`option.`
+{% endhint %}
+
 Vale expects its configuration to be in a file named `.vale.ini` or `_vale.ini`. It'll start looking for this file in the same directory as the file that's being linted. If it can't find one, it'll search up to 6 levels up the directory tree. After 6 levels, it'll look for a global configuration file in the OS equivalent of `$HOME` \(see below\).
 
 | OS | Search Locations |
@@ -103,8 +107,8 @@ WordTemplate = \b(?:%s)\b
 
 ### `SphinxBuildPath` \[core\]
 
-{% hint style="info" %}
-**Note**: This option requires Vale v2.0!
+{% hint style="warning" %}
+Requires Vale &gt;= v2.0!
 {% endhint %}
 
 ```text
@@ -115,8 +119,8 @@ SphinxBuildPath = _build
 
 ### `SphinxAutoBuild` \[core\]
 
-{% hint style="info" %}
-**Note**: This option requires Vale v2.0!
+{% hint style="warning" %}
+Requires Vale &gt;= v2.0!
 {% endhint %}
 
 ```text
@@ -153,8 +157,8 @@ TokenIgnores = (\$+[^\n$]+\$+)
 
 ### `Transform`
 
-{% hint style="info" %}
-**Note**: This option requires Vale v2.0!
+{% hint style="warning" %}
+Requires Vale &gt;= v2.0!
 {% endhint %}
 
 ```text

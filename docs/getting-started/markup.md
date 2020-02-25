@@ -67,8 +67,12 @@ By default, listing blocks and inline literals are ignored.
 
 ### DITA \[`markup`\]
 
+{% hint style="warning" %}
+Requires Vale &gt;= v2.0!
+{% endhint %}
+
 {% hint style="info" %}
-**Note:** You'll need to manually add the dita-ot-X.X.X/bin directory to your $PATH.
+You'll need to manually add the **dita-ot-X.X.X/bin** directory to your **$PATH**.
 {% endhint %}
 
 Vale supports DITA through the [DITA Open Toolkit](https://www.dita-ot.org/).
@@ -76,6 +80,10 @@ Vale supports DITA through the [DITA Open Toolkit](https://www.dita-ot.org/).
 By default, `script`, `style`, `pre`, `code`, and `tt` tags are ignored.
 
 ### XML \[`markup`\]
+
+{% hint style="warning" %}
+Requires Vale &gt;= v2.0!
+{% endhint %}
 
 Vale supports XML through the external program [`xsltproc`](http://xmlsoft.org/XSLT/xsltproc.html).
 

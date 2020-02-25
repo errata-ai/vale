@@ -62,7 +62,7 @@ The `--glob` option specifies the type of files Vale will search. It accepts the
   $ vale --glob='!*.txt' directory
 ```
 
-This option takes precedence over any patterns defined in a [configuration file]().
+This option takes precedence over any patterns defined in a [configuration file](configuration.md).
 
 #### Usage
 
@@ -75,7 +75,7 @@ $ vale --glob='*.{md,rst}' directory
 
 #### Description
 
-The `--config` option specifies the location of a configuration file. This will take precedence over the [default search process]().
+The `--config` option specifies the location of a configuration file. This will take precedence over the [default search process](configuration.md#basics).
 
 #### Usage
 
