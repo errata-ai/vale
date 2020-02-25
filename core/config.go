@@ -117,7 +117,7 @@ func NewConfig() *Config {
 }
 
 func (c *Config) addWordListFile(name string, accept bool) error {
-	fd, err := os.Open(name)
+	fd, err := c.FsWrapper.Open(name)
 	if err != nil {
 		return err
 	}
@@ -149,7 +149,8 @@ func (c *Config) addWordList(r io.Reader, accept bool) error {
 
 func loadVocab(root string, config *Config) error {
 	root = filepath.Join(config.StylesPath, "Vocab", root)
-	err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
+
+	err := config.FsWrapper.Walk(root, func(fp string, fi os.FileInfo, err error) error {
 		if filepath.Base(fp) == "accept.txt" {
 			config.addWordListFile(fp, true)
 		} else if filepath.Base(fp) == "reject.txt" {
@@ -157,6 +158,7 @@ func loadVocab(root string, config *Config) error {
 		}
 		return nil
 	})
+
 	return err
 }
 
@@ -263,7 +265,7 @@ func LoadConfig(cfg *Config, upath string, min string, compat, rev bool) (*Confi
 					mockFs := afero.NewMemMapFs()
 					if CheckError(CopyDir(baseFs, basePath, mockFs, mockPath), cfg.Debug) {
 						cfg.FsWrapper.Fs = afero.NewCopyOnWriteFs(baseFs, mockFs)
-						cfg.FallbackPath = basePath
+						cfg.FallbackPath = mockPath
 					}
 				}
 			}
