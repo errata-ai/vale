@@ -434,7 +434,6 @@ Feature: Config
       test.md:3:16:proselint.Very:Remove 'very'.
       test.md:5:6:Vale.Terms:Use 'Vale' instead of 'vale'.
       test.md:5:11:Vale.Repetition:'is' is repeated!
-      test.md:5:26:Vale.Spelling:Did you really mean 'Javascript'?
       test.md:5:26:Vale.Terms:Use 'JavaScript' instead of 'Javascript'.
       """
     And the exit status should be 1
