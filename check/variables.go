@@ -5,7 +5,13 @@ import (
 
 	"github.com/errata-ai/vale/core"
 	"github.com/jdkato/prose/transform"
+	"github.com/jdkato/regexp"
 )
+
+func makeExceptions(ignore []string) *regexp.Regexp {
+	ignore = append(ignore, `[^\s]+`)
+	return regexp.MustCompile(`(?:` + strings.Join(ignore, "|") + `)`)
+}
 
 func lower(s string, ignore []string) bool {
 	return s == strings.ToLower(s) || core.StringInSlice(s, ignore)
@@ -18,8 +24,11 @@ func upper(s string, ignore []string) bool {
 func title(s string, ignore []string, tc *transform.TitleConverter) bool {
 	count := 0.0
 	words := 0.0
-	expected := strings.Fields(tc.Title(s))
-	for i, word := range strings.Fields(s) {
+
+	re := makeExceptions(ignore)
+	expected := re.FindAllString(tc.Title(s), -1)
+
+	for i, word := range re.FindAllString(s, -1) {
 		if word == expected[i] || core.StringInSlice(word, ignore) {
 			count++
 		} else if word == strings.ToUpper(word) {
@@ -27,6 +36,7 @@ func title(s string, ignore []string, tc *transform.TitleConverter) bool {
 		}
 		words++
 	}
+
 	return (count / words) > 0.8
 }
 
@@ -39,11 +49,13 @@ func hasAnySuffix(s string, suffixes []string) bool {
 	return false
 }
 
-func sentence(s string, exceptions []string, indicators []string) bool {
+func sentence(s string, ignore []string, indicators []string) bool {
 	count := 0.0
 	words := 0.0
 
-	tokens := strings.Fields(strings.TrimRight(s, "?!.:"))
+	re := makeExceptions(ignore)
+
+	tokens := re.FindAllString(strings.TrimRight(s, "?!.:"), -1)
 	for i, w := range tokens {
 		prev := ""
 		if i-1 >= 0 {
@@ -61,7 +73,7 @@ func sentence(s string, exceptions []string, indicators []string) bool {
 			w = strings.Split(w, "’")[0]
 		}
 
-		if core.StringInSlice(w, exceptions) || w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) {
+		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || core.StringInSlice(w, ignore) {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) {
 			return false

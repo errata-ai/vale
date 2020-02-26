@@ -29,6 +29,11 @@ func TestSentence(t *testing.T) {
 			heading: "Find the thief: Introduction",
 			match:   false,
 		},
+		{
+			heading:    "Creating a connection to Event Store",
+			match:      true,
+			exceptions: []string{"Event Store"},
+		},
 	}
 
 	for _, h := range headings {
