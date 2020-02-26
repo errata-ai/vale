@@ -17,7 +17,7 @@ build:
 	go build ${LDFLAGS} -o bin/vale
 
 closed:
-	go build -tags closed ${LDFLAGS} -o bin/vale
+	GOOS=$(os) GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/$(exe)
 
 build-win:
 	go build ${LDFLAGS} -o vale.exe
