@@ -47,7 +47,7 @@ Any format not listed below is considered to be `text` and has no special scopin
 
 ### Markdown \[`markup`\]
 
-Vale has built-in support for GitHub-Flavored Markdown. By default, it ignores indented blocks, fenced blocks, and code spans.
+Vale has built-in support for [GitHub-Flavored Markdown](https://github.github.com/gfm/). By default, it ignores indented blocks, fenced blocks, and code spans.
 
 ### HTML \[`markup`\]
 

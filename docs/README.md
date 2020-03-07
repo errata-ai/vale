@@ -6,8 +6,6 @@ description: >-
 
 # Quick Start
 
-
-
 ![Example Vale output using a custom style \(18F\)](https://user-images.githubusercontent.com/8785025/71751520-ab91fa00-2e30-11ea-9e67-6e2babb5d0ee.png)
 
 **Vale** is a cross-platform \(macOS, Windows, and Linux\), command-line [linter](https://en.wikipedia.org/wiki/Lint_%28software%29) for prose built with speed and extensibility in mind. Its key features are as follows:
@@ -18,7 +16,7 @@ description: >-
 
 No matter if you're working with a small in-house standard or a large editorial style guide, Vale will help you maintain consistent and error-free writing.
 
-### Installation
+## Installation
 
 {% hint style="info" %}
 If you're using Vale with a markup format other than **Markdown** or **HTML**, you'll also need to install a [parser](getting-started/markup.md#formats).
@@ -51,7 +49,7 @@ Or use another [package manager](https://repology.org/project/vale/versions).
 
 See the dedicated [Installation section](getting-started/installation.md) for more detailed instructions and options.
 
-### Usage
+## Usage
 
 Download or clone [Vale's example repository](https://github.com/errata-ai/vale-boilerplate) and follow the command-line steps below:
 
