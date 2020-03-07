@@ -75,7 +75,7 @@ Requires Vale &gt;= v2.0!
 
 Vale supports DITA through the [DITA Open Toolkit](https://www.dita-ot.org/). You'll need to follow the [installation instructions](https://www.dita-ot.org/dev/topics/installing-client.html), including the optional step of adding the absolute path for the `bin` directory to the `PATH` system variable.
 
-By default, `<codeblock>`, `tt`, and `<codeph>` elements are ignored.
+By default, `<codeblock>`, `<tt>`, and `<codeph>` elements are ignored.
 
 ### XML \[`markup`\]
 
