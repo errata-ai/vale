@@ -20,6 +20,7 @@ before_install:
 
   - sudo apt-get install -y xsltproc
   - pip install --user sphinx
+  - gem update --system
   - gem install asciidoctor
 install:
   - make setup
