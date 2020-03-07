@@ -1,5 +1,12 @@
 Feature: Scopes
 
+  Scenario: Raw
+    When I test scope "raw"
+    Then the output should contain exactly:
+      """
+      test.md:5:1:rules.Raw:Don't use italics/bolding in a heading.
+      """
+
   Scenario: Blockquote
     When I test scope "blockquote"
     Then the output should contain exactly:

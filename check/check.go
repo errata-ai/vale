@@ -22,8 +22,8 @@ import (
 
 const (
 	ignoreCase      = `(?i)`
-	wordTemplate    = `\b(?:%s)\b`
-	nonwordTemplate = `(?:%s)`
+	wordTemplate    = `(?m)\b(?:%s)\b`
+	nonwordTemplate = `(?m)(?:%s)`
 )
 
 var defaultFilters = []*regexp.Regexp{

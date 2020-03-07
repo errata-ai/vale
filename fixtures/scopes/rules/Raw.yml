@@ -1,0 +1,7 @@
+extends: existence
+scope: raw
+message: "Don't use italics/bolding in a heading."
+level: warning
+nonword: true
+tokens:
+    - '^#+.*\*.*'
