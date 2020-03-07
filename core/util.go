@@ -227,35 +227,27 @@ func JaroWinkler(ctx, sub string) (int, string) {
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).
 func initialPosition(ctx, sub string, loc []int) (int, string) {
-	idx := strings.Index(ctx, sub)
-	if idx < 0 {
-		// Fall back to the JaroWinkler distance. This should only happen if
-		// we're in a scope that contains inline markup (e.g., a sentence with
-		// code spans).
-		return JaroWinkler(ctx, sub)
-	}
-
-	temp := ctx
-	for _, s := range code.FindAllString(temp, -1) {
-		ctx, _ = Substitute(ctx, s, '@')
-	}
-
+	idx := -1
 	sub = strings.ToValidUTF8(sub, "")
-	pat := `(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:\b|_|$)`
-	txt := strings.TrimSpace(ctx[Max(idx-1, 0):Min(idx+len(sub)+1, len(ctx))])
-	if match, err := regexp.MatchString(pat, txt); err != nil || !match {
-		// If there's more than one, we take the first bounded option.
-		// For example, given that we're looking for "very", "every" => nested
-		// and " very " => bounded.
-		sloc := regexp.MustCompile(pat).FindStringIndex(ctx)
-		if len(sloc) > 0 {
-			idx = sloc[0]
-			if strings.HasPrefix(ctx[idx:], "_") {
-				idx++ // We don't want to include the underscore boundary.
-			}
+
+	pat := regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|[^` + "`" + `]*\s|$)`)
+	fsi := pat.FindStringIndex(ctx)
+
+	if len(fsi) == 0 {
+		idx = strings.Index(ctx, sub)
+		if idx < 0 {
+			// Fall back to the JaroWinkler distance. This should only happen if
+			// we're in a scope that contains inline markup (e.g., a sentence with
+			// code spans).
+			return JaroWinkler(ctx, sub)
 		}
+	} else {
+		idx = fsi[0]
 	}
 
+	if strings.HasPrefix(ctx[idx:], "_") {
+		idx++ // We don't want to include the underscore boundary.
+	}
 	return utf8.RuneCountInString(ctx[:idx]) + 1, sub
 }
 

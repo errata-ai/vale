@@ -32,7 +32,7 @@ Feature: Styles
       test.md:30:38:demo.EndingPreposition:Don't end a sentence with 'of.'
       test.md:32:61:demo.EndingPreposition:Don't end a sentence with 'by.'
       test.md:36:1:demo.SentenceLength:Sentences should be less than 25 words
-      test.md:36:101:demo.Smart:Inconsistent use of '"' ('smart' mixed with 'dumb')
+      test.md:36:106:demo.Smart:Inconsistent use of '"' ('smart' mixed with 'dumb')
       test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
       test.rst:1:58:demo.Spacing:'. I' should have one space
       test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
