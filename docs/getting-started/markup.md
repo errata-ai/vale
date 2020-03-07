@@ -69,15 +69,13 @@ By default, listing blocks and inline literals are ignored.
 
 {% hint style="warning" %}
 Requires Vale &gt;= v2.0!
+
+**Note**: You'll likely experience worse performance with DITA files compared to other formats \(including plain XML, discussed below\) since the underlying `dita` command is _slow_ — it incurs about 4 seconds of overhead _per file_.
 {% endhint %}
 
-{% hint style="info" %}
-You'll need to manually add the **dita-ot-X.X.X/bin** directory to your **$PATH**.
-{% endhint %}
+Vale supports DITA through the [DITA Open Toolkit](https://www.dita-ot.org/). You'll need to follow the [installation instructions](https://www.dita-ot.org/dev/topics/installing-client.html), including the optional step of adding the absolute path for the `bin` directory to the `PATH` system variable.
 
-Vale supports DITA through the [DITA Open Toolkit](https://www.dita-ot.org/).
-
-By default, `script`, `style`, `pre`, `code`, and `tt` tags are ignored.
+By default, `<codeblock>`, `tt`, and `<codeph>` elements are ignored.
 
 ### XML \[`markup`\]
 
