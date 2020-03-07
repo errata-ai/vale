@@ -9,17 +9,17 @@ init:
 install:
   - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby24\bin;%cd%;%PATH%
   - cinst ansicon
-  - pip install docutils
+
+  - pip install sphinx
   - gem install asciidoctor
-  - asciidoctor --version
-  - curl -fsSL -o C:\wix310-binaries.zip http://static.wixtoolset.org/releases/v3.10.3.3007/wix310-binaries.zip
-  - 7z x C:\wix310-binaries.zip -y -r -oC:\wix310
-  - set PATH=C:\wix310;%PATH%
-  # - curl -fsSL -o C:\latest.bat https://raw.githubusercontent.com/mh-cbon/latest/master/latest.bat
-  # - cmd /C C:\latest.bat mh-cbon go-msi amd64
-  - curl -fsSL -o C:\go-msi.msi https://github.com/mh-cbon/go-msi/releases/download/1.0.1/go-msi-amd64.msi
-  - msiexec.exe /i C:\go-msi.msi /quiet
-  - set PATH=C:\Program Files\go-msi\;%PATH%
+
+  - choco install xsltproc
+  # Git on AppVeyor includes a non-functional xsltproc. Remove this.
+  - if exist "%ProgramFiles%\Git\usr\bin\xsltproc.exe" del "%ProgramFiles%\Git\usr\bin\xsltproc.exe"
+
+  - curl -fsSL -o C:\dita-ot-3.4.zip https://github.com/dita-ot/dita-ot/releases/download/3.4/dita-ot-3.4.zip
+  - 7z x C:\dita-ot-3.4.zip -y -r -oC:\dita
+  - set PATH=C:\dita\dita-ot-3.4\bin;%PATH%
 build_script:
   - cmd: make setup
   - cmd: make build-win

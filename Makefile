@@ -21,7 +21,6 @@ closed:
 
 build-win:
 	go build ${LDFLAGS} -o vale.exe
-	go-msi make --msi vale.msi --version $(LAST_TAG)
 
 install:
 	go install ${LDFLAGS}
