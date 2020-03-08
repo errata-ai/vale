@@ -24,3 +24,15 @@ This is a sentance of.
 .. vale demo.EndingPreposition = YES
 
 This is a sentance of.
+
+The default types are as follows:
+
+.. vale off
+
+-  Configurable
+-  Grouped
+-  ACT test
+-  Variant
+-  Virtual
+
+.. vale on

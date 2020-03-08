@@ -32,7 +32,7 @@ require (
 	github.com/urfave/cli v1.22.2
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
 	github.com/xrash/smetrics v0.0.0-20170218160415-a3153f7040e9
-	github.com/yuin/goldmark v1.1.23
+	github.com/yuin/goldmark v1.1.25
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 	gopkg.in/ini.v1 v1.52.0
 	gopkg.in/neurosnap/sentences.v1 v1.0.6 // indirect

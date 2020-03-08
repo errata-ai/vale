@@ -267,8 +267,10 @@ func (f *File) UpdateComments(comment string) {
 
 // QueryComments checks if there has been an in-text comment for this check.
 func (f *File) QueryComments(check string) bool {
-	if status, ok := f.Comments[check]; ok {
-		return status
+	if !f.Comments["off"] {
+		if status, ok := f.Comments[check]; ok {
+			return status
+		}
 	}
 	return f.Comments["off"]
 }
