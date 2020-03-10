@@ -82,6 +82,7 @@ type Config struct {
 	FallbackPath string               `json:"-"`
 	LTPath       string               `json:"-"`
 	AuthToken    string               `json:"-"`
+	Styles       []string             `json:"-"`
 
 	// Command-line configuration
 	Debug     bool   // (optional) print debugging information to stdout/stderr
@@ -309,6 +310,7 @@ func LoadConfig(cfg *Config, upath string, min string, compat, rev bool) (*Confi
 		sec := "*"
 		if k == "BasedOnStyles" {
 			cfg.GBaseStyles = mergeValues(global.Key("BasedOnStyles").ValueWithShadows())
+			cfg.Styles = append(cfg.Styles, cfg.GBaseStyles...)
 		} else if k == "IgnorePatterns" || k == "BlockIgnores" {
 			cfg.BlockIgnores[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
 		} else if k == "TokenIgnores" {
@@ -335,7 +337,10 @@ func LoadConfig(cfg *Config, upath string, min string, compat, rev bool) (*Confi
 				if _, found := cfg.SecToPat[sec]; !found && CheckError(err, cfg.Debug) {
 					cfg.SecToPat[sec] = pat
 				}
-				cfg.SBaseStyles[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
+				sStyles := mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
+
+				cfg.Styles = append(cfg.Styles, sStyles...)
+				cfg.SBaseStyles[sec] = sStyles
 			} else if k == "IgnorePatterns" || k == "BlockIgnores" {
 				cfg.BlockIgnores[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
 			} else if k == "TokenIgnores" {

@@ -58,7 +58,7 @@ func NewManager(config *core.Config) *Manager {
 	loadedStyles := []string{}
 	if mgr.Config.StylesPath == "" {
 		// If we're not given a StylesPath, there's nothing left to look for.
-		mgr.loadDefaultRules(loadedStyles)
+		mgr.loadDefaultRules(loadedStyles, true)
 		return &mgr
 	}
 
@@ -85,7 +85,10 @@ func NewManager(config *core.Config) *Manager {
 
 	// Finally, after reading the user's `StylesPath`, we load our built-in
 	// styles:
-	mgr.loadDefaultRules(loadedStyles)
+	mgr.loadDefaultRules(
+		loadedStyles,
+		core.StringInSlice("vale", mgr.Config.Styles) ||
+			core.StringInSlice("Vale", mgr.Config.Styles))
 	return &mgr
 }
 
@@ -140,7 +143,9 @@ func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Reg
 	// We first look for the consequent of the conditional statement.
 	// For example, if we're ensuring that abbriviations have been defined
 	// parenthetically, we'd have something like:
+	//
 	//     "WHO" [antecedent], "World Health Organization (WHO)" [consequent]
+	//
 	// In other words: if "WHO" exists, it must also have a definition -- which
 	// we're currently looking for.
 	matches := r[0].FindAllStringSubmatch(txt, -1)
@@ -776,22 +781,24 @@ func (mgr *Manager) loadCheck(fName string, fp string) error {
 	return nil
 }
 
-func (mgr *Manager) loadDefaultRules(loaded []string) {
-	for _, style := range defaultStyles {
-		if core.StringInSlice(style, loaded) {
-			// The user has a style on their `StylesPath` with the same name as
-			// a built-in style.
-			continue
-		}
-		rules, _ := rule.AssetDir(filepath.Join("rule", style))
-		for _, name := range rules {
-			b, err := rule.Asset(filepath.Join("rule", style, name))
-			if err != nil {
+func (mgr *Manager) loadDefaultRules(loaded []string, load bool) {
+	if load {
+		for _, style := range defaultStyles {
+			if core.StringInSlice(style, loaded) {
+				// The user has a style on their `StylesPath` with the same name as
+				// a built-in style.
 				continue
 			}
-			identifier := strings.Join([]string{
-				style, strings.Split(name, ".")[0]}, ".")
-			core.CheckError(mgr.addCheck(b, identifier), mgr.Config.Debug)
+			rules, _ := rule.AssetDir(filepath.Join("rule", style))
+			for _, name := range rules {
+				b, err := rule.Asset(filepath.Join("rule", style, name))
+				if err != nil {
+					continue
+				}
+				identifier := strings.Join([]string{
+					style, strings.Split(name, ".")[0]}, ".")
+				core.CheckError(mgr.addCheck(b, identifier), mgr.Config.Debug)
+			}
 		}
 	}
 	mgr.loadVocabRules(mgr.Config)
