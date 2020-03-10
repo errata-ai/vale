@@ -24,6 +24,7 @@ require (
 	github.com/nwaples/rardecode v1.0.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/pierrec/lz4 v2.4.1+incompatible // indirect
+	github.com/pkg/profile v1.4.0
 	github.com/remeh/sizedwaitgroup v1.0.0
 	github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect

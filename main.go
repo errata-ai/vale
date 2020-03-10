@@ -12,6 +12,7 @@ import (
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/lint"
 	"github.com/errata-ai/vale/ui"
+	"github.com/pkg/profile"
 	"github.com/urfave/cli"
 )
 
@@ -24,6 +25,7 @@ func main() {
 	var minAlertLevel string
 	var backup bool
 	var local bool
+	var perf bool
 
 	config := core.NewConfig()
 	app := cli.NewApp()
@@ -68,6 +70,12 @@ func main() {
 			Name:        "mode-compat",
 			Usage:       `Respect local Vale configurations`,
 			Destination: &backup,
+			Hidden:      true,
+		},
+		cli.BoolFlag{
+			Name:        "profile",
+			Usage:       `Enable CPU profiling`,
+			Destination: &perf,
 			Hidden:      true,
 		},
 		cli.BoolFlag{
@@ -285,6 +293,10 @@ func main() {
 		var linted []*core.File
 		var err error
 		var hasAlerts bool
+
+		if perf {
+			defer profile.Start().Stop()
+		}
 
 		config, err = core.LoadConfig(
 			config, path, minAlertLevel, backup, local)
