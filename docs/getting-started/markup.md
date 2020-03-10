@@ -34,6 +34,7 @@ The type of file you're working with determines what scopes are available. The s
 | `code` | Matches all `<code>` tags. |
 | `strong` | Matches all `<strong>` and `<b>` tags. |
 | `emphasis` | Matches all `<em>` and `<i>` tags |
+| `raw` | Executes the given rule on raw, non-processed markup. |
 
 ### `code`
 
