@@ -13,3 +13,5 @@ here is okay, though. [TODO](https://okay.com) but not [here](https://bad.com).
 TODO `XXX`
 
 `XXX`
+
+The [](xref:401276) here describes how to deploy your .NET Core 3 WPF application.

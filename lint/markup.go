@@ -159,6 +159,8 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			skip = core.StringInSlice(txt, skipped)
 			tagHistory = append(tagHistory, txt)
 			tag = txt
+		} else if tokt == html.EndTagToken && core.StringInSlice(txt, inlineTags) {
+			tag = ""
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
 		} else if tokt == html.TextToken {
