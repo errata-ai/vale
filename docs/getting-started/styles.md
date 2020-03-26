@@ -71,7 +71,7 @@ link: 'https://errata.ai/'
 {% hint style="info" %}
 Vale uses Go's [`regexp` package](https://golang.org/pkg/regexp/syntax/) to evaluate all patterns in rule definitions. This means that lookarounds and backreferences aren't supported.
 
-This shouldn't be a limitation, though, [as Vale offers its own ways](https://medium.com/@jdkato/rule-authoring-101-ca066233970c) to achieve same behavior.
+This shouldn't be a limitation, though, [as Vale offers its own ways](https://medium.com/@jdkato/rule-authoring-101-ca066233970c?source=friends_link&sk=85ff5198b7548b326d6aaab43aca40f9) to achieve same behavior.
 {% endhint %}
 
 ### `existence`
