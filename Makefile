@@ -75,7 +75,7 @@ docker:
 	GOOS=linux GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/vale
 	docker login -u jdkato -p ${DOCKER_PASS}
 	docker build -f Dockerfile -t jdkato/vale:latest .
-	docker tag jdkato/vale:latest jdkato/vale:latest
+	docker tag jdkato/vale:latest jdkato/vale:${LAST_TAG}
 	docker push jdkato/vale
 
 cross:
