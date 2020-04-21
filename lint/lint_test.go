@@ -47,12 +47,11 @@ func TestGenderBias(t *testing.T) {
 }
 
 func benchmarkLint(path string, b *testing.B) {
+	config := core.NewConfig()
 	path, err := filepath.Abs(path)
 	if err != nil {
 		panic(err)
 	}
-
-	config, _ := core.LoadConfig(core.NewConfig(), "", "", false, false)
 	mgr := check.NewManager(config)
 	linter := Linter{Config: config, CheckManager: mgr}
 	for n := 0; n < b.N; n++ {

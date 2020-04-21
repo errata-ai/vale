@@ -56,7 +56,7 @@ func Fetch(src, dst string, debug bool) error {
 
 	defer os.Remove(tmpfile.Name()) // clean up
 
-	//Write to the  local archive:
+	// Write to the  local archive:
 	_, err = io.Copy(tmpfile, resp.RawResponse.Body)
 	if err != nil {
 		return err

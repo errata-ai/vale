@@ -437,3 +437,21 @@ Feature: Config
       test.md:5:26:Vale.Terms:Use 'JavaScript' instead of 'Javascript'.
       """
     And the exit status should be 1
+
+  Scenario: Multiple sources (1)
+    When I overwrite sources ".vale.ini,ini/.vale.ini"
+    Then the output should contain exactly:
+      """
+      test.md:3:16:Joblint.Visionary:Avoid using 'paradigm'
+      test.md:5:16:Joblint.LegacyTech:Avoid using 'Cobol'
+      """
+    And the exit status should be 0
+
+  Scenario: Multiple sources (2)
+    When I overwrite sources "ini/.vale.ini,.vale.ini"
+    Then the output should contain exactly:
+      """
+      test.md:3:11:proselint.Very:Remove 'very'.
+      test.md:7:7:proselint.Jargon:'agendize' is jargon.
+      """
+    And the exit status should be 1

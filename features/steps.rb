@@ -98,6 +98,15 @@ When(/^I check inherited config "(.*)"$/) do |file|
   step %(I run `#{cmd} --mode-compat --config='#{file}' dc`)
 end
 
+When(/^I overwrite sources "(.*)"$/) do |sources|
+  step %(I cd to "../../fixtures/configs")
+  step %(I run `#{cmd} --sources='#{sources}' test.md`)
+end
+
+When(/^I inherit sources "(.*)"$/) do |sources|
+  step %(I cd to "../../fixtures/configs")
+  step %(I run `#{cmd} --sources='#{sources}' test.md`)
+end
 
 When(/^I test glob "(.*)"$/) do |glob|
   step %(I cd to "../../fixtures/formats")

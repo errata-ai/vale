@@ -16,7 +16,7 @@ var checktests = []struct {
 }
 
 func TestAddCheck(t *testing.T) {
-	config, _ := core.LoadConfig(core.NewConfig(), "", "", false, false)
+	config := core.NewConfig()
 	mgr := Manager{AllChecks: make(map[string]Check), Config: config}
 
 	for _, tt := range checktests {

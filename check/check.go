@@ -85,10 +85,8 @@ func NewManager(config *core.Config) *Manager {
 
 	// Finally, after reading the user's `StylesPath`, we load our built-in
 	// styles:
-	mgr.loadDefaultRules(
-		loadedStyles,
-		core.StringInSlice("vale", mgr.Config.Styles) ||
-			core.StringInSlice("Vale", mgr.Config.Styles))
+	mgr.loadDefaultRules(loadedStyles, true)
+
 	return &mgr
 }
 

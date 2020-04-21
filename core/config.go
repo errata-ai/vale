@@ -61,7 +61,6 @@ type Config struct {
 	GChecks       map[string]bool            // Global checks
 	IgnoredScopes []string                   // A list of HTML tags to ignore
 	MinAlertLevel int                        // Lowest alert level to display
-	Parsers       map[string]string          // A map of syntax -> commands
 	Path          string                     // The location of the config file
 	Project       string                     // The active project
 	RuleToLevel   map[string]string          // Single-rule level changes
@@ -77,23 +76,29 @@ type Config struct {
 	SphinxBuild string // The location of Sphinx's `_build` path
 	SphinxAuto  string // Should we call `sphinx-build`?
 
-	SecToPat     map[string]glob.Glob `json:"-"`
-	FsWrapper    *afero.Afero         `json:"-"`
-	FallbackPath string               `json:"-"`
-	LTPath       string               `json:"-"`
+	AddOnsPath   string               `json:"-"`
 	AuthToken    string               `json:"-"`
+	FallbackPath string               `json:"-"`
+	FsWrapper    *afero.Afero         `json:"-"`
+	LTPath       string               `json:"-"`
+	Parsers      map[string]string    `json:"-"`
+	SecToPat     map[string]glob.Glob `json:"-"`
 	Styles       []string             `json:"-"`
 
 	// Command-line configuration
-	Debug     bool   // (optional) print debugging information to stdout/stderr
-	InExt     string // (optional) extension to associate with stdin
-	NoExit    bool   // (optional) don't return a nonzero exit code on lint errors
-	Normalize bool   // (optional) replace each path separator with a slash ('/')
-	Output    string // (optional) output style ("line" or "CLI")
-	Relative  bool   // (optional) return relative paths
-	Simple    bool   // (optional) lint all files line-by-line
-	Sorted    bool   // (optional) sort files by their name for output
-	Wrap      bool   // (optional) wrap output when CLI style
+	AlertLevel string // (optional) a CLI-provided MinAlertLevel
+	Debug      bool   // (optional) print debugging information to stdout/stderr
+	InExt      string // (optional) extension to associate with stdin
+	Local      bool   // (optional) prioritize local config files
+	NoExit     bool   // (optional) don't return a nonzero exit code on lint errors
+	Normalize  bool   // (optional) replace each path separator with a slash ('/')
+	Output     string // (optional) output style ("line" or "CLI")
+	Relative   bool   // (optional) return relative paths
+	Remote     bool   // (optional) prioritize remote config files
+	Simple     bool   // (optional) lint all files line-by-line
+	Sorted     bool   // (optional) sort files by their name for output
+	Sources    string // (optional) a list of config files to load
+	Wrap       bool   // (optional) wrap output when CLI style
 }
 
 // NewConfig initializes a Config.
@@ -222,84 +227,84 @@ func loadConfig(names, paths []string) string {
 	return configPath
 }
 
-// LoadConfig reads the .vale/_vale file.
-func LoadConfig(cfg *Config, upath string, min string, compat, rev bool) (*Config, error) {
+// Load reads the .vale/_vale file.
+func (c *Config) Load() error {
 	var base string
 	var uCfg *ini.File
 	var err error
+	var sources []string
 
 	names := []string{".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini", ""}
 	home, _ := homedir.Dir()
 
 	base = loadConfig(names, []string{"", home})
-	if compat && FileExists(base) && FileExists(upath) {
-		uCfg, err = ini.ShadowLoad(upath, base)
-		cfg.Path = upath
-	} else if rev && FileExists(base) && FileExists(upath) {
-		uCfg, err = ini.ShadowLoad(base, upath)
-		cfg.Path = base
+	if c.Sources != "" {
+		for _, source := range strings.Split(c.Sources, ",") {
+			abs, _ := filepath.Abs(source)
+			sources = append(sources, abs)
+		}
 	} else {
-		base = loadConfig(names, []string{upath, "", home})
+		sources = []string{base, c.Path}
+	}
+
+	if c.Local && FileExists(base) && FileExists(c.Path) {
+		uCfg, err = ini.ShadowLoad(c.Path, base)
+	} else if c.Remote && FileExists(base) && FileExists(c.Path) {
+		uCfg, err = ini.ShadowLoad(base, c.Path)
+		c.Path = base
+	} else if c.Sources != "" {
+		uCfg, err = processSources(c, sources)
+	} else {
+		base = loadConfig(names, []string{c.Path, "", home})
 		uCfg, err = ini.ShadowLoad(base)
-		cfg.Path = base
+		c.Path = base
 	}
 
 	if err != nil {
-		return cfg, err
-	} else if StringInSlice(min, AlertLevels) {
-		cfg.MinAlertLevel = LevelToInt[min]
+		return err
+	} else if StringInSlice(c.AlertLevel, AlertLevels) {
+		c.MinAlertLevel = LevelToInt[c.AlertLevel]
 	}
 
+	uCfg.BlockMode = false
+	return processConfig(uCfg, c, sources)
+}
+
+func processSources(cfg *Config, sources []string) (*ini.File, error) {
+	var uCfg *ini.File
+	var err error
+
+	if len(sources) == 0 {
+		return uCfg, errors.New("no sources provided")
+	} else if len(sources) == 1 {
+		cfg.Path = sources[0]
+		return ini.Load(cfg.Path)
+	}
+
+	t := sources[1:]
+	s := make([]interface{}, len(t))
+	for i, v := range t {
+		s[i] = v
+	}
+
+	uCfg, err = ini.Load(sources[0], s...)
+	cfg.Path = sources[len(sources)-1]
+
+	return uCfg, err
+}
+
+func processConfig(uCfg *ini.File, cfg *Config, paths []string) error {
 	core := uCfg.Section("")
 	global := uCfg.Section("*")
 	formats := uCfg.Section("formats")
 
 	// Default settings
 	for _, k := range core.KeyStrings() {
-		if k == "StylesPath" {
-			paths := core.Key(k).ValueWithShadows()
-			if compat && len(paths) == 2 {
-				basePath := DeterminePath(base, filepath.FromSlash(paths[1]))
-				mockPath := DeterminePath(upath, filepath.FromSlash(paths[0]))
-				if basePath != mockPath {
-					baseFs := cfg.FsWrapper.Fs
-					mockFs := afero.NewMemMapFs()
-					if CheckError(CopyDir(baseFs, basePath, mockFs, mockPath), cfg.Debug) {
-						cfg.FsWrapper.Fs = afero.NewCopyOnWriteFs(baseFs, mockFs)
-						cfg.FallbackPath = mockPath
-					}
-				}
-			}
-			cfg.StylesPath = cfg.FallbackPath
-			if cfg.StylesPath == "" {
-				canidate := filepath.FromSlash(core.Key(k).MustString(""))
-				cfg.StylesPath = DeterminePath(cfg.Path, canidate)
-			}
-		} else if k == "MinAlertLevel" {
-			if !StringInSlice(min, AlertLevels) {
-				level := core.Key(k).In("suggestion", AlertLevels)
-				cfg.MinAlertLevel = LevelToInt[level]
-			}
-		} else if k == "IgnoredScopes" {
-			cfg.IgnoredScopes = mergeValues(core.Key(k).ValueWithShadows())
-		} else if k == "WordTemplate" {
-			cfg.WordTemplate = core.Key(k).String()
-		} else if k == "SkippedScopes" {
-			cfg.SkippedScopes = mergeValues(core.Key(k).ValueWithShadows())
-		} else if k == "Project" {
-			cfg.Project = core.Key(k).String()
-			loadVocab(cfg.Project, cfg)
-		} else if k == "LTPath" {
-			cfg.LTPath = core.Key(k).String()
-		} else if k == "SphinxBuildPath" {
-			canidate := filepath.FromSlash(core.Key(k).MustString(""))
-			cfg.SphinxBuild = DeterminePath(cfg.Path, canidate)
-		} else if k == "SphinxAutoBuild" {
-			cfg.SphinxAuto = core.Key(k).MustString("")
-		} else {
-			CheckError(errors.New("unknown key: '"+k+"'"), cfg.Debug)
+		if f, found := coreOpts[k]; found {
+			f(core, cfg, paths)
 		}
 	}
+
 	// Format mappings
 	for _, k := range formats.KeyStrings() {
 		cfg.Formats[k] = formats.Key(k).String()
@@ -307,14 +312,8 @@ func LoadConfig(cfg *Config, upath string, min string, compat, rev bool) (*Confi
 
 	// Global settings
 	for _, k := range global.KeyStrings() {
-		sec := "*"
-		if k == "BasedOnStyles" {
-			cfg.GBaseStyles = mergeValues(global.Key("BasedOnStyles").ValueWithShadows())
-			cfg.Styles = append(cfg.Styles, cfg.GBaseStyles...)
-		} else if k == "IgnorePatterns" || k == "BlockIgnores" {
-			cfg.BlockIgnores[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
-		} else if k == "TokenIgnores" {
-			cfg.TokenIgnores[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
+		if f, found := globalOpts[k]; found {
+			f(global, cfg, paths)
 		} else {
 			cfg.GChecks[k] = validateLevel(k, global.Key(k).String(), cfg)
 			cfg.Checks = append(cfg.Checks, k)
@@ -330,34 +329,17 @@ func LoadConfig(cfg *Config, upath string, min string, compat, rev bool) (*Confi
 		if CheckError(err, cfg.Debug) {
 			cfg.SecToPat[sec] = pat
 		}
-		syntaxOpts := make(map[string]bool)
+		syntaxMap := make(map[string]bool)
 		for _, k := range uCfg.Section(sec).KeyStrings() {
-			if k == "BasedOnStyles" {
-				pat, err := glob.Compile(sec)
-				if _, found := cfg.SecToPat[sec]; !found && CheckError(err, cfg.Debug) {
-					cfg.SecToPat[sec] = pat
-				}
-				sStyles := mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
-
-				cfg.Styles = append(cfg.Styles, sStyles...)
-				cfg.SBaseStyles[sec] = sStyles
-			} else if k == "IgnorePatterns" || k == "BlockIgnores" {
-				cfg.BlockIgnores[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
-			} else if k == "TokenIgnores" {
-				cfg.TokenIgnores[sec] = mergeValues(uCfg.Section(sec).Key(k).ValueWithShadows())
-			} else if k == "Parser" {
-				cfg.Parsers[sec] = uCfg.Section(sec).Key(k).String()
-			} else if k == "Transform" {
-				canidate := uCfg.Section(sec).Key(k).String()
-				abs, _ := filepath.Abs(canidate)
-				cfg.Stylesheets[sec] = filepath.FromSlash(abs)
+			if f, found := syntaxOpts[k]; found {
+				f(sec, uCfg.Section(sec), cfg)
 			} else {
-				syntaxOpts[k] = validateLevel(k, uCfg.Section(sec).Key(k).String(), cfg)
+				syntaxMap[k] = validateLevel(k, uCfg.Section(sec).Key(k).String(), cfg)
 				cfg.Checks = append(cfg.Checks, k)
 			}
 		}
-		cfg.SChecks[sec] = syntaxOpts
+		cfg.SChecks[sec] = syntaxMap
 	}
 
-	return cfg, err
+	return nil
 }

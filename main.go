@@ -21,10 +21,6 @@ var version = "master"
 
 func main() {
 	var glob string
-	var path string
-	var minAlertLevel string
-	var backup bool
-	var local bool
 	var perf bool
 
 	config := core.NewConfig()
@@ -33,6 +29,16 @@ func main() {
 	app.Usage = "A command-line linter for prose."
 	app.Version = version
 	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:        "addons",
+			Destination: &config.AddOnsPath,
+			Hidden:      true,
+		},
+		cli.StringFlag{
+			Name:        "sources",
+			Destination: &config.Sources,
+			Hidden:      true,
+		},
 		cli.StringFlag{
 			Name:        "token",
 			Destination: &config.AuthToken,
@@ -47,12 +53,12 @@ func main() {
 		cli.StringFlag{
 			Name:        "config",
 			Usage:       `a file path (e.g., --config='some/file/path/.vale.ini')`,
-			Destination: &path,
+			Destination: &config.Path,
 		},
 		cli.StringFlag{
 			Name:        "minAlertLevel",
 			Usage:       `The lowest alert level to display`,
-			Destination: &minAlertLevel,
+			Destination: &config.AlertLevel,
 		},
 		cli.StringFlag{
 			Name:        "output",
@@ -69,7 +75,7 @@ func main() {
 		cli.BoolFlag{
 			Name:        "mode-compat",
 			Usage:       `Respect local Vale configurations`,
-			Destination: &backup,
+			Destination: &config.Local,
 			Hidden:      true,
 		},
 		cli.BoolFlag{
@@ -81,7 +87,7 @@ func main() {
 		cli.BoolFlag{
 			Name:        "mode-rev-compat",
 			Usage:       `Treat --config as local`,
-			Destination: &local,
+			Destination: &config.Remote,
 			Hidden:      true,
 		},
 		cli.BoolFlag{
@@ -127,8 +133,7 @@ func main() {
 			Aliases: []string{"dc"},
 			Usage:   "List the current configuration options",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.ListConfig(config)
 			},
 		},
@@ -143,8 +148,7 @@ func main() {
 			Name:  "new-project",
 			Usage: "Creates a vocabulary directory for the new project",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.AddProject(config, c.Args().First())
 			},
 			Hidden: true,
@@ -153,8 +157,7 @@ func main() {
 			Name:  "remove-project",
 			Usage: "Deletes an existing vocabulary directory",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.RemoveProject(config, c.Args().First())
 			},
 			Hidden: true,
@@ -163,8 +166,7 @@ func main() {
 			Name:  "edit-project",
 			Usage: "Renames a project from the current StylesPath.",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.EditProject(config, c.Args())
 			},
 			Hidden: true,
@@ -173,8 +175,7 @@ func main() {
 			Name:  "ls-projects",
 			Usage: "List all current projects",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.ListDir(config, "Vocab")
 			},
 			Hidden: true,
@@ -183,8 +184,7 @@ func main() {
 			Name:  "get-vocab",
 			Usage: "Get a vocab file for a project",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.GetVocab(config, c.Args())
 			},
 			Hidden: true,
@@ -193,8 +193,7 @@ func main() {
 			Name:  "update-vocab",
 			Usage: "Update a vocab file for the given project",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.UpdateVocab(config, c.Args())
 			},
 			Hidden: true,
@@ -203,8 +202,7 @@ func main() {
 			Name:  "ls-styles",
 			Usage: "List all installed styles",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.ListDir(config, "")
 			},
 			Hidden: true,
@@ -213,8 +211,7 @@ func main() {
 			Name:  "ls-library",
 			Usage: "List all available styles",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.GetLibrary(config)
 			},
 			Hidden: true,
@@ -223,8 +220,7 @@ func main() {
 			Name:  "install",
 			Usage: "Install the given style",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.InstallStyle(config, c.Args())
 			},
 			Hidden: true,
@@ -233,8 +229,7 @@ func main() {
 			Name:  "fetch",
 			Usage: "Fetch an external (compressed) resource.",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.FetchAddon(config, c.Args())
 			},
 			Hidden: true,
@@ -243,8 +238,7 @@ func main() {
 			Name:  "ls-addons",
 			Usage: "List all available addons",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.GetAddons(config)
 			},
 			Hidden: true,
@@ -253,8 +247,7 @@ func main() {
 			Name:  "start-addons",
 			Usage: "Start all installed addons",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.StartAddons(config)
 			},
 			Hidden: true,
@@ -263,8 +256,7 @@ func main() {
 			Name:  "stop-addons",
 			Usage: "Stop all running addons",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.StopAddons(config, c.Args())
 			},
 			Hidden: true,
@@ -273,8 +265,7 @@ func main() {
 			Name:  "compile",
 			Usage: "Return a compiled regex for a given rule",
 			Action: func(c *cli.Context) error {
-				config, _ = core.LoadConfig(
-					config, path, minAlertLevel, backup, local)
+				_ = config.Load()
 				return action.CompileRule(config, c.Args().First())
 			},
 			Hidden: true,
@@ -298,8 +289,7 @@ func main() {
 			defer profile.Start().Stop()
 		}
 
-		config, err = core.LoadConfig(
-			config, path, minAlertLevel, backup, local)
+		err = config.Load()
 		if err != nil && config.Output == "CLI" {
 			fmt.Println("WARNING: Missing or invalid config file.\n\n" +
 				"See https://errata-ai.gitbook.io/vale/getting-started/configuration for " +

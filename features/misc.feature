@@ -44,6 +44,7 @@ Feature: Misc
     When I test "spelling"
     Then the output should contain exactly:
       """
+      test.adoc:61:1:Vale.Spelling:Did you really mean 'Nginx'?
       test.html:5:21:Spelling.Ignores:Did you really mean 'docbook'?
       test.html:14:96:Spelling.Ignores:Did you really mean 'TODO'?
       test.md:3:1:Spelling.Ignore:'HTTPie' is a typo!
