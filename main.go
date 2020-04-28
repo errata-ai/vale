@@ -291,9 +291,7 @@ func main() {
 
 		err = config.Load()
 		if err != nil && config.Output == "CLI" {
-			fmt.Println("WARNING: Missing or invalid config file.\n\n" +
-				"See https://errata-ai.gitbook.io/vale/getting-started/configuration for " +
-				"information about creating a config file.")
+			fmt.Printf(".vale.ini: '%s'\n", err)
 			return nil
 		} else if c.NArg() > 0 || core.Stat() {
 			linter := lint.Linter{
