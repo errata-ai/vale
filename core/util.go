@@ -230,7 +230,7 @@ func initialPosition(ctx, sub string, loc []int) (int, string) {
 	idx := -1
 	sub = strings.ToValidUTF8(sub, "")
 
-	pat := regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|[^` + "`" + `]*\s|$)`)
+	pat := regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|\b|$)`)
 	fsi := pat.FindStringIndex(ctx)
 
 	if len(fsi) == 0 {

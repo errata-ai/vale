@@ -34,10 +34,13 @@ Feature: Misc
     When I test "misc/duplicates"
     Then the output should contain exactly:
     """
+    test.md:1:6:write-good.E-Prime:Avoid using "is"
     test.md:1:9:vale.Editorializing:Consider removing 'very'
     test.md:1:15:vale.Editorializing:Consider removing 'very'
     test.md:1:39:vale.Editorializing:Consider removing 'very'
     test.md:1:57:vale.Editorializing:Consider removing 'very'
+    test.md:3:14:write-good.E-Prime:Avoid using "are"
+    test.md:3:28:write-good.E-Prime:Avoid using "be"
     """
 
   Scenario: Spelling

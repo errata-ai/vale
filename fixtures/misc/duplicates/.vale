@@ -3,3 +3,5 @@ MinAlertLevel = suggestion
 
 [*.{md}]
 BasedOnStyles = vale
+
+write-good.E-Prime = YES
