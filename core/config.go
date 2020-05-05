@@ -53,25 +53,26 @@ var LevelToInt = map[string]int{
 // Config holds Vale's configuration, both from the CLI and its config file.
 type Config struct {
 	// General configuration
-	Blacklist     map[string]struct{}        // Project-specific vocabulary (avoid)
-	BlockIgnores  map[string][]string        // A list of blocks to ignore
-	Checks        []string                   // All checks to load
-	Formats       map[string]string          // A map of unknown -> known formats
-	GBaseStyles   []string                   // Global base style
-	GChecks       map[string]bool            // Global checks
-	IgnoredScopes []string                   // A list of HTML tags to ignore
-	MinAlertLevel int                        // Lowest alert level to display
-	Path          string                     // The location of the config file
-	Project       string                     // The active project
-	RuleToLevel   map[string]string          // Single-rule level changes
-	SBaseStyles   map[string][]string        // Syntax-specific base styles
-	SChecks       map[string]map[string]bool // Syntax-specific checks
-	SkippedScopes []string                   // A list of HTML blocks to ignore
-	Stylesheets   map[string]string          // XSLT stylesheet
-	StylesPath    string                     // Directory with Rule.yml files
-	TokenIgnores  map[string][]string        // A list of tokens to ignore
-	Whitelist     map[string]struct{}        // Project-specific vocabulary (okay)
-	WordTemplate  string                     // The template used in YAML -> regexp list conversions
+	Blacklist      map[string]struct{}        // Project-specific vocabulary (avoid)
+	BlockIgnores   map[string][]string        // A list of blocks to ignore
+	Checks         []string                   // All checks to load
+	Formats        map[string]string          // A map of unknown -> known formats
+	GBaseStyles    []string                   // Global base style
+	GChecks        map[string]bool            // Global checks
+	IgnoredClasses []string                   // A list of HTML classes to ignore
+	IgnoredScopes  []string                   // A list of HTML tags to ignore
+	MinAlertLevel  int                        // Lowest alert level to display
+	Path           string                     // The location of the config file
+	Project        string                     // The active project
+	RuleToLevel    map[string]string          // Single-rule level changes
+	SBaseStyles    map[string][]string        // Syntax-specific base styles
+	SChecks        map[string]map[string]bool // Syntax-specific checks
+	SkippedScopes  []string                   // A list of HTML blocks to ignore
+	Stylesheets    map[string]string          // XSLT stylesheet
+	StylesPath     string                     // Directory with Rule.yml files
+	TokenIgnores   map[string][]string        // A list of tokens to ignore
+	Whitelist      map[string]struct{}        // Project-specific vocabulary (okay)
+	WordTemplate   string                     // The template used in YAML -> regexp list conversions
 
 	SphinxBuild string // The location of Sphinx's `_build` path
 	SphinxAuto  string // Should we call `sphinx-build`?

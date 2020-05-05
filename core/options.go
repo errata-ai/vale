@@ -90,6 +90,9 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string){
 	"SkippedScopes": func(sec *ini.Section, cfg *Config, args []string) {
 		cfg.SkippedScopes = mergeValues(sec.Key("SkippedScopes").ValueWithShadows())
 	},
+	"IgnoredClasses": func(sec *ini.Section, cfg *Config, args []string) {
+		cfg.IgnoredClasses = mergeValues(sec.Key("IgnoredClasses").ValueWithShadows())
+	},
 	"Project": func(sec *ini.Section, cfg *Config, args []string) {
 		cfg.Project = sec.Key("Project").String()
 		loadVocab(cfg.Project, cfg)

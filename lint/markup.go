@@ -121,9 +121,12 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	buf := bytes.NewBufferString("")
 	act := bytes.NewBufferString("")
 
-	// The user has specified a custom list of tags to ignore.
+	// The user has specified a custom list of tags/classes to ignore.
 	if len(l.Config.SkippedScopes) > 0 {
 		skipTags = l.Config.SkippedScopes
+	}
+	if len(l.Config.IgnoredClasses) > 0 {
+		skipClasses = append(skipClasses, l.Config.IgnoredClasses...)
 	}
 
 	// queue holds each segment of text we encounter in a block, which we then
