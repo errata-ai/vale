@@ -5,6 +5,10 @@ Some text:
 
 Lots more text.
 
+.. vale off
+
 For example, in the assignment ``s2 = s1.substring(i)``, the value of ``s1`` influences the value of ``s2``, because ``s2`` is assigned a substring of ``s1``.
+
+.. vale on
 
 Hey oh!
