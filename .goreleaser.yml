@@ -1,0 +1,25 @@
+build:
+  main: main.go
+  binary: vale
+  goos:
+    - windows
+    - darwin
+    - linux
+  goarch:
+    - amd64
+
+archives:
+  -
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      amd64: 64-bit
+      darwin: macOS
+      linux: Linux
+      windows: Windows
+
+dockers:
+  - image_templates:
+    - jdkato/vale

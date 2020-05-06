@@ -8,6 +8,7 @@ services:
   - docker
 go:
   - 1.13.x
+
 before_install:
   - export BUNDLE_GEMFILE=$PWD/Gemfile
   - export TRAVIS_RUBY_VERSION="$(ruby -e 'puts RUBY_VERSION')-travis"
@@ -24,12 +25,22 @@ before_install:
   - pip install --user sphinx
   - gem update --system
   - gem install asciidoctor
+
 install:
   - make setup
   - # FIXME: make rules
   - make build
+
 script:
   - make test
+
 after_success:
-  - # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - # test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
+  - test -n "$TRAVIS_TAG" && docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: $TRAVIS_OS_NAME = linux

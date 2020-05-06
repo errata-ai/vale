@@ -8,7 +8,7 @@ RUN apk add --no-cache --update \
     asciidoctor \
     && pip3 install docutils
 
-COPY bin/vale /bin
+COPY /vale /bin
 
 ENV PATH="/bin:${PATH}"
 ENTRYPOINT ["/bin/vale"]
