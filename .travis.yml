@@ -35,6 +35,7 @@ script:
   - make test
 
 after_success:
+  - git stash --include-untracked
   - test -n "$TRAVIS_TAG" && docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 
 deploy:
