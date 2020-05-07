@@ -19,7 +19,3 @@ archives:
       darwin: macOS
       linux: Linux
       windows: Windows
-
-dockers:
-  - image_templates:
-    - jdkato/vale
