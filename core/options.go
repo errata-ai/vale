@@ -97,6 +97,10 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string){
 		cfg.Project = sec.Key("Project").String()
 		loadVocab(cfg.Project, cfg)
 	},
+	"Vocab": func(sec *ini.Section, cfg *Config, args []string) {
+		cfg.Project = sec.Key("Vocab").String()
+		loadVocab(cfg.Project, cfg)
+	},
 	"LTPath": func(sec *ini.Section, cfg *Config, args []string) {
 		cfg.LTPath = sec.Key("LTPath").String()
 	},
