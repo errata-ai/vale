@@ -4,7 +4,7 @@ TODO: This should be flagged.
 
 > TODO: This should NOT be flagged.
 
-<p class="nop">
+<p class="nop bar">
 TODO: This should be flagged.
 </p>
 

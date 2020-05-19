@@ -150,7 +150,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		tok = tokens.Token()
 		txt = html.UnescapeString(strings.TrimSpace(tok.Data))
 
-		skipClass = core.StringInSlice(attr, skipClasses)
+		skipClass = checkClasses(attr, skipClasses)
 		if tokt == html.ErrorToken {
 			break
 		} else if tokt == html.StartTagToken && core.StringInSlice(txt, skipTags) {
@@ -238,6 +238,15 @@ func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lin
 	// processed above) in our Summary content.
 	f.Summary.WriteString(raw + " ")
 	l.lintProse(f, ctx, txt, raw, lines, 0)
+}
+
+func checkClasses(attr string, ignore []string) bool {
+	for _, class := range strings.Split(attr, " ") {
+		if core.StringInSlice(class, ignore) {
+			return true
+		}
+	}
+	return false
 }
 
 // HACK: We need to look for inserted `spans` within `tt` tags.
