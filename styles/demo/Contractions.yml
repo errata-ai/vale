@@ -1,0 +1,7 @@
+extends: substitution
+message: Use '%s' instead of '%s'
+level: error
+ignorecase: true
+nonword: true
+swap:
+  aren[’']t: are not

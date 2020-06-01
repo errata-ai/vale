@@ -4,12 +4,14 @@ Feature: Styles
     Then the output should contain exactly:
       """
       test.adoc:1:1:demo.SentenceLength:Sentences should be less than 25 words
+      test.adoc:3:84:demo.Smart:Inconsistent use of '”' ('smart' mixed with 'dumb')
+      test.adoc:5:6:demo.Contractions:Use 'are not' instead of 'aren’t'
       test.html:8:30:demo.CommasPerSentence:More than 3 commas!
       test.html:10:27:demo.Spacing:'.M' should have one space
       test.html:10:35:demo.Hyphen:'Randomly-' doesn't need a hyphen
       test.html:12:12:demo.SentenceLength:Sentences should be less than 25 words
       test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
-      test.md:1:1:demo.Reading:Grade level (8.46) too high!
+      test.md:1:1:demo.Reading:Grade level (8.30) too high!
       test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
       test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
       test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
@@ -33,6 +35,7 @@ Feature: Styles
       test.md:32:61:demo.EndingPreposition:Don't end a sentence with 'by.'
       test.md:36:1:demo.SentenceLength:Sentences should be less than 25 words
       test.md:36:101:demo.Smart:Inconsistent use of '"' ('smart' mixed with 'dumb')
+      test.md:38:6:demo.Contractions:Use 'are not' instead of 'aren't'
       test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
       test.rst:1:58:demo.Spacing:'. I' should have one space
       test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
