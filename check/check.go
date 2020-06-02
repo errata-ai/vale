@@ -859,7 +859,7 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 			Extends: "existence",
 			Level:   "warning",
 			Name:    "LanguageTool.Grammar",
-			Scope:   "text",
+			Scope:   "summary",
 		}, func(text string, file *core.File) []core.Alert {
 			return rule.CheckWithLT(
 				text, config.LTPath, file, config.Debug)

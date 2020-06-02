@@ -212,7 +212,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		}
 	}
 
-	summary := NewBlock("", f.Summary.String(), "", "summary."+f.RealExt)
+	summary := NewBlock(f.Content, f.Summary.String(), "", "summary."+f.RealExt)
 	l.lintText(f, summary, lines, 0)
 
 	// Run all rules with `scope: raw`

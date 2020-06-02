@@ -182,11 +182,11 @@ func (f *File) SortedAlerts() []Alert {
 }
 
 // FindLoc calculates the line and span of an Alert.
-func (f *File) FindLoc(ctx, s string, pad, count int, loc []int) (int, []int) {
+func (f *File) FindLoc(ctx, s, m string, pad, count int, loc []int) (int, []int) {
 	var length int
 	var lines []string
 
-	pos, substring := initialPosition(ctx, s[loc[0]:loc[1]], loc)
+	pos, substring := initialPosition(ctx, m)
 	if pos < 0 {
 		// Shouldn't happen ...
 		return pos, []int{0, 0}
@@ -228,13 +228,13 @@ func FormatAlert(a *Alert, level int, name string) {
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
 func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad int) {
-	substring := txt[a.Span[0]:a.Span[1]]
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old
 	}
-	a.Line, a.Span = f.FindLoc(ctx, txt, pad, lines, a.Span)
+
+	a.Line, a.Span = f.FindLoc(ctx, txt, a.Match, pad, lines, a.Span)
 	if a.Span[0] > 0 {
-		f.ChkToCtx[a.Check], _ = Substitute(ctx, substring, '#')
+		f.ChkToCtx[a.Check], _ = Substitute(ctx, a.Match, '#')
 		if !a.Hide {
 			// Ensure that we're not double-reporting an Alert:
 			entry := strings.Join([]string{

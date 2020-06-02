@@ -11,8 +11,8 @@ Feature: Styles
       test.html:10:35:demo.Hyphen:'Randomly-' doesn't need a hyphen
       test.html:12:12:demo.SentenceLength:Sentences should be less than 25 words
       test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
-      test.md:1:1:demo.Reading:Grade level (8.30) too high!
       test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
+      test.md:1:3:demo.Reading:Grade level (8.30) too high!
       test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
       test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
       test.md:14:121:demo.Filters:Did you really mean 'DBA'?

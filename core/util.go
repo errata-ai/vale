@@ -226,7 +226,7 @@ func JaroWinkler(ctx, sub string) (int, string) {
 
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).
-func initialPosition(ctx, sub string, loc []int) (int, string) {
+func initialPosition(ctx, sub string) (int, string) {
 	idx := -1
 	sub = strings.ToValidUTF8(sub, "")
 
