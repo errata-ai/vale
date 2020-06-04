@@ -23,7 +23,7 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config){
 		cfg.BlockIgnores[label] = mergeValues(sec.Key("IgnorePatterns").ValueWithShadows())
 	},
 	"BlockIgnores": func(label string, sec *ini.Section, cfg *Config) {
-		cfg.TokenIgnores[label] = mergeValues(sec.Key("BlockIgnores").ValueWithShadows())
+		cfg.BlockIgnores[label] = mergeValues(sec.Key("BlockIgnores").ValueWithShadows())
 	},
 	"TokenIgnores": func(label string, sec *ini.Section, cfg *Config) {
 		cfg.TokenIgnores[label] = mergeValues(sec.Key("TokenIgnores").ValueWithShadows())
@@ -47,7 +47,7 @@ var globalOpts = map[string]func(*ini.Section, *Config, []string){
 		cfg.BlockIgnores["*"] = mergeValues(sec.Key("IgnorePatterns").ValueWithShadows())
 	},
 	"BlockIgnores": func(sec *ini.Section, cfg *Config, args []string) {
-		cfg.BlockIgnores["*"] = mergeValues(sec.Key("IgnorePatterns").ValueWithShadows())
+		cfg.BlockIgnores["*"] = mergeValues(sec.Key("BlockIgnores").ValueWithShadows())
 	},
 	"TokenIgnores": func(sec *ini.Section, cfg *Config, args []string) {
 		cfg.TokenIgnores["*"] = mergeValues(sec.Key("TokenIgnores").ValueWithShadows())
