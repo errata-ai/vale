@@ -177,7 +177,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 				tag = ""
 			}
 			queue = append(queue, txt)
-			if !inBlock {
+			if !inBlock && txt != "" {
 				txt, raw, skip = clean(txt, f.NormedExt, skip, skipClass, inline)
 				buf.WriteString(txt)
 				act.WriteString(raw)
