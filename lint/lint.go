@@ -250,6 +250,8 @@ func (l Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength 
 	parScope := "paragraph" + f.RealExt
 	txtScope := "text" + f.RealExt
 	hasCtx := ctx != ""
+
+	// Check if we NEED to do this!
 	for _, p := range strings.SplitAfter(text, "\n\n") {
 		for _, s := range core.SentenceTokenizer.Tokenize(p) {
 			sent := strings.TrimSpace(s)
@@ -262,6 +264,7 @@ func (l Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength 
 		}
 		l.lintText(f, NewBlock(ctx, p, "", parScope), lnTotal, lnLength)
 	}
+
 	l.lintText(f, NewBlock(ctx, text, rawText, txtScope), lnTotal, lnLength)
 }
 

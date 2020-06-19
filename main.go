@@ -278,6 +278,14 @@ func main() {
 			},
 			Hidden: true,
 		},
+		{
+			Name:  "tag",
+			Usage: "Assign part-of-speech tags to the given sentence",
+			Action: func(c *cli.Context) error {
+				_ = config.Load()
+				return action.TagSentence(config, c.Args().First())
+			},
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {

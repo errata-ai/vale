@@ -18,3 +18,11 @@ Feature: Checks
       text.rst:16:22:Vale.Repetition:'on' is repeated!
       text.rst:20:13:Vale.Repetition:'be' is repeated!
       """
+
+  Scenario: Sequence
+    When I test "checks/Sequence"
+    Then the output should contain exactly:
+      """
+      test.md:3:10:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'write' after 'be' requries 'to'. Did you mean 'be great *to* write'?
+      test.md:9:94:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'come' after 'be' requries 'to'. Did you mean 'be available *to* come'?
+      """

@@ -13,6 +13,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"github.com/icza/gox/fmtx"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/regexp"
 	"github.com/levigross/grequests"
@@ -117,19 +118,22 @@ func SlicesEqual(a, b []string) bool {
 	return true
 }
 
+// Tag assigns part-of-speech tags to `words`.
+func Tag(words []string) []tag.Token {
+	if Tagger == nil {
+		Tagger = tag.NewPerceptronTagger()
+	}
+	return Tagger.Tag(words)
+}
+
 // CheckPOS determines if a match (as found by an extension point) also matches
 // the expected part-of-speech in text.
 func CheckPOS(loc []int, expected, text string) bool {
 	var word string
 
-	// Initilize our tagger, if needed.
-	if Tagger == nil {
-		Tagger = tag.NewPerceptronTagger()
-	}
-
 	pos := 1
 	observed := []string{}
-	for _, tok := range Tagger.Tag(TextToWords(text)) {
+	for _, tok := range Tag(TextToWords(text)) {
 		if InRange(pos, loc) {
 			if len(tok.Text) > 1 {
 				word = strings.ToLower(strings.TrimRight(tok.Text, ",.!?:;"))
@@ -167,13 +171,7 @@ func Which(cmds []string) string {
 
 // FormatMessage inserts `subs` into `msg`.
 func FormatMessage(msg string, subs ...string) string {
-	n := strings.Count(msg, "%s")
-	max := len(subs)
-	found := []string{}
-	for i := 0; i < n && i < max; i++ {
-		found = append(found, strings.TrimSpace(subs[i]))
-	}
-	return fmt.Sprintf(msg, StringsToInterface(found)...)
+	return fmtx.CondSprintf(msg, StringsToInterface(subs)...)
 }
 
 // Substitute replaces the substring `sub` with a string of asterisks.

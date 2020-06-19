@@ -28,6 +28,8 @@ github.com/google/go-querystring v1.0.0 h1:Xkwi/a1rcvNg1PPYe5vI8GbeBY/jrVuDX5ASu
 github.com/google/go-querystring v1.0.0/go.mod h1:odCYkC5MyYFN7vkCjXpyrEuKhc/BUO6wN/zVPAxq5ck=
 github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1 h1:EGx4pi6eqNxGaHF6qqu48+N2wcFQ5qg5FXgOdqsJ5d8=
 github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1/go.mod h1:wJfORRmW1u3UXTncJ5qlYoELFm8eSnnEO6hX4iZ3EWY=
+github.com/icza/gox v0.0.0-20200615201046-5fb07725cc03 h1:GrjSLHYe5mm7if3OggKqzSi5vPDynV9TQocXgFFMwms=
+github.com/icza/gox v0.0.0-20200615201046-5fb07725cc03/go.mod h1:VbcN86fRkkUMPX2ufM85Um8zFndLZswoIW1eYtpAcVk=
 github.com/jdkato/prose v1.1.1 h1:r6CwY09U97IZNgNQEHoeCh2nvg2e8WCOGjPH/b7lowI=
 github.com/jdkato/prose v1.1.1/go.mod h1:jkF0lkxaX5PFSlk9l4Gh9Y+T57TqUZziWT7uZbW5ADg=
 github.com/jdkato/regexp v0.1.0 h1:WxMR7sU+reKk+ITPwAeTtAEGy3uPMd+1O3wrQAV/ZMc=

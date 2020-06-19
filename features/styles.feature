@@ -8,7 +8,7 @@ Feature: Styles
       test.adoc:5:6:demo.Contractions:Use 'are not' instead of 'aren’t'
       test.html:8:30:demo.CommasPerSentence:More than 3 commas!
       test.html:10:27:demo.Spacing:'.M' should have one space
-      test.html:10:35:demo.Hyphen:'Randomly-' doesn't need a hyphen
+      test.html:10:35:demo.Hyphen:' Randomly-' doesn't need a hyphen
       test.html:12:12:demo.SentenceLength:Sentences should be less than 25 words
       test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
       test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized

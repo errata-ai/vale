@@ -4,12 +4,34 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/lint"
 	"github.com/errata-ai/vale/ui"
+	"github.com/jdkato/prose/tag"
 )
+
+// TagSentence assigns part-of-speech tags to the given sentence.
+func TagSentence(config *core.Config, text string) error {
+	var word string
+
+	Tagger := tag.NewPerceptronTagger()
+	observed := []string{}
+
+	for _, tok := range Tagger.Tag(core.TextToWords(text)) {
+		if len(tok.Text) > 1 {
+			word = strings.ToLower(strings.TrimRight(tok.Text, ",.!?:;"))
+		} else {
+			word = tok.Text
+		}
+		observed = append(observed, (word + "/" + tok.Tag))
+	}
+
+	fmt.Println(strings.Join(observed, " "))
+	return nil
+}
 
 // ListConfig prints Vale's active configuration.
 func ListConfig(config *core.Config) error {

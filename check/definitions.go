@@ -1,9 +1,26 @@
 package check
 
 import (
+	"reflect"
+
 	"github.com/errata-ai/vale/core"
 	"github.com/jdkato/regexp"
+	"github.com/mitchellh/mapstructure"
 )
+
+var defaultStyles = []string{"Vale"}
+var extensionPoints = []string{
+	"capitalization",
+	"conditional",
+	"consistency",
+	"existence",
+	"occurrence",
+	"repetition",
+	"substitution",
+	"readability",
+	"spelling",
+	"sequence",
+}
 
 // A Check implements a single rule.
 type Check struct {
@@ -26,6 +43,15 @@ type Definition struct {
 	Message     string
 	Name        string
 	Scope       string
+}
+
+// NLPToken represents a token of text with NLP-related attributes.
+type NLPToken struct {
+	Pattern string
+	Negate  bool
+	Tag     string
+
+	re *regexp.Regexp
 }
 
 // Existence checks for the present of Tokens.
@@ -146,16 +172,113 @@ type Spelling struct {
 	Threshold  int
 }
 
-var defaultStyles = []string{"Vale"}
+// Sequence looks for a user-defined sequence of tokens.
+type Sequence struct {
+	Definition `mapstructure:",squash"`
+	Ignorecase bool
+	Tokens     []NLPToken
 
-var extensionPoints = []string{
-	"capitalization",
-	"conditional",
-	"consistency",
-	"existence",
-	"occurrence",
-	"repetition",
-	"substitution",
-	"readability",
-	"spelling",
+	needsTagging bool
+}
+
+type baseCheck map[string]interface{}
+
+var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager){
+	"existence": func(name string, generic baseCheck, mgr *Manager) {
+		def := Existence{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addExistenceCheck(name, def)
+		}
+	},
+	"substitution": func(name string, generic baseCheck, mgr *Manager) {
+		def := Substitution{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addSubstitutionCheck(name, def)
+		}
+	},
+	"occurrence": func(name string, generic baseCheck, mgr *Manager) {
+		def := Occurrence{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addOccurrenceCheck(name, def)
+		}
+	},
+	"repetition": func(name string, generic baseCheck, mgr *Manager) {
+		def := Repetition{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addRepetitionCheck(name, def)
+		}
+	},
+	"consistency": func(name string, generic baseCheck, mgr *Manager) {
+		def := Consistency{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addConsistencyCheck(name, def)
+		}
+	},
+	"conditional": func(name string, generic baseCheck, mgr *Manager) {
+		def := Conditional{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			for term := range mgr.Config.Whitelist {
+				def.Exceptions = append(def.Exceptions, term)
+			}
+			mgr.addConditionalCheck(name, def)
+		}
+	},
+	"capitalization": func(name string, generic baseCheck, mgr *Manager) {
+		def := Capitalization{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			for term := range mgr.Config.Whitelist {
+				def.Exceptions = append(def.Exceptions, term)
+			}
+			mgr.addCapitalizationCheck(name, def)
+		}
+	},
+	"readability": func(name string, generic baseCheck, mgr *Manager) {
+		def := Readability{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addReadabilityCheck(name, def)
+		}
+	},
+	"spelling": func(name string, generic baseCheck, mgr *Manager) {
+		def := Spelling{}
+
+		if generic["filters"] != nil {
+			// We pre-compile user-provided filters for efficiency.
+			//
+			// NOTE: This makes a big difference: ~50s -> ~13s.
+			for _, filter := range generic["filters"].([]interface{}) {
+				if pat, e := regexp.Compile(filter.(string)); e == nil {
+					// TODO: Should we report malformed patterns?
+					def.Filters = append(def.Filters, pat)
+				}
+			}
+			delete(generic, "filters")
+		}
+
+		if generic["ignore"] != nil {
+			// Backwards compatibility: we need to be able to accept a single
+			// or an array.
+			if reflect.TypeOf(generic["ignore"]).String() == "string" {
+				def.Ignore = append(def.Ignore, generic["ignore"].(string))
+			} else {
+				for _, ignore := range generic["ignore"].([]interface{}) {
+					def.Ignore = append(def.Ignore, ignore.(string))
+				}
+			}
+			delete(generic, "ignore")
+		}
+
+		for term := range mgr.Config.Whitelist {
+			def.Exceptions = append(def.Exceptions, term)
+		}
+
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addSpellingCheck(name, def)
+		}
+	},
+	"sequence": func(name string, generic baseCheck, mgr *Manager) {
+		def := Sequence{}
+		if err := mapstructure.Decode(generic, &def); err == nil {
+			mgr.addSequenceCheck(name, def)
+		}
+	},
 }

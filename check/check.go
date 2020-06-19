@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"reflect"
 	"strings"
 
 	"github.com/client9/gospell"
@@ -14,9 +13,9 @@ import (
 	"github.com/errata-ai/vale/data"
 	"github.com/errata-ai/vale/rule"
 	"github.com/jdkato/prose/summarize"
+	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/transform"
 	"github.com/jdkato/regexp"
-	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v2"
 )
 
@@ -133,6 +132,67 @@ func makeAlert(chk Definition, loc []int, txt string) core.Alert {
 		Match: match, Action: chk.Action}
 	a.Message, a.Description = formatMessages(chk.Message, chk.Description, match)
 	return a
+}
+
+func tokensMatch(token NLPToken, word, tag string) bool {
+	failedTag, _ := regexp.MatchString(token.Tag, tag)
+	failedTag = !failedTag
+
+	failedTok := (token.re != nil && token.re.MatchString(word) == token.Negate)
+
+	if token.Pattern == "" && failedTag {
+		return false
+	} else if token.Tag == "" && failedTok {
+		return false
+	} else if (token.Tag != "" && token.Pattern != "") && (failedTag || failedTok) {
+		return false
+	}
+
+	return true
+}
+
+func sequenceMatches(idx int, chk Sequence, loc []int, words []string) ([]string, bool) {
+	toks := chk.Tokens
+	text := []string{}
+
+	tags := []tag.Token{}
+	if chk.needsTagging {
+		tags = core.Tag(words)
+	}
+	sizeT := len(toks)
+
+	pos := 1
+	for jdx, word := range words {
+		if core.InRange(pos, loc) {
+			// We've found our context.
+			if idx > 0 {
+				// Check the left-end of the sequence:
+				for i := 1; idx-i >= 0; i++ {
+					word := words[jdx-i]
+					text = append(text, word)
+					if !tokensMatch(toks[idx-i], word, tags[jdx-i].Tag) {
+						return []string{}, false
+					}
+				}
+			}
+			if idx < sizeT {
+				// Check the right-end of the sequence
+				for i := 1; idx+i < sizeT; i++ {
+					if i == 1 {
+						text = append(text, words[jdx])
+					}
+					word := words[jdx+i]
+					text = append(text, word)
+					if !tokensMatch(toks[idx+i], word, tags[jdx+i].Tag) {
+						return []string{}, false
+					}
+				}
+			}
+			break
+		}
+		pos += len(word) + 1
+	}
+	return text, true
 }
 
 func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Regexp) []core.Alert {
@@ -304,6 +364,34 @@ func checkCapitalization(txt string, chk Capitalization, f *core.File) []core.Al
 	if !chk.Check(txt, chk.Exceptions) {
 		alerts = append(alerts, makeAlert(chk.Definition, []int{0, len(txt)}, txt))
 	}
+	return alerts
+}
+
+func checkSequence(txt string, chk Sequence, f *core.File) []core.Alert {
+	alerts := []core.Alert{}
+
+	for idx, tok := range chk.Tokens {
+		if !tok.Negate && tok.Pattern != "" {
+			words := strings.Fields(txt)
+			for _, loc := range tok.re.FindAllStringIndex(txt, -1) {
+				// These are all possible violations in `txt`:
+				steps, matched := sequenceMatches(idx, chk, loc, words)
+				if matched {
+					a := core.Alert{
+						Check: chk.Name, Severity: chk.Level, Span: loc,
+						Link: chk.Link, Hide: false, Match: txt[loc[0]:loc[1]],
+						Action: chk.Action}
+
+					a.Message, a.Description = formatMessages(chk.Message,
+						chk.Description, steps...)
+
+					alerts = append(alerts, a)
+				}
+			}
+			break
+		}
+	}
+
 	return alerts
 }
 
@@ -615,6 +703,35 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 	}
 }
 
+func (mgr *Manager) addSequenceCheck(chkName string, chkDef Sequence) {
+	for i, token := range chkDef.Tokens {
+		if !chkDef.needsTagging && token.Tag != "" {
+			chkDef.needsTagging = true
+		}
+
+		if token.Pattern != "" {
+			regex := makeRegexp(
+				mgr.Config.WordTemplate,
+				chkDef.Ignorecase,
+				func() bool { return true },
+				func() string { return "" },
+				false)
+			regex = fmt.Sprintf(regex, token.Pattern)
+
+			re, err := regexp.Compile(regex)
+			if core.CheckError(err, mgr.Config.Debug) {
+				chkDef.Tokens[i].re = re
+			}
+		}
+
+	}
+	fn := func(text string, file *core.File) []core.Alert {
+		return checkSequence(text, chkDef, file)
+	}
+	chkDef.Definition.Scope = "summary"
+	mgr.updateAllChecks(chkDef.Definition, fn, "")
+}
+
 func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn, pattern string) {
 	chk := Check{
 		Rule:    fn,
@@ -625,93 +742,6 @@ func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn, pattern string
 	chk.Level = core.LevelToInt[chkDef.Level]
 	chk.Scope = core.Selector{Value: chkDef.Scope}
 	mgr.AllChecks[chkDef.Name] = chk
-}
-
-func (mgr *Manager) makeCheck(generic map[string]interface{}, extends, chkName string) {
-	// TODO: make this less ugly ...
-	if extends == "existence" {
-		def := Existence{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			mgr.addExistenceCheck(chkName, def)
-		}
-	} else if extends == "substitution" {
-		def := Substitution{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			mgr.addSubstitutionCheck(chkName, def)
-		}
-	} else if extends == "occurrence" {
-		def := Occurrence{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			mgr.addOccurrenceCheck(chkName, def)
-		}
-	} else if extends == "repetition" {
-		def := Repetition{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			mgr.addRepetitionCheck(chkName, def)
-		}
-	} else if extends == "consistency" {
-		def := Consistency{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			mgr.addConsistencyCheck(chkName, def)
-		}
-	} else if extends == "conditional" {
-		def := Conditional{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			for term := range mgr.Config.Whitelist {
-				def.Exceptions = append(def.Exceptions, term)
-			}
-			mgr.addConditionalCheck(chkName, def)
-		}
-	} else if extends == "capitalization" {
-		def := Capitalization{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			for term := range mgr.Config.Whitelist {
-				def.Exceptions = append(def.Exceptions, term)
-			}
-			mgr.addCapitalizationCheck(chkName, def)
-		}
-	} else if extends == "readability" {
-		def := Readability{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			mgr.addReadabilityCheck(chkName, def)
-		}
-	} else if extends == "spelling" {
-		def := Spelling{}
-
-		if generic["filters"] != nil {
-			// We pre-compile user-provided filters for efficiency.
-			//
-			// NOTE: This makes a big difference: ~50s -> ~13s.
-			for _, filter := range generic["filters"].([]interface{}) {
-				if pat, e := regexp.Compile(filter.(string)); e == nil {
-					// TODO: Should we report malformed patterns?
-					def.Filters = append(def.Filters, pat)
-				}
-			}
-			delete(generic, "filters")
-		}
-
-		if generic["ignore"] != nil {
-			// Backwards compatibility: we need to be able to accept a single
-			// or an array.
-			if reflect.TypeOf(generic["ignore"]).String() == "string" {
-				def.Ignore = append(def.Ignore, generic["ignore"].(string))
-			} else {
-				for _, ignore := range generic["ignore"].([]interface{}) {
-					def.Ignore = append(def.Ignore, ignore.(string))
-				}
-			}
-			delete(generic, "ignore")
-		}
-
-		for term := range mgr.Config.Whitelist {
-			def.Exceptions = append(def.Exceptions, term)
-		}
-
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			mgr.addSpellingCheck(chkName, def)
-		}
-	}
 }
 
 func validateDefinition(generic map[string]interface{}, name string) error {
@@ -747,7 +777,11 @@ func (mgr *Manager) addCheck(file []byte, chkName string) error {
 		generic["scope"] = "text"
 	}
 
-	mgr.makeCheck(generic, generic["extends"].(string), chkName)
+	extends := generic["extends"].(string)
+	if builder, hasBuilder := checkBuilders[extends]; hasBuilder {
+		builder(chkName, generic, mgr)
+	}
+
 	return nil
 }
 

@@ -11,6 +11,7 @@ require (
 	github.com/frankban/quicktest v1.7.2 // indirect
 	github.com/gobwas/glob v0.2.3
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/icza/gox v0.0.0-20200615201046-5fb07725cc03
 	github.com/jdkato/prose v1.1.1
 	github.com/jdkato/regexp v0.1.0
 	github.com/levigross/grequests v0.0.0-20190908174114-253788527a1a
