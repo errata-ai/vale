@@ -1,16 +1,17 @@
 # This is a heading XXX
 
-## *TODO* heading
+## _TODO_ heading
 
 TODO
 
-- TODO
-- TODO
+* TODO
+* TODO
 
 | TODO | XXX | FIXME |
-|:----:|:---:|:-----:|
-| one  | TODO | three |
+| :---: | :---: | :---: |
+| one | TODO | three |
 
 XXX
 
 1. XXX
+

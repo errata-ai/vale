@@ -1,15 +1,8 @@
-# Color [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/fatih/color) [![Build Status](http://img.shields.io/travis/fatih/color.svg?style=flat-square)](https://travis-ci.org/fatih/color)
+# Color
 
-
-
-Color lets you use colorized outputs in terms of [ANSI Escape
-Codes](http://en.wikipedia.org/wiki/ANSI_escape_code#Colors) in Go (Golang). It
-has support for Windows too! The API can be used in several ways, pick one that
-suits you.
-
+Color lets you use colorized outputs in terms of [ANSI Escape Codes](http://en.wikipedia.org/wiki/ANSI_escape_code#Colors) in Go \(Golang\). It has support for Windows too! The API can be used in several ways, pick one that suits you.
 
 ![Color](http://i.imgur.com/c1JI0lA.png)
-
 
 ## Install
 
@@ -17,8 +10,7 @@ suits you.
 go get github.com/fatih/color
 ```
 
-Note that the `vendor` folder is here for stability. Remove the folder if you
-already have the dependencies in your GOPATH.
+Note that the `vendor` folder is here for stability. Remove the folder if you already have the dependencies in your GOPATH.
 
 ## Examples
 
@@ -34,7 +26,6 @@ color.Blue("Prints %s in blue.", "text")
 // These are using the default foreground colors
 color.Red("We have red")
 color.Magenta("And many others ..")
-
 ```
 
 ### Mix and reuse colors
@@ -58,7 +49,7 @@ whiteBackground := red.Add(color.BgWhite)
 whiteBackground.Println("Red text with white background.")
 ```
 
-### Use your own output (io.Writer)
+### Use your own output \(io.Writer\)
 
 ```go
 // Use your own io.Writer output
@@ -68,7 +59,7 @@ blue := color.New(color.FgBlue)
 blue.Fprint(writer, "This will print text in blue.")
 ```
 
-### Custom print functions (PrintFunc)
+### Custom print functions \(PrintFunc\)
 
 ```go
 // Create a custom print function for convenience
@@ -81,7 +72,7 @@ notice := color.New(color.Bold, color.FgGreen).PrintlnFunc()
 notice("Don't forget this...")
 ```
 
-### Custom fprint functions (FprintFunc)
+### Custom fprint functions \(FprintFunc\)
 
 ```go
 blue := color.New(FgBlue).FprintfFunc()
@@ -92,7 +83,7 @@ success := color.New(color.Bold, color.FgGreen).FprintlnFunc()
 success(myWriter, "Don't forget this...")
 ```
 
-### Insert into noncolor strings (SprintFunc)
+### Insert into noncolor strings \(SprintFunc\)
 
 ```go
 // Create SprintXxx functions to mix strings with other non-colorized strings:
@@ -131,23 +122,17 @@ fmt.Println("All text will now be bold magenta.")
 
 ### Disable color
 
-There might be a case where you want to disable color output (for example to
-pipe the standard output of your app to somewhere else). `Color` has support to
-disable colors both globally and for single color definition. For example
-suppose you have a CLI app and a `--no-color` bool flag. You can easily disable
-the color output with:
+There might be a case where you want to disable color output \(for example to pipe the standard output of your app to somewhere else\). `Color` has support to disable colors both globally and for single color definition. For example suppose you have a CLI app and a `--no-color` bool flag. You can easily disable the color output with:
 
 ```go
-
 var flagNoColor = flag.Bool("no-color", false, "Disable color output")
 
 if *flagNoColor {
-	color.NoColor = true // disables colorized output
+    color.NoColor = true // disables colorized output
 }
 ```
 
-It also has support for single color definitions (local). You can
-disable/enable color output on the fly:
+It also has support for single color definitions \(local\). You can disable/enable color output on the fly:
 
 ```go
 c := color.New(color.FgCyan)
@@ -165,13 +150,12 @@ c.Println("This prints again cyan...")
 * Save/Return previous values
 * Evaluate fmt.Formatter interface
 
-
 ## Credits
 
- * [Fatih Arslan](https://github.com/fatih)
- * Windows support via @mattn: [colorable](https://github.com/mattn/go-colorable)
+* [Fatih Arslan](https://github.com/fatih)
+* Windows support via @mattn: [colorable](https://github.com/mattn/go-colorable)
 
 ## License
 
-The MIT License (MIT) - see [`LICENSE.md`](https://github.com/fatih/color/blob/master/LICENSE.md) for more details
+The MIT License \(MIT\) - see [`LICENSE.md`](https://github.com/fatih/color/blob/master/LICENSE.md) for more details
 

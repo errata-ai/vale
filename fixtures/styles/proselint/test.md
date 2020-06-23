@@ -1,3 +1,5 @@
+# test
+
 The test was good irregardless.
 
 I want to sleep, perchance to dream.
@@ -46,6 +48,7 @@ He was definitely a Hong Kongite.
 
 It was some bird-like creature.
 
-Show me the money! (C) The Fresh Maker (tm) Just Do It (R) It is obvious that 2 x 2 = 4
+Show me the money! \(C\) The Fresh Maker \(tm\) Just Do It \(R\) It is obvious that 2 x 2 = 4
 
-He saw the performance by Beyonce (p = 0.00). abolishment is a needless variant.
+He saw the performance by Beyonce \(p = 0.00\). abolishment is a needless variant.
+

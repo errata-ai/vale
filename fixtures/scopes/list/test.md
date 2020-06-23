@@ -1,12 +1,13 @@
 # This is a heading XXX
 
-## *TODO* heading
+## _TODO_ heading
 
 TODO
 
-- TODO
-- TODO
+* TODO
+* TODO
 
 XXX
 
 1. XXX
+

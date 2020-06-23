@@ -1,17 +1,14 @@
+# config
+
 Vale has three configuration components:
 
-- A `.vale.ini` (required): This is where you'll control the majority of Vale's behavior, including
-  what files to lint and how to lint them. See the next section for more information.
-
-- A `StylesPath` directory (optional): This is where you'll store all of Vale's optional external
-  resources.
-
-- [Custom styles](/vale/styles) (optional): Custom styles are a means of teaching Vale new
-  guidelines to lint against.
+* A `.vale.ini` \(required\): This is where you'll control the majority of Vale's behavior, including what files to lint and how to lint them. See the next section for more information.
+* A `StylesPath` directory \(optional\): This is where you'll store all of Vale's optional external resources.
+* [Custom styles](https://github.com/errata-ai/vale/tree/9ce917fd6f68849a2a6eb5338f978709e8ec3096/vale/styles/README.md) \(optional\): Custom styles are a means of teaching Vale new guidelines to lint against.
 
 ## `.vale.ini`
 
-```ini
+```text
 # Example Vale config file (`.vale.ini` or `_vale.ini`)
 
 # Core settings
@@ -42,21 +39,21 @@ vale.Hedging = error
 vale.Editorializing = NO
 ```
 
-Vale expects its configuration to be in a file named `.vale.ini` or `_vale.ini`. It'll start looking for this file in the same directory as the file that's being linted. If it can't find one, it'll search up to 6 levels up the directory tree. After 6 levels, it'll look for a global configuration file in the OS equivalent of `$HOME` (see below).
+Vale expects its configuration to be in a file named `.vale.ini` or `_vale.ini`. It'll start looking for this file in the same directory as the file that's being linted. If it can't find one, it'll search up to 6 levels up the directory tree. After 6 levels, it'll look for a global configuration file in the OS equivalent of `$HOME` \(see below\).
 
-| OS      | Search Locations                                     |
-|:--------|:-----------------------------------------------------|
+| OS | Search Locations |
+| :--- | :--- |
 | Windows | `$HOME`, `%UserProfile%`, or `%HomeDrive%%HomePath%` |
-| macOS   | `$HOME`                                              |
-| Linux   | `$HOME`                                              |
+| macOS | `$HOME` |
+| Linux | `$HOME` |
 
 If more than one configuration file is present, the closest one takes precedence.
 
 ### Available Options
 
-- `StylesPath` (core):
+* `StylesPath` \(core\):
 
-    ```ini
+  ```text
     # Here's an example of a relative path:
     #
     # .vale.ini
@@ -64,94 +61,81 @@ If more than one configuration file is present, the closest one takes precedence
     # ├── vale/
     # │   ├── styles/
     StylesPath = ci/vale/styles
-    ```
+  ```
 
-    `StylesPath` specifies where Vale should look for its external resources
-    (e.g., styles and ignore files). The path value may be absolute or relative
-    to the location of the parent `.vale.ini` file.
+  `StylesPath` specifies where Vale should look for its external resources \(e.g., styles and ignore files\). The path value may be absolute or relative to the location of the parent `.vale.ini` file.
 
-- `MinAlertLevel` (core):
+* `MinAlertLevel` \(core\):
 
-    ```ini
+  ```text
     MinAlertLevel = suggestion
-    ```
+  ```
 
-    `MinAlertLevel` specifies the minimum alert severity that Vale will report. The options are
-    "suggestion," "warning," or "error" (defaults to "suggestion").
+  `MinAlertLevel` specifies the minimum alert severity that Vale will report. The options are "suggestion," "warning," or "error" \(defaults to "suggestion"\).
 
-- `IgnoredScopes` (core):
+* `IgnoredScopes` \(core\):
 
-    ```ini
+  ```text
     # By default, `code` and `tt` are ignored.
     IgnoredScopes = code, tt
-    ```
+  ```
 
-    `IgnoredScopes` specifies inline-level HTML tags to ignore. In other words, these tags may
-    occur in an active scope (see `SkippedScopes`) but their content still won't raise any alerts.
+  `IgnoredScopes` specifies inline-level HTML tags to ignore. In other words, these tags may occur in an active scope \(see `SkippedScopes`\) but their content still won't raise any alerts.
 
-- `SkippedScopes` (core):
+* `SkippedScopes` \(core\):
 
-    ```ini
+  ```text
     # By default, `script`, `style`, `pre`, and `figure` are ignored.
     SkippedScopes = script, style, pre, figure
-    ```
+  ```
 
-    `SkippedScopes` specifies block-level HTML tags to ignore. Any content in these scopes will be
-    ignored.
+  `SkippedScopes` specifies block-level HTML tags to ignore. Any content in these scopes will be ignored.
 
-- `WordTemplate` (core):
+* `WordTemplate` \(core\):
 
-    ```ini
+  ```text
     WordTemplate = `\b(?:%s)\b`
-    ```
+  ```
 
-    `WordTemplate` specifies what Vale will consider to be an individual word.
+  `WordTemplate` specifies what Vale will consider to be an individual word.
 
-- `BasedOnStyles` (syntax-specific):
+* `BasedOnStyles` \(syntax-specific\):
 
-    ```ini
+  ```text
     BasedOnStyles = Joblint, write-good
-    ```
+  ```
 
-    `BasedOnStyles` specifies [styles](/vale/styles) that should have all of their rules enabled.
+  `BasedOnStyles` specifies [styles](https://github.com/errata-ai/vale/tree/9ce917fd6f68849a2a6eb5338f978709e8ec3096/vale/styles/README.md) that should have all of their rules enabled.
 
-- `BlockIgnores` (syntax-specific):
+* `BlockIgnores` \(syntax-specific\):
 
-    ```ini
+  ```text
     BlockIgnores = (?s) *({< file [^>]* >}.*?{</ ?file >})
-    ```
+  ```
 
-    `BlockIgnores` allow you to exclude certain block-level sections of text
-    that don't have an associated HTML tag that could be used with
-    `SkippedScopes`. See [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup)
-    for more information.
+  `BlockIgnores` allow you to exclude certain block-level sections of text that don't have an associated HTML tag that could be used with `SkippedScopes`. See [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup) for more information.
 
-- `TokenIgnores` (syntax-specific):
+* `TokenIgnores` \(syntax-specific\):
 
-    ```ini
+  ```text
     TokenIgnores = (\$+[^\n$]+\$+)
-    ```
+  ```
 
-    `TokenIgnores` allow you to exclude certain inline-level sections of text
-    that don't have an associated HTML tag that could be used with
-    `IgnoredScopes`. See
-    [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup)
-    for more information.
+  `TokenIgnores` allow you to exclude certain inline-level sections of text that don't have an associated HTML tag that could be used with `IgnoredScopes`. See [Non-Standard Markup](https://errata-ai.github.io/vale/formats/#non-standard-markup) for more information.
 
-- `Transform` (syntax-specific):
+* `Transform` \(syntax-specific\):
 
-    ```ini
+  ```text
     Transform = docbook-xsl-snapshot/html/docbook.xsl
-    ```
+  ```
 
-    `Transform` specifies a version 1.0 XSL Transformation (XSLT) for converting to HTML. See [Formats#XML](https://errata-ai.github.io/vale/formats/#XML) for more information.
+  `Transform` specifies a version 1.0 XSL Transformation \(XSLT\) for converting to HTML. See [Formats\#XML](https://errata-ai.github.io/vale/formats/#XML) for more information.
 
 ## Ignoring Parts of Your Documents
 
-```callout{'title': 'NOTE', 'classes': ['tip']}
-Vale currently does not support comment-based configuration in AsciiDoc documents.
-```
+\`\`\`callout{'title': 'NOTE', 'classes': \['tip'\]} Vale currently does not support comment-based configuration in AsciiDoc documents.
 
+```text
 Ignore parts of your HTML and Markdown documents using HTML-style comments:
 
 ```html
@@ -172,13 +156,13 @@ This is some text
 
 Ignore parts of your reStructuredText documents:
 
-```rst
+```text
 .. vale off
 
 This is some text
 
 .. vale on
-
 ```
 
-Vale also ignores specific tags for each supported [markup language](/vale/formats).
+Vale also ignores specific tags for each supported [markup language](https://github.com/errata-ai/vale/tree/9ce917fd6f68849a2a6eb5338f978709e8ec3096/vale/formats/README.md).
+

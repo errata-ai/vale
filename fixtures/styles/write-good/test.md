@@ -1,11 +1,12 @@
+# test
+
 Remarkably few developers write well.
 
 The script was killed
 
 the the
 
-the
-the
+the the
 
 The the
 
@@ -17,8 +18,7 @@ So?
 
 This changes the code so that it works.
 
-Some silly sausages start sentences stating so.
-Sorry, everyone.
+Some silly sausages start sentences stating so. Sorry, everyone.
 
 This is a test; so it should pass or fail.
 
@@ -39,3 +39,4 @@ Your readers will be adversely impacted by this sentence.
 Writing specs puts me at loose ends.
 
 So, the cat is still there.
+

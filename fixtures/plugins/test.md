@@ -1,4 +1,4 @@
-## introduction
+# introduction
 
 NOTE: This is a very interesting file.
 
@@ -12,7 +12,7 @@ def foo():
     return very and obviously
 ```
 
-### another one!
+## another one!
 
 As you can see, `very = True`. Here is another interesting codeblock:
 
@@ -28,29 +28,30 @@ func ExtFromSyntax(name string) string {
 }
 ```
 
-    XXX = False
-    # This is a codeblock.
+```text
+XXX = False
+# This is a codeblock.
+```
 
 XXX: This is a very interesting sentence that is not in a block.
 
 this sentence has -- dashes TODO: but it should still work.
 
 | TODO | XXX | FIXME |
-|:----:|:---:|:-----:|
-| one  | two | three |
+| :---: | :---: | :---: |
+| one | two | three |
 
 > **Note**: one two FIXME three.
 
-[![Boxy Monokai ★ Predawn][img-monokai]][img-monokai]
+[![](https://)](https://)
 
-is *TODO* by
+is _TODO_ by
 
-![TODO](/images/logo.png)
-
-[img-monokai]: https://
+![TODO](https://github.com/errata-ai/vale/tree/9ce917fd6f68849a2a6eb5338f978709e8ec3096/images/logo.png)
 
 RedHat
 
 Click on the dialog bar.
 
 We can say dialog box though!
+

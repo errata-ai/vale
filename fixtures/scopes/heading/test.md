@@ -1,7 +1,8 @@
 # This is a heading XXX
 
-## *TODO* heading
+## _TODO_ heading
 
 TODO
 
-- XXX
+* XXX
+
