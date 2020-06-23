@@ -13,15 +13,15 @@ func makeExceptions(ignore []string) *regexp.Regexp {
 	return regexp.MustCompile(`(?:` + strings.Join(ignore, "|") + `)`)
 }
 
-func lower(s string, ignore []string) bool {
+func lower(s string, ignore []string, re *regexp.Regexp) bool {
 	return s == strings.ToLower(s) || core.StringInSlice(s, ignore)
 }
 
-func upper(s string, ignore []string) bool {
+func upper(s string, ignore []string, re *regexp.Regexp) bool {
 	return s == strings.ToUpper(s) || core.StringInSlice(s, ignore)
 }
 
-func title(s string, ignore []string, tc *transform.TitleConverter) bool {
+func title(s string, ignore []string, except *regexp.Regexp, tc *transform.TitleConverter) bool {
 	count := 0.0
 	words := 0.0
 
@@ -29,7 +29,8 @@ func title(s string, ignore []string, tc *transform.TitleConverter) bool {
 	expected := re.FindAllString(tc.Title(s), -1)
 
 	for i, word := range re.FindAllString(s, -1) {
-		if word == expected[i] || core.StringInSlice(word, ignore) {
+		skip := except != nil && except.MatchString(word)
+		if word == expected[i] || skip {
 			count++
 		} else if word == strings.ToUpper(word) {
 			count++
@@ -49,7 +50,7 @@ func hasAnySuffix(s string, suffixes []string) bool {
 	return false
 }
 
-func sentence(s string, ignore []string, indicators []string) bool {
+func sentence(s string, ignore []string, indicators []string, except *regexp.Regexp) bool {
 	count := 0.0
 	words := 0.0
 
@@ -73,7 +74,8 @@ func sentence(s string, ignore []string, indicators []string) bool {
 			w = strings.Split(w, "’")[0]
 		}
 
-		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || core.StringInSlice(w, ignore) {
+		skip := except != nil && except.MatchString(w)
+		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || skip {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) {
 			return false
@@ -86,7 +88,7 @@ func sentence(s string, ignore []string, indicators []string) bool {
 	return (count / words) > 0.8
 }
 
-var varToFunc = map[string]func(string, []string) bool{
+var varToFunc = map[string]func(string, []string, *regexp.Regexp) bool{
 	"$lower": lower,
 	"$upper": upper,
 }

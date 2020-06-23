@@ -53,7 +53,6 @@ var LevelToInt = map[string]int{
 // Config holds Vale's configuration, both from the CLI and its config file.
 type Config struct {
 	// General configuration
-	Blacklist      map[string]struct{}        // Project-specific vocabulary (avoid)
 	BlockIgnores   map[string][]string        // A list of blocks to ignore
 	Checks         []string                   // All checks to load
 	Formats        map[string]string          // A map of unknown -> known formats
@@ -71,8 +70,10 @@ type Config struct {
 	Stylesheets    map[string]string          // XSLT stylesheet
 	StylesPath     string                     // Directory with Rule.yml files
 	TokenIgnores   map[string][]string        // A list of tokens to ignore
-	Whitelist      map[string]struct{}        // Project-specific vocabulary (okay)
 	WordTemplate   string                     // The template used in YAML -> regexp list conversions
+
+	AcceptedTokens map[string]struct{} // Project-specific vocabulary (okay)
+	RejectedTokens map[string]struct{} // Project-specific vocabulary (avoid)
 
 	SphinxBuild string // The location of Sphinx's `_build` path
 	SphinxAuto  string // Should we call `sphinx-build`?
@@ -116,8 +117,8 @@ func NewConfig() *Config {
 	cfg.BlockIgnores = make(map[string][]string)
 	cfg.TokenIgnores = make(map[string][]string)
 	cfg.SecToPat = make(map[string]glob.Glob)
-	cfg.Whitelist = make(map[string]struct{})
-	cfg.Blacklist = make(map[string]struct{})
+	cfg.AcceptedTokens = make(map[string]struct{})
+	cfg.RejectedTokens = make(map[string]struct{})
 	cfg.FsWrapper = &afero.Afero{Fs: afero.NewReadOnlyFs(afero.NewOsFs())}
 	cfg.LTPath = "http://localhost:8081/v2/check"
 	return &cfg
@@ -139,12 +140,12 @@ func (c *Config) addWordList(r io.Reader, accept bool) error {
 		if len(word) == 0 || word == "#" {
 			continue
 		} else if accept {
-			if _, ok := c.Whitelist[word]; !ok {
-				c.Whitelist[word] = struct{}{}
+			if _, ok := c.AcceptedTokens[word]; !ok {
+				c.AcceptedTokens[word] = struct{}{}
 			}
 		} else {
-			if _, ok := c.Blacklist[word]; !ok {
-				c.Blacklist[word] = struct{}{}
+			if _, ok := c.RejectedTokens[word]; !ok {
+				c.RejectedTokens[word] = struct{}{}
 			}
 		}
 	}

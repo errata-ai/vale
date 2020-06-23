@@ -2,6 +2,7 @@ package check
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/errata-ai/vale/core"
 	"github.com/jdkato/regexp"
@@ -129,6 +130,8 @@ type Conditional struct {
 	Second string
 	// `exceptions` (`array`): An array of strings to be ignored.
 	Exceptions []string
+
+	exceptRe *regexp.Regexp
 }
 
 // Capitalization checks the case of a string.
@@ -136,7 +139,7 @@ type Capitalization struct {
 	Definition `mapstructure:",squash"`
 	// `match` (`string`): $title, $sentence, $lower, $upper, or a pattern.
 	Match string
-	Check func(string, []string) bool
+	Check func(s string, ignore []string, re *regexp.Regexp) bool
 	// `style` (`string`): AP or Chicago; only applies when match is set to $title.
 	Style string
 	// `exceptions` (`array`): An array of strings to be ignored.
@@ -144,6 +147,8 @@ type Capitalization struct {
 	// `indicators` (`array`): An array of suffixes that indicate the next
 	// token should be ignored.
 	Indicators []string
+
+	exceptRe *regexp.Regexp
 }
 
 // Readability checks the reading grade level of text.
@@ -170,6 +175,8 @@ type Spelling struct {
 	Ignore     []string
 	Exceptions []string
 	Threshold  int
+
+	exceptRe *regexp.Regexp
 }
 
 // Sequence looks for a user-defined sequence of tokens.
@@ -217,18 +224,20 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 	"conditional": func(name string, generic baseCheck, mgr *Manager) {
 		def := Conditional{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
-			for term := range mgr.Config.Whitelist {
+			for term := range mgr.Config.AcceptedTokens {
 				def.Exceptions = append(def.Exceptions, term)
 			}
+			def.exceptRe = regexp.MustCompile(strings.Join(def.Exceptions, "|"))
 			mgr.addConditionalCheck(name, def)
 		}
 	},
 	"capitalization": func(name string, generic baseCheck, mgr *Manager) {
 		def := Capitalization{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
-			for term := range mgr.Config.Whitelist {
+			for term := range mgr.Config.AcceptedTokens {
 				def.Exceptions = append(def.Exceptions, term)
 			}
+			def.exceptRe = regexp.MustCompile(strings.Join(def.Exceptions, "|"))
 			mgr.addCapitalizationCheck(name, def)
 		}
 	},
@@ -267,8 +276,9 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 			delete(generic, "ignore")
 		}
 
-		for term := range mgr.Config.Whitelist {
+		for term := range mgr.Config.AcceptedTokens {
 			def.Exceptions = append(def.Exceptions, term)
+			def.exceptRe = regexp.MustCompile(strings.Join(def.Exceptions, "|"))
 		}
 
 		if err := mapstructure.Decode(generic, &def); err == nil {

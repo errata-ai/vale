@@ -219,7 +219,8 @@ func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Reg
 	locs := r[1].FindAllStringIndex(txt, -1)
 	for _, loc := range locs {
 		s := txt[loc[0]:loc[1]]
-		if !core.StringInSlice(s, f.Sequences) && !core.StringInSlice(s, chk.Exceptions) {
+		i := chk.exceptRe != nil && chk.exceptRe.MatchString(s)
+		if !core.StringInSlice(s, f.Sequences) && !i {
 			// If we've found one (e.g., "WHO") and we haven't marked it as
 			// being defined previously, send an Alert.
 			alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
@@ -361,7 +362,7 @@ func checkConsistency(txt string, chk Consistency, f *core.File, r *regexp.Regex
 
 func checkCapitalization(txt string, chk Capitalization, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
-	if !chk.Check(txt, chk.Exceptions) {
+	if !chk.Check(txt, chk.Exceptions, chk.exceptRe) {
 		alerts = append(alerts, makeAlert(chk.Definition, []int{0, len(txt)}, txt))
 	}
 	return alerts
@@ -446,7 +447,8 @@ OUTER:
 		}
 
 		known := gs.Spell(word) || gs.Spell(strings.ToLower(word))
-		if !known && !core.StringInSlice(word, chk.Exceptions) {
+		skip := chk.exceptRe != nil && chk.exceptRe.MatchString(word)
+		if !known && !skip {
 			offset := strings.Index(txt, word)
 			loc := []int{offset, offset + len(word)}
 
@@ -486,12 +488,12 @@ func (mgr *Manager) addCapitalizationCheck(chkName string, chkDef Capitalization
 		} else {
 			tc = transform.NewTitleConverter(transform.APStyle)
 		}
-		chkDef.Check = func(s string, ignore []string) bool {
-			return title(s, ignore, tc)
+		chkDef.Check = func(s string, ignore []string, re *regexp.Regexp) bool {
+			return title(s, ignore, re, tc)
 		}
 	} else if chkDef.Match == "$sentence" {
-		chkDef.Check = func(s string, ignore []string) bool {
-			return sentence(s, ignore, chkDef.Indicators)
+		chkDef.Check = func(s string, ignore []string, re *regexp.Regexp) bool {
+			return sentence(s, ignore, chkDef.Indicators, re)
 		}
 	} else if f, ok := varToFunc[chkDef.Match]; ok {
 		chkDef.Check = f
@@ -500,7 +502,7 @@ func (mgr *Manager) addCapitalizationCheck(chkName string, chkDef Capitalization
 		if !core.CheckError(err, mgr.Config.Debug) {
 			return
 		}
-		chkDef.Check = func(s string, ignore []string) bool {
+		chkDef.Check = func(s string, ignore []string, r *regexp.Regexp) bool {
 			return re.MatchString(s) || core.StringInSlice(s, ignore)
 		}
 	}
@@ -858,7 +860,7 @@ func (mgr *Manager) loadStyles(styles []string, loaded []string) []string {
 
 func (mgr *Manager) loadVocabRules(config *core.Config) {
 	// Whitelist
-	if len(config.Whitelist) > 0 {
+	if len(config.AcceptedTokens) > 0 {
 		vocab := Substitution{}
 		vocab.Extends = "substitution"
 		vocab.Definition.Name = "Vale.Terms"
@@ -867,14 +869,16 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 		vocab.Scope = "text"
 		vocab.Ignorecase = true
 		vocab.Swap = make(map[string]string)
-		for term := range config.Whitelist {
-			vocab.Swap[strings.ToLower(term)] = term
+		for term := range config.AcceptedTokens {
+			if core.IsPhrase(term) {
+				vocab.Swap[strings.ToLower(term)] = term
+			}
 		}
 		mgr.addSubstitutionCheck("Vale.Terms", vocab)
 	}
 
 	// Blacklist
-	if len(config.Blacklist) > 0 {
+	if len(config.RejectedTokens) > 0 {
 		avoid := Existence{}
 		avoid.Extends = "existence"
 		avoid.Definition.Name = "Vale.Avoid"
@@ -882,7 +886,7 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 		avoid.Definition.Message = "Avoid using '%s'."
 		avoid.Scope = "text"
 		avoid.Ignorecase = false
-		for term := range config.Blacklist {
+		for term := range config.RejectedTokens {
 			avoid.Tokens = append(avoid.Tokens, term)
 		}
 		mgr.addExistenceCheck("Vale.Avoid", avoid)

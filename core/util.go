@@ -91,6 +91,18 @@ func IsLetter(s string) bool {
 	return true
 }
 
+// IsPhrase returns `true` is s is a phrase-like token.
+//
+// This is used to differentiate regex tokens from non-regex.
+func IsPhrase(s string) bool {
+	for _, r := range s {
+		if !(unicode.IsLetter(r) && r != ' ') {
+			return false
+		}
+	}
+	return true
+}
+
 // TextToWords convert raw text into a slice of words.
 func TextToWords(text string) []string {
 	words := []string{}
