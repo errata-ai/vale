@@ -27,13 +27,13 @@ require (
 	github.com/pierrec/lz4 v2.4.1+incompatible // indirect
 	github.com/pkg/profile v1.4.0
 	github.com/remeh/sizedwaitgroup v1.0.0
+	github.com/schollz/closestmatch v2.1.0+incompatible
 	github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/afero v1.2.2
 	github.com/stretchr/testify v1.5.0
 	github.com/urfave/cli v1.22.2
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
-	github.com/xrash/smetrics v0.0.0-20170218160415-a3153f7040e9
 	github.com/yuin/goldmark v1.1.25
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 	gopkg.in/ini.v1 v1.52.0

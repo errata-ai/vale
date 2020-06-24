@@ -18,8 +18,8 @@ import (
 	"github.com/jdkato/regexp"
 	"github.com/levigross/grequests"
 	"github.com/mholt/archiver"
+	"github.com/schollz/closestmatch"
 	"github.com/spf13/afero"
-	"github.com/xrash/smetrics"
 )
 
 // ExeDir is our starting location.
@@ -217,26 +217,9 @@ func DumpConfig(config *Config) string {
 	return string(b)
 }
 
-// JaroWinkler searches `ctx` line-by-line for a JaroWinkler distance score
-// greater than a particular threshold.
-func JaroWinkler(ctx, sub string) (int, string) {
-	threshold := 0.75
-	if strings.Contains(sub, "`*") && len(strings.Fields(sub)) < 7 {
-		threshold = 0.65 // lower the threshold for short text with code spans
-	}
-	for _, line := range strings.Split(ctx, "\n") {
-		for _, text := range SentenceTokenizer.Tokenize(line) {
-			if smetrics.JaroWinkler(sub, text, 0.7, 4) > threshold {
-				return strings.Index(ctx, text) + 1, text
-			}
-		}
-	}
-	return -1, sub
-}
-
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).
-func initialPosition(ctx, sub string) (int, string) {
+func initialPosition(ctx, sub string, m *closestmatch.ClosestMatch) (int, string) {
 	idx := -1
 	sub = strings.ToValidUTF8(sub, "")
 
@@ -246,10 +229,13 @@ func initialPosition(ctx, sub string) (int, string) {
 	if len(fsi) == 0 {
 		idx = strings.Index(ctx, sub)
 		if idx < 0 {
-			// Fall back to the JaroWinkler distance. This should only happen if
-			// we're in a scope that contains inline markup (e.g., a sentence with
-			// code spans).
-			return JaroWinkler(ctx, sub)
+			// This should only happen if we're in a scope that contains inline
+			// markup (e.g., a sentence with code spans).
+			closest := m.Closest(sub)
+			if closest == "" {
+				return -1, ""
+			}
+			return strings.Index(ctx, closest) + 1, closest
 		}
 	} else {
 		idx = fsi[0]

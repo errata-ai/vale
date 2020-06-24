@@ -16,7 +16,7 @@ Feature: Styles
       test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
       test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
       test.md:14:121:demo.Filters:Did you really mean 'DBA'?
-      test.md:14:158:demo.SentenceLength:Sentences should be less than 25 words
+      test.md:14:159:demo.SentenceLength:Sentences should be less than 25 words
       test.md:16:1:demo.Filters:Did you really mean 'MHS'?
       test.md:16:60:demo.Filters:Did you really mean 'MHS'?
       test.md:20:21:demo.Abbreviations:Use 'i.e.,'

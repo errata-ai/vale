@@ -67,8 +67,8 @@ Feature: Scopes
     test.html:39:96:rules.Heading:'TODO' left in text
     test.html:59:99:rules.Heading:'XXX' left in text
     test.md:1:21:rules.Heading:'XXX' left in text
-    test.md:3:1:rules.MinH2:Headings should have at least 100 characters.
     test.md:3:5:rules.Heading:'TODO' left in text
+    test.md:3:5:rules.MinH2:Headings should have at least 100 characters.
     test.md:3:19:rules.H2:'TWO' left in text
     test.md:9:6:rules.Heading:'TODO' left in text
     test.md:9:20:rules.H3:'THREE' left in text

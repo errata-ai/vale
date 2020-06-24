@@ -240,14 +240,16 @@ func checkExistence(txt string, chk Existence, f *core.File, r *regexp.Regexp) [
 }
 
 func checkOccurrence(txt string, chk Occurrence, f *core.File, r *regexp.Regexp) []core.Alert {
-	var loc []int
-
 	alerts := []core.Alert{}
+
 	locs := r.FindAllStringIndex(txt, -1)
 	occurrences := len(locs)
 	if occurrences > chk.Max || occurrences < chk.Min {
-		loc = []int{locs[0][0], locs[occurrences-1][1]}
-		a := makeAlert(chk.Definition, loc, txt)
+		// NOTE: We take only the first match (`locs[0]`) instead of the whole
+		// scope (`txt`) to avoid having to fall back to string matching.
+		//
+		// See (core/util.go#initialPosition).
+		a := makeAlert(chk.Definition, locs[0], txt)
 		a.Message = chk.Message
 		a.Description = chk.Description
 		alerts = append(alerts, a)

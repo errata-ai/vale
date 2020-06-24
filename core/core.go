@@ -14,6 +14,7 @@ import (
 	"github.com/gobwas/glob"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
+	"github.com/schollz/closestmatch"
 )
 
 // A File represents a linted text file.
@@ -38,6 +39,7 @@ type File struct {
 	Summary    bytes.Buffer // holds content to be included in summarization checks
 
 	history map[string]int
+	matcher *closestmatch.ClosestMatch
 }
 
 // An Action represents a possible solution to an Alert.
@@ -170,6 +172,7 @@ func NewFile(src string, config *Config) *File {
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Lines: lines,
 		Comments: make(map[string]bool), Content: content, history: make(map[string]int),
 		Simple: config.Simple, Transform: transform,
+		matcher: closestmatch.New(lines, []int{2}),
 	}
 
 	return &file
@@ -186,7 +189,7 @@ func (f *File) FindLoc(ctx, s, m string, pad, count int, loc []int) (int, []int)
 	var length int
 	var lines []string
 
-	pos, substring := initialPosition(ctx, m)
+	pos, substring := initialPosition(ctx, m, f.matcher)
 	if pos < 0 {
 		// Shouldn't happen ...
 		return pos, []int{0, 0}
