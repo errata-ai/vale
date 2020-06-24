@@ -26,6 +26,9 @@ import (
 var ExeDir string
 var code = regexp.MustCompile("`?`[^`@\n]+``?")
 
+// This is used to store patterns as we compute them in `initialPosition`.
+var cache = map[string]*regexp.Regexp{}
+
 // PrintJSON prints the data type `t` as JSON.
 func PrintJSON(t interface{}) error {
 	b, err := json.MarshalIndent(t, "", "  ")
@@ -220,13 +223,19 @@ func DumpConfig(config *Config) string {
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).
 func initialPosition(ctx, sub string, m *closestmatch.ClosestMatch) (int, string) {
-	idx := -1
+	var idx int
+	var pat *regexp.Regexp
+
 	sub = strings.ToValidUTF8(sub, "")
+	if p, ok := cache[sub]; ok {
+		pat = p
+	} else {
+		pat = regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|\b|$)`)
+		cache[sub] = pat
+	}
 
-	pat := regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|\b|$)`)
 	fsi := pat.FindStringIndex(ctx)
-
-	if len(fsi) == 0 {
+	if fsi == nil {
 		idx = strings.Index(ctx, sub)
 		if idx < 0 {
 			// This should only happen if we're in a scope that contains inline
