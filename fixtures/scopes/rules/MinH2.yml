@@ -1,6 +1,6 @@
 message: "Headings should have at least 100 characters."
 extends: occurrence
-scope: heading.h2
+scope: heading.h4
 level: suggestion
 min: 100
 token: '[\w\s]'
