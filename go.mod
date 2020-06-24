@@ -27,7 +27,6 @@ require (
 	github.com/pkg/profile v1.4.0
 	github.com/remeh/sizedwaitgroup v1.0.0
 	github.com/schollz/closestmatch v2.1.0+incompatible
-	github.com/scylladb/go-set v1.0.2
 	github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/afero v1.2.2
