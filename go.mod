@@ -5,7 +5,6 @@ go 1.13
 require (
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/client9/gospell v0.0.0-20160306015952-90dfc71015df
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/fatih/color v1.9.0
 	github.com/frankban/quicktest v1.7.2 // indirect
@@ -28,6 +27,7 @@ require (
 	github.com/pkg/profile v1.4.0
 	github.com/remeh/sizedwaitgroup v1.0.0
 	github.com/schollz/closestmatch v2.1.0+incompatible
+	github.com/scylladb/go-set v1.0.2
 	github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/afero v1.2.2

@@ -1,4 +1,4 @@
-package gospell
+package spell
 
 import (
 	"bytes"

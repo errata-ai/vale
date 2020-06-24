@@ -8,10 +8,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/client9/gospell"
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/data"
 	"github.com/errata-ai/vale/rule"
+	"github.com/errata-ai/vale/spell"
 	"github.com/jdkato/prose/summarize"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/transform"
@@ -431,7 +431,7 @@ func checkReadability(txt string, chk Readability, f *core.File) []core.Alert {
 	return alerts
 }
 
-func checkSpelling(txt string, chk Spelling, gs *gospell.GoSpell, f *core.File) []core.Alert {
+func checkSpelling(txt string, chk Spelling, gs *spell.GoSpell, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
 	// This ensures that we respect `.aff` entries like `ICONV ’ '`,
@@ -660,7 +660,7 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 }
 
 func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
-	var model *gospell.GoSpell
+	var model *spell.GoSpell
 	var err error
 
 	affloc := core.DeterminePath(mgr.Config.Path, chkDef.Aff)
@@ -671,9 +671,9 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 		// Fall back to the defaults:
 		aff, _ := data.Asset("data/en_US-web.aff")
 		dic, _ := data.Asset("data/en_US-web.dic")
-		model, err = gospell.NewGoSpellReader(bytes.NewReader(aff), bytes.NewReader(dic))
+		model, err = spell.NewGoSpellReader(bytes.NewReader(aff), bytes.NewReader(dic))
 	} else {
-		model, err = gospell.NewGoSpell(affloc, dicloc)
+		model, err = spell.NewGoSpell(affloc, dicloc)
 	}
 
 	for _, ignore := range chkDef.Ignore {

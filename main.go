@@ -294,7 +294,8 @@ func main() {
 		var hasAlerts bool
 
 		if perf {
-			defer profile.Start().Stop()
+			defer profile.Start(profile.MemProfile).Stop()
+			//defer profile.Start().Stop()
 		}
 
 		err = config.Load()

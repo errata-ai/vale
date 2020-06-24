@@ -1,4 +1,4 @@
-package gospell
+package spell
 
 import (
 	"bufio"
@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -68,14 +67,12 @@ func (s *GoSpell) AddWordList(r io.Reader) ([]string, error) {
 	var duplicates []string
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if len(line) == 0 || line == "#" {
+		word := strings.TrimSpace(scanner.Text())
+		if len(word) == 0 || word == "#" {
 			continue
 		}
-		for _, word := range CaseVariations(line, CaseStyle(line)) {
-			if !s.AddWordRaw(word) {
-				duplicates = append(duplicates, word)
-			}
+		if !s.AddWordRaw(word) {
+			duplicates = append(duplicates, word)
 		}
 	}
 	if err := scanner.Err(); err != nil {
@@ -152,6 +149,9 @@ func NewGoSpellReader(aff, dic io.Reader) (*GoSpell, error) {
 	if !scanner.Scan() {
 		return nil, scanner.Err()
 	}
+
+	/* TODO:
+
 	line := scanner.Text()
 	i, err := strconv.ParseInt(line, 10, 64)
 	if err != nil {
@@ -160,6 +160,12 @@ func NewGoSpellReader(aff, dic io.Reader) (*GoSpell, error) {
 
 	gs := GoSpell{
 		Dict:      make(map[string]struct{}, i*5),
+		compounds: make([]*regexp.Regexp, 0, len(affix.CompoundRule)),
+		splitter:  NewSplitter(affix.WordChars),
+	}*/
+
+	gs := GoSpell{
+		Dict:      make(map[string]struct{}),
 		compounds: make([]*regexp.Regexp, 0, len(affix.CompoundRule)),
 		splitter:  NewSplitter(affix.WordChars),
 	}
@@ -173,15 +179,11 @@ func NewGoSpellReader(aff, dic io.Reader) (*GoSpell, error) {
 		}
 
 		if len(words) == 0 {
-			//log.Printf("No words for %s", line)
 			continue
 		}
 
-		style := CaseStyle(words[0])
 		for _, word := range words {
-			for _, wordform := range CaseVariations(word, style) {
-				gs.Dict[wordform] = struct{}{}
-			}
+			gs.Dict[word] = struct{}{}
 		}
 	}
 
