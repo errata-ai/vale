@@ -85,7 +85,7 @@ func TestRule(args []string) error {
 			Config:    config}
 
 		mgr.AddCheck(rule, "Test.Rule")
-		linter := lint.Linter{Config: config, CheckManager: &mgr}
+		linter := lint.Linter{CheckManager: &mgr}
 
 		linted, err := linter.LintString(string(text))
 		_ = ui.PrintJSONAlerts(linted)

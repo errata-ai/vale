@@ -43,7 +43,6 @@ import (
 
 // A Linter lints a File.
 type Linter struct {
-	Config       *core.Config   // command-line and config file settings
 	CheckManager *check.Manager // loaded checks
 }
 
@@ -65,21 +64,21 @@ func NewBlock(ctx, txt, raw, sel string) Block {
 }
 
 // LintString src according to its format.
-func (l Linter) LintString(src string) ([]*core.File, error) {
+func (l *Linter) LintString(src string) ([]*core.File, error) {
 	return []*core.File{l.lintFile(src)}, nil
 }
 
 // SetupContent handles any necessary building, compiling, or pre-processing.
-func (l Linter) SetupContent() error {
-	if l.Config.SphinxAuto != "" {
-		parts := strings.Split(l.Config.SphinxAuto, " ")
+func (l *Linter) SetupContent() error {
+	if l.CheckManager.Config.SphinxAuto != "" {
+		parts := strings.Split(l.CheckManager.Config.SphinxAuto, " ")
 		return exec.Command(parts[0], parts[1:]...).Run()
 	}
 	return nil
 }
 
 // Lint src according to its format.
-func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
+func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 	var linted []*core.File
 
 	done := make(chan core.File)
@@ -95,10 +94,10 @@ func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
 		}
 
 		filesChan, errc := l.lintFiles(
-			done, src, core.NewGlob(pat, l.Config.Debug))
+			done, src, core.NewGlob(pat, l.CheckManager.Config.Debug))
 
 		for f := range filesChan {
-			if l.Config.Normalize {
+			if l.CheckManager.Config.Normalize {
 				f.Path = filepath.ToSlash(f.Path)
 			}
 			linted = append(linted, f)
@@ -108,7 +107,7 @@ func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
 		}
 	}
 
-	if l.Config.Sorted {
+	if l.CheckManager.Config.Sorted {
 		sort.Sort(core.ByName(linted))
 	}
 
@@ -117,10 +116,10 @@ func (l Linter) Lint(input []string, pat string) ([]*core.File, error) {
 
 // lintFiles walks the `root` directory, creating a new goroutine to lint any
 // file that matches the given glob pattern.
-func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan *core.File, <-chan error) {
+func (l *Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan *core.File, <-chan error) {
 	filesChan := make(chan *core.File)
 	errc := make(chan error, 1)
-	nonGlobal := len(l.Config.GBaseStyles) == 0 && len(l.Config.GChecks) == 0
+	nonGlobal := len(l.CheckManager.Config.GBaseStyles) == 0 && len(l.CheckManager.Config.GChecks) == 0
 	seen := make(map[string]bool)
 
 	go func() {
@@ -136,7 +135,7 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 				return nil
 			} else if nonGlobal {
 				found := false
-				for _, pat := range l.Config.SecToPat {
+				for _, pat := range l.CheckManager.Config.SecToPat {
 					if pat.Match(fp) {
 						found = true
 					}
@@ -177,10 +176,10 @@ func (l Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<
 // on its format.
 //
 // TODO: remove dependencies on `asciidoctor` and `rst2html`.
-func (l Linter) lintFile(src string) *core.File {
-	file := core.NewFile(src, l.Config)
+func (l *Linter) lintFile(src string) *core.File {
+	file := core.NewFile(src, l.CheckManager.Config)
 	if len(file.Checks) == 0 && len(file.BaseStyles) == 0 {
-		if len(l.Config.GBaseStyles) == 0 && len(l.Config.GChecks) == 0 {
+		if len(l.CheckManager.Config.GBaseStyles) == 0 && len(l.CheckManager.Config.GChecks) == 0 {
 			// There's nothing to do; bail early.
 			return file
 		}
@@ -195,7 +194,7 @@ func (l Linter) lintFile(src string) *core.File {
 		} else {
 			fmt.Printf("%s not found!\n", parts[0])
 		}
-	} else if file.Format == "markup" && !l.Config.Simple {
+	} else if file.Format == "markup" && !l.CheckManager.Config.Simple {
 		switch file.NormedExt {
 		case ".adoc":
 			cmd := core.Which([]string{"asciidoctor"})
@@ -233,7 +232,7 @@ func (l Linter) lintFile(src string) *core.File {
 		case ".html":
 			l.lintHTML(file)
 		}
-	} else if file.Format == "code" && !l.Config.Simple {
+	} else if file.Format == "code" && !l.CheckManager.Config.Simple {
 		l.lintCode(file)
 	} else {
 		l.lintLines(file)
@@ -242,7 +241,7 @@ func (l Linter) lintFile(src string) *core.File {
 	return file
 }
 
-func (l Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength int) {
+func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength int) {
 	var b Block
 	text := core.PrepText(txt)
 	rawText := core.PrepText(raw)
@@ -268,7 +267,7 @@ func (l Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength 
 	l.lintText(f, NewBlock(ctx, text, rawText, txtScope), lnTotal, lnLength)
 }
 
-func (l Linter) lintLines(f *core.File) {
+func (l *Linter) lintLines(f *core.File) {
 	var line string
 	lines := 1
 	for f.Scanner.Scan() {
@@ -278,14 +277,14 @@ func (l Linter) lintLines(f *core.File) {
 	}
 }
 
-func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
+func (l *Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 	var txt string
 
 	f.ChkToCtx = make(map[string]string)
 	hasCode := core.StringInSlice(f.NormedExt, []string{".md", ".adoc", ".rst"})
 
 	for name, chk := range l.CheckManager.AllChecks {
-		if chk.Code && hasCode && !l.Config.Simple {
+		if chk.Code && hasCode && !l.CheckManager.Config.Simple {
 			txt = blk.Raw
 		} else {
 			txt = blk.Text
@@ -308,8 +307,8 @@ func (l Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 	}
 }
 
-func (l Linter) shouldRun(name string, f *core.File, chk check.Check, blk Block) bool {
-	min := l.Config.MinAlertLevel
+func (l *Linter) shouldRun(name string, f *core.File, chk check.Check, blk Block) bool {
+	min := l.CheckManager.Config.MinAlertLevel
 	run := false
 
 	if strings.Count(name, ".") > 1 {
@@ -336,7 +335,7 @@ func (l Linter) shouldRun(name string, f *core.File, chk check.Check, blk Block)
 	}
 
 	// Has the check been disabled for all extensions?
-	if val, ok := l.Config.GChecks[name]; ok && !run {
+	if val, ok := l.CheckManager.Config.GChecks[name]; ok && !run {
 		if !val {
 			return false
 		}

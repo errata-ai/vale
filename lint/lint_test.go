@@ -53,7 +53,7 @@ func benchmarkLint(path string, b *testing.B) {
 		panic(err)
 	}
 	mgr := check.NewManager(config)
-	linter := Linter{Config: config, CheckManager: mgr}
+	linter := Linter{CheckManager: mgr}
 	for n := 0; n < b.N; n++ {
 		_, _ = linter.Lint([]string{path}, "*")
 	}

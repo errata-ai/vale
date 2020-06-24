@@ -303,8 +303,7 @@ func main() {
 			fmt.Printf(".vale.ini: '%s'\n", err)
 			return nil
 		} else if c.NArg() > 0 || core.Stat() {
-			linter := lint.Linter{
-				Config: config, CheckManager: check.NewManager(config)}
+			linter := lint.Linter{CheckManager: check.NewManager(config)}
 
 			if c.NArg() > 0 {
 				if core.LooksLikeStdin(c.Args()[0]) {
