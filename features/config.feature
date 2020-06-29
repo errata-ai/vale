@@ -330,18 +330,6 @@ Feature: Config
     """
     And the exit status should be 1
 
-  Scenario: List Vale's config
-    When I run command "dc"
-    Then the output should contain:
-      """
-      "vale.Annotations": true
-      """
-    And the output should contain:
-      """
-      "Relative": true
-      """
-    And the exit status should be 0
-
   Scenario: Change an external rule's level
     Given a file named "_vale" with:
     """

@@ -72,8 +72,8 @@ type Config struct {
 	TokenIgnores   map[string][]string        // A list of tokens to ignore
 	WordTemplate   string                     // The template used in YAML -> regexp list conversions
 
-	AcceptedTokens map[string]struct{} // Project-specific vocabulary (okay)
-	RejectedTokens map[string]struct{} // Project-specific vocabulary (avoid)
+	AcceptedTokens map[string]struct{} `json:"-"` // Project-specific vocabulary (okay)
+	RejectedTokens map[string]struct{} `json:"-"` // Project-specific vocabulary (avoid)
 
 	SphinxBuild string // The location of Sphinx's `_build` path
 	SphinxAuto  string // Should we call `sphinx-build`?
@@ -88,19 +88,19 @@ type Config struct {
 	Styles       []string             `json:"-"`
 
 	// Command-line configuration
-	AlertLevel string // (optional) a CLI-provided MinAlertLevel
-	Debug      bool   // (optional) print debugging information to stdout/stderr
-	InExt      string // (optional) extension to associate with stdin
-	Local      bool   // (optional) prioritize local config files
-	NoExit     bool   // (optional) don't return a nonzero exit code on lint errors
-	Normalize  bool   // (optional) replace each path separator with a slash ('/')
-	Output     string // (optional) output style ("line" or "CLI")
-	Relative   bool   // (optional) return relative paths
-	Remote     bool   // (optional) prioritize remote config files
-	Simple     bool   // (optional) lint all files line-by-line
-	Sorted     bool   // (optional) sort files by their name for output
-	Sources    string // (optional) a list of config files to load
-	Wrap       bool   // (optional) wrap output when CLI style
+	AlertLevel string `json:"-"` // (optional) a CLI-provided MinAlertLevel
+	Debug      bool   `json:"-"` // (optional) print debugging information to stdout/stderr
+	InExt      string `json:"-"` // (optional) extension to associate with stdin
+	Local      bool   `json:"-"` // (optional) prioritize local config files
+	NoExit     bool   `json:"-"` // (optional) don't return a nonzero exit code on lint errors
+	Normalize  bool   `json:"-"` // (optional) replace each path separator with a slash ('/')
+	Output     string `json:"-"` // (optional) output style ("line" or "CLI")
+	Relative   bool   `json:"-"` // (optional) return relative paths
+	Remote     bool   `json:"-"` // (optional) prioritize remote config files
+	Simple     bool   `json:"-"` // (optional) lint all files line-by-line
+	Sorted     bool   `json:"-"` // (optional) sort files by their name for output
+	Sources    string `json:"-"` // (optional) a list of config files to load
+	Wrap       bool   `json:"-"` // (optional) wrap output when CLI style
 }
 
 // NewConfig initializes a Config.
