@@ -13,6 +13,7 @@ dist
 _vendor-*
 docs/public/
 fixtures/formats/Sphinx/_build/doctrees
+_build/
 
 # Files
 *.o
