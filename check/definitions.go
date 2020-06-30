@@ -51,8 +51,10 @@ type NLPToken struct {
 	Pattern string
 	Negate  bool
 	Tag     string
+	Skip    int
 
-	re *regexp.Regexp
+	re       *regexp.Regexp
+	optional bool
 }
 
 // Existence checks for the present of Tokens.
@@ -186,6 +188,7 @@ type Sequence struct {
 	Tokens     []NLPToken
 
 	needsTagging bool
+	history      []int
 }
 
 type baseCheck map[string]interface{}
@@ -287,6 +290,19 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 	},
 	"sequence": func(name string, generic baseCheck, mgr *Manager) {
 		def := Sequence{}
+
+		for _, token := range generic["tokens"].([]interface{}) {
+			tok := NLPToken{}
+			mapstructure.Decode(token, &tok)
+			def.Tokens = append(def.Tokens, tok)
+
+			tok.optional = true
+			for i := tok.Skip; i > 0; i-- {
+				def.Tokens = append(def.Tokens, tok)
+			}
+		}
+		delete(generic, "tokens")
+
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addSequenceCheck(name, def)
 		}

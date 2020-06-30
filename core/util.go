@@ -2,6 +2,8 @@ package core
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -28,6 +30,13 @@ var code = regexp.MustCompile("`?`[^`@\n]+``?")
 
 // This is used to store patterns as we compute them in `initialPosition`.
 var cache = map[string]*regexp.Regexp{}
+
+// Hash computes the MD5 hash of the given string.
+func Hash(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
+}
 
 // PrintJSON prints the data type `t` as JSON.
 func PrintJSON(t interface{}) error {
@@ -330,6 +339,16 @@ func Max(a, b int) int {
 
 // StringInSlice determines if `slice` contains the string `a`.
 func StringInSlice(a string, slice []string) bool {
+	for _, b := range slice {
+		if a == b {
+			return true
+		}
+	}
+	return false
+}
+
+// IntInSlice determines if `slice` contains the int `a`.
+func IntInSlice(a int, slice []int) bool {
 	for _, b := range slice {
 		if a == b {
 			return true

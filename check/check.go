@@ -13,8 +13,8 @@ import (
 	"github.com/errata-ai/vale/rule"
 	"github.com/errata-ai/vale/spell"
 	"github.com/jdkato/prose/summarize"
-	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/transform"
+	"github.com/jdkato/prose/v2"
 	"github.com/jdkato/regexp"
 	"gopkg.in/yaml.v2"
 )
@@ -37,6 +37,7 @@ var defaultFilters = []*regexp.Regexp{
 	regexp.MustCompile(`\w{3,}\.\w{3,}`),
 	regexp.MustCompile(`@.*\b`),
 }
+var cache = map[string]*prose.Document{}
 
 type ruleFn func(string, *core.File) []core.Alert
 
@@ -134,44 +135,48 @@ func makeAlert(chk Definition, loc []int, txt string) core.Alert {
 	return a
 }
 
-func tokensMatch(token NLPToken, word, tag string) bool {
-	failedTag, _ := regexp.MatchString(token.Tag, tag)
-	failedTag = !failedTag
+func tokensMatch(token NLPToken, word prose.Token) bool {
+	failedTag, err := regexp.MatchString(token.Tag, word.Tag)
+	if core.CheckError(err, false) {
+		failedTag = !failedTag
 
-	failedTok := (token.re != nil && token.re.MatchString(word) == token.Negate)
+		failedTok := (token.re != nil && token.re.MatchString(word.Text) == token.Negate)
 
-	if token.Pattern == "" && failedTag {
-		return false
-	} else if token.Tag == "" && failedTok {
-		return false
-	} else if (token.Tag != "" && token.Pattern != "") && (failedTag || failedTok) {
-		return false
+		if (token.Pattern == "" && failedTag) ||
+			(token.Tag == "" && failedTok) ||
+			(token.Tag != "" && token.Pattern != "") && (failedTag || failedTok) {
+			return false
+		}
+
+		return true
 	}
-
-	return true
+	return false
 }
 
-func sequenceMatches(idx int, chk Sequence, loc []int, words []string) ([]string, bool) {
+func sequenceMatches(idx int, chk Sequence, target string, nlp *prose.Document) ([]string, int) {
 	toks := chk.Tokens
 	text := []string{}
 
-	tags := []tag.Token{}
-	if chk.needsTagging {
-		tags = core.Tag(words)
-	}
 	sizeT := len(toks)
+	words := nlp.Tokens()
+	index := 0
 
-	pos := 1
-	for jdx, word := range words {
-		if core.InRange(pos, loc) {
+	for jdx, tok := range words {
+		if tok.Text == target && !core.IntInSlice(jdx, chk.history) {
+			index = jdx
 			// We've found our context.
 			if idx > 0 {
 				// Check the left-end of the sequence:
 				for i := 1; idx-i >= 0; i++ {
 					word := words[jdx-i]
-					text = append(text, word)
-					if !tokensMatch(toks[idx-i], word, tags[jdx-i].Tag) {
-						return []string{}, false
+					text = append(text, word.Text)
+
+					mat := tokensMatch(toks[idx-i], word)
+					opt := toks[idx-i].optional
+					if !mat && !opt {
+						return []string{}, index
+					} else if mat && opt {
+						break
 					}
 				}
 			}
@@ -179,20 +184,25 @@ func sequenceMatches(idx int, chk Sequence, loc []int, words []string) ([]string
 				// Check the right-end of the sequence
 				for i := 1; idx+i < sizeT; i++ {
 					if i == 1 {
-						text = append(text, words[jdx])
+						text = append(text, words[index].Text)
 					}
 					word := words[jdx+i]
-					text = append(text, word)
-					if !tokensMatch(toks[idx+i], word, tags[jdx+i].Tag) {
-						return []string{}, false
+					text = append(text, word.Text)
+
+					mat := tokensMatch(toks[idx+i], word)
+					opt := toks[idx+i].optional
+					if !mat && !opt {
+						return []string{}, index
+					} else if mat && opt {
+						break
 					}
 				}
 			}
 			break
 		}
-		pos += len(word) + 1
 	}
-	return text, true
+
+	return text, index
 }
 
 func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Regexp) []core.Alert {
@@ -371,15 +381,30 @@ func checkCapitalization(txt string, chk Capitalization, f *core.File) []core.Al
 }
 
 func checkSequence(txt string, chk Sequence, f *core.File) []core.Alert {
-	alerts := []core.Alert{}
+	var doc *prose.Document
+	var alerts []core.Alert
+
+	hash := core.Hash(txt)
+	if nlp, computed := cache[hash]; computed {
+		doc = nlp
+	} else {
+		doc, _ = prose.NewDocument(
+			txt,
+			prose.WithTagging(chk.needsTagging),
+			prose.WithExtraction(false))
+
+		cache[hash] = doc
+	}
 
 	for idx, tok := range chk.Tokens {
 		if !tok.Negate && tok.Pattern != "" {
-			words := strings.Fields(txt)
 			for _, loc := range tok.re.FindAllStringIndex(txt, -1) {
+				target := txt[loc[0]:loc[1]]
 				// These are all possible violations in `txt`:
-				steps, matched := sequenceMatches(idx, chk, loc, words)
-				if matched {
+				steps, index := sequenceMatches(idx, chk, target, doc)
+				chk.history = append(chk.history, index)
+
+				if len(steps) > 0 {
 					a := core.Alert{
 						Check: chk.Name, Severity: chk.Level, Span: loc,
 						Link: chk.Link, Hide: false, Match: txt[loc[0]:loc[1]],

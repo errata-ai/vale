@@ -7,3 +7,11 @@ Let us know!
 Thank you!
 
 Could we please get together with Brent Price and Mike Jordan and discuss whether Todd would be available come over.
+
+In my opinion, he is still the greatest basketball player of all times.
+
+The best player of all times was Pelé.
+
+The Bible is the great best seller of all times.
+
+Karl Popper viewed Peirce as "one of the greatest philosophers of all times".

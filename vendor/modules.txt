@@ -1,17 +1,19 @@
 # github.com/PuerkitoBio/goquery v1.5.1
+## explicit
 github.com/PuerkitoBio/goquery
 # github.com/andybalholm/cascadia v1.1.0
 github.com/andybalholm/cascadia
 # github.com/blang/semver v3.5.1+incompatible
+## explicit
 github.com/blang/semver
-# github.com/client9/gospell v0.0.0-20160306015952-90dfc71015df
-github.com/client9/gospell
-github.com/client9/gospell/plaintext
 # github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
 github.com/cpuguy83/go-md2man/v2/md2man
-# github.com/davecgh/go-spew v1.1.0
+# github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
+# github.com/deckarep/golang-set v1.7.1
+github.com/deckarep/golang-set
 # github.com/dsnet/compress v0.0.1
+## explicit
 github.com/dsnet/compress
 github.com/dsnet/compress/bzip2
 github.com/dsnet/compress/bzip2/internal/sais
@@ -19,8 +21,12 @@ github.com/dsnet/compress/internal
 github.com/dsnet/compress/internal/errors
 github.com/dsnet/compress/internal/prefix
 # github.com/fatih/color v1.9.0
+## explicit
 github.com/fatih/color
+# github.com/frankban/quicktest v1.7.2
+## explicit
 # github.com/gobwas/glob v0.2.3
+## explicit
 github.com/gobwas/glob
 github.com/gobwas/glob/compiler
 github.com/gobwas/glob/match
@@ -30,22 +36,32 @@ github.com/gobwas/glob/syntax/lexer
 github.com/gobwas/glob/util/runes
 github.com/gobwas/glob/util/strings
 # github.com/golang/snappy v0.0.1
+## explicit
 github.com/golang/snappy
 # github.com/google/go-querystring v1.0.0
 github.com/google/go-querystring/query
+# github.com/icza/gox v0.0.0-20200615201046-5fb07725cc03
+## explicit
+github.com/icza/gox/fmtx
 # github.com/jdkato/prose v1.1.1
+## explicit
 github.com/jdkato/prose/internal/model
 github.com/jdkato/prose/internal/util
 github.com/jdkato/prose/summarize
 github.com/jdkato/prose/tag
 github.com/jdkato/prose/tokenize
 github.com/jdkato/prose/transform
+# github.com/jdkato/prose/v2 v2.0.0
+## explicit
+github.com/jdkato/prose/v2
 # github.com/jdkato/regexp v0.1.0
+## explicit
 github.com/jdkato/regexp
 github.com/jdkato/regexp/internal/dfa
 github.com/jdkato/regexp/internal/input
 github.com/jdkato/regexp/syntax
 # github.com/levigross/grequests v0.0.0-20190908174114-253788527a1a
+## explicit
 github.com/levigross/grequests
 # github.com/mattn/go-colorable v0.1.4
 github.com/mattn/go-colorable
@@ -54,55 +70,77 @@ github.com/mattn/go-isatty
 # github.com/mattn/go-runewidth v0.0.7
 github.com/mattn/go-runewidth
 # github.com/mholt/archiver v3.1.1+incompatible
+## explicit
 github.com/mholt/archiver
+# github.com/mingrammer/commonregex v1.0.1
+github.com/mingrammer/commonregex
 # github.com/mitchellh/go-homedir v1.1.0
+## explicit
 github.com/mitchellh/go-homedir
 # github.com/mitchellh/mapstructure v1.1.2
+## explicit
 github.com/mitchellh/mapstructure
 # github.com/mmcdole/gofeed v1.0.0-beta2
+## explicit
 github.com/mmcdole/gofeed
 github.com/mmcdole/gofeed/atom
 github.com/mmcdole/gofeed/extensions
 github.com/mmcdole/gofeed/internal/shared
 github.com/mmcdole/gofeed/rss
 # github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf
+## explicit
 github.com/mmcdole/goxpp
 # github.com/montanaflynn/stats v0.6.3
 github.com/montanaflynn/stats
 # github.com/nwaples/rardecode v1.0.0
+## explicit
 github.com/nwaples/rardecode
 # github.com/olekukonko/tablewriter v0.0.4
+## explicit
 github.com/olekukonko/tablewriter
 # github.com/pierrec/lz4 v2.4.1+incompatible
+## explicit
 github.com/pierrec/lz4
 github.com/pierrec/lz4/internal/xxh32
+# github.com/pkg/profile v1.4.0
+## explicit
+github.com/pkg/profile
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
 # github.com/remeh/sizedwaitgroup v1.0.0
+## explicit
 github.com/remeh/sizedwaitgroup
 # github.com/russross/blackfriday/v2 v2.0.1
 github.com/russross/blackfriday/v2
+# github.com/schollz/closestmatch v2.1.0+incompatible
+## explicit
+github.com/schollz/closestmatch
 # github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d
 github.com/shogo82148/go-shuffle
 # github.com/shurcooL/sanitized_anchor_name v1.0.0
 github.com/shurcooL/sanitized_anchor_name
+# github.com/smartystreets/goconvey v1.6.4
+## explicit
 # github.com/spf13/afero v1.2.2
+## explicit
 github.com/spf13/afero
 github.com/spf13/afero/mem
-# github.com/stretchr/testify v1.5.0
+# github.com/stretchr/testify v1.6.1
+## explicit
 github.com/stretchr/testify/assert
 # github.com/ulikunitz/xz v0.5.6
 github.com/ulikunitz/xz
 github.com/ulikunitz/xz/internal/hash
 github.com/ulikunitz/xz/internal/xlog
 github.com/ulikunitz/xz/lzma
-# github.com/urfave/cli v1.22.2
+# github.com/urfave/cli v1.22.4
+## explicit
 github.com/urfave/cli
 # github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8
+## explicit
 github.com/xi2/xz
-# github.com/xrash/smetrics v0.0.0-20170218160415-a3153f7040e9
-github.com/xrash/smetrics
-# github.com/yuin/goldmark v1.1.23
+# github.com/yuin/goldmark v1.1.25
+## explicit
 github.com/yuin/goldmark
 github.com/yuin/goldmark/ast
 github.com/yuin/goldmark/extension
@@ -113,6 +151,7 @@ github.com/yuin/goldmark/renderer/html
 github.com/yuin/goldmark/text
 github.com/yuin/goldmark/util
 # golang.org/x/net v0.0.0-20200202094626-16171245cfb2
+## explicit
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
@@ -136,10 +175,30 @@ golang.org/x/text/language
 golang.org/x/text/runes
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
+# gonum.org/v1/gonum v0.7.0
+gonum.org/v1/gonum/blas
+gonum.org/v1/gonum/blas/blas64
+gonum.org/v1/gonum/blas/cblas128
+gonum.org/v1/gonum/blas/gonum
+gonum.org/v1/gonum/floats
+gonum.org/v1/gonum/internal/asm/c128
+gonum.org/v1/gonum/internal/asm/c64
+gonum.org/v1/gonum/internal/asm/f32
+gonum.org/v1/gonum/internal/asm/f64
+gonum.org/v1/gonum/internal/cmplx64
+gonum.org/v1/gonum/internal/math32
+gonum.org/v1/gonum/lapack
+gonum.org/v1/gonum/lapack/gonum
+gonum.org/v1/gonum/lapack/lapack64
+gonum.org/v1/gonum/mat
 # gopkg.in/ini.v1 v1.52.0
+## explicit
 gopkg.in/ini.v1
 # gopkg.in/neurosnap/sentences.v1 v1.0.6
 gopkg.in/neurosnap/sentences.v1
 gopkg.in/neurosnap/sentences.v1/data
 # gopkg.in/yaml.v2 v2.2.8
+## explicit
 gopkg.in/yaml.v2
+# gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
+gopkg.in/yaml.v3
