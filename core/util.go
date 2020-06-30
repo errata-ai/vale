@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"unicode"
 	"unicode/utf8"
 
@@ -29,7 +30,7 @@ var ExeDir string
 var code = regexp.MustCompile("`?`[^`@\n]+``?")
 
 // This is used to store patterns as we compute them in `initialPosition`.
-var cache = map[string]*regexp.Regexp{}
+var cache = sync.Map{}
 
 // Hash computes the MD5 hash of the given string.
 func Hash(text string) string {
@@ -236,11 +237,11 @@ func initialPosition(ctx, sub string, m *closestmatch.ClosestMatch) (int, string
 	var pat *regexp.Regexp
 
 	sub = strings.ToValidUTF8(sub, "")
-	if p, ok := cache[sub]; ok {
-		pat = p
+	if p, ok := cache.Load(sub); ok {
+		pat = p.(*regexp.Regexp)
 	} else {
 		pat = regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|\b|$)`)
-		cache[sub] = pat
+		cache.Store(sub, pat)
 	}
 
 	fsi := pat.FindStringIndex(ctx)

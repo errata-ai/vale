@@ -12,8 +12,7 @@ target
 dist
 _vendor-*
 docs/public/
-fixtures/formats/Sphinx/_build/doctrees
-_build/
+fixtures/formats/Sphinx/_build/
 
 # Files
 *.o

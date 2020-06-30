@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/data"
@@ -37,7 +38,7 @@ var defaultFilters = []*regexp.Regexp{
 	regexp.MustCompile(`\w{3,}\.\w{3,}`),
 	regexp.MustCompile(`@.*\b`),
 }
-var cache = map[string]*prose.Document{}
+var cache = sync.Map{}
 
 type ruleFn func(string, *core.File) []core.Alert
 
@@ -390,15 +391,15 @@ func checkSequence(txt string, chk Sequence, f *core.File) []core.Alert {
 	var alerts []core.Alert
 
 	hash := core.Hash(txt)
-	if nlp, computed := cache[hash]; computed {
-		doc = nlp
+	if nlp, computed := cache.Load(hash); computed {
+		doc = nlp.(*prose.Document)
 	} else {
 		doc, _ = prose.NewDocument(
 			txt,
 			prose.WithTagging(chk.needsTagging),
 			prose.WithExtraction(false))
 
-		cache[hash] = doc
+		cache.Store(hash, doc)
 	}
 
 	for idx, tok := range chk.Tokens {
