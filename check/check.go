@@ -45,6 +45,7 @@ type ruleFn func(string, *core.File) []core.Alert
 type Manager struct {
 	AllChecks map[string]Check
 	Config    *core.Config
+	Scopes    map[string]struct{}
 }
 
 // NewManager creates a new Manager and loads the rule definitions (that is,
@@ -52,7 +53,11 @@ type Manager struct {
 func NewManager(config *core.Config) *Manager {
 	var path string
 
-	mgr := Manager{AllChecks: make(map[string]Check), Config: config}
+	mgr := Manager{
+		AllChecks: make(map[string]Check),
+		Config:    config,
+		Scopes:    make(map[string]struct{}),
+	}
 
 	// loadedStyles keeps track of the styles we've loaded as we go.
 	loadedStyles := []string{}
@@ -810,6 +815,9 @@ func (mgr *Manager) addCheck(file []byte, chkName string) error {
 	if builder, hasBuilder := checkBuilders[extends]; hasBuilder {
 		builder(chkName, generic, mgr)
 	}
+
+	base := strings.Split(generic["scope"].(string), ".")[0]
+	mgr.Scopes[base] = struct{}{}
 
 	return nil
 }

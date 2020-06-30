@@ -17,6 +17,7 @@ import (
 
 	"github.com/icza/gox/fmtx"
 	"github.com/jdkato/prose/tag"
+	"github.com/jdkato/prose/v2"
 	"github.com/jdkato/regexp"
 	"github.com/levigross/grequests"
 	"github.com/mholt/archiver"
@@ -117,9 +118,17 @@ func IsPhrase(s string) bool {
 
 // TextToWords convert raw text into a slice of words.
 func TextToWords(text string) []string {
+	nlp, err := prose.NewDocument(text,
+		prose.WithSegmentation(false),
+		prose.WithTagging(false),
+		prose.WithExtraction(false),
+	)
+
 	words := []string{}
-	for _, s := range SentenceTokenizer.Tokenize(text) {
-		words = append(words, strings.Fields(s)...)
+	if CheckError(err, true) {
+		for _, s := range nlp.Tokens() {
+			words = append(words, s.Text)
+		}
 	}
 	return words
 }

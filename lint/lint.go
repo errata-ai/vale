@@ -38,6 +38,7 @@ import (
 
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
+	"github.com/jdkato/prose/v2"
 	"github.com/remeh/sizedwaitgroup"
 )
 
@@ -243,28 +244,44 @@ func (l *Linter) lintFile(src string) *core.File {
 
 func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength int) {
 	var b Block
+
 	text := core.PrepText(txt)
 	rawText := core.PrepText(raw)
 	senScope := "sentence" + f.RealExt
-	parScope := "paragraph" + f.RealExt
-	txtScope := "text" + f.RealExt
 	hasCtx := ctx != ""
 
-	// Check if we NEED to do this!
-	for _, p := range strings.SplitAfter(text, "\n\n") {
-		for _, s := range core.SentenceTokenizer.Tokenize(p) {
-			sent := strings.TrimSpace(s)
-			if hasCtx {
-				b = NewBlock(ctx, sent, "", senScope)
-			} else {
-				b = NewBlock(p, sent, "", senScope)
+	if _, has := l.CheckManager.Scopes["paragraph"]; has {
+		for _, p := range strings.SplitAfter(text, "\n\n") {
+			if _, has := l.CheckManager.Scopes["sentence"]; has {
+				doc, _ := prose.NewDocument(p,
+					prose.WithTokenization(false),
+					prose.WithTagging(false),
+					prose.WithExtraction(false),
+				)
+				for _, s := range doc.Sentences() {
+					sent := strings.TrimSpace(s.Text)
+					if hasCtx {
+						b = NewBlock(ctx, sent, "", senScope)
+					} else {
+						b = NewBlock(p, sent, "", senScope)
+					}
+					l.lintText(f, b, lnTotal, lnLength)
+				}
 			}
-			l.lintText(f, b, lnTotal, lnLength)
+			l.lintText(
+				f,
+				NewBlock(ctx, p, "", "paragraph"+f.RealExt),
+				lnTotal,
+				lnLength)
 		}
-		l.lintText(f, NewBlock(ctx, p, "", parScope), lnTotal, lnLength)
+
 	}
 
-	l.lintText(f, NewBlock(ctx, text, rawText, txtScope), lnTotal, lnLength)
+	l.lintText(
+		f,
+		NewBlock(ctx, text, rawText, "text"+f.RealExt),
+		lnTotal,
+		lnLength)
 }
 
 func (l *Linter) lintLines(f *core.File) {
