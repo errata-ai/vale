@@ -26,8 +26,16 @@ const (
 )
 
 var defaultFilters = []*regexp.Regexp{
+	regexp.MustCompile(`(?:\w+)?\.\w{1,4}\b`),
+	regexp.MustCompile(`\b(?:[a-zA-Z]\.){2,}`),
+	regexp.MustCompile(`0[xX][0-9a-fA-F]+`),
+	regexp.MustCompile(`\w+-\w+`),
 	regexp.MustCompile(`[A-Z]{1}[a-z]+[A-Z]+\w+`),
+	regexp.MustCompile(`[0-9]`),
 	regexp.MustCompile(`[A-Z]+$`),
+	regexp.MustCompile(`\W`),
+	regexp.MustCompile(`\w{3,}\.\w{3,}`),
+	regexp.MustCompile(`@.*\b`),
 }
 var cache = map[string]*prose.Document{}
 
@@ -464,9 +472,6 @@ func checkSpelling(txt string, chk Spelling, gs *spell.GoSpell, f *core.File) []
 
 OUTER:
 	for _, word := range core.WordTokenizer.Tokenize(txt) {
-		if !core.IsLetter(word) {
-			continue
-		}
 		for _, filter := range chk.Filters {
 			if filter.MatchString(word) {
 				continue OUTER
