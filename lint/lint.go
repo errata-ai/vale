@@ -38,7 +38,6 @@ import (
 
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
-	"github.com/jdkato/prose/v2"
 	"github.com/remeh/sizedwaitgroup"
 )
 
@@ -253,13 +252,8 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 	if _, has := l.CheckManager.Scopes["paragraph"]; has {
 		for _, p := range strings.SplitAfter(text, "\n\n") {
 			if _, has := l.CheckManager.Scopes["sentence"]; has {
-				doc, _ := prose.NewDocument(p,
-					prose.WithTokenization(false),
-					prose.WithTagging(false),
-					prose.WithExtraction(false),
-				)
-				for _, s := range doc.Sentences() {
-					sent := strings.TrimSpace(s.Text)
+				for _, s := range core.SentenceTokenizer.Tokenize(p) {
+					sent := strings.TrimSpace(s)
 					if hasCtx {
 						b = NewBlock(ctx, sent, "", senScope)
 					} else {
