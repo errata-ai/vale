@@ -51,7 +51,12 @@ func CompileRule(config *core.Config, path string) error {
 	} else {
 		fName := filepath.Base(path)
 
-		mgr := check.Manager{AllChecks: make(map[string]check.Check), Config: config}
+		mgr := check.Manager{
+			AllChecks: make(map[string]check.Check),
+			Config:    config,
+			Scopes:    make(map[string]struct{}),
+		}
+
 		if core.CheckError(mgr.Compile(fName, path), true) {
 			for _, v := range mgr.AllChecks {
 				fmt.Print(v.Pattern)
@@ -65,22 +70,24 @@ func CompileRule(config *core.Config, path string) error {
 func TestRule(args []string) error {
 	if len(args) == 2 && core.FileExists(args[0]) && core.FileExists(args[1]) {
 		rule, _ := ioutil.ReadFile(args[0])
-		text, _ := ioutil.ReadFile(args[1])
 
 		// Create a pre-filled configuration:
 		config := core.NewConfig()
 		config.MinAlertLevel = 0
 		config.GBaseStyles = append(config.GBaseStyles, "Test")
+		config.InExt = ".txt" // default value
 
 		// Create our check manager:
 		mgr := check.Manager{
 			AllChecks: make(map[string]check.Check),
-			Config:    config}
+			Config:    config,
+			Scopes:    make(map[string]struct{}),
+		}
 
 		mgr.AddCheck(rule, "Test.Rule")
 		linter := lint.Linter{CheckManager: &mgr}
 
-		linted, err := linter.LintString(string(text))
+		linted, err := linter.Lint([]string{args[1]}, "*")
 		_ = ui.PrintJSONAlerts(linted)
 
 		return err
