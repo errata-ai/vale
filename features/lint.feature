@@ -7,7 +7,6 @@ Feature: Lint
       index.rst:14:13:Vale.Repetition:'to' is repeated!
       index.rst:19:1:Vale.Spelling:Did you really mean 'documentarians'?
       index.rst:20:22:Vale.Repetition:'and' is repeated!
-      index.rst:30:8:Vale.Spelling:Did you really mean 'sshkey'?
       """
     And the exit status should be 1
 
