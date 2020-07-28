@@ -246,21 +246,22 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 
 	text := core.PrepText(txt)
 	rawText := core.PrepText(raw)
-	senScope := "sentence" + f.RealExt
-	hasCtx := ctx != ""
 
-	if _, has := l.CheckManager.Scopes["paragraph"]; has {
+	_, hasP := l.CheckManager.Scopes["paragraph"]
+	_, hasS := l.CheckManager.Scopes["sentence"]
+
+	if hasP || hasS {
+		senScope := "sentence" + f.RealExt
+		hasCtx := ctx != ""
 		for _, p := range strings.SplitAfter(text, "\n\n") {
-			if _, has := l.CheckManager.Scopes["sentence"]; has {
-				for _, s := range core.SentenceTokenizer.Tokenize(p) {
-					sent := strings.TrimSpace(s)
-					if hasCtx {
-						b = NewBlock(ctx, sent, "", senScope)
-					} else {
-						b = NewBlock(p, sent, "", senScope)
-					}
-					l.lintText(f, b, lnTotal, lnLength)
+			for _, s := range core.SentenceTokenizer.Tokenize(p) {
+				sent := strings.TrimSpace(s)
+				if hasCtx {
+					b = NewBlock(ctx, sent, "", senScope)
+				} else {
+					b = NewBlock(p, sent, "", senScope)
 				}
+				l.lintText(f, b, lnTotal, lnLength)
 			}
 			l.lintText(
 				f,
@@ -268,7 +269,6 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 				lnTotal,
 				lnLength)
 		}
-
 	}
 
 	l.lintText(
