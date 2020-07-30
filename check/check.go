@@ -895,7 +895,7 @@ func (mgr *Manager) loadStyles(styles []string, loaded []string) []string {
 }
 
 func (mgr *Manager) loadVocabRules(config *core.Config) {
-	// Whitelist
+	// Allowlist or Permit
 	if len(config.AcceptedTokens) > 0 {
 		vocab := Substitution{}
 		vocab.Extends = "substitution"
@@ -913,7 +913,7 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 		mgr.addSubstitutionCheck("Vale.Terms", vocab)
 	}
 
-	// Blacklist
+	// Blocklist or Block
 	if len(config.RejectedTokens) > 0 {
 		avoid := Existence{}
 		avoid.Extends = "existence"
