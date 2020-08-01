@@ -1,5 +1,7 @@
 # Vale: Your style, our editor
 
+[![Financial Contributors on Open Collective](https://opencollective.com/vale/all/badge.svg?label=financial+contributors&style=flat-square)](https://opencollective.com/vale) [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?style=flat-square&amp;logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://goreportcard.com/badge/github.com/gojp/goreportcard?style=flat-square&logo=go&logoColor=white)](https://goreportcard.com/report/github.com/errata-ai/vale) ![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub&style=flat-square) ![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=lgreen&logo=docker&logoColor=white&style=flat-square)
+
 Vale is a command-line tool that brings code-like linting to prose. It's cross-platform (Windows, macOS, and Linux), written in Go, and released under the MIT license. Some of its key features are:
 
 * [Markup support](https://errata-ai.gitbook.io/vale/getting-started/markup): Vale supports HTML, Markdown, AsciiDoc, reStructuredText, XML, and DITA&mdash;allowing it to avoid most syntax-related false positives while also providing .
@@ -9,8 +11,6 @@ Vale is a command-line tool that brings code-like linting to prose. It's cross-p
 * [Performance](https://gist.github.com/jdkato/02bb9db72cf6d36c7a52d8b075bdb5df#file-perf-md): Vale typically takes less than 1 second to lint most files, making it fast enough to be included in test suites for large \(&gt; 1,000 files\) repositories.
 
 See the [documentation](https://errata-ai.gitbook.io/vale/) for more information.
-
-[![Financial Contributors on Open Collective](https://opencollective.com/vale/all/badge.svg?label=financial+contributors&style=flat-square)](https://opencollective.com/vale) [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?style=flat-square&amp;logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://goreportcard.com/badge/github.com/gojp/goreportcard?style=flat-square&logo=go&logoColor=white)](https://goreportcard.com/report/github.com/errata-ai/vale) ![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub&style=flat-square) ![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=lgreen&logo=docker&logoColor=white&style=flat-square)
 
 ## Contributors
 
