@@ -12,17 +12,22 @@ Vale is a command-line tool that brings code-like linting to prose. It's cross-p
 
 See the [documentation](https://errata-ai.gitbook.io/vale/) for more information.
 
-## Contributors
+## Funding
 
-### Financial Contributors
+If you'd like to support the continued development and support of Vale, you may contribute financially by doing any of the following:
 
-Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/vale/contribute)]
+- Purchasing a license (Individual or Enterprise) for [Vale Server](https://errata.ai/vale-server/), a cross-platform desktop application for Vale that introduces a number of style-management features and integration options.
 
-#### Individuals
+- Making a recurring pledge or a one-time donation through the [Open Source Collective [501(c)(6)]](https://opencollective.com/vale).
+
+Both of these options allow me ([@jdkato](https://github.com/jdkato)) to dedicate more time to *maintaining* (e.g., bug fixes, feature requests, support questions, and documentation improvements) Vale and its collection of open-source and permissively-licensed [styles](https://github.com/errata-ai/styles), integrations, and extensions.
+
+
+### Individuals
 
 <a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/individuals.svg?width=890"></a>
 
-#### Organizations
+### Organizations
 
 Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/vale/contribute)]
 
