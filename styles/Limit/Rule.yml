@@ -1,0 +1,6 @@
+extends: existence
+message: "Don't use '%s'."
+level: error
+limit: 1
+tokens:
+  - hey

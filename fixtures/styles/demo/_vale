@@ -3,12 +3,15 @@ MinAlertLevel = suggestion
 
 [*]
 BasedOnStyles = demo
+
 demo.CheckLinks = NO
 demo.Reading = NO
 demo.Spellcheck = NO
 demo.Filters = NO
 demo.SentenceCase = NO
 demo.TitleCase = NO
+
+Limit.Rule = YES
 
 [*.md]
 demo.Reading = YES

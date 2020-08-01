@@ -39,6 +39,7 @@ type File struct {
 	Summary    bytes.Buffer // holds content to be included in summarization checks
 
 	history map[string]int
+	limits  map[string]int
 	matcher *closestmatch.ClosestMatch
 }
 
@@ -57,6 +58,7 @@ type Alert struct {
 	Description string // why `Message` is meaningful
 	Line        int    // the source line
 	Link        string // reference material
+	Limit       int    // the max times to report
 	Message     string // the output message
 	Severity    string // 'suggestion', 'warning', or 'error'
 	Span        []int  // the [begin, end] location within a line
@@ -171,7 +173,7 @@ func NewFile(src string, config *Config) *File {
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Lines: lines,
 		Comments: make(map[string]bool), Content: content, history: make(map[string]int),
-		Simple: config.Simple, Transform: transform,
+		Simple: config.Simple, Transform: transform, limits: make(map[string]int),
 		matcher: closestmatch.New(lines, []int{2}),
 	}
 
@@ -220,13 +222,14 @@ func (f *File) FindLoc(ctx, s, m string, pad, count int, loc []int) (int, []int)
 }
 
 // FormatAlert ensures that all required fields have data.
-func FormatAlert(a *Alert, level int, name string) {
+func FormatAlert(a *Alert, level, limit int, name string) {
 	if a.Severity == "" {
 		a.Severity = AlertLevels[level]
 	}
 	if a.Check == "" {
 		a.Check = name
 	}
+	a.Limit = limit
 }
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
@@ -244,9 +247,18 @@ func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad int) {
 				strconv.Itoa(a.Line),
 				strconv.Itoa(a.Span[0]),
 				a.Check}, "-")
+
 			if _, found := f.history[entry]; !found {
-				f.Alerts = append(f.Alerts, a)
-				f.history[entry] = 1
+				// Check rule-assigned limits for reporting:
+				count, found := f.limits[a.Check]
+				if (!found || a.Limit == 0) || count < a.Limit {
+					f.Alerts = append(f.Alerts, a)
+
+					f.history[entry] = 1
+					if a.Limit > 0 {
+						f.limits[a.Check]++
+					}
+				}
 			}
 		}
 	}

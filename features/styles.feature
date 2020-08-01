@@ -43,4 +43,5 @@ Feature: Styles
       test.rst:9:1:demo.ParagraphLength:Paragraphs should be less than 150 words
       test.rst:20:25:demo.Spelling:Inconsistent spelling of 'center'
       test.rst:24:32:demo.Spelling:Inconsistent spelling of 'colour'
+      test.rst:32:1:Limit.Rule:Don't use 'hey'.
       """

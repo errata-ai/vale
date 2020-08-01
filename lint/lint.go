@@ -46,6 +46,13 @@ type Linter struct {
 	CheckManager *check.Manager // loaded checks
 }
 
+// NewLinter initializes a Linter.
+func NewLinter(cfg *core.Config) *Linter {
+	return &Linter{
+		CheckManager: check.NewManager(cfg),
+	}
+}
+
 // A Block represents a section of text.
 type Block struct {
 	Context string        // parent content - e.g., sentence -> paragraph
@@ -312,7 +319,7 @@ func (l *Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 			if name == "LanguageTool.Grammar" && !l.shouldRun(a.Check, f, chk, blk) {
 				continue
 			}
-			core.FormatAlert(&a, chk.Level, name)
+			core.FormatAlert(&a, chk.Level, chk.Limit, name)
 			f.AddAlert(a, blk.Context, txt, lines, pad)
 		}
 	}

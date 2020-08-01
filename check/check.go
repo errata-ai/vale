@@ -773,6 +773,7 @@ func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn, pattern string
 		Extends: chkDef.Extends,
 		Code:    chkDef.Code,
 		Pattern: pattern,
+		Limit:   chkDef.Limit,
 	}
 	chk.Level = core.LevelToInt[chkDef.Level]
 	chk.Scope = core.Selector{Value: chkDef.Scope}

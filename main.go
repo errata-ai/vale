@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/errata-ai/vale/action"
-	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/lint"
 	"github.com/errata-ai/vale/ui"
@@ -303,8 +302,7 @@ func main() {
 			fmt.Printf(".vale.ini: '%s'\n", err)
 			return nil
 		} else if c.NArg() > 0 || core.Stat() {
-			linter := lint.Linter{CheckManager: check.NewManager(config)}
-
+			linter := lint.NewLinter(config)
 			if c.NArg() > 0 {
 				if core.LooksLikeStdin(c.Args()[0]) {
 					linted, err = linter.LintString(c.Args()[0])

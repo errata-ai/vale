@@ -28,6 +28,7 @@ type Check struct {
 	Code    bool
 	Extends string
 	Level   int
+	Limit   int
 	Pattern string
 	Rule    ruleFn
 	Scope   core.Selector
@@ -40,6 +41,7 @@ type Definition struct {
 	Description string
 	Extends     string
 	Level       string
+	Limit       int
 	Link        string
 	Message     string
 	Name        string
