@@ -1,0 +1,6 @@
+extends: existence
+message: 'Avoid using "%s"'
+nonword: true
+level: suggestion
+tokens:
+  - '根据'

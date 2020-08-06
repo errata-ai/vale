@@ -54,3 +54,11 @@ Feature: Misc
       test.md:3:59:Spelling.Ignore:'CLI' is a typo!
       test.md:3:96:Spelling.Ignore:'human-friendly' is a typo!
       """
+
+  Scenario: i18n
+    When I test "i18n"
+    Then the output should contain exactly:
+      """
+      zh.md:6:1:ZH.Simple:Avoid using "根据"
+      zh.md:7:43:ZH.Simple:Avoid using "根据"
+      """
