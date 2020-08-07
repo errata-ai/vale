@@ -11,7 +11,7 @@ Vale is a command-line tool that brings code-like linting to prose. It's cross-p
   to provide its own advice; it's designed to enforce an existing style guide through its
   YAML-based extension system.
 
-* [Portability](https://docs.errata.ai/vale/config): Vale uses a plain-text configuration (INI and YAML) that makes it
+* [Portability](https://docs.errata.ai/vale/config): Vale uses a plain-text (INI and YAML) configuration system that makes it
   possible to share configurations across platforms, applications, and users.
 
 See the [documentation](https://docs.errata.ai/vale/about) for more information.
