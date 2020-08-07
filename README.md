@@ -4,13 +4,17 @@
 
 Vale is a command-line tool that brings code-like linting to prose. It's cross-platform (Windows, macOS, and Linux), written in Go, and released under the MIT license. Some of its key features are:
 
-* [Markup support](https://errata-ai.gitbook.io/vale/getting-started/markup): Vale supports HTML, Markdown, AsciiDoc, reStructuredText, XML, and DITA&mdash;allowing it to avoid most syntax-related false positives while also providing .
+* [Usability](https://docs.errata.ai/vale/scoping): Vale supports HTML, Markdown, AsciiDoc, reStructuredText, XML, and
+  DITA&mdash;allowing it to "just work" on *real-world* content.
 
-* [Extensibility](https://errata-ai.gitbook.io/vale/getting-started/styles): Unlike most writing-related software, Vale's primary purpose isn't to provide its own advice; it's designed to enforce an existing style guide through its YAML-based extension system.
+* [Extensibility](https://docs.errata.ai/vale/styles): Unlike most writing-related software, Vale's primary purpose isn't
+  to provide its own advice; it's designed to enforce an existing style guide through its
+  YAML-based extension system.
 
-* [Performance](https://gist.github.com/jdkato/02bb9db72cf6d36c7a52d8b075bdb5df#file-perf-md): Vale typically takes less than 1 second to lint most files, making it fast enough to be included in test suites for large \(&gt; 1,000 files\) repositories.
+* [Portability](https://docs.errata.ai/vale/config): Vale uses a plain-text configuration (INI and YAML) that makes it
+  possible to share configurations across platforms, applications, and users.
 
-See the [documentation](https://errata-ai.gitbook.io/vale/) for more information.
+See the [documentation](https://docs.errata.ai/vale/about) for more information.
 
 ## Funding
 
