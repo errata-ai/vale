@@ -10,7 +10,7 @@ Feature: Styles
       test.html:10:27:demo.Spacing:'.M' should have one space
       test.html:10:35:demo.Hyphen:' Randomly-' doesn't need a hyphen
       test.html:12:12:demo.SentenceLength:Sentences should be less than 25 words
-      test.html:32:17:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
+      test.html:32:17:demo.ScopedHeading:'this is a heading' should be in title case
       test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
       test.md:1:3:demo.Reading:Grade level (8.30) too high!
       test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
@@ -36,6 +36,8 @@ Feature: Styles
       test.md:36:1:demo.SentenceLength:Sentences should be less than 25 words
       test.md:36:101:demo.Smart:Inconsistent use of '"' ('smart' mixed with 'dumb')
       test.md:38:6:demo.Contractions:Use 'are not' instead of 'aren't'
+      test.mdx:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
+      test.mdx:9:4:demo.ScopedHeading:'this is another heading!' should be in title case
       test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
       test.rst:1:58:demo.Spacing:'. I' should have one space
       test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words

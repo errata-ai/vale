@@ -8,6 +8,13 @@ import (
 	"github.com/jdkato/regexp"
 )
 
+func isMatch(r *regexp.Regexp, s string) bool {
+	// TODO: `r.String() != ""`?
+	//
+	// Should we ensure that empty regexes == `nil`?
+	return r != nil && r.String() != "" && r.MatchString(s)
+}
+
 func makeExceptions(ignore []string) *regexp.Regexp {
 	ignore = append(ignore, `[^\s]+`)
 	return regexp.MustCompile(`(?:` + strings.Join(ignore, "|") + `)`)
@@ -29,8 +36,7 @@ func title(s string, ignore []string, except *regexp.Regexp, tc *transform.Title
 	expected := re.FindAllString(tc.Title(s), -1)
 
 	for i, word := range re.FindAllString(s, -1) {
-		skip := except != nil && except.MatchString(word)
-		if word == expected[i] || skip {
+		if word == expected[i] || isMatch(except, word) {
 			count++
 		} else if word == strings.ToUpper(word) {
 			count++
@@ -74,8 +80,7 @@ func sentence(s string, ignore []string, indicators []string, except *regexp.Reg
 			w = strings.Split(w, "’")[0]
 		}
 
-		skip := except != nil && except.MatchString(w)
-		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || skip {
+		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || isMatch(except, w) {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) {
 			return false

@@ -1,6 +1,6 @@
 message: "'%s' should be capitalized"
 extends: existence
 level: suggestion
-scope: heading
+scope: heading.h1
 raw:
   - '^(?:#+\s)?[a-z].+'

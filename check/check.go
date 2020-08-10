@@ -235,8 +235,7 @@ func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Reg
 	locs := r[1].FindAllStringIndex(txt, -1)
 	for _, loc := range locs {
 		s := txt[loc[0]:loc[1]]
-		i := chk.exceptRe != nil && chk.exceptRe.MatchString(s)
-		if !core.StringInSlice(s, f.Sequences) && !i {
+		if !core.StringInSlice(s, f.Sequences) && !isMatch(chk.exceptRe, s) {
 			// If we've found one (e.g., "WHO") and we haven't marked it as
 			// being defined previously, send an Alert.
 			alerts = append(alerts, makeAlert(chk.Definition, loc, txt))
@@ -480,8 +479,7 @@ OUTER:
 		}
 
 		known := gs.Spell(word) || gs.Spell(strings.ToLower(word))
-		skip := chk.exceptRe != nil && chk.exceptRe.MatchString(word)
-		if !known && !skip {
+		if !known && !isMatch(chk.exceptRe, word) {
 			offset := strings.Index(txt, word)
 			loc := []int{offset, offset + len(word)}
 

@@ -1,6 +1,9 @@
 StylesPath = ../../../styles
 MinAlertLevel = suggestion
 
+[formats]
+mdx = md
+
 [*]
 BasedOnStyles = demo
 
@@ -18,3 +21,4 @@ demo.Reading = YES
 demo.Spellcheck = YES
 demo.Filters = YES
 demo.Smart = YES
+demo.ScopedHeading = YES
