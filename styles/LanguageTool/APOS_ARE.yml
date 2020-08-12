@@ -1,0 +1,12 @@
+extends: sequence
+message: Did you mean "%[1]ss" instead of "%[1]s's"?
+tokens:
+  - tag: NN
+  - pattern: "'s"
+  - pattern: are
+action:
+  name: edit
+  params:
+    - replace
+    - "'"
+    - ""

@@ -15,3 +15,9 @@ The best player of all times was Pelé.
 The Bible is the great best seller of all times.
 
 Karl Popper viewed Peirce as "one of the greatest philosophers of all times".
+
+Have you been to Don's house yet?
+
+The endpoint's are available.
+
+The API's endpoints are available.

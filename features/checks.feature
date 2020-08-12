@@ -23,10 +23,11 @@ Feature: Checks
     When I test "checks/Sequence"
     Then the output should contain exactly:
       """
-      test.md:3:10:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'write' after 'be' requries 'to'. Did you mean 'be great *to* write'?
-      test.md:9:94:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'come' after 'be' requries 'to'. Did you mean 'be available *to* come'?
-      test.md:11:59:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
-      test.md:13:17:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
-      test.md:15:36:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
-      test.md:17:35:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
+      test.md:3:4:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'write' after 'be' requries 'to'. Did you mean 'be great *to* write'?
+      test.md:9:88:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'come' after 'be' requries 'to'. Did you mean 'be available *to* come'?
+      test.md:11:32:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
+      test.md:13:5:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
+      test.md:15:24:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
+      test.md:17:42:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
+      test.md:21:5:LanguageTool.APOS_ARE:Did you mean "endpoints" instead of "endpoint's"?
       """

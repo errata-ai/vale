@@ -175,7 +175,7 @@ func sequenceMatches(idx int, chk Sequence, target string, nlp *prose.Document) 
 				// Check the left-end of the sequence:
 				for i := 1; idx-i >= 0; i++ {
 					word := words[jdx-i]
-					text = append(text, word.Text)
+					text = append([]string{word.Text}, text...)
 
 					mat := tokensMatch(toks[idx-i], word)
 					opt := toks[idx-i].optional
@@ -209,6 +209,18 @@ func sequenceMatches(idx int, chk Sequence, target string, nlp *prose.Document) 
 	}
 
 	return text, index
+}
+
+func stepsToString(steps []string) string {
+	s := ""
+	for _, step := range steps {
+		if strings.HasPrefix(step, "'") {
+			s += step
+		} else {
+			s += " " + step
+		}
+	}
+	return strings.Trim(s, " ")
 }
 
 func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Regexp) []core.Alert {
@@ -410,10 +422,13 @@ func checkSequence(txt string, chk Sequence, f *core.File) []core.Alert {
 				chk.history = append(chk.history, index)
 
 				if len(steps) > 0 {
+					seq := stepsToString(steps)
+					idx := strings.Index(txt, seq)
+
 					a := core.Alert{
-						Check: chk.Name, Severity: chk.Level, Span: loc,
-						Link: chk.Link, Hide: false, Match: txt[loc[0]:loc[1]],
-						Action: chk.Action}
+						Check: chk.Name, Severity: chk.Level, Link: chk.Link,
+						Span: []int{idx, idx + len(seq)}, Hide: false,
+						Match: seq, Action: chk.Action}
 
 					a.Message, a.Description = formatMessages(chk.Message,
 						chk.Description, steps...)
