@@ -7,9 +7,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
+
     - name: Vale
       uses: errata-ai/vale-action@master
       with:
         files: README.md
+        debug: true
+
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
