@@ -94,7 +94,7 @@ var skipTags = []string{"script", "style", "pre", "figure"}
 var skipClasses = []string{"problematic", "pre"}
 var inlineTags = []string{
 	"b", "big", "i", "small", "abbr", "acronym", "cite", "dfn", "em", "kbd",
-	"strong", "a", "br", "img", "span", "sub", "sup", "code", "tt"}
+	"strong", "a", "br", "img", "span", "sub", "sup", "code", "tt", "del"}
 var tagToScope = map[string]string{
 	"th":         "text.table.header",
 	"td":         "text.table.cell",

@@ -48,3 +48,5 @@ Example response:
    1. Assuming you prefix the S3 bucket names with `gl-` as shown in the diagram, add the following policy:
 
 This is bad.Another good.
+
+Strikethrough uses two tildes. ~~Scratch this.~~
