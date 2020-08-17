@@ -447,7 +447,16 @@ func (l Linter) lintADoc(f *core.File, asciidoctor string) {
 
 	errMsg := fmt.Sprintf(parseFail, asciidoctor)
 	if core.CheckErrorWithMsg(cmd.Run(), l.CheckManager.Config.Debug, errMsg) {
-		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
+		// NOTE: Asciidoctor converts "'" to "’".
+		//
+		// See #206.
+		var sanitizer = strings.NewReplacer(
+			"\u2018", "&apos;",
+			"\u2019", "&apos;",
+			"&#8217;", "&apos;",
+			"&rsquo;", "&apos;")
+		input := sanitizer.Replace(out.String())
+		l.lintHTMLTokens(f, f.Content, []byte(input), 0)
 	}
 }
 

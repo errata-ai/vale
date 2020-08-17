@@ -2,4 +2,4 @@ If your docs are aimed at helping *people* code, then _probably that_ "previous 
 
 Use of straight quotation marks instead of true typographic quotation marks (“smart” or quotes).
 
-They aren’t real!
+They aren't real!

@@ -23,6 +23,13 @@ Feature: Checks
     When I test "checks/Sequence"
     Then the output should contain exactly:
       """
+      test.adoc:3:4:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'write' after 'be' requries 'to'. Did you mean 'be great *to* write'?
+      test.adoc:9:88:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'come' after 'be' requries 'to'. Did you mean 'be available *to* come'?
+      test.adoc:11:32:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
+      test.adoc:13:5:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
+      test.adoc:15:24:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
+      test.adoc:17:42:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
+      test.adoc:21:5:LanguageTool.APOS_ARE:Did you mean "endpoints" instead of "endpoint's"?
       test.md:3:4:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'write' after 'be' requries 'to'. Did you mean 'be great *to* write'?
       test.md:9:88:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'come' after 'be' requries 'to'. Did you mean 'be available *to* come'?
       test.md:11:32:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.

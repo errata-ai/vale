@@ -5,7 +5,7 @@ Feature: Styles
       """
       test.adoc:1:1:demo.SentenceLength:Sentences should be less than 25 words
       test.adoc:3:84:demo.Smart:Inconsistent use of '”' ('smart' mixed with 'dumb')
-      test.adoc:5:6:demo.Contractions:Use 'are not' instead of 'aren’t'
+      test.adoc:5:6:demo.Contractions:Use 'are not' instead of 'aren't'
       test.html:8:33:demo.CommasPerSentence:More than 3 commas!
       test.html:10:27:demo.Spacing:'.M' should have one space
       test.html:10:35:demo.Hyphen:' Randomly-' doesn't need a hyphen
