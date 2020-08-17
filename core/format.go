@@ -6,7 +6,7 @@ package core
 // the same comment delimiters.
 var CommentsByNormedExt = map[string]map[string]string{
 	".c": {
-		"inline":     `(//.+)|(/\*.+\*/)`,
+		"inline":     `(?:^|\s)(?:(//.+)|(/\*.+\*/))`,
 		"blockStart": `(/\*.*)`,
 		"blockEnd":   `(.*\*/)`,
 	},
