@@ -25,7 +25,6 @@ require (
 	github.com/pierrec/lz4 v2.4.1+incompatible // indirect
 	github.com/pkg/profile v1.4.0
 	github.com/remeh/sizedwaitgroup v1.0.0
-	github.com/schollz/closestmatch v2.1.0+incompatible
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/afero v1.2.2
 	github.com/stretchr/testify v1.6.1

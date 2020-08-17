@@ -1,0 +1,6 @@
+extends: existence
+message: '"%s" must contain one and only one space.'
+level: error
+nonword: true
+tokens:
+  - '[a-z][.?!,][A-Z]'

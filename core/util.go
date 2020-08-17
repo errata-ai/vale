@@ -21,7 +21,6 @@ import (
 	"github.com/jdkato/regexp"
 	"github.com/levigross/grequests"
 	"github.com/mholt/archiver"
-	"github.com/schollz/closestmatch"
 	"github.com/spf13/afero"
 )
 
@@ -230,13 +229,35 @@ func DumpConfig(config *Config) string {
 	return string(b)
 }
 
+func guessLocation(ctx, sub, match string) (int, string) {
+	target := ""
+	for _, s := range SentenceTokenizer.Tokenize(sub) {
+		if s == match || strings.Index(s, match) > 0 {
+			target = s
+		}
+	}
+
+	if target == "" {
+		return -1, sub
+	}
+
+	tokens := WordTokenizer.Tokenize(target)
+	for _, text := range strings.Split(ctx, "\n") {
+		if allStringsInString(tokens, text) {
+			return strings.Index(ctx, text) + 1, text
+		}
+	}
+
+	return -1, sub
+}
+
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).
-func initialPosition(ctx, sub string, m *closestmatch.ClosestMatch) (int, string) {
+func initialPosition(ctx, txt string, a Alert) (int, string) {
 	var idx int
 	var pat *regexp.Regexp
 
-	sub = strings.ToValidUTF8(sub, "")
+	sub := strings.ToValidUTF8(a.Match, "")
 	if p, ok := cache.Load(sub); ok {
 		pat = p.(*regexp.Regexp)
 	} else {
@@ -250,11 +271,7 @@ func initialPosition(ctx, sub string, m *closestmatch.ClosestMatch) (int, string
 		if idx < 0 {
 			// This should only happen if we're in a scope that contains inline
 			// markup (e.g., a sentence with code spans).
-			closest := m.Closest(sub)
-			if closest == "" {
-				return -1, ""
-			}
-			return strings.Index(ctx, closest) + 1, closest
+			return guessLocation(ctx, txt, sub)
 		}
 	} else {
 		idx = fsi[0]
@@ -362,6 +379,15 @@ func IntInSlice(a int, slice []int) bool {
 func AllStringsInSlice(strings []string, slice []string) bool {
 	for _, s := range strings {
 		if !StringInSlice(s, slice) {
+			return false
+		}
+	}
+	return true
+}
+
+func allStringsInString(subs []string, s string) bool {
+	for _, sub := range subs {
+		if strings.Index(s, sub) < 0 {
 			return false
 		}
 	}

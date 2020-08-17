@@ -14,8 +14,24 @@ import (
 	"github.com/gobwas/glob"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
-	"github.com/schollz/closestmatch"
 )
+
+// A Block represents a section of text.
+type Block struct {
+	Context string   // parent content - e.g., sentence -> paragraph
+	Text    string   // text content
+	Raw     string   // text content without any processing
+	Scope   Selector // section selector
+}
+
+// NewBlock makes a new Block with prepared text and a Selector.
+func NewBlock(ctx, txt, raw, sel string) Block {
+	if ctx == "" {
+		ctx = txt
+	}
+	return Block{
+		Context: ctx, Text: txt, Raw: raw, Scope: Selector{Value: sel}}
+}
 
 // A File represents a linted text file.
 type File struct {
@@ -40,7 +56,6 @@ type File struct {
 
 	history map[string]int
 	limits  map[string]int
-	matcher *closestmatch.ClosestMatch
 }
 
 // An Action represents a possible solution to an Alert.
@@ -174,7 +189,6 @@ func NewFile(src string, config *Config) *File {
 		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Lines: lines,
 		Comments: make(map[string]bool), Content: content, history: make(map[string]int),
 		Simple: config.Simple, Transform: transform, limits: make(map[string]int),
-		matcher: closestmatch.New(lines, []int{2}),
 	}
 
 	return &file
@@ -187,16 +201,17 @@ func (f *File) SortedAlerts() []Alert {
 }
 
 // FindLoc calculates the line and span of an Alert.
-func (f *File) FindLoc(ctx, s, m string, pad, count int, loc []int) (int, []int) {
+func (f *File) FindLoc(ctx, s string, pad, count int, a Alert) (int, []int) {
 	var length int
 	var lines []string
 
-	pos, substring := initialPosition(ctx, m, f.matcher)
+	pos, substring := initialPosition(ctx, s, a)
 	if pos < 0 {
 		// Shouldn't happen ...
 		return pos, []int{0, 0}
 	}
 
+	loc := a.Span
 	if f.Format == "markup" && !f.Simple {
 		lines = f.Lines
 	} else {
@@ -233,12 +248,13 @@ func FormatAlert(a *Alert, level, limit int, name string) {
 }
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
-func (f *File) AddAlert(a Alert, ctx, txt string, lines, pad int) {
+func (f *File) AddAlert(a Alert, blk Block, lines, pad int) {
+	ctx := blk.Context
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old
 	}
 
-	a.Line, a.Span = f.FindLoc(ctx, txt, a.Match, pad, lines, a.Span)
+	a.Line, a.Span = f.FindLoc(ctx, blk.Raw, pad, lines, a)
 	if a.Span[0] > 0 {
 		f.ChkToCtx[a.Check], _ = Substitute(ctx, a.Match, '#')
 		if !a.Hide {

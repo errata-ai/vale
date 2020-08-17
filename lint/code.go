@@ -38,7 +38,7 @@ func (l *Linter) lintCode(f *core.File) int {
 				// We've found the end of the block.
 				block.WriteString(line)
 				txt = block.String()
-				b := NewBlock(
+				b := core.NewBlock(
 					txt, txt, "", fmt.Sprintf(scope, "text.comment.block"))
 				l.lintText(f, b, lines+1, 0)
 				block.Reset()
@@ -51,7 +51,7 @@ func (l *Linter) lintCode(f *core.File) int {
 			// calculate the column span because, for example, a line like
 			// 'print("foo") # ...' will be condensed to '# ...'.
 			padding = lnLength - len(match)
-			b := NewBlock(
+			b := core.NewBlock(
 				match, match, "", fmt.Sprintf(scope, "text.comment.line"))
 			l.lintText(f, b, lines, padding-1)
 		} else if match = blockStart.FindString(line); len(match) > 0 && !ignore {

@@ -173,7 +173,7 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 				// text is actually linted twice: once as a 'link' and once as
 				// part of the overall paragraph. See issue #105 for more info.
 				tempCtx := updateContext(ctx, queue)
-				l.lintText(f, NewBlock(tempCtx, txt, txt, scope), lines, 0)
+				l.lintText(f, core.NewBlock(tempCtx, txt, txt, scope), lines, 0)
 				tag = ""
 			}
 			queue = append(queue, txt)
@@ -205,18 +205,18 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		if tok.Data == "img" {
 			for _, a := range tok.Attr {
 				if a.Key == "alt" {
-					block := NewBlock(ctx, a.Val, a.Val, "text.attr."+a.Key)
+					block := core.NewBlock(ctx, a.Val, a.Val, "text.attr."+a.Key)
 					l.lintText(f, block, lines, 0)
 				}
 			}
 		}
 	}
 
-	summary := NewBlock(f.Content, f.Summary.String(), "", "summary."+f.RealExt)
+	summary := core.NewBlock(f.Content, f.Summary.String(), "", "summary."+f.RealExt)
 	l.lintText(f, summary, lines, 0)
 
 	// Run all rules with `scope: raw`
-	l.lintText(f, NewBlock("", f.Content, "", "raw."+f.RealExt), lines, 0)
+	l.lintText(f, core.NewBlock("", f.Content, "", "raw."+f.RealExt), lines, 0)
 }
 
 func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lines int) {
@@ -229,7 +229,7 @@ func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lin
 				scope = "text.heading." + tag + f.RealExt
 			}
 			txt = strings.TrimLeft(txt, " ")
-			l.lintText(f, NewBlock(ctx, txt, raw, scope), lines, 0)
+			l.lintText(f, core.NewBlock(ctx, txt, raw, scope), lines, 0)
 			return
 		}
 	}

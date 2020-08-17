@@ -53,23 +53,6 @@ func NewLinter(cfg *core.Config) *Linter {
 	}
 }
 
-// A Block represents a section of text.
-type Block struct {
-	Context string        // parent content - e.g., sentence -> paragraph
-	Text    string        // text content
-	Raw     string        // text content without any processing
-	Scope   core.Selector // section selector
-}
-
-// NewBlock makes a new Block with prepared text and a Selector.
-func NewBlock(ctx, txt, raw, sel string) Block {
-	if ctx == "" {
-		ctx = txt
-	}
-	return Block{
-		Context: ctx, Text: txt, Raw: raw, Scope: core.Selector{Value: sel}}
-}
-
 // LintString src according to its format.
 func (l *Linter) LintString(src string) ([]*core.File, error) {
 	return []*core.File{l.lintFile(src)}, nil
@@ -249,7 +232,7 @@ func (l *Linter) lintFile(src string) *core.File {
 }
 
 func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength int) {
-	var b Block
+	var b core.Block
 
 	text := core.PrepText(txt)
 	rawText := core.PrepText(raw)
@@ -264,15 +247,15 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 			for _, s := range core.SentenceTokenizer.Tokenize(p) {
 				sent := strings.TrimSpace(s)
 				if hasCtx {
-					b = NewBlock(ctx, sent, "", senScope)
+					b = core.NewBlock(ctx, sent, "", senScope)
 				} else {
-					b = NewBlock(p, sent, "", senScope)
+					b = core.NewBlock(p, sent, "", senScope)
 				}
 				l.lintText(f, b, lnTotal, lnLength)
 			}
 			l.lintText(
 				f,
-				NewBlock(ctx, p, "", "paragraph"+f.RealExt),
+				core.NewBlock(ctx, p, "", "paragraph"+f.RealExt),
 				lnTotal,
 				lnLength)
 		}
@@ -280,7 +263,7 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 
 	l.lintText(
 		f,
-		NewBlock(ctx, text, rawText, "text"+f.RealExt),
+		core.NewBlock(ctx, text, rawText, "text"+f.RealExt),
 		lnTotal,
 		lnLength)
 }
@@ -290,12 +273,12 @@ func (l *Linter) lintLines(f *core.File) {
 	lines := 1
 	for f.Scanner.Scan() {
 		line = core.PrepText(f.Scanner.Text() + "\n")
-		l.lintText(f, NewBlock("", line, "", "text"+f.RealExt), lines+1, 0)
+		l.lintText(f, core.NewBlock("", line, "", "text"+f.RealExt), lines+1, 0)
 		lines++
 	}
 }
 
-func (l *Linter) lintText(f *core.File, blk Block, lines int, pad int) {
+func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 	var txt string
 
 	f.ChkToCtx = make(map[string]string)
@@ -320,12 +303,12 @@ func (l *Linter) lintText(f *core.File, blk Block, lines int, pad int) {
 				continue
 			}
 			core.FormatAlert(&a, chk.Level, chk.Limit, name)
-			f.AddAlert(a, blk.Context, txt, lines, pad)
+			f.AddAlert(a, blk, lines, pad)
 		}
 	}
 }
 
-func (l *Linter) shouldRun(name string, f *core.File, chk check.Check, blk Block) bool {
+func (l *Linter) shouldRun(name string, f *core.File, chk check.Check, blk core.Block) bool {
 	min := l.CheckManager.Config.MinAlertLevel
 	run := false
 

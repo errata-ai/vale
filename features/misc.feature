@@ -43,6 +43,14 @@ Feature: Misc
     test.md:3:28:write-good.E-Prime:Avoid using "be"
     """
 
+  Scenario: Nested markup
+    When I test "misc/markup"
+    Then the output should contain exactly:
+      """
+      test.md:4:1:Markup.Repetition:"in" is repeated.
+      test.md:50:11:Markup.SentSpacing:"d.A" must contain one and only one space.
+      """
+
   Scenario: Spelling
     When I test "spelling"
     Then the output should contain exactly:
