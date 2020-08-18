@@ -15,11 +15,6 @@ github.com/gobwas/glob/syntax/ast
 github.com/gobwas/glob/syntax/lexer
 github.com/gobwas/glob/util/runes
 github.com/gobwas/glob/util/strings
-# github.com/gopherjs/gopherjs v0.0.0-20190309154008-847fc94819f9
-## explicit
-# github.com/icza/gox v0.0.0-20200615201046-5fb07725cc03
-## explicit
-github.com/icza/gox/fmtx
 # github.com/jdkato/prose v1.1.1
 ## explicit
 github.com/jdkato/prose/internal/model
@@ -65,8 +60,6 @@ github.com/russross/blackfriday/v2
 github.com/shogo82148/go-shuffle
 # github.com/shurcooL/sanitized_anchor_name v1.0.0
 github.com/shurcooL/sanitized_anchor_name
-# github.com/smartystreets/assertions v0.0.0-20190215210624-980c5ac6f3ac
-## explicit
 # github.com/smartystreets/goconvey v1.6.4
 ## explicit
 # github.com/spf13/afero v1.2.2

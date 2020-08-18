@@ -15,7 +15,6 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/icza/gox/fmtx"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/regexp"
 	"github.com/spf13/afero"
@@ -160,9 +159,16 @@ func Which(cmds []string) string {
 	return ""
 }
 
+// CondSprintf is sprintf, ignores extra arguments.
+func CondSprintf(format string, v ...interface{}) string {
+	v = append(v, "")
+	format += fmt.Sprint("%[", len(v), "]s")
+	return fmt.Sprintf(format, v...)
+}
+
 // FormatMessage inserts `subs` into `msg`.
 func FormatMessage(msg string, subs ...string) string {
-	return fmtx.CondSprintf(msg, StringsToInterface(subs)...)
+	return CondSprintf(msg, StringsToInterface(subs)...)
 }
 
 // Substitute replaces the substring `sub` with a string of asterisks.
