@@ -2,8 +2,6 @@ package core
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestFormatFromExt(t *testing.T) {
@@ -15,8 +13,12 @@ func TestFormatFromExt(t *testing.T) {
 	m := map[string]string{}
 	for ext, format := range extToFormat {
 		normExt, f := FormatFromExt(ext, m)
-		assert.Equal(t, format[0], normExt)
-		assert.Equal(t, format[1], f)
+		if format[0] != normExt {
+			t.Errorf("expected = %v, got = %v", format[0], normExt)
+		}
+		if format[1] != f {
+			t.Errorf("expected = %v, got = %v", format[1], f)
+		}
 	}
 }
 
@@ -26,6 +28,8 @@ func TestPrepText(t *testing.T) {
 		"foo\r\n\r\nbar": "foo\n\nbar",
 	}
 	for raw, prepped := range rawToPrepped {
-		assert.Equal(t, prepped, PrepText(raw))
+		if prepped != PrepText(raw) {
+			t.Errorf("expected = %v, got = %v", prepped, PrepText(raw))
+		}
 	}
 }

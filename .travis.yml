@@ -29,7 +29,7 @@ before_install:
 install:
   - make setup
   - # FIXME: make rules
-  - make build
+  - make build os=linux exe=vale
 
 script:
   - make test

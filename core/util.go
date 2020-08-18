@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -19,8 +18,6 @@ import (
 	"github.com/icza/gox/fmtx"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/regexp"
-	"github.com/levigross/grequests"
-	"github.com/mholt/archiver"
 	"github.com/spf13/afero"
 )
 
@@ -47,36 +44,6 @@ func PrintJSON(t interface{}) error {
 	}
 	fmt.Println(string(b))
 	return nil
-}
-
-// Fetch an external (compressed) resource.
-//
-// For example:
-//
-// https://www.languagetool.org/download/LanguageTool-4.7.zip
-func Fetch(src, dst string, debug bool) error {
-	// Fetch the resource from the web:
-	resp, err := grequests.Get(src, nil)
-	if err != nil {
-		return err
-	}
-
-	// Create a temp file to represent the archive locally:
-	tmpfile, err := ioutil.TempFile("", "temp.*.zip")
-	if err != nil {
-		return err
-	}
-
-	defer os.Remove(tmpfile.Name()) // clean up
-
-	// Write to the  local archive:
-	_, err = io.Copy(tmpfile, resp.RawResponse.Body)
-	if err != nil {
-		return err
-	} else if err = tmpfile.Close(); err != nil {
-		return err
-	}
-	return archiver.Unarchive(tmpfile.Name(), dst)
 }
 
 // ToSentence converts a slice of terms into sentence.

@@ -7,7 +7,6 @@ import (
 
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestGenderBias(t *testing.T) {
@@ -41,7 +40,9 @@ func TestGenderBias(t *testing.T) {
 	for re, matches := range reToMatches {
 		regex := regexp.MustCompile(re)
 		for _, match := range matches {
-			assert.Equal(t, true, regex.MatchString(match))
+			if !regex.MatchString(match) {
+				t.Errorf("expected = %v, got = %v", true, false)
+			}
 		}
 	}
 }

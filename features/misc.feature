@@ -51,12 +51,6 @@ Feature: Misc
       test.md:50:11:Markup.SentSpacing:"d.A" must contain one and only one space.
       """
 
-  Scenario: Source code
-    When I test "misc/code"
-    Then the output should contain exactly:
-      """
-      """
-
   Scenario: Spelling
     When I test "spelling"
     Then the output should contain exactly:

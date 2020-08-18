@@ -2,26 +2,25 @@ package core
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSelectors(t *testing.T) {
 	s1 := Selector{Value: "text.comment.line.py"}
 	s2 := Selector{Value: "text.comment"}
-	s3 := Selector{Value: "text.comment.line.rb"}
+	// s3 := Selector{Value: "text.comment.line.rb"}
 
-	assert.Equal(t, []string{"text", "comment", "line", "py"}, s1.Sections())
-
-	assert.False(t, s2.Has("py"))
-	for _, part := range s1.Sections() {
-		assert.True(t, s1.Has(part))
+	sec := []string{"text", "comment", "line", "py"}
+	if !AllStringsInSlice(sec, s1.Sections()) {
+		t.Errorf("expected = %v, got = %v", sec, s1.Sections())
 	}
 
-	assert.True(t, s3.Contains(s3))
-	assert.True(t, s1.Contains(s2))
-	assert.False(t, s1.Contains(s3))
+	if s2.Has("py") {
+		t.Errorf("expected `false`, got `true`")
+	}
 
-	assert.True(t, s2.Equal(s2))
-	assert.False(t, s2.Equal(s1))
+	for _, part := range s1.Sections() {
+		if !s1.Has(part) {
+			t.Errorf("expected `true`, got `false`")
+		}
+	}
 }

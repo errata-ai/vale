@@ -3,8 +3,6 @@ package core
 import (
 	"fmt"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 type globTest struct {
@@ -35,7 +33,9 @@ func TestGlob(t *testing.T) {
 		g := NewGlob(tt.pattern, false)
 		for _, tc := range tt.tests {
 			test := fmt.Sprintf("%s -> %s", tt.pattern, tc.query)
-			assert.Equal(t, tc.match, g.Match(tc.query), test)
+			if tc.match != g.Match(tc.query) {
+				t.Errorf(test)
+			}
 		}
 	}
 }

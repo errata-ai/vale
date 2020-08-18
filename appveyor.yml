@@ -22,7 +22,7 @@ install:
   - set PATH=C:\dita\dita-ot-3.4\bin;%PATH%
 build_script:
   - cmd: make setup
-  - cmd: make build-win
+  - cmd: make build os=windows exe=vale.exe
 test_script:
   - cmd: make test
 

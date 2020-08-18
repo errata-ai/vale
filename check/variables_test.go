@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/jdkato/regexp"
-	"github.com/stretchr/testify/assert"
 )
 
 type changeCase struct {
@@ -43,7 +42,10 @@ func TestSentence(t *testing.T) {
 		if len(h.exceptions) > 0 {
 			r = regexp.MustCompile(strings.Join(h.exceptions, "|"))
 		}
-		assert.Equal(t, sentence(
-			h.heading, h.exceptions, h.indicators, r), h.match)
+
+		s := sentence(h.heading, h.exceptions, h.indicators, r)
+		if s != h.match {
+			t.Errorf("expected = %v, got = %v", s, h.match)
+		}
 	}
 }

@@ -11,7 +11,6 @@ import (
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/lint"
 	"github.com/errata-ai/vale/ui"
-	"github.com/pkg/profile"
 	"github.com/urfave/cli"
 )
 
@@ -20,7 +19,6 @@ var version = "master"
 
 func main() {
 	var glob string
-	var perf bool
 
 	config := core.NewConfig()
 	app := cli.NewApp()
@@ -75,12 +73,6 @@ func main() {
 			Name:        "mode-compat",
 			Usage:       `Respect local Vale configurations`,
 			Destination: &config.Local,
-			Hidden:      true,
-		},
-		cli.BoolFlag{
-			Name:        "profile",
-			Usage:       `Enable CPU profiling`,
-			Destination: &perf,
 			Hidden:      true,
 		},
 		cli.BoolFlag{
@@ -144,123 +136,6 @@ func main() {
 			},
 		},
 		{
-			Name:  "new-project",
-			Usage: "Creates a vocabulary directory for the new project",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.AddProject(config, c.Args().First())
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "remove-project",
-			Usage: "Deletes an existing vocabulary directory",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.RemoveProject(config, c.Args().First())
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "edit-project",
-			Usage: "Renames a project from the current StylesPath.",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.EditProject(config, c.Args())
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "ls-projects",
-			Usage: "List all current projects",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.ListDir(config, "Vocab")
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "get-vocab",
-			Usage: "Get a vocab file for a project",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.GetVocab(config, c.Args())
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "update-vocab",
-			Usage: "Update a vocab file for the given project",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.UpdateVocab(config, c.Args())
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "ls-styles",
-			Usage: "List all installed styles",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.ListDir(config, "")
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "ls-library",
-			Usage: "List all available styles",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.GetLibrary(config)
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "install",
-			Usage: "Install the given style",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.InstallStyle(config, c.Args())
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "fetch",
-			Usage: "Fetch an external (compressed) resource.",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.FetchAddon(config, c.Args())
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "ls-addons",
-			Usage: "List all available addons",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.GetAddons(config)
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "start-addons",
-			Usage: "Start all installed addons",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.StartAddons(config)
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "stop-addons",
-			Usage: "Stop all running addons",
-			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.StopAddons(config, c.Args())
-			},
-			Hidden: true,
-		},
-		{
 			Name:  "compile",
 			Usage: "Return a compiled regex for a given rule",
 			Action: func(c *cli.Context) error {
@@ -291,11 +166,6 @@ func main() {
 		var linted []*core.File
 		var err error
 		var hasAlerts bool
-
-		if perf {
-			defer profile.Start(profile.MemProfile).Stop()
-			//defer profile.Start().Stop()
-		}
 
 		err = config.Load()
 		if err != nil && config.Output == "CLI" {

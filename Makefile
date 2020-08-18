@@ -13,14 +13,11 @@ release:
 	git tag $(tag)
 	git push origin $(tag)
 
+# make build os=darwin exe=vale
+# make build os=windows exe=vale.exe
+# make build os=linux exe=vale
 build:
-	go build ${LDFLAGS} -o bin/vale
-
-closed:
-	GOOS=$(os) GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/$(exe)
-
-build-win:
-	go build ${LDFLAGS} -o vale.exe
+	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin/$(exe)
 
 install:
 	go install ${LDFLAGS}
