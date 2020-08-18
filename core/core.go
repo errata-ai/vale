@@ -73,13 +73,13 @@ type Alert struct {
 	Description string // why `Message` is meaningful
 	Line        int    // the source line
 	Link        string // reference material
-	Limit       int    // the max times to report
 	Message     string // the output message
 	Severity    string // 'suggestion', 'warning', or 'error'
 	Span        []int  // the [begin, end] location within a line
 	Match       string // the actual matched text
 
-	Hide bool `json:"-"` // should we hide this alert?
+	Hide  bool `json:"-"` // should we hide this alert?
+	Limit int  `json:"-"` // the max times to report
 }
 
 // A Plugin provides a means of extending Vale.
