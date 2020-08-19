@@ -48,7 +48,7 @@ type Manager struct {
 }
 
 // NewManager creates a new Manager and loads the rule definitions (that is,
-// extended checks) specified by config.
+// extended checks) specified by configuration.
 func NewManager(config *core.Config) *Manager {
 	var path string
 
@@ -225,7 +225,7 @@ func checkConditional(txt string, chk Conditional, f *core.File, r []*regexp.Reg
 	alerts := []core.Alert{}
 
 	// We first look for the consequent of the conditional statement.
-	// For example, if we're ensuring that abbriviations have been defined
+	// For example, if we're ensuring that abbreviations have been defined
 	// parenthetically, we'd have something like:
 	//
 	//     "WHO" [antecedent], "World Health Organization (WHO)" [consequent]
@@ -894,7 +894,6 @@ func (mgr *Manager) loadStyles(styles []string, loaded []string) []string {
 }
 
 func (mgr *Manager) loadVocabRules(config *core.Config) {
-	// Allowlist or Permit
 	if len(config.AcceptedTokens) > 0 {
 		vocab := Substitution{}
 		vocab.Extends = "substitution"
@@ -912,7 +911,6 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 		mgr.addSubstitutionCheck("Vale.Terms", vocab)
 	}
 
-	// Blocklist or Block
 	if len(config.RejectedTokens) > 0 {
 		avoid := Existence{}
 		avoid.Extends = "existence"

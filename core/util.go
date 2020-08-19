@@ -476,7 +476,7 @@ func DeterminePath(configPath string, keyPath string) string {
 	return abs
 }
 
-// CopyFile from a source file sysmtem to destination file system.
+// CopyFile from a source file system to destination file system.
 func CopyFile(srcFs afero.Fs, srcFilePath string, destFs afero.Fs, destFilePath string) error {
 	srcFile, err := srcFs.Open(srcFilePath)
 	if err != nil {

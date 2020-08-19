@@ -1,7 +1,7 @@
 package core
 
 // CommentsByNormedExt determines what parts of a file we should lint -- e.g.,
-// we only want to lint // or /* comments in a C++ file. Multiple syntaxes are
+// we only want to lint // or /* comments in a C++ file. Multiple formats are
 // mapped to a single extension (e.g., .java -> .c) because many languages use
 // the same comment delimiters.
 var CommentsByNormedExt = map[string]map[string]string{

@@ -324,6 +324,6 @@ var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
 
 // Tagger tags a sentence.
 //
-// We wait to initilize it until we need it since it's slow (~1s) and we may
+// We wait to initialize it until we need it since it's slow (~1s) and we may
 // not need it.
 var Tagger *tag.PerceptronTagger

@@ -28,7 +28,7 @@ func ListConfig(config *core.Config) error {
 	return nil
 }
 
-// GetTemplate prints tamplate for the given extension point.
+// GetTemplate prints template for the given extension point.
 func GetTemplate(name string) error {
 	template := check.GetTemplate(name)
 	if template != "" {
