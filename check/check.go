@@ -7,15 +7,14 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/data"
 	"github.com/errata-ai/vale/rule"
 	"github.com/errata-ai/vale/spell"
 	"github.com/jdkato/prose/summarize"
+	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/transform"
-	"github.com/jdkato/prose/v2"
 	"github.com/jdkato/regexp"
 	"gopkg.in/yaml.v2"
 )
@@ -38,7 +37,6 @@ var defaultFilters = []*regexp.Regexp{
 	regexp.MustCompile(`\w{3,}\.\w{3,}`),
 	regexp.MustCompile(`@.*\b`),
 }
-var cache = sync.Map{}
 
 type ruleFn func(string, *core.File) []core.Alert
 
@@ -141,7 +139,7 @@ func makeAlert(chk Definition, loc []int, txt string) core.Alert {
 	return a
 }
 
-func tokensMatch(token NLPToken, word prose.Token) bool {
+func tokensMatch(token NLPToken, word tag.Token) bool {
 	failedTag, err := regexp.MatchString(token.Tag, word.Tag)
 	if core.CheckError(err, false) {
 		failedTag = !failedTag
@@ -159,12 +157,12 @@ func tokensMatch(token NLPToken, word prose.Token) bool {
 	return false
 }
 
-func sequenceMatches(idx int, chk Sequence, target string, nlp *prose.Document) ([]string, int) {
+func sequenceMatches(idx int, chk Sequence, target, src string) ([]string, int) {
 	toks := chk.Tokens
 	text := []string{}
 
 	sizeT := len(toks)
-	words := nlp.Tokens()
+	words := core.TextToTokens(src, chk.needsTagging)
 	index := 0
 
 	for jdx, tok := range words {
@@ -398,27 +396,14 @@ func checkCapitalization(txt string, chk Capitalization, f *core.File) []core.Al
 }
 
 func checkSequence(txt string, chk Sequence, f *core.File) []core.Alert {
-	var doc *prose.Document
 	var alerts []core.Alert
-
-	hash := core.Hash(txt)
-	if nlp, computed := cache.Load(hash); computed {
-		doc = nlp.(*prose.Document)
-	} else {
-		doc, _ = prose.NewDocument(
-			txt,
-			prose.WithTagging(chk.needsTagging),
-			prose.WithExtraction(false))
-
-		cache.Store(hash, doc)
-	}
 
 	for idx, tok := range chk.Tokens {
 		if !tok.Negate && tok.Pattern != "" {
 			for _, loc := range tok.re.FindAllStringIndex(txt, -1) {
 				target := txt[loc[0]:loc[1]]
 				// These are all possible violations in `txt`:
-				steps, index := sequenceMatches(idx, chk, target, doc)
+				steps, index := sequenceMatches(idx, chk, target, txt)
 				chk.history = append(chk.history, index)
 
 				if len(steps) > 0 {

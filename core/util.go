@@ -16,6 +16,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/jdkato/prose/tag"
+	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/regexp"
 	"github.com/spf13/afero"
 )
@@ -82,11 +83,19 @@ func IsPhrase(s string) bool {
 }
 
 // TextToWords convert raw text into a slice of words.
-func TextToWords(text string) []string {
+func TextToWords(text string, nlp bool) []string {
+	// TODO: Replace with iterTokenizer?
+	tok := tokenize.NewTreebankWordTokenizer()
+
 	words := []string{}
 	for _, s := range SentenceTokenizer.Tokenize(text) {
-		words = append(words, strings.Fields(s)...)
+		if nlp {
+			words = append(words, tok.Tokenize(s)...)
+		} else {
+			words = append(words, strings.Fields(s)...)
+		}
 	}
+
 	return words
 }
 
@@ -116,6 +125,18 @@ func Tag(words []string) []tag.Token {
 	return Tagger.Tag(words)
 }
 
+// TextToTokens converts a string to a slice of tokens.
+func TextToTokens(text string, needsTagging bool) []tag.Token {
+	if needsTagging {
+		return Tag(TextToWords(text, true))
+	}
+	tokens := []tag.Token{}
+	for _, word := range TextToWords(text, true) {
+		tokens = append(tokens, tag.Token{Text: word})
+	}
+	return tokens
+}
+
 // CheckPOS determines if a match (as found by an extension point) also matches
 // the expected part-of-speech in text.
 func CheckPOS(loc []int, expected, text string) bool {
@@ -123,7 +144,7 @@ func CheckPOS(loc []int, expected, text string) bool {
 
 	pos := 1
 	observed := []string{}
-	for _, tok := range Tag(TextToWords(text)) {
+	for _, tok := range Tag(TextToWords(text, false)) {
 		if InRange(pos, loc) {
 			if len(tok.Text) > 1 {
 				word = strings.ToLower(strings.TrimRight(tok.Text, ",.!?:;"))

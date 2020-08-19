@@ -1,7 +1,7 @@
 # github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
 github.com/cpuguy83/go-md2man/v2/md2man
-# github.com/deckarep/golang-set v1.7.1
-github.com/deckarep/golang-set
+# github.com/davecgh/go-spew v1.1.1
+## explicit
 # github.com/fatih/color v1.9.0
 ## explicit
 github.com/fatih/color
@@ -23,9 +23,6 @@ github.com/jdkato/prose/summarize
 github.com/jdkato/prose/tag
 github.com/jdkato/prose/tokenize
 github.com/jdkato/prose/transform
-# github.com/jdkato/prose/v2 v2.0.0
-## explicit
-github.com/jdkato/prose/v2
 # github.com/jdkato/regexp v0.1.0
 ## explicit
 github.com/jdkato/regexp
@@ -38,8 +35,6 @@ github.com/mattn/go-colorable
 github.com/mattn/go-isatty
 # github.com/mattn/go-runewidth v0.0.7
 github.com/mattn/go-runewidth
-# github.com/mingrammer/commonregex v1.0.1
-github.com/mingrammer/commonregex
 # github.com/mitchellh/go-homedir v1.1.0
 ## explicit
 github.com/mitchellh/go-homedir
@@ -47,7 +42,10 @@ github.com/mitchellh/go-homedir
 ## explicit
 github.com/mitchellh/mapstructure
 # github.com/montanaflynn/stats v0.6.3
+## explicit
 github.com/montanaflynn/stats
+# github.com/neurosnap/sentences v1.0.6
+## explicit
 # github.com/olekukonko/tablewriter v0.0.4
 ## explicit
 github.com/olekukonko/tablewriter
@@ -57,6 +55,7 @@ github.com/remeh/sizedwaitgroup
 # github.com/russross/blackfriday/v2 v2.0.1
 github.com/russross/blackfriday/v2
 # github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d
+## explicit
 github.com/shogo82148/go-shuffle
 # github.com/shurcooL/sanitized_anchor_name v1.0.0
 github.com/shurcooL/sanitized_anchor_name
@@ -66,6 +65,8 @@ github.com/shurcooL/sanitized_anchor_name
 ## explicit
 github.com/spf13/afero
 github.com/spf13/afero/mem
+# github.com/stretchr/testify v1.6.1
+## explicit
 # github.com/urfave/cli v1.22.4
 ## explicit
 github.com/urfave/cli
@@ -89,26 +90,11 @@ golang.org/x/sys/unix
 # golang.org/x/text v0.3.0
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
-# gonum.org/v1/gonum v0.7.0
-gonum.org/v1/gonum/blas
-gonum.org/v1/gonum/blas/blas64
-gonum.org/v1/gonum/blas/cblas128
-gonum.org/v1/gonum/blas/gonum
-gonum.org/v1/gonum/floats
-gonum.org/v1/gonum/internal/asm/c128
-gonum.org/v1/gonum/internal/asm/c64
-gonum.org/v1/gonum/internal/asm/f32
-gonum.org/v1/gonum/internal/asm/f64
-gonum.org/v1/gonum/internal/cmplx64
-gonum.org/v1/gonum/internal/math32
-gonum.org/v1/gonum/lapack
-gonum.org/v1/gonum/lapack/gonum
-gonum.org/v1/gonum/lapack/lapack64
-gonum.org/v1/gonum/mat
 # gopkg.in/ini.v1 v1.52.0
 ## explicit
 gopkg.in/ini.v1
 # gopkg.in/neurosnap/sentences.v1 v1.0.6
+## explicit
 gopkg.in/neurosnap/sentences.v1
 gopkg.in/neurosnap/sentences.v1/data
 # gopkg.in/yaml.v2 v2.2.8

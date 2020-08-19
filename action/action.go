@@ -10,19 +10,15 @@ import (
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/lint"
 	"github.com/errata-ai/vale/ui"
-	"github.com/jdkato/prose/v2"
 )
 
 // TagSentence assigns part-of-speech tags to the given sentence.
 func TagSentence(config *core.Config, text string) error {
-	doc, err := prose.NewDocument(text, prose.WithExtraction(false))
-	if core.CheckError(err, true) {
-		observed := []string{}
-		for _, tok := range doc.Tokens() {
-			observed = append(observed, (tok.Text + "/" + tok.Tag))
-		}
-		fmt.Println(strings.Join(observed, " "))
+	observed := []string{}
+	for _, tok := range core.TextToTokens(text, true) {
+		observed = append(observed, (tok.Text + "/" + tok.Tag))
 	}
+	fmt.Println(strings.Join(observed, " "))
 	return nil
 }
 
