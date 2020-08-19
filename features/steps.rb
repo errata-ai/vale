@@ -75,8 +75,8 @@ When(/^I apply style "(.*)"$/) do |style|
   step %(I run `#{cmd} .`)
 end
 
-When(/^I use Project "(.*)"$/) do |p|
-  step %(I cd to "../../fixtures/projects/#{p}")
+When(/^I use Vocab "(.*)"$/) do |p|
+  step %(I cd to "../../fixtures/vocab/#{p}")
   step %(I run `#{cmd} .`)
 end
 

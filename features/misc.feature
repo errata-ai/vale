@@ -1,7 +1,7 @@
 Feature: Misc
 
-  Scenario: Projects
-    When I use Project "Basic"
+  Scenario: Vocab
+    When I use Vocab "Basic"
     Then the output should contain exactly:
       """
       test.md:3:5:Vale.Avoid:Avoid using 'Mac OS X'.
