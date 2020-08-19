@@ -283,7 +283,8 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 
 		for term := range mgr.Config.AcceptedTokens {
 			def.Exceptions = append(def.Exceptions, term)
-			def.exceptRe = regexp.MustCompile(strings.Join(def.Exceptions, "|"))
+			def.exceptRe = regexp.MustCompile(
+				ignoreCase + strings.Join(def.Exceptions, "|"))
 		}
 
 		if err := mapstructure.Decode(generic, &def); err == nil {

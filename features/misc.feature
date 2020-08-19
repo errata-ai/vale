@@ -5,6 +5,7 @@ Feature: Misc
     Then the output should contain exactly:
       """
       test.md:3:5:Vale.Avoid:Avoid using 'Mac OS X'.
+      test.md:13:1:Vale.Terms:Use 'Documentarians' instead of 'documentarians'.
       """
 
   Scenario: Line Endings
