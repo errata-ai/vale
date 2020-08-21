@@ -461,6 +461,21 @@ func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) {
 	return 0, nil, nil
 }
 
+// FindAsset tries to locate a Vale-related resource by looking in the
+// user-defined StylesPath.
+func FindAsset(cfg *Config, path string) string {
+	if path == "" {
+		return path
+	}
+
+	inPath := filepath.Join(cfg.StylesPath, path)
+	if FileExists(inPath) {
+		return inPath
+	}
+
+	return DeterminePath(cfg.Path, path)
+}
+
 // DeterminePath decides if `keyPath` is relative or absolute.
 func DeterminePath(configPath string, keyPath string) string {
 	if !IsDir(configPath) {

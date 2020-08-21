@@ -692,17 +692,16 @@ func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
 	var model *spell.GoSpell
 	var err error
 
-	affloc := core.DeterminePath(mgr.Config.Path, chkDef.Aff)
-	dicloc := core.DeterminePath(mgr.Config.Path, chkDef.Dic)
-	undefined := (chkDef.Aff == "" || chkDef.Dic == "")
-
-	if undefined || !(core.FileExists(affloc) && core.FileExists(dicloc)) {
+	affloc := core.FindAsset(mgr.Config, chkDef.Aff)
+	dicloc := core.FindAsset(mgr.Config, chkDef.Dic)
+	if core.FileExists(affloc) && core.FileExists(dicloc) {
+		model, err = spell.NewGoSpell(affloc, dicloc)
+	} else {
 		// Fall back to the defaults:
 		aff, _ := data.Asset("data/en_US-web.aff")
 		dic, _ := data.Asset("data/en_US-web.dic")
-		model, err = spell.NewGoSpellReader(bytes.NewReader(aff), bytes.NewReader(dic))
-	} else {
-		model, err = spell.NewGoSpell(affloc, dicloc)
+		model, err = spell.NewGoSpellReader(
+			bytes.NewReader(aff), bytes.NewReader(dic))
 	}
 
 	for _, ignore := range chkDef.Ignore {
