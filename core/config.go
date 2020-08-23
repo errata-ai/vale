@@ -78,8 +78,6 @@ type Config struct {
 	SphinxBuild string // The location of Sphinx's `_build` path
 	SphinxAuto  string // Should we call `sphinx-build`?
 
-	AddOnsPath   string               `json:"-"`
-	AuthToken    string               `json:"-"`
 	FallbackPath string               `json:"-"`
 	FsWrapper    *afero.Afero         `json:"-"`
 	LTPath       string               `json:"-"`

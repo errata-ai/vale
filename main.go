@@ -27,18 +27,8 @@ func main() {
 	app.Version = version
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:        "addons",
-			Destination: &config.AddOnsPath,
-			Hidden:      true,
-		},
-		cli.StringFlag{
 			Name:        "sources",
 			Destination: &config.Sources,
-			Hidden:      true,
-		},
-		cli.StringFlag{
-			Name:        "token",
-			Destination: &config.AuthToken,
 			Hidden:      true,
 		},
 		cli.StringFlag{
