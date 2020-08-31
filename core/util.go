@@ -251,6 +251,12 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 	var idx int
 	var pat *regexp.Regexp
 
+	if a.Match == "" {
+		// We have nothing to look for -- assume the rule applies to the entire
+		// document (e.g., readability).
+		return 1, ""
+	}
+
 	sub := strings.ToValidUTF8(a.Match, "")
 	if p, ok := cache.Load(sub); ok {
 		pat = p.(*regexp.Regexp)
@@ -274,6 +280,7 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 	if strings.HasPrefix(ctx[idx:], "_") {
 		idx++ // We don't want to include the underscore boundary.
 	}
+
 	return utf8.RuneCountInString(ctx[:idx]) + 1, sub
 }
 

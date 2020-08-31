@@ -452,7 +452,7 @@ func checkReadability(txt string, chk Readability, f *core.File) []core.Alert {
 	grade = grade / float64(len(chk.Metrics))
 	if grade > chk.Grade {
 		a := core.Alert{Check: chk.Name, Severity: chk.Level,
-			Span: []int{0, len(txt)}, Link: chk.Link}
+			Span: []int{1, 1}, Link: chk.Link}
 		a.Message, a.Description = formatMessages(chk.Message, chk.Description,
 			fmt.Sprintf("%.2f", grade))
 		alerts = append(alerts, a)
