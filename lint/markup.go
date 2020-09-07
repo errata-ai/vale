@@ -236,7 +236,7 @@ func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lin
 
 	// NOTE: We don't include headings, list items, or table cells (which are
 	// processed above) in our Summary content.
-	f.Summary.WriteString(raw + " ")
+	f.Summary.WriteString(txt + " ")
 	l.lintProse(f, ctx, txt, raw, lines, 0)
 }
 
