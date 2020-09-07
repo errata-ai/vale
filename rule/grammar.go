@@ -8,9 +8,16 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/errata-ai/vale/core"
 )
+
+// The idea here is that, since LanguageTool is so slow for English, we set a
+// hard cap on how long we'll wait -- 5 seconds to be exact.
+var client = http.Client{
+	Timeout: 5 * time.Second,
+}
 
 var skipped = []string{
 	// Collides with `Vale.Repetition`
@@ -26,8 +33,7 @@ var skipped = []string{
 }
 var disabled = []string{
 	"GENDER_NEUTRALITY", "COLLOQUIALISMS", "WIKIPEDIA", "BARBARISM",
-	"SEMANTICS", "STYLE", "CASING", "REDUNDANCY", "TYPOGRAPHY",
-	"PUNCTUATION",
+	"SEMANTICS", "STYLE", "CASING", "REDUNDANCY", "TYPOGRAPHY", "PUNCTUATION",
 }
 var enabled = []string{
 	"MISC", "GRAMMAR", "CONFUSED_WORDS", "TYPOS",
@@ -132,7 +138,6 @@ func checkWithURL(text, lang, apiURL string) (LTResult, error) {
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Accept", "application/json")
-	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return LTResult{}, err
