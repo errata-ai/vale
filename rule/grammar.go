@@ -81,14 +81,19 @@ func CheckWithLT(text, path string, f *core.File, debug bool) []core.Alert {
 func matchToAlert(m match) core.Alert {
 	ctx := m.Context
 
-	target := ctx.Text[ctx.Offset : ctx.Offset+ctx.Length]
+	start, end := ctx.Offset, ctx.Offset+ctx.Length
+	// NOTE: this is necessary.
+	//
+	// See https://godoc.org/golang.org/x/exp/utf8string ??
+	target := string([]rune(ctx.Text)[start:end])
+
 	suggestions := replacementsToParams(m.Replacements)
 
 	alert := core.Alert{
 		Severity: "warning",
 		Match:    target,
 		Check:    "LanguageTool." + m.Rule.ID,
-		Span:     []int{ctx.Offset, ctx.Offset + ctx.Length},
+		Span:     []int{start, end},
 		Action: core.Action{
 			Name:   "replace",
 			Params: suggestions,
