@@ -35,6 +35,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
@@ -280,10 +281,12 @@ func (l *Linter) lintLines(f *core.File) {
 
 func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 	var txt string
+	var wg sync.WaitGroup
 
 	f.ChkToCtx = make(map[string]string)
 	hasCode := core.StringInSlice(f.NormedExt, []string{".md", ".adoc", ".rst"})
 
+	results := make(chan core.Alert)
 	for name, chk := range l.CheckManager.AllChecks {
 		if chk.Code && hasCode && !l.CheckManager.Config.Simple {
 			txt = blk.Raw
@@ -295,16 +298,23 @@ func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 			continue
 		}
 
-		for _, a := range chk.Rule(txt, f) {
-			// HACK: Workaround for LT-based rules.
-			//
-			// See `rule/grammar.go`.
-			if name == "LanguageTool.Grammar" && !l.shouldRun(a.Check, f, chk, blk) {
-				continue
+		wg.Add(1)
+		go func(txt, name string, f *core.File, chk check.Check) {
+			for _, a := range chk.Rule(txt, f) {
+				core.FormatAlert(&a, chk.Level, chk.Limit, name)
+				results <- a
 			}
-			core.FormatAlert(&a, chk.Level, chk.Limit, name)
-			f.AddAlert(a, blk, lines, pad)
-		}
+			wg.Done()
+		}(txt, name, f, chk)
+	}
+
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	for a := range results {
+		f.AddAlert(a, blk, lines, pad)
 	}
 }
 
