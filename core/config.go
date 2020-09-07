@@ -120,7 +120,7 @@ func NewConfig() *Config {
 	cfg.RejectedTokens = make(map[string]struct{})
 	cfg.FsWrapper = &afero.Afero{Fs: afero.NewReadOnlyFs(afero.NewOsFs())}
 	cfg.LTPath = "http://localhost:8081/v2/check"
-	cfg.Timeout = 1
+	cfg.Timeout = 2
 	return &cfg
 }
 

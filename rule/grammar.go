@@ -16,7 +16,8 @@ import (
 var skipped = []string{
 	// Collides with `Vale.Repetition`
 	"ENGLISH_WORD_REPEAT_RULE",
-	// Doesn't work well
+	// Don't work well with markup
+	"DT_DT",
 	"WHITESPACE_RULE",
 	// Collides with `Vale.Spelling`
 	"MORFOLOGIK_RULE",
@@ -27,10 +28,10 @@ var skipped = []string{
 }
 var disabled = []string{
 	"GENDER_NEUTRALITY", "COLLOQUIALISMS", "WIKIPEDIA", "BARBARISM",
-	"SEMANTICS", "STYLE", "CASING", "REDUNDANCY", "TYPOGRAPHY", "PUNCTUATION",
+	"SEMANTICS", "STYLE", "CASING", "REDUNDANCY", "TYPOGRAPHY",
 }
 var enabled = []string{
-	"MISC", "GRAMMAR", "CONFUSED_WORDS", "TYPOS",
+	"MISC", "GRAMMAR", "CONFUSED_WORDS", "TYPOS", "PUNCTUATION",
 }
 var index = map[string]string{
 	"MISSING_COMMA_WITH_NNP":                  "Missing a comma in '%s'.",
