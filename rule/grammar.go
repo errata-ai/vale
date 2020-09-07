@@ -13,12 +13,6 @@ import (
 	"github.com/errata-ai/vale/core"
 )
 
-// The idea here is that, since LanguageTool is so slow for English, we set a
-// hard cap on how long we'll wait -- 5 seconds to be exact.
-var client = http.Client{
-	Timeout: 5 * time.Second,
-}
-
 var skipped = []string{
 	// Collides with `Vale.Repetition`
 	"ENGLISH_WORD_REPEAT_RULE",
@@ -64,11 +58,11 @@ type LTResult struct {
 // CheckWithLT interfaces with a running instace of LanguageTool.
 //
 // TODO: How do we speed this up?
-func CheckWithLT(text, path string, f *core.File, debug bool) []core.Alert {
+func CheckWithLT(text string, f *core.File, cfg *core.Config) []core.Alert {
 	alerts := []core.Alert{}
 
-	resp, err := checkWithURL(text, "en-US", path)
-	core.CheckError(err, debug)
+	resp, err := checkWithURL(text, "en-US", cfg.LTPath, cfg.Timeout)
+	core.CheckError(err, cfg.Debug)
 
 	for _, m := range resp.Matches {
 		alerts = append(alerts, matchToAlert(m))
@@ -127,7 +121,7 @@ func replacementsToParams(options []replacement) []string {
 	return suggestions
 }
 
-func checkWithURL(text, lang, apiURL string) (LTResult, error) {
+func checkWithURL(text, lang, apiURL string, timeout int) (LTResult, error) {
 	data := url.Values{}
 
 	data.Set("text", text)
@@ -143,6 +137,10 @@ func checkWithURL(text, lang, apiURL string) (LTResult, error) {
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Accept", "application/json")
+
+	client := http.Client{
+		Timeout: time.Duration(timeout) * time.Second,
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		return LTResult{}, err

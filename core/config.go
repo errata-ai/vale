@@ -84,6 +84,7 @@ type Config struct {
 	Parsers      map[string]string    `json:"-"`
 	SecToPat     map[string]glob.Glob `json:"-"`
 	Styles       []string             `json:"-"`
+	Timeout      int                  `json:"-"`
 
 	// Command-line configuration
 	AlertLevel string `json:"-"` // (optional) a CLI-provided MinAlertLevel
@@ -119,6 +120,7 @@ func NewConfig() *Config {
 	cfg.RejectedTokens = make(map[string]struct{})
 	cfg.FsWrapper = &afero.Afero{Fs: afero.NewReadOnlyFs(afero.NewOsFs())}
 	cfg.LTPath = "http://localhost:8081/v2/check"
+	cfg.Timeout = 3
 	return &cfg
 }
 

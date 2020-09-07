@@ -111,4 +111,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string){
 	"SphinxAutoBuild": func(sec *ini.Section, cfg *Config, args []string) {
 		cfg.SphinxAuto = sec.Key("SphinxAutoBuild").MustString("")
 	},
+	"ProcessTimeout": func(sec *ini.Section, cfg *Config, args []string) {
+		cfg.Timeout = sec.Key("ProcessTimeout").MustInt()
+	},
 }

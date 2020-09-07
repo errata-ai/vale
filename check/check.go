@@ -931,8 +931,7 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 			Name:    "LanguageTool.Grammar",
 			Scope:   "summary",
 		}, func(text string, file *core.File) []core.Alert {
-			return rule.CheckWithLT(
-				text, config.LTPath, file, config.Debug)
+			return rule.CheckWithLT(text, file, config)
 		}, "")
 	}
 }
