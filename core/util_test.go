@@ -9,6 +9,7 @@ func TestFormatFromExt(t *testing.T) {
 		".py":    {".py", "code"},
 		".cxx":   {".c", "code"},
 		".mdown": {".md", "markup"},
+		".org":   {".org", "markup"},
 	}
 	m := map[string]string{}
 	for ext, format := range extToFormat {

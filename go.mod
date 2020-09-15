@@ -12,6 +12,7 @@ require (
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/montanaflynn/stats v0.6.3 // indirect
 	github.com/neurosnap/sentences v1.0.6 // indirect
+	github.com/niklasfasching/go-org v1.3.2
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/remeh/sizedwaitgroup v1.0.0
 	github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d // indirect

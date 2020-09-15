@@ -14,6 +14,7 @@ import (
 	"github.com/errata-ai/vale/core"
 	"github.com/gobwas/glob"
 	"github.com/jdkato/regexp"
+	"github.com/niklasfasching/go-org/org"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	grh "github.com/yuin/goldmark/renderer/html"
@@ -383,6 +384,17 @@ func (l Linter) lintMarkdown(f *core.File) {
 	s := l.prep(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
 	if core.CheckError(goldMd.Convert([]byte(s), &buf), l.CheckManager.Config.Debug) {
 		l.lintHTMLTokens(f, f.Content, buf.Bytes(), 0)
+	}
+}
+
+func (l Linter) lintOrg(f *core.File) {
+	file := filepath.Base(f.Path)
+	doc := org.New().Parse(bytes.NewReader([]byte(f.Content)), file)
+	if core.CheckError(doc.Error, l.CheckManager.Config.Debug) {
+		s, err := doc.Write(org.NewHTMLWriter())
+		if core.CheckError(err, l.CheckManager.Config.Debug) {
+			l.lintHTMLTokens(f, f.Content, []byte(s), 0)
+		}
 	}
 }
 

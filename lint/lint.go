@@ -196,6 +196,8 @@ func (l *Linter) lintFile(src string) *core.File {
 			}
 		case ".md":
 			l.lintMarkdown(file)
+		case ".org":
+			l.lintOrg(file)
 		case ".rst":
 			cmd := core.Which([]string{"rst2html", "rst2html.py"})
 			runtime := core.Which([]string{"python", "py", "python.exe", "python3", "python3.exe", "py3"})

@@ -4,7 +4,7 @@
 
 Vale is a command-line tool that brings code-like linting to prose. It's cross-platform (Windows, macOS, and Linux), written in Go, and released under the MIT license. Some of its key features are:
 
-* [Usability](https://docs.errata.ai/vale/scoping): Vale supports HTML, Markdown, AsciiDoc, reStructuredText, XML, and
+* [Usability](https://docs.errata.ai/vale/scoping): Vale supports HTML, Markdown, Emacs Org mode, AsciiDoc, reStructuredText, XML, and
   DITA&mdash;allowing it to "just work" on *real-world* content.
 
 * [Extensibility](https://docs.errata.ai/vale/styles): Unlike most writing-related software, Vale's primary purpose isn't

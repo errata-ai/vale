@@ -46,6 +46,9 @@ github.com/mitchellh/mapstructure
 github.com/montanaflynn/stats
 # github.com/neurosnap/sentences v1.0.6
 ## explicit
+# github.com/niklasfasching/go-org v1.3.2
+## explicit
+github.com/niklasfasching/go-org/org
 # github.com/olekukonko/tablewriter v0.0.4
 ## explicit
 github.com/olekukonko/tablewriter
