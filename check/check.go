@@ -322,7 +322,6 @@ func checkRepetition(txt string, chk Repetition, f *core.File, r *regexp.Regexp)
 func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Regexp, repl []string) []core.Alert {
 	alerts := []core.Alert{}
 	pos := false
-
 	// Leave early if we can to avoid calling `FindAllStringSubmatchIndex`
 	// unnecessarily.
 	if !r.MatchString(txt) {
@@ -336,8 +335,10 @@ func checkSubstitution(txt string, chk Substitution, f *core.File, r *regexp.Reg
 				// Based on the current capture group (`idx`), we can determine
 				// the associated replacement string by using the `repl` slice:
 				expected := repl[(idx/2)-1]
+				r, err := regexp.Compile(expected)
+
 				observed := strings.TrimSpace(txt[loc[0]:loc[1]])
-				if expected != observed {
+				if (err != nil && expected != observed) || !r.MatchString(observed) {
 					if chk.POS != "" {
 						// If we're given a POS pattern, check that it matches.
 						//
@@ -677,7 +678,6 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 		tokens += `(` + regexstr + `)|`
 		replacements = append(replacements, replacement)
 	}
-
 	regex = fmt.Sprintf(regex, strings.TrimRight(tokens, "|"))
 	re, err := regexp.Compile(regex)
 	if core.CheckError(err, mgr.Config.Debug) {

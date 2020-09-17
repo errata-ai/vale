@@ -1,0 +1,7 @@
+extends: substitution
+message: "The alert box text for CAUTION: can only use 'Caution:', 'Warning:', or 'Important:'."
+level: error
+nonword: true
+scope: raw
+swap:
+  'CAUTION: \*\*\w+:\*\*': 'CAUTION: \*\*(?:Caution|Warning|Important):\*\*'
