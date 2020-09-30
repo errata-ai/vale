@@ -15,6 +15,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"github.com/errata-ai/vale/config"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/regexp"
@@ -214,13 +215,6 @@ func StringsToInterface(strings []string) []interface{} {
 		intf[i] = v
 	}
 	return intf
-}
-
-// DumpConfig returns Vale's configuration in JSON format.
-func DumpConfig(config *Config) string {
-	config.StylesPath = filepath.ToSlash(config.StylesPath)
-	b, _ := json.MarshalIndent(config, "", "  ")
-	return string(b)
 }
 
 func guessLocation(ctx, sub, match string) (int, string) {
@@ -470,7 +464,7 @@ func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) {
 
 // FindAsset tries to locate a Vale-related resource by looking in the
 // user-defined StylesPath.
-func FindAsset(cfg *Config, path string) string {
+func FindAsset(cfg *config.Config, path string) string {
 	if path == "" {
 		return path
 	}

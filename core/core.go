@@ -11,10 +11,46 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/errata-ai/vale/config"
 	"github.com/gobwas/glob"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
 )
+
+// AlertLevels holds the possible values for "level" in an external rule.
+var AlertLevels = []string{"suggestion", "warning", "error"}
+
+// LevelToInt allows us to easily compare levels in lint.go.
+var LevelToInt = map[string]int{
+	"suggestion": 0,
+	"warning":    1,
+	"error":      2,
+}
+
+// Glob represents a glob pattern passed via `--glob`.
+type Glob struct {
+	Negated bool
+	Pattern glob.Glob
+}
+
+// Match returns whether or not the Glob g matches the string query.
+func (g Glob) Match(query string) bool {
+	return g.Pattern.Match(query) != g.Negated
+}
+
+// NewGlob creates a Glob from the string pat.
+func NewGlob(pat string, debug bool) Glob {
+	negate := false
+	if strings.HasPrefix(pat, "!") {
+		pat = strings.TrimLeft(pat, "!")
+		negate = true
+	}
+	g, gerr := glob.Compile(pat)
+	if !CheckError(gerr, debug) {
+		panic(gerr)
+	}
+	return Glob{Pattern: g, Negated: negate}
+}
 
 // A Block represents a section of text.
 type Block struct {
@@ -136,7 +172,7 @@ func (a ByName) Less(i, j int) bool {
 }
 
 // NewFile initilizes a File.
-func NewFile(src string, config *Config) *File {
+func NewFile(src string, config *config.Config) *File {
 	var scanner *bufio.Scanner
 	var format, ext string
 	var fbytes []byte

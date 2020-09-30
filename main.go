@@ -1,26 +1,39 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/errata-ai/vale/action"
+	"github.com/errata-ai/vale/config"
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/lint"
+	"github.com/errata-ai/vale/source"
 	"github.com/errata-ai/vale/ui"
+	"github.com/mattn/go-colorable"
 	"github.com/urfave/cli"
 )
 
 // version is set during the release build process.
 var version = "master"
+var logger = log.New(os.Stderr, "", 0)
+
+func init() {
+	// https://github.com/logrusorgru/aurora/issues/2#issuecomment-299014211
+	logger.SetOutput(colorable.NewColorableStderr())
+}
 
 func main() {
 	var glob string
+	var hasAlerts bool
 
-	config := core.NewConfig()
+	config, err := config.New()
+	if err != nil {
+		logger.Fatalln(err)
+	}
+
 	app := cli.NewApp()
 	app.Name = "vale"
 	app.Usage = "A command-line linter for prose."
@@ -114,7 +127,6 @@ func main() {
 			Aliases: []string{"dc"},
 			Usage:   "List the current configuration options",
 			Action: func(c *cli.Context) error {
-				_ = config.Load()
 				return action.ListConfig(config)
 			},
 		},
@@ -129,7 +141,6 @@ func main() {
 			Name:  "compile",
 			Usage: "Return a compiled regex for a given rule",
 			Action: func(c *cli.Context) error {
-				_ = config.Load()
 				return action.CompileRule(config, c.Args().First())
 			},
 			Hidden: true,
@@ -146,8 +157,7 @@ func main() {
 			Name:  "tag",
 			Usage: "Assign part-of-speech tags to the given sentence",
 			Action: func(c *cli.Context) error {
-				_ = config.Load()
-				return action.TagSentence(config, c.Args().First())
+				return action.TagSentence(c.Args().First())
 			},
 		},
 	}
@@ -155,15 +165,14 @@ func main() {
 	app.Action = func(c *cli.Context) error {
 		var linted []*core.File
 		var err error
-		var hasAlerts bool
 
-		err = config.Load()
-		if err != nil && config.Output == "CLI" {
-			fmt.Printf(".vale.ini: '%s'\n", err)
-			return nil
+		if err = source.From("ini", config); err != nil {
+			return err
 		} else if c.NArg() > 0 || core.Stat() {
-			linter := lint.NewLinter(config)
-			if c.NArg() > 0 {
+			linter, err := lint.NewLinter(config)
+			if err != nil {
+				return err
+			} else if c.NArg() > 0 {
 				if core.LooksLikeStdin(c.Args()[0]) {
 					linted, err = linter.LintString(c.Args()[0])
 				} else {
@@ -183,10 +192,6 @@ func main() {
 				hasAlerts = ui.PrintVerboseAlerts(linted, config.Wrap)
 			}
 
-			// Should return a nonzero vale on errors?
-			if err == nil && hasAlerts && !config.NoExit {
-				err = errors.New("")
-			}
 			return err
 		} else {
 			cli.ShowAppHelp(c)
@@ -194,10 +199,17 @@ func main() {
 		}
 	}
 
+	// TODO: Remove this.
+	//
+	// See ui/line.go.
 	core.ExeDir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
-	if app.Run(os.Args) != nil {
+
+	if err = app.Run(os.Args); err != nil {
+		logger.Fatalln(err)
+	} else if hasAlerts && !config.NoExit {
+		// Should we return a nonzero value on errors?
 		os.Exit(1)
-	} else {
-		os.Exit(0)
 	}
+
+	os.Exit(0)
 }

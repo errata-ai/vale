@@ -38,6 +38,7 @@ import (
 	"sync"
 
 	"github.com/errata-ai/vale/check"
+	"github.com/errata-ai/vale/config"
 	"github.com/errata-ai/vale/core"
 	"github.com/remeh/sizedwaitgroup"
 )
@@ -48,10 +49,9 @@ type Linter struct {
 }
 
 // NewLinter initializes a Linter.
-func NewLinter(cfg *core.Config) *Linter {
-	return &Linter{
-		CheckManager: check.NewManager(cfg),
-	}
+func NewLinter(cfg *config.Config) (*Linter, error) {
+	mgr, err := check.NewManager(cfg)
+	return &Linter{CheckManager: mgr}, err
 }
 
 // LintString src according to its format.

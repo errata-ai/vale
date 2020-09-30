@@ -1,12 +1,14 @@
 package check
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 
 	"github.com/errata-ai/vale/core"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
+	"gopkg.in/validator.v2"
 )
 
 var defaultStyles = []string{"Vale"}
@@ -34,12 +36,20 @@ type Check struct {
 	Scope   core.Selector
 }
 
+// A RuleError represents an error encoutered while processing an external YAML
+// file.
+//
+// The idea here is that we can't panic due to the nature of how Vale is used:
+//
+type RuleError struct {
+}
+
 // Definition holds the common attributes of rule definitions.
 type Definition struct {
 	Action      core.Action
 	Code        bool
 	Description string
-	Extends     string
+	Extends     string `validate:"regexp=^[a-zA-Z]*$"`
 	Level       string
 	Limit       int
 	Link        string
@@ -195,38 +205,53 @@ type Sequence struct {
 
 type baseCheck map[string]interface{}
 
-var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager){
-	"existence": func(name string, generic baseCheck, mgr *Manager) {
+var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager) error{
+	"existence": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Existence{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addExistenceCheck(name, def)
 		}
+		return nil
 	},
-	"substitution": func(name string, generic baseCheck, mgr *Manager) {
+	"substitution": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Substitution{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			mgr.addSubstitutionCheck(name, def)
+
+		err := mapstructure.Decode(generic, &def)
+		if err != nil {
+			fmt.Println("BYE", err)
+			return err
 		}
+
+		err = validator.Validate(def)
+		if err != nil {
+			return err
+		}
+
+		mgr.addSubstitutionCheck(name, def)
+		return nil
 	},
-	"occurrence": func(name string, generic baseCheck, mgr *Manager) {
+	"occurrence": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Occurrence{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addOccurrenceCheck(name, def)
 		}
+		return nil
 	},
-	"repetition": func(name string, generic baseCheck, mgr *Manager) {
+	"repetition": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Repetition{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addRepetitionCheck(name, def)
 		}
+		return nil
 	},
-	"consistency": func(name string, generic baseCheck, mgr *Manager) {
+	"consistency": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Consistency{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addConsistencyCheck(name, def)
 		}
+		return nil
 	},
-	"conditional": func(name string, generic baseCheck, mgr *Manager) {
+	"conditional": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Conditional{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			for term := range mgr.Config.AcceptedTokens {
@@ -235,8 +260,9 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 			def.exceptRe = regexp.MustCompile(strings.Join(def.Exceptions, "|"))
 			mgr.addConditionalCheck(name, def)
 		}
+		return nil
 	},
-	"capitalization": func(name string, generic baseCheck, mgr *Manager) {
+	"capitalization": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Capitalization{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			for term := range mgr.Config.AcceptedTokens {
@@ -245,14 +271,16 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 			def.exceptRe = regexp.MustCompile(strings.Join(def.Exceptions, "|"))
 			mgr.addCapitalizationCheck(name, def)
 		}
+		return nil
 	},
-	"readability": func(name string, generic baseCheck, mgr *Manager) {
+	"readability": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Readability{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addReadabilityCheck(name, def)
 		}
+		return nil
 	},
-	"spelling": func(name string, generic baseCheck, mgr *Manager) {
+	"spelling": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Spelling{}
 
 		if generic["filters"] != nil {
@@ -290,8 +318,9 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addSpellingCheck(name, def)
 		}
+		return nil
 	},
-	"sequence": func(name string, generic baseCheck, mgr *Manager) {
+	"sequence": func(name string, generic baseCheck, mgr *Manager) error {
 		def := Sequence{}
 
 		for _, token := range generic["tokens"].([]interface{}) {
@@ -309,5 +338,18 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addSequenceCheck(name, def)
 		}
+		return nil
 	},
+}
+
+func validateDefinition(generic map[string]interface{}, name string) error {
+	msg := name + ": %s!"
+	if point, ok := generic["extends"]; !ok {
+		return fmt.Errorf(msg, "missing extension point")
+	} else if !core.StringInSlice(point.(string), extensionPoints) {
+		return fmt.Errorf(msg, "unknown extension point")
+	} else if _, ok := generic["message"]; !ok {
+		return fmt.Errorf(msg, "missing message")
+	}
+	return nil
 }

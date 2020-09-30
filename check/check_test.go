@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/config"
 )
 
 var checktests = []struct {
@@ -16,8 +16,15 @@ var checktests = []struct {
 }
 
 func TestAddCheck(t *testing.T) {
-	config := core.NewConfig()
-	mgr := Manager{AllChecks: make(map[string]Check), Config: config}
+	cfg, err := config.New()
+	if err != nil {
+		panic(err)
+	}
+
+	mgr := Manager{
+		AllChecks: make(map[string]Check),
+		Config:    cfg,
+		Scopes:    make(map[string]struct{})}
 
 	for _, tt := range checktests {
 		path, err := filepath.Abs(filepath.Join("../fixtures/YAML", tt.check))

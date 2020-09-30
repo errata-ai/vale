@@ -1,19 +1,22 @@
 package action
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
 
 	"github.com/errata-ai/vale/check"
+	"github.com/errata-ai/vale/config"
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/lint"
+	"github.com/errata-ai/vale/source"
 	"github.com/errata-ai/vale/ui"
 )
 
 // TagSentence assigns part-of-speech tags to the given sentence.
-func TagSentence(config *core.Config, text string) error {
+func TagSentence(text string) error {
 	observed := []string{}
 	for _, tok := range core.TextToTokens(text, true) {
 		observed = append(observed, (tok.Text + "/" + tok.Tag))
@@ -23,9 +26,10 @@ func TagSentence(config *core.Config, text string) error {
 }
 
 // ListConfig prints Vale's active configuration.
-func ListConfig(config *core.Config) error {
-	fmt.Println(core.DumpConfig(config))
-	return nil
+func ListConfig(config *config.Config) error {
+	err := source.From("ini", config)
+	fmt.Println(config.String())
+	return err
 }
 
 // GetTemplate prints template for the given extension point.
@@ -41,7 +45,7 @@ func GetTemplate(name string) error {
 }
 
 // CompileRule returns a compiled rule.
-func CompileRule(config *core.Config, path string) error {
+func CompileRule(config *config.Config, path string) error {
 	if path == "" {
 		fmt.Println("invalid rule path")
 	} else {
@@ -65,32 +69,43 @@ func CompileRule(config *core.Config, path string) error {
 // TestRule returns the linting results for a single rule
 func TestRule(args []string) error {
 	if len(args) == 2 && core.FileExists(args[0]) && core.FileExists(args[1]) {
-		rule, _ := ioutil.ReadFile(args[0])
+		rule, err := ioutil.ReadFile(args[0])
+		if err != nil {
+			return err
+		}
 
 		// Create a pre-filled configuration:
-		config := core.NewConfig()
-		config.MinAlertLevel = 0
-		config.GBaseStyles = append(config.GBaseStyles, "Test")
-		config.InExt = ".txt" // default value
+		cfg, err := config.New()
+		if err != nil {
+			return err
+		}
+
+		cfg.MinAlertLevel = 0
+		cfg.GBaseStyles = append(cfg.GBaseStyles, "Test")
+		cfg.InExt = ".txt" // default value
 
 		// Create our check manager:
 		mgr := check.Manager{
 			AllChecks: make(map[string]check.Check),
-			Config:    config,
+			Config:    cfg,
 			Scopes:    make(map[string]struct{}),
 		}
 
-		mgr.AddCheck(rule, "Test.Rule")
+		err = mgr.AddCheck(rule, "Test.Rule")
+		if err != nil {
+			return err
+		}
 		linter := lint.Linter{CheckManager: &mgr}
 
 		linted, err := linter.Lint([]string{args[1]}, "*")
-		_ = ui.PrintJSONAlerts(linted)
+		if err != nil {
+			return err
+		}
 
+		_ = ui.PrintJSONAlerts(linted)
 		return err
 	} else if len(args) != 2 {
-		fmt.Println("missing argument")
+		return errors.New("missing argument")
 	}
-
-	fmt.Println("invalid arguments")
-	return nil
+	return errors.New("invalid arguments")
 }

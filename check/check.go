@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/errata-ai/vale/config"
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/data"
 	"github.com/errata-ai/vale/rule"
@@ -43,13 +44,13 @@ type ruleFn func(string, *core.File) []core.Alert
 // Manager controls the loading and validating of the check extension points.
 type Manager struct {
 	AllChecks map[string]Check
-	Config    *core.Config
+	Config    *config.Config
 	Scopes    map[string]struct{}
 }
 
 // NewManager creates a new Manager and loads the rule definitions (that is,
 // extended checks) specified by configuration.
-func NewManager(config *core.Config) *Manager {
+func NewManager(config *config.Config) (*Manager, error) {
 	var path string
 
 	mgr := Manager{
@@ -62,13 +63,24 @@ func NewManager(config *core.Config) *Manager {
 	loadedStyles := []string{}
 	if mgr.Config.StylesPath == "" {
 		// If we're not given a StylesPath, there's nothing left to look for.
-		mgr.loadDefaultRules(loadedStyles, true)
-		return &mgr
+		err := mgr.loadDefaultRules(loadedStyles)
+		return &mgr, err
 	}
 
-	loadedStyles = append(loadedStyles, mgr.loadStyles(mgr.Config.GBaseStyles, loadedStyles)...)
+	// Load our global `BasedOnStyles` ...
+	loaded, err := mgr.loadStyles(mgr.Config.GBaseStyles, loadedStyles)
+	if err != nil {
+		return &mgr, err
+	}
+	loadedStyles = append(loadedStyles, loaded...)
+
+	// Load our section-specific `BasedOnStyles` ...
 	for _, styles := range mgr.Config.SBaseStyles {
-		loadedStyles = append(loadedStyles, mgr.loadStyles(styles, loadedStyles)...)
+		loaded, err := mgr.loadStyles(styles, loadedStyles)
+		if err != nil {
+			return &mgr, err
+		}
+		loadedStyles = append(loadedStyles, loaded...)
 	}
 
 	for _, chk := range mgr.Config.Checks {
@@ -78,20 +90,21 @@ func NewManager(config *core.Config) *Manager {
 			continue
 		}
 		parts := strings.Split(chk, ".")
-		if !core.StringInSlice(parts[0], loadedStyles) {
+		if !core.StringInSlice(parts[0], loadedStyles) && !core.StringInSlice(parts[0], defaultStyles) {
 			// If this rule isn't part of an already-loaded style, we load it
 			// individually.
 			fName := parts[1] + ".yml"
 			path = filepath.Join(mgr.Config.StylesPath, parts[0], fName)
-			core.CheckError(mgr.loadCheck(fName, path), mgr.Config.Debug)
+			if err = mgr.loadCheck(fName, path); err != nil {
+				return &mgr, err
+			}
 		}
 	}
 
 	// Finally, after reading the user's `StylesPath`, we load our built-in
 	// styles:
-	mgr.loadDefaultRules(loadedStyles, true)
-
-	return &mgr
+	err = mgr.loadDefaultRules(loadedStyles)
+	return &mgr, err
 }
 
 func makeRegexp(
@@ -128,6 +141,10 @@ func makeRegexp(
 
 func formatMessages(msg string, desc string, subs ...string) (string, string) {
 	return core.FormatMessage(msg, subs...), core.FormatMessage(desc, subs...)
+}
+
+func formatError(src []byte, err error) error {
+	return nil
 }
 
 func makeAlert(chk Definition, loc []int, txt string) core.Alert {
@@ -777,26 +794,13 @@ func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn, pattern string
 	mgr.AllChecks[chkDef.Name] = chk
 }
 
-func validateDefinition(generic map[string]interface{}, name string) error {
-	msg := name + ": %s!"
-	if point, ok := generic["extends"]; !ok {
-		return fmt.Errorf(msg, "missing extension point")
-	} else if !core.StringInSlice(point.(string), extensionPoints) {
-		return fmt.Errorf(msg, "unknown extension point")
-	} else if _, ok := generic["message"]; !ok {
-		return fmt.Errorf(msg, "missing message")
-	}
-	return nil
-}
-
 func (mgr *Manager) addCheck(file []byte, chkName string) error {
 	// Load the rule definition.
 	generic := map[string]interface{}{}
-	err := yaml.Unmarshal(file, &generic)
-	if err != nil {
+	if err := yaml.Unmarshal(file, &generic); err != nil {
 		return fmt.Errorf("%s: %s", chkName, err.Error())
-	} else if defErr := validateDefinition(generic, chkName); defErr != nil {
-		return defErr
+	} else if err := validateDefinition(generic, chkName); err != nil {
+		return err
 	}
 
 	// Set default values, if necessary.
@@ -812,11 +816,11 @@ func (mgr *Manager) addCheck(file []byte, chkName string) error {
 
 	extends := generic["extends"].(string)
 	if builder, hasBuilder := checkBuilders[extends]; hasBuilder {
-		builder(chkName, generic, mgr)
-	}
+		base := strings.Split(generic["scope"].(string), ".")[0]
+		mgr.Scopes[base] = struct{}{}
 
-	base := strings.Split(generic["scope"].(string), ".")[0]
-	mgr.Scopes[base] = struct{}{}
+		return builder(chkName, generic, mgr)
+	}
 
 	return nil
 }
@@ -836,43 +840,58 @@ func (mgr *Manager) loadExternalStyle(path string) {
 func (mgr *Manager) loadCheck(fName string, fp string) error {
 	if strings.HasSuffix(fName, ".yml") {
 		f, err := mgr.Config.FsWrapper.ReadFile(fp)
-		if !core.CheckError(err, mgr.Config.Debug) {
-			return err
+		if err != nil {
+			return fmt.Errorf("failed to load rule '%s'.\n\n%v", fName, err)
 		}
 
 		style := filepath.Base(filepath.Dir(fp))
 		chkName := style + "." + strings.Split(fName, ".")[0]
 		if _, ok := mgr.AllChecks[chkName]; !ok {
-			return mgr.addCheck(f, chkName)
+			if err = mgr.addCheck(f, chkName); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
 }
 
-func (mgr *Manager) loadDefaultRules(loaded []string, load bool) {
-	if load {
-		for _, style := range defaultStyles {
-			if core.StringInSlice(style, loaded) {
-				// The user has a style on their `StylesPath` with the same name as
-				// a built-in style.
-				continue
+func (mgr *Manager) loadDefaultRules(loaded []string) error {
+	for _, style := range defaultStyles {
+		if core.StringInSlice(style, loaded) {
+			// The user has a style on their `StylesPath` with the same
+			// name as a built-in style.
+			//
+			// TODO: Should this be considered an error?
+			continue
+		}
+
+		rules, err := rule.AssetDir(filepath.Join("rule", style))
+		if err != nil {
+			return err
+		}
+
+		for _, name := range rules {
+			b, err := rule.Asset(filepath.Join("rule", style, name))
+			if err != nil {
+				return err
 			}
-			rules, _ := rule.AssetDir(filepath.Join("rule", style))
-			for _, name := range rules {
-				b, err := rule.Asset(filepath.Join("rule", style, name))
-				if err != nil {
-					continue
-				}
-				identifier := strings.Join([]string{
-					style, strings.Split(name, ".")[0]}, ".")
-				core.CheckError(mgr.addCheck(b, identifier), mgr.Config.Debug)
+
+			identifier := strings.Join([]string{
+				style, strings.Split(name, ".")[0]}, ".")
+
+			if err = mgr.addCheck(b, identifier); err != nil {
+				return err
 			}
 		}
 	}
-	mgr.loadVocabRules(mgr.Config)
+
+	// TODO: where should this go?
+	mgr.loadVocabRules()
+
+	return nil
 }
 
-func (mgr *Manager) loadStyles(styles []string, loaded []string) []string {
+func (mgr *Manager) loadStyles(styles []string, loaded []string) ([]string, error) {
 	var found []string
 
 	baseDir := mgr.Config.StylesPath
@@ -881,19 +900,18 @@ func (mgr *Manager) loadStyles(styles []string, loaded []string) []string {
 		if core.StringInSlice(style, loaded) || core.StringInSlice(style, defaultStyles) {
 			// We've already loaded this style.
 			continue
-		} else if found, _ := mgr.Config.FsWrapper.DirExists(p); !found {
-			core.CheckError(errors.New("missing style: '"+style+"'"), mgr.Config.Debug)
-			continue
+		} else if has, _ := mgr.Config.FsWrapper.DirExists(p); !has {
+			return found, errors.New("missing style: '" + style + "'")
 		}
 		mgr.loadExternalStyle(p)
 		found = append(found, style)
 	}
 
-	return found
+	return found, nil
 }
 
-func (mgr *Manager) loadVocabRules(config *core.Config) {
-	if len(config.AcceptedTokens) > 0 {
+func (mgr *Manager) loadVocabRules() {
+	if len(mgr.Config.AcceptedTokens) > 0 {
 		vocab := Substitution{}
 		vocab.Extends = "substitution"
 		vocab.Definition.Name = "Vale.Terms"
@@ -902,7 +920,7 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 		vocab.Scope = "text"
 		vocab.Ignorecase = true
 		vocab.Swap = make(map[string]string)
-		for term := range config.AcceptedTokens {
+		for term := range mgr.Config.AcceptedTokens {
 			if core.IsPhrase(term) {
 				vocab.Swap[strings.ToLower(term)] = term
 			}
@@ -910,7 +928,7 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 		mgr.addSubstitutionCheck("Vale.Terms", vocab)
 	}
 
-	if len(config.RejectedTokens) > 0 {
+	if len(mgr.Config.RejectedTokens) > 0 {
 		avoid := Existence{}
 		avoid.Extends = "existence"
 		avoid.Definition.Name = "Vale.Avoid"
@@ -918,20 +936,20 @@ func (mgr *Manager) loadVocabRules(config *core.Config) {
 		avoid.Definition.Message = "Avoid using '%s'."
 		avoid.Scope = "text"
 		avoid.Ignorecase = false
-		for term := range config.RejectedTokens {
+		for term := range mgr.Config.RejectedTokens {
 			avoid.Tokens = append(avoid.Tokens, term)
 		}
 		mgr.addExistenceCheck("Vale.Avoid", avoid)
 	}
 
-	if config.LTPath != "" {
+	if mgr.Config.LTPath != "" {
 		mgr.updateAllChecks(Definition{
 			Extends: "existence",
 			Level:   "warning",
 			Name:    "LanguageTool.Grammar",
 			Scope:   "summary",
 		}, func(text string, file *core.File) []core.Alert {
-			return rule.CheckWithLT(text, file, config)
+			return rule.CheckWithLT(text, file, mgr.Config)
 		}, "")
 	}
 }
@@ -947,5 +965,8 @@ func (mgr *Manager) Compile(name, path string) error {
 //
 // TODO: Should we just expose `addCheck`?
 func (mgr *Manager) AddCheck(content []byte, chkName string) error {
-	return mgr.addCheck(content, chkName)
+	err := mgr.addCheck(content, chkName)
+	// Add to `Errors` ...
+	fmt.Println(err)
+	return err
 }

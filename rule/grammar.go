@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/errata-ai/vale/config"
 	"github.com/errata-ai/vale/core"
 )
 
@@ -59,7 +60,7 @@ type LTResult struct {
 // CheckWithLT interfaces with a running instace of LanguageTool.
 //
 // TODO: How do we speed this up?
-func CheckWithLT(text string, f *core.File, cfg *core.Config) []core.Alert {
+func CheckWithLT(text string, f *core.File, cfg *config.Config) []core.Alert {
 	alerts := []core.Alert{}
 
 	resp, err := checkWithURL(text, "en-US", cfg.LTPath, cfg.Timeout)

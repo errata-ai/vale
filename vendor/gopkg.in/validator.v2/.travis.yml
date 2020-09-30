@@ -1,0 +1,11 @@
+language: go
+go:
+  - "1.10"
+  - 1.11
+  - 1.12
+  - tip
+go_import_path: gopkg.in/validator.v2
+script:
+  - go test -race -v -bench=.
+notifications:
+  email: false

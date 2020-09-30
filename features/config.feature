@@ -78,8 +78,11 @@ Feature: Config
     When I test "/misc/one/two/three/four"
     Then the output should contain exactly:
       """
+      E200 Unable to locate a configuration file.
+
+      See https://docs.errata.ai/vale/config#search-process for more information.
       """
-    And the exit status should be 0
+    And the exit status should be 1
 
 
 #  Scenario: Fall back to root config

@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/errata-ai/vale/check"
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/config"
 )
 
 func TestGenderBias(t *testing.T) {
@@ -48,12 +48,21 @@ func TestGenderBias(t *testing.T) {
 }
 
 func benchmarkLint(path string, b *testing.B) {
-	config := core.NewConfig()
-	path, err := filepath.Abs(path)
+	cfg, err := config.New()
 	if err != nil {
 		panic(err)
 	}
-	mgr := check.NewManager(config)
+
+	path, err = filepath.Abs(path)
+	if err != nil {
+		panic(err)
+	}
+
+	mgr, err := check.NewManager(cfg)
+	if err != nil {
+		panic(err)
+	}
+
 	linter := Linter{CheckManager: mgr}
 	for n := 0; n < b.N; n++ {
 		_, _ = linter.Lint([]string{path}, "*")
