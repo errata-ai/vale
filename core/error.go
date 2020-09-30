@@ -54,7 +54,7 @@ func annotate(file []byte, target string) (lineError, error) {
 
 			sb.WriteString(
 				fmt.Sprintf("\033[1;32m%4d\033[0m* %s\n", idx, markup))
-		} else if len(strings.TrimSpace(plain)) > 0 {
+		} else {
 			sb.WriteString(
 				fmt.Sprintf("\033[1;32m%4d\033[0m  %s\n", idx, markup))
 		}
