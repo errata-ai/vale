@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 	"strings"
 
 	"github.com/acarl005/stripansi"
@@ -141,7 +142,7 @@ func NewE201(msg, value, path string, finder errorCondition) error {
 
 	title := fmt.Sprintf(
 		"Invalid value provided [%s:%d:%d]:",
-		path,
+		filepath.ToSlash(path),
 		ctx.line,
 		ctx.span[0])
 
