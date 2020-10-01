@@ -27,6 +27,5 @@ require (
 	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
 	gopkg.in/ini.v1 v1.52.0
 	gopkg.in/neurosnap/sentences.v1 v1.0.6 // indirect
-	gopkg.in/validator.v2 v2.0.0-20200605151824-2b28d334fa05
 	gopkg.in/yaml.v2 v2.2.8
 )

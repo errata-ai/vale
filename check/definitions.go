@@ -1,7 +1,6 @@
 package check
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -9,12 +8,7 @@ import (
 	"github.com/errata-ai/vale/core"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
-	"gopkg.in/validator.v2"
 )
-
-func init() {
-	validator.SetValidationFunc("level", isValidLevel)
-}
 
 var defaultStyles = []string{"Vale"}
 var extensionPoints = []string{
@@ -47,7 +41,7 @@ type Definition struct {
 	Code        bool
 	Description string
 	Extends     string
-	Level       string `validate:"level"`
+	Level       string
 	Limit       int
 	Link        string
 	Message     string
@@ -225,11 +219,6 @@ var checkBuilders = map[string]func(name, path string, generic baseCheck, mgr *M
 			return readStructureError(err, name, path)
 		}
 
-		err = validator.Validate(def)
-		if err != nil {
-			return readValueError(err, name, path)
-		}
-
 		return mgr.addExistenceCheck(name, path, def)
 	},
 	"substitution": func(name, path string, generic baseCheck, mgr *Manager) error {
@@ -238,11 +227,6 @@ var checkBuilders = map[string]func(name, path string, generic baseCheck, mgr *M
 		err := mapstructure.Decode(generic, &def)
 		if err != nil {
 			return readStructureError(err, name, path)
-		}
-
-		err = validator.Validate(def)
-		if err != nil {
-			return readValueError(err, name, path)
 		}
 
 		return mgr.addSubstitutionCheck(name, path, def)
@@ -376,34 +360,19 @@ func validateDefinition(generic map[string]interface{}, name, path string) error
 			fmt.Sprintf("'%s' is missing the required 'message' key.", name),
 			path,
 			1)
-	}
-	return nil
-}
-
-func isValidLevel(v interface{}, param string) error {
-	st := reflect.ValueOf(v)
-	rx := regexp.MustCompile(`(?:suggestion|warning|error)$`)
-	if !rx.MatchString(st.String()) {
-		return errors.New(
-			"key 'level' must be 'suggestion', 'warning', or 'error'")
+	} else if level, ok := generic["level"]; ok {
+		if !core.StringInSlice(level.(string), core.AlertLevels) {
+			return core.NewE201FromTarget(
+				fmt.Sprintf("'level' must be one of %v", core.AlertLevels),
+				"level",
+				path)
+		}
 	}
 	return nil
 }
 
 func readStructureError(err error, name, path string) error {
 	r := regexp.MustCompile(`\* '(.+)' (.+)`)
-	if r.MatchString(err.Error()) {
-		groups := r.FindStringSubmatch(err.Error())
-		return core.NewE201FromTarget(
-			fmt.Sprintf("Failed to parse '%s': %s", name, groups[2]),
-			strings.ToLower(groups[1]),
-			path)
-	}
-	return err
-}
-
-func readValueError(err error, name, path string) error {
-	r := regexp.MustCompile(`Definition\.(\w+): (.+)`)
 	if r.MatchString(err.Error()) {
 		groups := r.FindStringSubmatch(err.Error())
 		return core.NewE201FromTarget(
