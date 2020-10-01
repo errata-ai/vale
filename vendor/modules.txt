@@ -45,9 +45,6 @@ github.com/danwakefield/fnmatch
 ## explicit
 github.com/dlclark/regexp2
 github.com/dlclark/regexp2/syntax
-# github.com/fatih/color v1.9.0
-## explicit
-github.com/fatih/color
 # github.com/gobwas/glob v0.2.3
 ## explicit
 github.com/gobwas/glob

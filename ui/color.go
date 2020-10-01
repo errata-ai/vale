@@ -6,15 +6,8 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/core"
-	"github.com/fatih/color"
+	"github.com/logrusorgru/aurora/v3"
 	"github.com/olekukonko/tablewriter"
-)
-
-const (
-	errorColor      color.Attribute = color.FgRed
-	warningColor                    = color.FgYellow
-	suggestionColor                 = color.FgBlue
-	underlineColor                  = color.Underline
 )
 
 // PrintVerboseAlerts prints Alerts in verbose format.
@@ -43,12 +36,12 @@ func PrintVerboseAlerts(linted []*core.File, wrap bool) bool {
 	n := len(linted)
 	if n == 1 && strings.HasPrefix(linted[0].Path, "stdin") {
 		fmt.Printf("%s %s, %s and %s in %s.\n", symbol,
-			colorize(etotal, errorColor), colorize(wtotal, warningColor),
-			colorize(stotal, suggestionColor), "stdin")
+			aurora.Green(etotal), aurora.Yellow(wtotal),
+			aurora.Blue(stotal), "stdin")
 	} else {
 		fmt.Printf("%s %s, %s and %s in %d %s.\n", symbol,
-			colorize(etotal, errorColor), colorize(wtotal, warningColor),
-			colorize(stotal, suggestionColor), n, pluralize("file", n))
+			aurora.Red(etotal), aurora.Yellow(wtotal),
+			aurora.Blue(stotal), n, pluralize("file", n))
 	}
 
 	return errors != 0
@@ -70,17 +63,17 @@ func printVerboseAlert(f *core.File, wrap bool) (int, int, int) {
 	table.SetRowSeparator("")
 	table.SetAutoWrapText(!wrap)
 
-	fmt.Printf("\n %s", colorize(f.Path, underlineColor))
+	fmt.Printf("\n %s", aurora.Underline(f.Path))
 	for _, a := range alerts {
 		a.Message = fixOutputSpacing(a.Message)
 		if a.Severity == "suggestion" {
-			level = colorize(a.Severity, suggestionColor)
+			level = aurora.Blue(a.Severity).String()
 			notifications++
 		} else if a.Severity == "warning" {
-			level = colorize(a.Severity, warningColor)
+			level = aurora.Yellow(a.Severity).String()
 			warnings++
 		} else {
-			level = colorize(a.Severity, errorColor)
+			level = aurora.Red(a.Severity).String()
 			errors++
 		}
 		loc = fmt.Sprintf("%d:%d", a.Line, a.Span[0])
@@ -88,10 +81,4 @@ func printVerboseAlert(f *core.File, wrap bool) (int, int, int) {
 	}
 	table.Render()
 	return errors, warnings, notifications
-}
-
-func colorize(message string, textColor color.Attribute) string {
-	colorPrinter := color.New(textColor)
-	f := colorPrinter.SprintFunc()
-	return f(message)
 }

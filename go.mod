@@ -6,7 +6,6 @@ require (
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d
 	github.com/alecthomas/chroma v0.8.1
 	github.com/dlclark/regexp2 v1.2.1 // indirect
-	github.com/fatih/color v1.9.0
 	github.com/gobwas/glob v0.2.3
 	github.com/jdkato/prose v1.1.1
 	github.com/jdkato/regexp v0.1.0
