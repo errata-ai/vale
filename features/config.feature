@@ -81,6 +81,8 @@ Feature: Config
       E200 Unable to locate a configuration file.
 
       See https://docs.errata.ai/vale/config#search-process for more information.
+
+      Execution stopped with code 1.
       """
     And the exit status should be 1
 

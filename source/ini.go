@@ -58,7 +58,7 @@ var syntaxOpts = map[string]func(string, *ini.Section, *config.Config) error{
 	"BasedOnStyles": func(lbl string, sec *ini.Section, cfg *config.Config) error {
 		pat, err := glob.Compile(lbl)
 		if err != nil {
-			return core.NewE201(
+			return core.NewE201FromTarget(
 				fmt.Sprintf("The glob pattern '%s' could not be compiled.", lbl),
 				lbl,
 				cfg.Path)
@@ -144,7 +144,7 @@ var coreOpts = map[string]func(*ini.Section, *config.Config, []string) error{
 
 			cfg.StylesPath = core.DeterminePath(cfg.Path, canidate)
 			if !core.FileExists(cfg.StylesPath) {
-				return core.NewE201(
+				return core.NewE201FromTarget(
 					fmt.Sprintf("The path '%s' does not exist.", cfg.StylesPath),
 					entry,
 					cfg.Path)
@@ -159,7 +159,7 @@ var coreOpts = map[string]func(*ini.Section, *config.Config, []string) error{
 			if index, found := core.LevelToInt[level]; found {
 				cfg.MinAlertLevel = index
 			} else {
-				return core.NewE201(
+				return core.NewE201FromTarget(
 					"MinAlertLevel must be 'suggestion', 'warning', or 'error'.",
 					level,
 					cfg.Path)

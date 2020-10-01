@@ -36,7 +36,9 @@ var (
 		"See https://docs.errata.ai/vale/config#search-process for more information.")
 )
 
-func annotate(file []byte, target string) (lineError, error) {
+type errorCondition func(position int, line, target string) bool
+
+func annotate(file []byte, target string, finder errorCondition) (lineError, error) {
 	var sb strings.Builder
 
 	scanner := bufio.NewScanner(bytes.NewBuffer(file))
@@ -46,7 +48,9 @@ func annotate(file []byte, target string) (lineError, error) {
 	for scanner.Scan() {
 		markup := scanner.Text()
 		plain := stripansi.Strip(markup)
-		if strings.Contains(plain, target) {
+		if idx-context.line > 2 && context.line != 0 {
+			break
+		} else if finder(idx, plain, target) && context.line == 0 {
 			context.line = idx
 
 			s := strings.Index(plain, target) + 1
@@ -65,7 +69,14 @@ func annotate(file []byte, target string) (lineError, error) {
 		return lineError{}, err
 	}
 
-	context.content = sb.String()
+	lines := []string{}
+	for i, l := range strings.Split(sb.String(), "\n") {
+		if context.line-i < 3 {
+			lines = append(lines, l)
+		}
+	}
+
+	context.content = strings.Join(lines, "\n")
 	return context, nil
 }
 
@@ -80,10 +91,12 @@ func annotate(file []byte, target string) (lineError, error) {
 // ```
 func NewError(code, title, msg string) error {
 	return fmt.Errorf(
-		"%s %s\n\n%s",
+		"%s %s\n\n%s\n\n%s",
 		aurora.BgRed(code),
 		title,
-		msg)
+		msg,
+		aurora.Faint(aurora.Italic("Execution stopped with code 1.")),
+	)
 }
 
 // NewE100 creates a new, formatted "unexpected" error.
@@ -101,7 +114,7 @@ func NewE100(context string, err error) error {
 // parsable location information on their last line of the form:
 //
 // <path>:<line>:<start>:<end>
-func NewE201(msg, value, file string) error {
+func NewE201(msg, value, file string, finder errorCondition) error {
 	var sb bytes.Buffer
 
 	f, err := ioutil.ReadFile(file)
@@ -121,7 +134,7 @@ func NewE201(msg, value, file string) error {
 		return NewE100("NewE201/Highlight", err)
 	}
 
-	ctx, err := annotate(sb.Bytes(), value)
+	ctx, err := annotate(sb.Bytes(), value, finder)
 	if err != nil {
 		return NewE100("NewE201/annotate", err)
 	}
@@ -130,4 +143,26 @@ func NewE201(msg, value, file string) error {
 		"E201",
 		fmt.Sprintf("Invalid value provided [%d:%d]:", ctx.line, ctx.span[0]),
 		fmt.Sprintf("%s\n%s", ctx.content, msg))
+}
+
+// NewE201FromTarget creates a new E201 error from a target string.
+func NewE201FromTarget(msg, value, file string) error {
+	return NewE201(
+		msg,
+		value,
+		file,
+		func(position int, line, target string) bool {
+			return strings.Contains(line, target)
+		})
+}
+
+// NewE201FromPosition creates a new E201 error from an in-file location.
+func NewE201FromPosition(msg, file string, goal int) error {
+	return NewE201(
+		msg,
+		"",
+		file,
+		func(position int, line, target string) bool {
+			return position == goal
+		})
 }
