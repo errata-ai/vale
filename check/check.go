@@ -97,7 +97,6 @@ func NewManager(config *config.Config) (*Manager, error) {
 			fName := parts[1] + ".yml"
 			path = filepath.Join(mgr.Config.StylesPath, parts[0], fName)
 			if err = mgr.loadCheck(fName, path); err != nil {
-				fmt.Println("HMMMMMo")
 				return &mgr, err
 			}
 		}
@@ -593,7 +592,7 @@ func (mgr *Manager) addConsistencyCheck(chkName string, chkDef Consistency) {
 	}
 }
 
-func (mgr *Manager) addExistenceCheck(chkName string, chkDef Existence) {
+func (mgr *Manager) addExistenceCheck(chkName, path string, chkDef Existence) error {
 
 	regex := makeRegexp(
 		mgr.Config.WordTemplate,
@@ -603,13 +602,21 @@ func (mgr *Manager) addExistenceCheck(chkName string, chkDef Existence) {
 		chkDef.Append)
 
 	regex = fmt.Sprintf(regex, strings.Join(chkDef.Tokens, "|"))
+
 	re, err := regexp.Compile(regex)
-	if core.CheckError(err, mgr.Config.Debug) {
-		fn := func(text string, file *core.File) []core.Alert {
-			return checkExistence(text, chkDef, file, re)
-		}
-		mgr.updateAllChecks(chkDef.Definition, fn, re.String())
+	if err != nil {
+		return core.NewE201FromPosition(
+			fmt.Sprintf("Failed to compile '%s': %s", chkName, err.Error()),
+			path,
+			1)
 	}
+
+	fn := func(text string, file *core.File) []core.Alert {
+		return checkExistence(text, chkDef, file, re)
+	}
+	mgr.updateAllChecks(chkDef.Definition, fn, re.String())
+
+	return nil
 }
 
 func (mgr *Manager) addRepetitionCheck(chkName string, chkDef Repetition) {
@@ -962,7 +969,7 @@ func (mgr *Manager) loadVocabRules() {
 		for term := range mgr.Config.RejectedTokens {
 			avoid.Tokens = append(avoid.Tokens, term)
 		}
-		mgr.addExistenceCheck("Vale.Avoid", avoid)
+		mgr.addExistenceCheck("Vale.Avoid", "", avoid)
 	}
 
 	if mgr.Config.LTPath != "" {

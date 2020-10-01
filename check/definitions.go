@@ -41,14 +41,6 @@ type Check struct {
 	Scope   core.Selector
 }
 
-// A RuleError represents an error encoutered while processing an external YAML
-// file.
-//
-// The idea here is that we can't panic due to the nature of how Vale is used:
-//
-type RuleError struct {
-}
-
 // Definition holds the common attributes of rule definitions.
 type Definition struct {
 	Action      core.Action
@@ -77,7 +69,8 @@ type NLPToken struct {
 // Existence checks for the present of Tokens.
 type Existence struct {
 	Definition `mapstructure:",squash"`
-	// `append` (`bool`): Adds `raw` to the end of `tokens`, assuming both are defined.
+	// `append` (`bool`): Adds `raw` to the end of `tokens`, assuming both are
+	// defined.
 	Append bool
 	// `ignorecase` (`bool`): Makes all matches case-insensitive.
 	Ignorecase bool
@@ -85,7 +78,8 @@ type Existence struct {
 	Nonword bool
 	// `raw` (`array`): A list of tokens to be concatenated into a pattern.
 	Raw []string
-	// `tokens` (`array`): A list of tokens to be transformed into a non-capturing group.
+	// `tokens` (`array`): A list of tokens to be transformed into a
+	// non-capturing group.
 	Tokens []string
 }
 
@@ -98,7 +92,8 @@ type Substitution struct {
 	Nonword bool
 	// `swap` (`map`): A sequence of `observed: expected` pairs.
 	Swap map[string]string
-	// `pos` (`string`): A regular expression matching tokens to parts of speech.
+	// `pos` (`string`): A regular expression matching tokens to parts of
+	// speech.
 	POS string
 }
 
@@ -107,9 +102,11 @@ type Occurrence struct {
 	Definition `mapstructure:",squash"`
 	// `ignorecase` (`bool`): Makes all matches case-insensitive.
 	Ignorecase bool
-	// `max` (`int`): The maximum amount of times `token` may appear in a given scope.
+	// `max` (`int`): The maximum amount of times `token` may appear in a given
+	// scope.
 	Max int
-	// `min` (`int`): The minimum amount of times `token` has to appear in a given scope.
+	// `min` (`int`): The minimum amount of times `token` has to appear in a
+	// given scope.
 	Min int
 	// `token` (`string`): The token of interest.
 	Token string
@@ -123,7 +120,8 @@ type Repetition struct {
 	Ignorecase bool
 	// `alpha` (`bool`): Limits all matches to alphanumeric tokens.
 	Alpha bool
-	// `tokens` (`array`): A list of tokens to be transformed into a non-capturing group.
+	// `tokens` (`array`): A list of tokens to be transformed into a
+	// non-capturing group.
 	Tokens []string
 }
 
@@ -134,7 +132,8 @@ type Consistency struct {
 	Nonword bool
 	// `ignorecase` (`bool`): Makes all matches case-insensitive.
 	Ignorecase bool
-	// `either` (`map`): A map of `option 1: option 2` pairs, of which only one may appear.
+	// `either` (`map`): A map of `option 1: option 2` pairs, of which only one
+	// may appear.
 	Either map[string]string
 }
 
@@ -159,7 +158,8 @@ type Capitalization struct {
 	// `match` (`string`): $title, $sentence, $lower, $upper, or a pattern.
 	Match string
 	Check func(s string, ignore []string, re *regexp.Regexp) bool
-	// `style` (`string`): AP or Chicago; only applies when match is set to $title.
+	// `style` (`string`): AP or Chicago; only applies when match is set to
+	// $title.
 	Style string
 	// `exceptions` (`array`): An array of strings to be ignored.
 	Exceptions []string
@@ -173,7 +173,8 @@ type Capitalization struct {
 // Readability checks the reading grade level of text.
 type Readability struct {
 	Definition `mapstructure:",squash"`
-	// `metrics` (`array`): One or more of Gunning Fog, Coleman-Liau, Flesch-Kincaid, SMOG, and Automated Readability.
+	// `metrics` (`array`): One or more of Gunning Fog, Coleman-Liau,
+	// Flesch-Kincaid, SMOG, and Automated Readability.
 	Metrics []string
 	// `grade` (`float`): The highest acceptable score.
 	Grade float64
@@ -182,15 +183,20 @@ type Readability struct {
 // Spelling checks text against a Hunspell dictionary.
 type Spelling struct {
 	Definition `mapstructure:",squash"`
-	// `aff` (`string`): The fully-qualified path to a Hunspell-compatible `.aff` file.
+	// `aff` (`string`): The fully-qualified path to a Hunspell-compatible
+	// `.aff` file.
 	Aff string
-	// `custom` (`bool`): Turn off the default filters for acronyms, abbreviations, and numbers.
+	// `custom` (`bool`): Turn off the default filters for acronyms,
+	// abbreviations, and numbers.
 	Custom bool
-	// `dic` (`string`): The fully-qualified path to a Hunspell-compatible `.dic` file.
+	// `dic` (`string`): The fully-qualified path to a Hunspell-compatible
+	// `.dic` file.
 	Dic string
-	// `filters` (`array`): An array of patterns to ignore during spell checking.
+	// `filters` (`array`): An array of patterns to ignore during spell
+	// checking.
 	Filters []*regexp.Regexp
-	// `ignore` (`array`): An array of relative paths (from `StylesPath`) to files consisting of one word per line to ignore.
+	// `ignore` (`array`): An array of relative paths (from `StylesPath`) to
+	// files consisting of one word per line to ignore.
 	Ignore     []string
 	Exceptions []string
 	Threshold  int
@@ -213,10 +219,18 @@ type baseCheck map[string]interface{}
 var checkBuilders = map[string]func(name, path string, generic baseCheck, mgr *Manager) error{
 	"existence": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Existence{}
-		if err := mapstructure.Decode(generic, &def); err == nil {
-			mgr.addExistenceCheck(name, def)
+
+		err := mapstructure.Decode(generic, &def)
+		if err != nil {
+			return readStructureError(err, name, path)
 		}
-		return nil
+
+		err = validator.Validate(def)
+		if err != nil {
+			return readValueError(err, name, path)
+		}
+
+		return mgr.addExistenceCheck(name, path, def)
 	},
 	"substitution": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Substitution{}
