@@ -114,15 +114,15 @@ func NewE100(context string, err error) error {
 // parsable location information on their last line of the form:
 //
 // <path>:<line>:<start>:<end>
-func NewE201(msg, value, file string, finder errorCondition) error {
+func NewE201(msg, value, path string, finder errorCondition) error {
 	var sb bytes.Buffer
 
-	f, err := ioutil.ReadFile(file)
+	f, err := ioutil.ReadFile(path)
 	if err != nil {
 		return NewE100("NewE201/ReadFile", err)
 	}
 
-	lexer := lexers.Match(file)
+	lexer := lexers.Match(path)
 	err = quick.Highlight(
 		&sb,
 		string(f),
@@ -139,9 +139,15 @@ func NewE201(msg, value, file string, finder errorCondition) error {
 		return NewE100("NewE201/annotate", err)
 	}
 
+	title := fmt.Sprintf(
+		"Invalid value provided [%s:%d:%d]:",
+		path,
+		ctx.line,
+		ctx.span[0])
+
 	return NewError(
 		"E201",
-		fmt.Sprintf("Invalid value provided [%d:%d]:", ctx.line, ctx.span[0]),
+		title,
 		fmt.Sprintf("%s\n%s", ctx.content, msg))
 }
 
