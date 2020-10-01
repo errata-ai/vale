@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/errata-ai/vale/config"
@@ -96,6 +97,7 @@ func NewManager(config *config.Config) (*Manager, error) {
 			fName := parts[1] + ".yml"
 			path = filepath.Join(mgr.Config.StylesPath, parts[0], fName)
 			if err = mgr.loadCheck(fName, path); err != nil {
+				fmt.Println("HMMMMMo")
 				return &mgr, err
 			}
 		}
@@ -664,7 +666,7 @@ func (mgr *Manager) addConditionalCheck(chkName string, chkDef Conditional) {
 	mgr.updateAllChecks(chkDef.Definition, fn, "")
 }
 
-func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
+func (mgr *Manager) addSubstitutionCheck(chkName, path string, chkDef Substitution) error {
 	tokens := ""
 
 	regex := makeRegexp(
@@ -696,13 +698,21 @@ func (mgr *Manager) addSubstitutionCheck(chkName string, chkDef Substitution) {
 		replacements = append(replacements, replacement)
 	}
 	regex = fmt.Sprintf(regex, strings.TrimRight(tokens, "|"))
+
 	re, err := regexp.Compile(regex)
-	if core.CheckError(err, mgr.Config.Debug) {
-		fn := func(text string, file *core.File) []core.Alert {
-			return checkSubstitution(text, chkDef, file, re, replacements)
-		}
-		mgr.updateAllChecks(chkDef.Definition, fn, re.String())
+	if err != nil {
+		return core.NewE201FromPosition(
+			fmt.Sprintf("Failed to compile '%s': %s", chkName, err.Error()),
+			path,
+			1)
 	}
+
+	fn := func(text string, file *core.File) []core.Alert {
+		return checkSubstitution(text, chkDef, file, re, replacements)
+	}
+	mgr.updateAllChecks(chkDef.Definition, fn, re.String())
+
+	return nil
 }
 
 func (mgr *Manager) addSpellingCheck(chkName string, chkDef Spelling) {
@@ -794,12 +804,25 @@ func (mgr *Manager) updateAllChecks(chkDef Definition, fn ruleFn, pattern string
 	mgr.AllChecks[chkDef.Name] = chk
 }
 
-func (mgr *Manager) addCheck(file []byte, chkName string) error {
+func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
 	// Load the rule definition.
 	generic := map[string]interface{}{}
+
+	// Structural validation ...
 	if err := yaml.Unmarshal(file, &generic); err != nil {
-		return fmt.Errorf("%s: %s", chkName, err.Error())
-	} else if err := validateDefinition(generic, chkName); err != nil {
+		r := regexp.MustCompile(`yaml: line (\d+): (.+)`)
+		if r.MatchString(err.Error()) {
+			groups := r.FindStringSubmatch(err.Error())
+			i, err := strconv.Atoi(groups[1])
+			if err != nil {
+				return core.NewE100("addCheck/Atoi", err)
+			}
+			return core.NewE201FromPosition(
+				fmt.Sprintf("Failed to parse '%s': %s", chkName, groups[2]),
+				path,
+				i)
+		}
+	} else if err := validateDefinition(generic, chkName, path); err != nil {
 		return err
 	}
 
@@ -819,22 +842,20 @@ func (mgr *Manager) addCheck(file []byte, chkName string) error {
 		base := strings.Split(generic["scope"].(string), ".")[0]
 		mgr.Scopes[base] = struct{}{}
 
-		return builder(chkName, generic, mgr)
+		return builder(chkName, path, generic, mgr)
 	}
 
 	return nil
 }
 
-func (mgr *Manager) loadExternalStyle(path string) {
-	err := mgr.Config.FsWrapper.Walk(path,
+func (mgr *Manager) loadExternalStyle(path string) error {
+	return mgr.Config.FsWrapper.Walk(path,
 		func(fp string, fi os.FileInfo, err error) error {
 			if err != nil || fi.IsDir() {
 				return err
 			}
-			core.CheckError(mgr.loadCheck(fi.Name(), fp), mgr.Config.Debug)
-			return nil
+			return mgr.loadCheck(fi.Name(), fp)
 		})
-	core.CheckError(err, mgr.Config.Debug)
 }
 
 func (mgr *Manager) loadCheck(fName string, fp string) error {
@@ -847,7 +868,7 @@ func (mgr *Manager) loadCheck(fName string, fp string) error {
 		style := filepath.Base(filepath.Dir(fp))
 		chkName := style + "." + strings.Split(fName, ".")[0]
 		if _, ok := mgr.AllChecks[chkName]; !ok {
-			if err = mgr.addCheck(f, chkName); err != nil {
+			if err = mgr.addCheck(f, chkName, fp); err != nil {
 				return err
 			}
 		}
@@ -879,7 +900,7 @@ func (mgr *Manager) loadDefaultRules(loaded []string) error {
 			identifier := strings.Join([]string{
 				style, strings.Split(name, ".")[0]}, ".")
 
-			if err = mgr.addCheck(b, identifier); err != nil {
+			if err = mgr.addCheck(b, identifier, ""); err != nil {
 				return err
 			}
 		}
@@ -903,7 +924,9 @@ func (mgr *Manager) loadStyles(styles []string, loaded []string) ([]string, erro
 		} else if has, _ := mgr.Config.FsWrapper.DirExists(p); !has {
 			return found, errors.New("missing style: '" + style + "'")
 		}
-		mgr.loadExternalStyle(p)
+		if err := mgr.loadExternalStyle(p); err != nil {
+			return found, err
+		}
 		found = append(found, style)
 	}
 
@@ -925,7 +948,7 @@ func (mgr *Manager) loadVocabRules() {
 				vocab.Swap[strings.ToLower(term)] = term
 			}
 		}
-		mgr.addSubstitutionCheck("Vale.Terms", vocab)
+		mgr.addSubstitutionCheck("Vale.Terms", "", vocab)
 	}
 
 	if len(mgr.Config.RejectedTokens) > 0 {
@@ -965,8 +988,8 @@ func (mgr *Manager) Compile(name, path string) error {
 //
 // TODO: Should we just expose `addCheck`?
 func (mgr *Manager) AddCheck(content []byte, chkName string) error {
-	err := mgr.addCheck(content, chkName)
+	err := mgr.addCheck(content, chkName, "")
 	// Add to `Errors` ...
-	fmt.Println(err)
+	// fmt.Println(err)
 	return err
 }

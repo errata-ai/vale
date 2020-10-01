@@ -1,10 +1,7 @@
 package check
 
 import (
-	"path/filepath"
 	"testing"
-
-	"github.com/errata-ai/vale/config"
 )
 
 var checktests = []struct {
@@ -15,6 +12,7 @@ var checktests = []struct {
 	{"NoMsg.yml", "YAML.NoMsg: missing message!"},
 }
 
+/*
 func TestAddCheck(t *testing.T) {
 	cfg, err := config.New()
 	if err != nil {
@@ -36,7 +34,7 @@ func TestAddCheck(t *testing.T) {
 			t.Errorf("%q != %q", s.Error(), tt.msg)
 		}
 	}
-}
+}*/
 
 var msgtests = []struct {
 	in   string

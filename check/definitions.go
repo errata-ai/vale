@@ -1,6 +1,7 @@
 package check
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -10,6 +11,10 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/validator.v2"
 )
+
+func init() {
+	validator.SetValidationFunc("level", isValidLevel)
+}
 
 var defaultStyles = []string{"Vale"}
 var extensionPoints = []string{
@@ -49,8 +54,8 @@ type Definition struct {
 	Action      core.Action
 	Code        bool
 	Description string
-	Extends     string `validate:"regexp=^[a-zA-Z]*$"`
-	Level       string
+	Extends     string
+	Level       string `validate:"level"`
 	Limit       int
 	Link        string
 	Message     string
@@ -205,53 +210,51 @@ type Sequence struct {
 
 type baseCheck map[string]interface{}
 
-var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager) error{
-	"existence": func(name string, generic baseCheck, mgr *Manager) error {
+var checkBuilders = map[string]func(name, path string, generic baseCheck, mgr *Manager) error{
+	"existence": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Existence{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addExistenceCheck(name, def)
 		}
 		return nil
 	},
-	"substitution": func(name string, generic baseCheck, mgr *Manager) error {
+	"substitution": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Substitution{}
 
 		err := mapstructure.Decode(generic, &def)
 		if err != nil {
-			fmt.Println("BYE", err)
-			return err
+			return readStructureError(err, name, path)
 		}
 
 		err = validator.Validate(def)
 		if err != nil {
-			return err
+			return readValueError(err, name, path)
 		}
 
-		mgr.addSubstitutionCheck(name, def)
-		return nil
+		return mgr.addSubstitutionCheck(name, path, def)
 	},
-	"occurrence": func(name string, generic baseCheck, mgr *Manager) error {
+	"occurrence": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Occurrence{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addOccurrenceCheck(name, def)
 		}
 		return nil
 	},
-	"repetition": func(name string, generic baseCheck, mgr *Manager) error {
+	"repetition": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Repetition{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addRepetitionCheck(name, def)
 		}
 		return nil
 	},
-	"consistency": func(name string, generic baseCheck, mgr *Manager) error {
+	"consistency": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Consistency{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addConsistencyCheck(name, def)
 		}
 		return nil
 	},
-	"conditional": func(name string, generic baseCheck, mgr *Manager) error {
+	"conditional": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Conditional{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			for term := range mgr.Config.AcceptedTokens {
@@ -262,7 +265,7 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 		}
 		return nil
 	},
-	"capitalization": func(name string, generic baseCheck, mgr *Manager) error {
+	"capitalization": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Capitalization{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			for term := range mgr.Config.AcceptedTokens {
@@ -273,14 +276,14 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 		}
 		return nil
 	},
-	"readability": func(name string, generic baseCheck, mgr *Manager) error {
+	"readability": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Readability{}
 		if err := mapstructure.Decode(generic, &def); err == nil {
 			mgr.addReadabilityCheck(name, def)
 		}
 		return nil
 	},
-	"spelling": func(name string, generic baseCheck, mgr *Manager) error {
+	"spelling": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Spelling{}
 
 		if generic["filters"] != nil {
@@ -320,7 +323,7 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 		}
 		return nil
 	},
-	"sequence": func(name string, generic baseCheck, mgr *Manager) error {
+	"sequence": func(name, path string, generic baseCheck, mgr *Manager) error {
 		def := Sequence{}
 
 		for _, token := range generic["tokens"].([]interface{}) {
@@ -342,14 +345,57 @@ var checkBuilders = map[string]func(name string, generic baseCheck, mgr *Manager
 	},
 }
 
-func validateDefinition(generic map[string]interface{}, name string) error {
-	msg := name + ": %s!"
+func validateDefinition(generic map[string]interface{}, name, path string) error {
 	if point, ok := generic["extends"]; !ok {
-		return fmt.Errorf(msg, "missing extension point")
+		return core.NewE201FromPosition(
+			fmt.Sprintf("'%s' is missing the required 'extends' key.", name),
+			path,
+			1)
 	} else if !core.StringInSlice(point.(string), extensionPoints) {
-		return fmt.Errorf(msg, "unknown extension point")
+		key := point.(string)
+		return core.NewE201FromTarget(
+			fmt.Sprintf("'extends' key must be one of %v.", extensionPoints),
+			key,
+			path)
 	} else if _, ok := generic["message"]; !ok {
-		return fmt.Errorf(msg, "missing message")
+		return core.NewE201FromPosition(
+			fmt.Sprintf("'%s' is missing the required 'message' key.", name),
+			path,
+			1)
 	}
 	return nil
+}
+
+func isValidLevel(v interface{}, param string) error {
+	st := reflect.ValueOf(v)
+	rx := regexp.MustCompile(`(?:suggestion|warning|error)$`)
+	if !rx.MatchString(st.String()) {
+		return errors.New(
+			"key 'level' must be 'suggestion', 'warning', or 'error'")
+	}
+	return nil
+}
+
+func readStructureError(err error, name, path string) error {
+	r := regexp.MustCompile(`\* '(.+)' (.+)`)
+	if r.MatchString(err.Error()) {
+		groups := r.FindStringSubmatch(err.Error())
+		return core.NewE201FromTarget(
+			fmt.Sprintf("Failed to parse '%s': %s", name, groups[2]),
+			strings.ToLower(groups[1]),
+			path)
+	}
+	return err
+}
+
+func readValueError(err error, name, path string) error {
+	r := regexp.MustCompile(`Definition\.(\w+): (.+)`)
+	if r.MatchString(err.Error()) {
+		groups := r.FindStringSubmatch(err.Error())
+		return core.NewE201FromTarget(
+			fmt.Sprintf("Failed to parse '%s': %s", name, groups[2]),
+			strings.ToLower(groups[1]),
+			path)
+	}
+	return err
 }
