@@ -288,7 +288,7 @@ func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 
 	results := make(chan core.Alert)
 	for name, chk := range l.CheckManager.AllChecks {
-		if chk.Code && hasCode && !l.CheckManager.Config.Simple {
+		if chk.Fields().Code && hasCode && !l.CheckManager.Config.Simple {
 			txt = blk.Raw
 		} else {
 			txt = blk.Text
@@ -299,9 +299,10 @@ func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 		}
 
 		wg.Add(1)
-		go func(txt, name string, f *core.File, chk check.Check) {
-			for _, a := range chk.Rule(txt, f) {
-				core.FormatAlert(&a, chk.Level, chk.Limit, name)
+		go func(txt, name string, f *core.File, chk check.Rule) {
+			info := chk.Fields()
+			for _, a := range chk.Run(txt, f) {
+				core.FormatAlert(&a, info.Limit, info.Level, name)
 				results <- a
 			}
 			wg.Done()
@@ -318,10 +319,11 @@ func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 	}
 }
 
-func (l *Linter) shouldRun(name string, f *core.File, chk check.Check, blk core.Block) bool {
+func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk core.Block) bool {
 	min := l.CheckManager.Config.MinAlertLevel
 	run := false
 
+	details := chk.Fields()
 	if strings.Count(name, ".") > 1 {
 		// NOTE: This fixes the loading issue with consistency checks.
 		//
@@ -333,7 +335,9 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Check, blk core.
 	// It has been disabled via an in-text comment.
 	if f.QueryComments(name) {
 		return false
-	} else if chk.Level < min || !blk.Scope.Contains(chk.Scope) {
+	} else if core.LevelToInt[details.Level] < min {
+		return false
+	} else if !blk.Scope.ContainsString(details.Scope) {
 		return false
 	}
 

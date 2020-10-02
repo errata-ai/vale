@@ -3,6 +3,7 @@ package core
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -43,7 +44,7 @@ func annotate(file []byte, target string, finder errorCondition) (lineError, err
 	var sb strings.Builder
 
 	scanner := bufio.NewScanner(bytes.NewBuffer(file))
-	context := lineError{}
+	context := lineError{span: []int{1, 1}}
 
 	idx := 1
 	for scanner.Scan() {
@@ -120,7 +121,7 @@ func NewE201(msg, value, path string, finder errorCondition) error {
 
 	f, err := ioutil.ReadFile(path)
 	if err != nil {
-		return NewE100("NewE201/ReadFile", err)
+		return NewE100("NewE201", errors.New(msg))
 	}
 
 	lexer := lexers.Match(path)

@@ -1,0 +1,139 @@
+package check
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/errata-ai/vale/config"
+	"github.com/errata-ai/vale/core"
+	"github.com/jdkato/regexp"
+	"github.com/mitchellh/mapstructure"
+)
+
+// Substitution switches the values of Swap for its keys.
+type Substitution struct {
+	Definition `mapstructure:",squash"`
+	// `ignorecase` (`bool`): Makes all matches case-insensitive.
+	Ignorecase bool
+	// `nonword` (`bool`): Removes the default word boundaries (`\b`).
+	Nonword bool
+	// `swap` (`map`): A sequence of `observed: expected` pairs.
+	Swap map[string]string
+	// `pos` (`string`): A regular expression matching tokens to parts of
+	// speech.
+	POS string
+
+	pattern *regexp.Regexp
+	repl    []string
+}
+
+// NewSubstitution ...
+func NewSubstitution(cfg *config.Config, generic baseCheck) (Substitution, error) {
+	rule := Substitution{}
+	path := generic["path"].(string)
+
+	err := mapstructure.Decode(generic, &rule)
+	if err != nil {
+		return rule, readStructureError(err, path)
+	}
+	tokens := ""
+
+	regex := makeRegexp(
+		cfg.WordTemplate,
+		rule.Ignorecase,
+		func() bool { return !rule.Nonword },
+		func() string { return "" }, true)
+
+	replacements := []string{}
+	for regexstr, replacement := range rule.Swap {
+		opens := strings.Count(regexstr, "(")
+		if opens != strings.Count(regexstr, "?:") &&
+			opens != strings.Count(regexstr, `\(`) {
+			// We rely on manually-added capture groups to associate a match
+			// with its replacement -- e.g.,
+			//
+			//    `(foo)|(bar)`, [replacement1, replacement2]
+			//
+			// where the first capture group ("foo") corresponds to the first
+			// element of the replacements slice ("replacement1"). This means
+			// that we can only accept non-capture groups from the user (the
+			// indexing would be mixed up otherwise).
+			//
+			// TODO: Should we change this? Perhaps by creating a map of regex
+			// to replacements?
+			continue
+		}
+		tokens += `(` + regexstr + `)|`
+		replacements = append(replacements, replacement)
+	}
+	regex = fmt.Sprintf(regex, strings.TrimRight(tokens, "|"))
+
+	re, err := regexp.Compile(regex)
+	if err != nil {
+		return rule, core.NewE201FromPosition(err.Error(), path, 1)
+	}
+
+	rule.pattern = re
+	rule.repl = replacements
+	return rule, nil
+}
+
+// Run ...
+func (s Substitution) Run(txt string, f *core.File) []core.Alert {
+	alerts := []core.Alert{}
+	pos := false
+
+	// Leave early if we can to avoid calling `FindAllStringSubmatchIndex`
+	// unnecessarily.
+	if !s.pattern.MatchString(txt) {
+		return alerts
+	}
+
+	for _, submat := range s.pattern.FindAllStringSubmatchIndex(txt, -1) {
+		for idx, mat := range submat {
+			if mat != -1 && idx > 0 && idx%2 == 0 {
+				loc := []int{mat, submat[idx+1]}
+				// Based on the current capture group (`idx`), we can determine
+				// the associated replacement string by using the `repl` slice:
+				expected := s.repl[(idx/2)-1]
+				r, err := regexp.Compile(expected)
+
+				observed := strings.TrimSpace(txt[loc[0]:loc[1]])
+				if (err != nil && expected != observed) || !r.MatchString(observed) {
+					if s.POS != "" {
+						// If we're given a POS pattern, check that it matches.
+						//
+						// If it doesn't match, the alert doesn't get added to
+						// a File (i.e., `hide` == true).
+						pos = core.CheckPOS(loc, s.POS, txt)
+					}
+					if s.Action.Name == "replace" && len(s.Action.Params) == 0 {
+						s.Action.Params = strings.Split(expected, "|")
+						expected = core.ToSentence(s.Action.Params, "or")
+					}
+					a := core.Alert{
+						Check: s.Name, Severity: s.Level, Span: loc,
+						Link: s.Link, Hide: pos, Match: observed,
+						Action: s.Action}
+
+					a.Message, a.Description = formatMessages(s.Message,
+						s.Description, expected, observed)
+
+					alerts = append(alerts, a)
+				}
+			}
+		}
+	}
+
+	return alerts
+}
+
+// Fields ...
+func (s Substitution) Fields() Definition {
+	return s.Definition
+}
+
+// Pattern ...
+func (s Substitution) Pattern() string {
+	return s.pattern.String()
+}

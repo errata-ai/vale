@@ -139,6 +139,12 @@ func (s Selector) Contains(sel Selector) bool {
 	return AllStringsInSlice(sel.Sections(), s.Sections())
 }
 
+// ContainsString determines if all if sel's sections are in s.
+func (s Selector) ContainsString(scope string) bool {
+	sel := Selector{Value: scope}
+	return AllStringsInSlice(sel.Sections(), s.Sections())
+}
+
 // Equal determines if sel == s.
 func (s Selector) Equal(sel Selector) bool { return s.Value == sel.Value }
 
@@ -273,9 +279,9 @@ func (f *File) FindLoc(ctx, s string, pad, count int, a Alert) (int, []int) {
 }
 
 // FormatAlert ensures that all required fields have data.
-func FormatAlert(a *Alert, level, limit int, name string) {
+func FormatAlert(a *Alert, limit int, level, name string) {
 	if a.Severity == "" {
-		a.Severity = AlertLevels[level]
+		a.Severity = level
 	}
 	if a.Check == "" {
 		a.Check = name

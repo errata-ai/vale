@@ -3,7 +3,6 @@ package action
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"path/filepath"
 	"strings"
 
@@ -52,14 +51,14 @@ func CompileRule(config *config.Config, path string) error {
 		fName := filepath.Base(path)
 
 		mgr := check.Manager{
-			AllChecks: make(map[string]check.Check),
+			AllChecks: make(map[string]check.Rule),
 			Config:    config,
 			Scopes:    make(map[string]struct{}),
 		}
 
-		if core.CheckError(mgr.Compile(fName, path), true) {
+		if core.CheckError(mgr.LoadCheck(fName, path), true) {
 			for _, v := range mgr.AllChecks {
-				fmt.Print(v.Pattern)
+				fmt.Print(v.Pattern())
 			}
 		}
 	}
@@ -69,11 +68,6 @@ func CompileRule(config *config.Config, path string) error {
 // TestRule returns the linting results for a single rule
 func TestRule(args []string) error {
 	if len(args) == 2 && core.FileExists(args[0]) && core.FileExists(args[1]) {
-		rule, err := ioutil.ReadFile(args[0])
-		if err != nil {
-			return err
-		}
-
 		// Create a pre-filled configuration:
 		cfg, err := config.New()
 		if err != nil {
@@ -86,12 +80,12 @@ func TestRule(args []string) error {
 
 		// Create our check manager:
 		mgr := check.Manager{
-			AllChecks: make(map[string]check.Check),
+			AllChecks: make(map[string]check.Rule),
 			Config:    cfg,
 			Scopes:    make(map[string]struct{}),
 		}
 
-		err = mgr.AddCheck(rule, "Test.Rule")
+		err = mgr.LoadCheck(args[0], "Test.Rule")
 		if err != nil {
 			return err
 		}
