@@ -26,13 +26,18 @@ type Existence struct {
 	// non-capturing group.
 	Tokens []string
 
+	// `pattern` is created from the above options in `NewExistence`.
 	pattern *regexp.Regexp
 }
 
-// NewExistence ...
+// NewExistence creates a new `Rule` that extends `Existence`.
 func NewExistence(cfg *config.Config, generic baseCheck) (Existence, error) {
 	rule := Existence{}
-	path := generic["path"].(string)
+
+	path := ""
+	if p, ok := generic["path"].(string); !ok {
+		path = p
+	}
 
 	err := mapstructure.Decode(generic, &rule)
 	if err != nil {
@@ -57,22 +62,26 @@ func NewExistence(cfg *config.Config, generic baseCheck) (Existence, error) {
 	return rule, nil
 }
 
-// Run ...
-func (e Existence) Run(txt string, f *core.File) []core.Alert {
+// Run executes the the existence-based rule.
+//
+// This is simplest of the available extension points: it looks for any matches
+// of its internal `pattern` (calculated from `NewExistence`) against the
+// provided text.
+func (e Existence) Run(text string, file *core.File) []core.Alert {
 	alerts := []core.Alert{}
-	locs := e.pattern.FindAllStringIndex(txt, -1)
+	locs := e.pattern.FindAllStringIndex(text, -1)
 	for _, loc := range locs {
-		alerts = append(alerts, makeAlert(e.Definition, loc, txt))
+		alerts = append(alerts, makeAlert(e.Definition, loc, text))
 	}
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (e Existence) Fields() Definition {
 	return e.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (e Existence) Pattern() string {
 	return e.pattern.String()
 }
