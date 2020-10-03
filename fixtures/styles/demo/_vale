@@ -13,6 +13,7 @@ demo.Spellcheck = NO
 demo.Filters = NO
 demo.SentenceCase = NO
 demo.TitleCase = NO
+demo.Cap = NO
 
 Limit.Rule = YES
 

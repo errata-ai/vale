@@ -1,0 +1,11 @@
+extends: capitalization
+message: "'%s' should be in title case."
+level: error
+scope: heading
+match: $title
+style: Chicago
+exceptions:
+  - foo
+  - bar
+  - lorem
+  - ipsum

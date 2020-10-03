@@ -19,6 +19,12 @@ Feature: Checks
       text.rst:20:13:Vale.Repetition:'be' is repeated!
       """
 
+  Scenario: Capitalization
+    When I test "checks/Capitalization"
+    Then the output should contain exactly:
+      """
+      """
+
   Scenario: Sequence
     When I test "checks/Sequence"
     Then the output should contain exactly:
