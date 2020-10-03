@@ -26,22 +26,21 @@ If you'd like to support the continued development and support of Vale, you may 
 
 Both of these options allow me ([@jdkato](https://github.com/jdkato)) to dedicate more time to *maintaining* (e.g., bug fixes, feature requests, support questions, and documentation improvements) Vale and its collection of open-source and permissively-licensed [styles](https://github.com/errata-ai/styles), integrations, and extensions.
 
-
-### Individuals
-
-<a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/individuals.svg?width=890"></a>
-
 ### Organizations
 
 Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/vale/contribute)]
 
-<a href="https://opencollective.com/vale/organization/0/website"><img src="https://opencollective.com/vale/organization/0/avatar.svg"></a>
-<a href="https://opencollective.com/vale/organization/1/website"><img src="https://opencollective.com/vale/organization/1/avatar.svg"></a>
-<a href="https://opencollective.com/vale/organization/2/website"><img src="https://opencollective.com/vale/organization/2/avatar.svg"></a>
-<a href="https://opencollective.com/vale/organization/3/website"><img src="https://opencollective.com/vale/organization/3/avatar.svg"></a>
-<a href="https://opencollective.com/vale/organization/4/website"><img src="https://opencollective.com/vale/organization/4/avatar.svg"></a>
-<a href="https://opencollective.com/vale/organization/5/website"><img src="https://opencollective.com/vale/organization/5/avatar.svg"></a>
-<a href="https://opencollective.com/vale/organization/6/website"><img src="https://opencollective.com/vale/organization/6/avatar.svg"></a>
-<a href="https://opencollective.com/vale/organization/7/website"><img src="https://opencollective.com/vale/organization/7/avatar.svg"></a>
-<a href="https://opencollective.com/vale/organization/8/website"><img src="https://opencollective.com/vale/organization/8/avatar.svg"></a>
-<a href="https://opencollective.com/vale/organization/9/website"><img src="https://opencollective.com/vale/organization/9/avatar.svg"></a>
+<a href="https://opencollective.com/vale/organization/0/website"><img src="https://opencollective.com/vale/organization/0/avatar.svg?avatarHeight=100"></a>
+<a href="https://opencollective.com/vale/organization/1/website"><img src="https://opencollective.com/vale/organization/1/avatar.svg?avatarHeight=100"></a>
+<a href="https://opencollective.com/vale/organization/2/website"><img src="https://opencollective.com/vale/organization/2/avatar.svg?avatarHeight=100"></a>
+<a href="https://opencollective.com/vale/organization/3/website"><img src="https://opencollective.com/vale/organization/3/avatar.svg?avatarHeight=100"></a>
+<a href="https://opencollective.com/vale/organization/4/website"><img src="https://opencollective.com/vale/organization/4/avatar.svg?avatarHeight=100"></a>
+<a href="https://opencollective.com/vale/organization/5/website"><img src="https://opencollective.com/vale/organization/5/avatar.svg?avatarHeight=100"></a>
+<a href="https://opencollective.com/vale/organization/6/website"><img src="https://opencollective.com/vale/organization/6/avatar.svg?avatarHeight=100"></a>
+<a href="https://opencollective.com/vale/organization/7/website"><img src="https://opencollective.com/vale/organization/7/avatar.svg?avatarHeight=100"></a>
+<a href="https://opencollective.com/vale/organization/8/website"><img src="https://opencollective.com/vale/organization/8/avatar.svg?avatarHeight=100"></a>
+<a href="https://opencollective.com/vale/organization/9/website"><img src="https://opencollective.com/vale/organization/9/avatar.svg?avatarHeight=100"></a>
+
+### Individuals
+
+<a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/individuals.svg?width=890"></a>
