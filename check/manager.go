@@ -20,9 +20,11 @@ const (
 
 // Manager controls the loading and validating of the check extension points.
 type Manager struct {
-	AllChecks map[string]Rule
-	Config    *config.Config
-	Scopes    map[string]struct{}
+	Config *config.Config
+
+	scopes map[string]struct{}
+	rules  map[string]Rule
+	styles []string
 }
 
 // NewManager creates a new Manager and loads the rule definitions (that is,
@@ -31,33 +33,22 @@ func NewManager(config *config.Config) (*Manager, error) {
 	var path string
 
 	mgr := Manager{
-		AllChecks: make(map[string]Rule),
-		Config:    config,
-		Scopes:    make(map[string]struct{}),
+		Config: config,
+
+		rules:  make(map[string]Rule),
+		scopes: make(map[string]struct{}),
 	}
 
-	// loadedStyles keeps track of the styles we've loaded as we go.
-	loadedStyles := []string{}
+	err := mgr.loadDefaultRules()
 	if mgr.Config.StylesPath == "" {
 		// If we're not given a StylesPath, there's nothing left to look for.
-		err := mgr.loadDefaultRules(loadedStyles)
 		return &mgr, err
 	}
 
-	// Load our global `BasedOnStyles` ...
-	loaded, err := mgr.loadStyles(mgr.Config.GBaseStyles, loadedStyles)
+	// Load our styles ...
+	err = mgr.loadStyles(mgr.Config.Styles)
 	if err != nil {
 		return &mgr, err
-	}
-	loadedStyles = append(loadedStyles, loaded...)
-
-	// Load our section-specific `BasedOnStyles` ...
-	for _, styles := range mgr.Config.SBaseStyles {
-		loaded, err := mgr.loadStyles(styles, loadedStyles)
-		if err != nil {
-			return &mgr, err
-		}
-		loadedStyles = append(loadedStyles, loaded...)
 	}
 
 	for _, chk := range mgr.Config.Checks {
@@ -67,40 +58,67 @@ func NewManager(config *config.Config) (*Manager, error) {
 			continue
 		}
 		parts := strings.Split(chk, ".")
-		if !core.StringInSlice(parts[0], loadedStyles) && !core.StringInSlice(parts[0], defaultStyles) {
+		if !mgr.hasStyle(parts[0]) {
 			// If this rule isn't part of an already-loaded style, we load it
 			// individually.
 			fName := parts[1] + ".yml"
 			path = filepath.Join(mgr.Config.StylesPath, parts[0], fName)
-			if err = mgr.LoadCheck(fName, path); err != nil {
+			if err = mgr.AddRuleFromSource(fName, path); err != nil {
 				return &mgr, err
 			}
 		}
 	}
 
-	// Finally, after reading the user's `StylesPath`, we load our built-in
-	// styles:
-	err = mgr.loadDefaultRules(loadedStyles)
 	return &mgr, err
 }
 
-// LoadCheck adds the given external check to the manager.
-func (mgr *Manager) LoadCheck(fName string, fp string) error {
-	if strings.HasSuffix(fName, ".yml") {
-		f, err := mgr.Config.FsWrapper.ReadFile(fp)
+// AddRule adds the given rule to the manager.
+func (mgr *Manager) AddRule(name string, rule Rule) error {
+	if _, found := mgr.rules[name]; !found {
+		mgr.rules[name] = rule
+		return nil
+	}
+	return fmt.Errorf("the rule '%s' has already been added", name)
+}
+
+// AddRuleFromSource adds the given rule to the manager.
+func (mgr *Manager) AddRuleFromSource(name, path string) error {
+	if strings.HasSuffix(name, ".yml") {
+		f, err := mgr.Config.FsWrapper.ReadFile(path)
 		if err != nil {
-			return fmt.Errorf("failed to load rule '%s'.\n\n%v", fName, err)
+			return fmt.Errorf("failed to load rule '%s'.\n\n%v", name, err)
 		}
 
-		style := filepath.Base(filepath.Dir(fp))
-		chkName := style + "." + strings.Split(fName, ".")[0]
-		if _, ok := mgr.AllChecks[chkName]; !ok {
-			if err = mgr.addCheck(f, chkName, fp); err != nil {
+		style := filepath.Base(filepath.Dir(path))
+		chkName := style + "." + strings.Split(name, ".")[0]
+		if _, ok := mgr.rules[chkName]; !ok {
+			if err = mgr.addCheck(f, chkName, path); err != nil {
 				return err
 			}
 		}
 	}
 	return nil
+}
+
+// Rules are all of the Manager's compiled `Rule`s.
+func (mgr *Manager) Rules() map[string]Rule {
+	return mgr.rules
+}
+
+// HasScope returns `true` if the manager has a rule that applies to `scope`.
+func (mgr *Manager) HasScope(scope string) bool {
+	_, found := mgr.scopes[scope]
+	return found
+}
+
+func (mgr *Manager) addStyle(path string) error {
+	return mgr.Config.FsWrapper.Walk(path,
+		func(fp string, fi os.FileInfo, err error) error {
+			if err != nil || fi.IsDir() {
+				return err
+			}
+			return mgr.AddRuleFromSource(fi.Name(), fp)
+		})
 }
 
 func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
@@ -123,31 +141,20 @@ func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
 		generic["scope"] = "text"
 	}
 
-	rule, err := BuildRule(mgr.Config, generic)
+	rule, err := buildRule(mgr.Config, generic)
 	if err != nil {
 		return err
 	}
 
 	base := strings.Split(generic["scope"].(string), ".")[0]
-	mgr.Scopes[base] = struct{}{}
+	mgr.scopes[base] = struct{}{}
 
-	mgr.AllChecks[chkName] = rule
-	return nil
+	return mgr.AddRule(chkName, rule)
 }
 
-func (mgr *Manager) loadExternalStyle(path string) error {
-	return mgr.Config.FsWrapper.Walk(path,
-		func(fp string, fi os.FileInfo, err error) error {
-			if err != nil || fi.IsDir() {
-				return err
-			}
-			return mgr.LoadCheck(fi.Name(), fp)
-		})
-}
-
-func (mgr *Manager) loadDefaultRules(loaded []string) error {
+func (mgr *Manager) loadDefaultRules() error {
 	for _, style := range defaultStyles {
-		if core.StringInSlice(style, loaded) {
+		if core.StringInSlice(style, mgr.styles) {
 			// The user has a style on their `StylesPath` with the same
 			// name as a built-in style.
 			//
@@ -181,25 +188,26 @@ func (mgr *Manager) loadDefaultRules(loaded []string) error {
 	return nil
 }
 
-func (mgr *Manager) loadStyles(styles []string, loaded []string) ([]string, error) {
+func (mgr *Manager) loadStyles(styles []string) error {
 	var found []string
 
 	baseDir := mgr.Config.StylesPath
 	for _, style := range styles {
 		p := filepath.Join(baseDir, style)
-		if core.StringInSlice(style, loaded) || core.StringInSlice(style, defaultStyles) {
+		if mgr.hasStyle(style) {
 			// We've already loaded this style.
 			continue
 		} else if has, _ := mgr.Config.FsWrapper.DirExists(p); !has {
-			return found, errors.New("missing style: '" + style + "'")
+			return errors.New("missing style: '" + style + "'")
 		}
-		if err := mgr.loadExternalStyle(p); err != nil {
-			return found, err
+		if err := mgr.addStyle(p); err != nil {
+			return err
 		}
 		found = append(found, style)
 	}
 
-	return found, nil
+	mgr.styles = append(mgr.styles, found...)
+	return nil
 }
 
 func (mgr *Manager) loadVocabRules() {
@@ -210,8 +218,8 @@ func (mgr *Manager) loadVocabRules() {
 				vocab["swap"].(map[string]string)[strings.ToLower(term)] = term
 			}
 		}
-		rule, _ := BuildRule(mgr.Config, vocab)
-		mgr.AllChecks["Vale.Terms"] = rule
+		rule, _ := buildRule(mgr.Config, vocab)
+		mgr.rules["Vale.Terms"] = rule
 	}
 
 	if len(mgr.Config.RejectedTokens) > 0 {
@@ -219,12 +227,17 @@ func (mgr *Manager) loadVocabRules() {
 		for term := range mgr.Config.RejectedTokens {
 			avoid["tokens"] = append(avoid["tokens"].([]string), term)
 		}
-		rule, _ := BuildRule(mgr.Config, avoid)
-		mgr.AllChecks["Vale.Avoid"] = rule
+		rule, _ := buildRule(mgr.Config, avoid)
+		mgr.rules["Vale.Avoid"] = rule
 	}
 
 	if mgr.Config.LTPath != "" {
-		rule, _ := BuildRule(mgr.Config, defaultRules["Grammar"])
-		mgr.AllChecks["LanguageTool.Grammar"] = rule
+		rule, _ := buildRule(mgr.Config, defaultRules["Grammar"])
+		mgr.rules["LanguageTool.Grammar"] = rule
 	}
+}
+
+func (mgr *Manager) hasStyle(name string) bool {
+	styles := append(mgr.styles, defaultStyles...)
+	return core.StringInSlice(name, styles)
 }

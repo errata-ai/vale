@@ -17,7 +17,7 @@ type Existence struct {
 	// defined.
 	Append bool
 	// `ignorecase` (`bool`): Makes all matches case-insensitive.
-	Ignorecase bool
+	IgnoreCase bool
 	// `nonword` (`bool`): Removes the default word boundaries (`\b`).
 	Nonword bool
 	// `raw` (`array`): A list of tokens to be concatenated into a pattern.
@@ -46,7 +46,7 @@ func NewExistence(cfg *config.Config, generic baseCheck) (Existence, error) {
 
 	regex := makeRegexp(
 		cfg.WordTemplate,
-		rule.Ignorecase,
+		rule.IgnoreCase,
 		func() bool { return !rule.Nonword && len(rule.Tokens) > 0 },
 		func() string { return strings.Join(rule.Raw, "") },
 		rule.Append)

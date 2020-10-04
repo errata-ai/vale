@@ -238,10 +238,7 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 	text := core.PrepText(txt)
 	rawText := core.PrepText(raw)
 
-	_, hasP := l.CheckManager.Scopes["paragraph"]
-	_, hasS := l.CheckManager.Scopes["sentence"]
-
-	if hasP || hasS {
+	if l.CheckManager.HasScope("paragraph") || l.CheckManager.HasScope("sentence") {
 		senScope := "sentence" + f.RealExt
 		hasCtx := ctx != ""
 		for _, p := range strings.SplitAfter(text, "\n\n") {
@@ -287,7 +284,7 @@ func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 	hasCode := core.StringInSlice(f.NormedExt, []string{".md", ".adoc", ".rst"})
 
 	results := make(chan core.Alert)
-	for name, chk := range l.CheckManager.AllChecks {
+	for name, chk := range l.CheckManager.Rules() {
 		if chk.Fields().Code && hasCode && !l.CheckManager.Config.Simple {
 			txt = blk.Raw
 		} else {

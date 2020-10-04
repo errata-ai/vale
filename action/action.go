@@ -50,14 +50,14 @@ func CompileRule(config *config.Config, path string) error {
 	} else {
 		fName := filepath.Base(path)
 
-		mgr := check.Manager{
-			AllChecks: make(map[string]check.Rule),
-			Config:    config,
-			Scopes:    make(map[string]struct{}),
+		// Create our check manager:
+		mgr, err := check.NewManager(config)
+		if err != nil {
+			return err
 		}
 
-		if core.CheckError(mgr.LoadCheck(fName, path), true) {
-			for _, v := range mgr.AllChecks {
+		if core.CheckError(mgr.AddRuleFromSource(fName, path), true) {
+			for _, v := range mgr.Rules() {
 				fmt.Print(v.Pattern())
 			}
 		}
@@ -79,17 +79,16 @@ func TestRule(args []string) error {
 		cfg.InExt = ".txt" // default value
 
 		// Create our check manager:
-		mgr := check.Manager{
-			AllChecks: make(map[string]check.Rule),
-			Config:    cfg,
-			Scopes:    make(map[string]struct{}),
-		}
-
-		err = mgr.LoadCheck(args[0], "Test.Rule")
+		mgr, err := check.NewManager(cfg)
 		if err != nil {
 			return err
 		}
-		linter := lint.Linter{CheckManager: &mgr}
+
+		err = mgr.AddRuleFromSource(args[0], "Test.Rule")
+		if err != nil {
+			return err
+		}
+		linter := lint.Linter{CheckManager: mgr}
 
 		linted, err := linter.Lint([]string{args[1]}, "*")
 		if err != nil {

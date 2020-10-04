@@ -11,6 +11,28 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Rule represents in individual writing construct to enforce.
+type Rule interface {
+	Run(text string, file *core.File) []core.Alert
+	Fields() Definition
+	Pattern() string
+}
+
+// Definition holds the common attributes of rule definitions.
+type Definition struct {
+	Action      core.Action
+	Code        bool
+	Description string
+	Extends     string
+	Level       string
+	Limit       int
+	Link        string
+	Message     string
+	Name        string
+	Scope       string
+	Selector    core.Selector
+}
+
 var defaultStyles = []string{"Vale"}
 var extensionPoints = []string{
 	"capitalization",
@@ -56,30 +78,7 @@ var defaultRules = map[string]map[string]interface{}{
 
 type baseCheck map[string]interface{}
 
-// Rule represents in individual writing construct to enforce.
-type Rule interface {
-	Run(text string, file *core.File) []core.Alert
-	Fields() Definition
-	Pattern() string
-}
-
-// Definition holds the common attributes of rule definitions.
-type Definition struct {
-	Action      core.Action
-	Code        bool
-	Description string
-	Extends     string
-	Level       string
-	Limit       int
-	Link        string
-	Message     string
-	Name        string
-	Scope       string
-	Selector    core.Selector
-}
-
-// BuildRule creates a Rule from a `baseCheck`.
-func BuildRule(cfg *config.Config, generic baseCheck) (Rule, error) {
+func buildRule(cfg *config.Config, generic baseCheck) (Rule, error) {
 	name := generic["extends"].(string)
 
 	switch name {
