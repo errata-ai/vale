@@ -2,6 +2,7 @@ package lint
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -122,11 +123,11 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	act := bytes.NewBufferString("")
 
 	// The user has specified a custom list of tags/classes to ignore.
-	if len(l.CheckManager.Config.SkippedScopes) > 0 {
-		skipTags = l.CheckManager.Config.SkippedScopes
+	if len(l.Manager.Config.SkippedScopes) > 0 {
+		skipTags = l.Manager.Config.SkippedScopes
 	}
-	if len(l.CheckManager.Config.IgnoredClasses) > 0 {
-		skipClasses = append(skipClasses, l.CheckManager.Config.IgnoredClasses...)
+	if len(l.Manager.Config.IgnoredClasses) > 0 {
+		skipClasses = append(skipClasses, l.Manager.Config.IgnoredClasses...)
 	}
 
 	// queue holds each segment of text we encounter in a block, which we then
@@ -141,8 +142,8 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 	tokens := html.NewTokenizer(bytes.NewReader(fsrc))
 
 	skipped := []string{"tt", "code"}
-	if len(l.CheckManager.Config.IgnoredScopes) > 0 {
-		skipped = l.CheckManager.Config.IgnoredScopes
+	if len(l.Manager.Config.IgnoredScopes) > 0 {
+		skipped = l.Manager.Config.IgnoredScopes
 	}
 
 	for {
@@ -338,13 +339,15 @@ func (l Linter) lintHTML(f *core.File) {
 	l.lintHTMLTokens(f, f.Content, []byte(f.Content), 0)
 }
 
-func (l Linter) prep(content, block, inline, ext string) string {
+func (l Linter) prep(content, block, inline, ext string) (string, error) {
 	s := reFrontMatter.ReplaceAllString(content, block)
 	s = reExInfo.ReplaceAllString(s, "```")
 
-	for syntax, regexes := range l.CheckManager.Config.TokenIgnores {
+	for syntax, regexes := range l.Manager.Config.TokenIgnores {
 		sec, err := glob.Compile(syntax)
-		if core.CheckError(err, l.CheckManager.Config.Debug) && sec.Match(ext) {
+		if err != nil {
+			return s, err
+		} else if sec.Match(ext) {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
 				if err == nil {
@@ -354,9 +357,11 @@ func (l Linter) prep(content, block, inline, ext string) string {
 		}
 	}
 
-	for syntax, regexes := range l.CheckManager.Config.BlockIgnores {
+	for syntax, regexes := range l.Manager.Config.BlockIgnores {
 		sec, err := glob.Compile(syntax)
-		if core.CheckError(err, l.CheckManager.Config.Debug) && sec.Match(ext) {
+		if err != nil {
+			return s, err
+		} else if sec.Match(ext) {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
 				if err == nil {
@@ -374,150 +379,188 @@ func (l Linter) prep(content, block, inline, ext string) string {
 		}
 	}
 
-	return s
+	return s, nil
 }
 
-func (l Linter) lintMarkdown(f *core.File) {
+func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
 
-	s := l.prep(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
-	if core.CheckError(goldMd.Convert([]byte(s), &buf), l.CheckManager.Config.Debug) {
-		l.lintHTMLTokens(f, f.Content, buf.Bytes(), 0)
+	s, err := l.prep(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
+	if err != nil {
+		return core.NewE100(f.Path, err)
 	}
+
+	if err := goldMd.Convert([]byte(s), &buf); err != nil {
+		return core.NewE100(f.Path, err)
+	}
+
+	l.lintHTMLTokens(f, f.Content, buf.Bytes(), 0)
+	return nil
 }
 
-func (l Linter) lintSphinx(f *core.File) {
+func (l Linter) lintSphinx(f *core.File) error {
 	file := filepath.Base(f.Path)
 
 	built := strings.Replace(file, filepath.Ext(file), ".html", 1)
-	built = filepath.Join(l.CheckManager.Config.SphinxBuild, "html", built)
+	built = filepath.Join(l.Manager.Config.SphinxBuild, "html", built)
 
 	html, err := ioutil.ReadFile(built)
-	if core.CheckError(err, l.CheckManager.Config.Debug) {
-		l.lintHTMLTokens(f, f.Content, html, 0)
+	if err != nil {
+		return core.NewE100(f.Path, err)
 	}
+
+	l.lintHTMLTokens(f, f.Content, html, 0)
+	return nil
 }
 
-func (l Linter) lintRST(f *core.File, python string, rst2html string) {
-	if l.CheckManager.Config.SphinxBuild != "" {
-		l.lintSphinx(f)
-	} else {
-		var out bytes.Buffer
-		var cmd *exec.Cmd
+func (l Linter) lintRST(file *core.File) error {
+	rst2html := core.Which([]string{"rst2html", "rst2html.py"})
+	python := core.Which([]string{
+		"python", "py", "python.exe", "python3", "python3.exe", "py3"})
 
-		if runtime.GOOS == "windows" {
-			// rst2html is executable by default on Windows.
-			cmd = exec.Command(python, append([]string{rst2html}, rstArgs...)...)
-		} else {
-			cmd = exec.Command(rst2html, rstArgs...)
-		}
-
-		s := l.prep(f.Content, "\n::\n\n%s\n", "``$1``", ".rst")
-		s = reSphinx.ReplaceAllString(s, ".. code::")
-
-		cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(s, "::"))
-		cmd.Stdout = &out
-
-		errMsg := fmt.Sprintf(parseFail, rst2html)
-		if core.CheckErrorWithMsg(cmd.Run(), l.CheckManager.Config.Debug, errMsg) {
-			html := bytes.Replace(out.Bytes(), []byte("\r"), []byte(""), -1)
-			bodyStart := bytes.Index(html, []byte("<body>\n"))
-			if bodyStart < 0 {
-				bodyStart = -7
-			}
-			bodyEnd := bytes.Index(html, []byte("\n</body>"))
-			if bodyEnd < 0 || bodyEnd >= len(html) {
-				bodyEnd = len(html) - 1
-				if bodyEnd < 0 {
-					bodyEnd = 0
-				}
-			}
-			l.lintHTMLTokens(f, f.Content, html[bodyStart+7:bodyEnd], 0)
-		}
+	if rst2html == "" || python == "" {
+		return core.NewE100("lintRST", errors.New("rst2html not found"))
+	} else if l.Manager.Config.SphinxBuild != "" {
+		return l.lintSphinx(file)
 	}
-}
 
-func (l Linter) lintADoc(f *core.File, asciidoctor string) {
 	var out bytes.Buffer
+	var cmd *exec.Cmd
+
+	if runtime.GOOS == "windows" {
+		// rst2html is executable by default on Windows.
+		cmd = exec.Command(python, append([]string{rst2html}, rstArgs...)...)
+	} else {
+		cmd = exec.Command(rst2html, rstArgs...)
+	}
+
+	s, err := l.prep(file.Content, "\n::\n\n%s\n", "``$1``", ".rst")
+	if err != nil {
+		return core.NewE100(file.Path, err)
+	}
+	s = reSphinx.ReplaceAllString(s, ".. code::")
+
+	cmd.Stdin = strings.NewReader(reCodeBlock.ReplaceAllString(s, "::"))
+	cmd.Stdout = &out
+
+	if err := cmd.Run(); err != nil {
+		return core.NewE201FromPosition(err.Error(), file.Path, 1)
+	}
+
+	html := bytes.Replace(out.Bytes(), []byte("\r"), []byte(""), -1)
+	bodyStart := bytes.Index(html, []byte("<body>\n"))
+	if bodyStart < 0 {
+		bodyStart = -7
+	}
+	bodyEnd := bytes.Index(html, []byte("\n</body>"))
+	if bodyEnd < 0 || bodyEnd >= len(html) {
+		bodyEnd = len(html) - 1
+		if bodyEnd < 0 {
+			bodyEnd = 0
+		}
+	}
+	l.lintHTMLTokens(file, file.Content, html[bodyStart+7:bodyEnd], 0)
+
+	return nil
+}
+
+func (l Linter) lintADoc(file *core.File) error {
+	var out bytes.Buffer
+
+	asciidoctor := core.Which([]string{"asciidoctor"})
+	if asciidoctor == "" {
+		return core.NewE100("lintAdoc", errors.New("asciidoctor not found"))
+	}
+
 	cmd := exec.Command(asciidoctor, adocArgs...)
-	s := l.prep(f.Content, "\n----\n$1\n----\n", "`$1`", ".adoc")
+	s, err := l.prep(file.Content, "\n----\n$1\n----\n", "`$1`", ".adoc")
+	if err != nil {
+		return core.NewE100(file.Path, err)
+	}
 
 	cmd.Stdin = strings.NewReader(s)
 	cmd.Stdout = &out
 
-	errMsg := fmt.Sprintf(parseFail, asciidoctor)
-	if core.CheckErrorWithMsg(cmd.Run(), l.CheckManager.Config.Debug, errMsg) {
-		// NOTE: Asciidoctor converts "'" to "’".
-		//
-		// See #206.
-		var sanitizer = strings.NewReplacer(
-			"\u2018", "&apos;",
-			"\u2019", "&apos;",
-			"&#8217;", "&apos;",
-			"&rsquo;", "&apos;")
-		input := sanitizer.Replace(out.String())
-		l.lintHTMLTokens(f, f.Content, []byte(input), 0)
+	if err := cmd.Run(); err != nil {
+		return core.NewE100(file.Path, err)
 	}
+
+	// NOTE: Asciidoctor converts "'" to "’".
+	//
+	// See #206.
+	var sanitizer = strings.NewReplacer(
+		"\u2018", "&apos;",
+		"\u2019", "&apos;",
+		"&#8217;", "&apos;",
+		"&rsquo;", "&apos;")
+	input := sanitizer.Replace(out.String())
+
+	l.lintHTMLTokens(file, file.Content, []byte(input), 0)
+	return nil
 }
 
-func (l Linter) lintXML(f *core.File, xsltproc string) {
+func (l Linter) lintXML(file *core.File) error {
 	var out bytes.Buffer
 
-	xsltArgs = append(xsltArgs, []string{f.Transform, "-"}...)
+	xsltproc := core.Which([]string{"xsltproc", "xsltproc.exe"})
+	if xsltproc == "" {
+		return core.NewE100("lintXML", errors.New("xsltproc not found"))
+	} else if file.Transform == "" {
+		return core.NewE100(
+			"lintXML",
+			errors.New("no XSLT transform provided"))
+	}
+
+	xsltArgs = append(xsltArgs, []string{file.Transform, "-"}...)
 
 	cmd := exec.Command(xsltproc, xsltArgs...)
-	cmd.Stdin = strings.NewReader(f.Content)
+	cmd.Stdin = strings.NewReader(file.Content)
 	cmd.Stdout = &out
 
-	errMsg := fmt.Sprintf(parseFail, xsltproc)
-	if core.CheckErrorWithMsg(cmd.Run(), l.CheckManager.Config.Debug, errMsg) {
-		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
+	if err := cmd.Run(); err != nil {
+		return core.NewE100(file.Path, err)
 	}
+
+	l.lintHTMLTokens(file, file.Content, out.Bytes(), 0)
+	return nil
 }
 
-func (l Linter) lintDITA(f *core.File, dita string) {
+func (l Linter) lintDITA(file *core.File) error {
+	dita := core.Which([]string{"dita", "dita.bat"})
+	if dita == "" {
+		return core.NewE100("lintDITA", errors.New("dita not found"))
+	}
+
 	tempDir, err := ioutil.TempDir("", "dita-")
-	if core.CheckError(err, l.CheckManager.Config.Debug) {
-		defer os.RemoveAll(tempDir)
+	defer os.RemoveAll(tempDir)
 
-		// FIXME: The `dita` command is *slow* (~4s per file)!
-		cmd := exec.Command(dita, []string{
-			"-i", f.Path, "-f", "html5", "-o", tempDir, "--nav-toc=none"}...)
-
-		if core.CheckError(cmd.Run(), l.CheckManager.Config.Debug) {
-			basename := filepath.Base(f.Path)
-
-			data, err := ioutil.ReadFile(filepath.Join(
-				tempDir,
-				strings.TrimSuffix(basename, filepath.Ext(basename))+".html"))
-			if core.CheckError(err, l.CheckManager.Config.Debug) {
-				// NOTE: We have to remove the `<head>` tag to avoid
-				// introducing new content into the HTML.
-				head1 := bytes.Index(data, []byte("<head>"))
-				head2 := bytes.Index(data, []byte("</head>"))
-				l.lintHTMLTokens(
-					f, f.Content, append(data[:head1], data[head2:]...), 0)
-			}
-		}
-	}
-}
-
-func (l Linter) lintCustom(f *core.File, command string, args []string) {
-	var out bytes.Buffer
-
-	s := f.Content
-	if f.NormedExt == ".md" {
-		s = l.prep(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
-	} else if f.NormedExt == ".adoc" {
-		s = l.prep(f.Content, "\n----\n$1\n----\n", "`$1`", ".adoc")
-	} else if f.NormedExt == ".rst" {
-		s = l.prep(f.Content, "\n::\n\n%s\n", "``$1``", ".rst")
+	if err != nil {
+		return core.NewE201FromPosition(err.Error(), file.Path, 1)
 	}
 
-	cmd := exec.Command(command, args...)
-	cmd.Stdin = strings.NewReader(s)
-	cmd.Stdout = &out
-	if core.CheckError(cmd.Run(), l.CheckManager.Config.Debug) {
-		l.lintHTMLTokens(f, f.Content, out.Bytes(), 0)
+	// FIXME: The `dita` command is *slow* (~4s per file)!
+	cmd := exec.Command(dita, []string{
+		"-i", file.Path, "-f", "html5", "-o", tempDir, "--nav-toc=none"}...)
+
+	if err := cmd.Run(); err != nil {
+		return core.NewE100(file.Path, err)
 	}
+
+	basename := filepath.Base(file.Path)
+	data, err := ioutil.ReadFile(filepath.Join(
+		tempDir,
+		strings.TrimSuffix(basename, filepath.Ext(basename))+".html"))
+
+	if err != nil {
+		return core.NewE201FromPosition(err.Error(), file.Path, 1)
+	}
+
+	// NOTE: We have to remove the `<head>` tag to avoid
+	// introducing new content into the HTML.
+	head1 := bytes.Index(data, []byte("<head>"))
+	head2 := bytes.Index(data, []byte("</head>"))
+	l.lintHTMLTokens(
+		file, file.Content, append(data[:head1], data[head2:]...), 0)
+
+	return nil
 }

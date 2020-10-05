@@ -76,6 +76,12 @@ var defaultRules = map[string]map[string]interface{}{
 	},
 }
 
+const (
+	ignoreCase      = `(?i)`
+	wordTemplate    = `(?m)\b(?:%s)\b`
+	nonwordTemplate = `(?m)(?:%s)`
+)
+
 type baseCheck map[string]interface{}
 
 func buildRule(cfg *config.Config, generic baseCheck) (Rule, error) {

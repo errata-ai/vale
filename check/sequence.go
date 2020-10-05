@@ -98,20 +98,22 @@ func makeTokens(s *Sequence, generic baseCheck, cfg *config.Config) error {
 
 func tokensMatch(token NLPToken, word tag.Token) bool {
 	failedTag, err := regexp.MatchString(token.Tag, word.Tag)
-	if core.CheckError(err, false) {
-		failedTag = !failedTag
-
-		failedTok := (token.re != nil && token.re.MatchString(word.Text) == token.Negate)
-
-		if (token.Pattern == "" && failedTag) ||
-			(token.Tag == "" && failedTok) ||
-			(token.Tag != "" && token.Pattern != "") && (failedTag || failedTok) {
-			return false
-		}
-
-		return true
+	if err != nil {
+		// FIXME: return the error instead ...
+		panic(err)
 	}
-	return false
+
+	failedTag = !failedTag
+
+	failedTok := (token.re != nil && token.re.MatchString(word.Text) == token.Negate)
+
+	if (token.Pattern == "" && failedTag) ||
+		(token.Tag == "" && failedTok) ||
+		(token.Tag != "" && token.Pattern != "") && (failedTag || failedTok) {
+		return false
+	}
+
+	return true
 }
 
 func sequenceMatches(idx int, chk Sequence, target, src string) ([]string, int) {

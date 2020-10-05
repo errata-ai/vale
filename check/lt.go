@@ -30,7 +30,12 @@ func NewLanguageTool(cfg *config.Config, generic baseCheck) (LanguageTool, error
 
 // Run ...
 func (l LanguageTool) Run(text string, file *core.File) []core.Alert {
-	return rule.CheckWithLT(text, file, l.config)
+	alerts, err := rule.CheckWithLT(text, file, l.config)
+	if err != nil {
+		// FIXME: don't panic here
+		panic(err)
+	}
+	return alerts
 }
 
 // Fields ...

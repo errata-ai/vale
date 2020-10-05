@@ -56,10 +56,13 @@ func CompileRule(config *config.Config, path string) error {
 			return err
 		}
 
-		if core.CheckError(mgr.AddRuleFromSource(fName, path), true) {
-			for _, v := range mgr.Rules() {
-				fmt.Print(v.Pattern())
-			}
+		err = mgr.AddRuleFromSource(fName, path)
+		if err != nil {
+			return err
+		}
+
+		for _, v := range mgr.Rules() {
+			fmt.Print(v.Pattern())
 		}
 	}
 	return nil
@@ -88,7 +91,7 @@ func TestRule(args []string) error {
 		if err != nil {
 			return err
 		}
-		linter := lint.Linter{CheckManager: mgr}
+		linter := lint.Linter{Manager: mgr}
 
 		linted, err := linter.Lint([]string{args[1]}, "*")
 		if err != nil {

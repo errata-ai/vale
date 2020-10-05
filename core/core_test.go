@@ -30,7 +30,7 @@ var globTests = []struct {
 
 func TestGlob(t *testing.T) {
 	for _, tt := range globTests {
-		g := NewGlob(tt.pattern, false)
+		g, _ := NewGlob(tt.pattern)
 		for _, tc := range tt.tests {
 			test := fmt.Sprintf("%s -> %s", tt.pattern, tc.query)
 			if tc.match != g.Match(tc.query) {

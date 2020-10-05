@@ -39,17 +39,17 @@ func (g Glob) Match(query string) bool {
 }
 
 // NewGlob creates a Glob from the string pat.
-func NewGlob(pat string, debug bool) Glob {
+func NewGlob(pat string) (Glob, error) {
 	negate := false
 	if strings.HasPrefix(pat, "!") {
 		pat = strings.TrimLeft(pat, "!")
 		negate = true
 	}
-	g, gerr := glob.Compile(pat)
-	if !CheckError(gerr, debug) {
-		panic(gerr)
+	g, err := glob.Compile(pat)
+	if err != nil {
+		return Glob{}, err
 	}
-	return Glob{Pattern: g, Negated: negate}
+	return Glob{Pattern: g, Negated: negate}, nil
 }
 
 // A Block represents a section of text.
@@ -90,8 +90,9 @@ type File struct {
 	Simple     bool
 	Summary    bytes.Buffer // holds content to be included in summarization checks
 
-	history map[string]int
-	limits  map[string]int
+	history  map[string]int
+	limits   map[string]int
+	isGlobal bool
 }
 
 // An Action represents a possible solution to an Alert.
@@ -178,7 +179,7 @@ func (a ByName) Less(i, j int) bool {
 }
 
 // NewFile initilizes a File.
-func NewFile(src string, config *config.Config) *File {
+func NewFile(src string, config *config.Config) (*File, error) {
 	var scanner *bufio.Scanner
 	var format, ext string
 	var fbytes []byte
@@ -217,7 +218,9 @@ func NewFile(src string, config *config.Config) *File {
 	transform := ""
 	for sec, p := range config.Stylesheets {
 		pat, err := glob.Compile(sec)
-		if CheckError(err, config.Debug) && pat.Match(src) {
+		if err != nil {
+			return &File{}, NewE100(src, err)
+		} else if pat.Match(src) {
 			transform = p
 			break
 		}
@@ -233,7 +236,7 @@ func NewFile(src string, config *config.Config) *File {
 		Simple: config.Simple, Transform: transform, limits: make(map[string]int),
 	}
 
-	return &file
+	return &file, nil
 }
 
 // SortedAlerts returns all of f's alerts sorted by line and column.

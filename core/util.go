@@ -409,36 +409,9 @@ func ContainsAny(text string, slice []string) bool {
 	return false
 }
 
-// CheckError prints any errors to stdout. A return value of true => no error.
-func CheckError(err error, debug bool) bool {
-	if err != nil && debug {
-		fmt.Println(err.Error())
-	}
-	return err == nil
-}
-
-// CheckErrorWithMsg prints any errors to stdout.
-func CheckErrorWithMsg(err error, debug bool, message string) bool {
-	if err != nil && debug {
-		if message != "" {
-			fmt.Println(message)
-		} else {
-			fmt.Println(err.Error())
-		}
-	}
-	return err == nil
-}
-
 // LooksLikeStdin determines if s appears to be a string.
 func LooksLikeStdin(s string) bool {
-	return !(FileExists(s) || IsDir(s))
-}
-
-// CheckAndClose closes `file` and prints any errors to stdout.
-// A return value of true => no error.
-func CheckAndClose(file *os.File, debug bool) bool {
-	err := file.Close()
-	return CheckError(err, debug)
+	return !(FileExists(s) || IsDir(s)) && s != ""
 }
 
 // SplitLines splits on CRLF, CR not followed by LF, and LF.

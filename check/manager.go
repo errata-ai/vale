@@ -12,12 +12,6 @@ import (
 	"github.com/errata-ai/vale/rule"
 )
 
-const (
-	ignoreCase      = `(?i)`
-	wordTemplate    = `(?m)\b(?:%s)\b`
-	nonwordTemplate = `(?m)(?:%s)`
-)
-
 // Manager controls the loading and validating of the check extension points.
 type Manager struct {
 	Config *config.Config
@@ -86,7 +80,7 @@ func (mgr *Manager) AddRuleFromSource(name, path string) error {
 	if strings.HasSuffix(name, ".yml") {
 		f, err := mgr.Config.FsWrapper.ReadFile(path)
 		if err != nil {
-			return fmt.Errorf("failed to load rule '%s'.\n\n%v", name, err)
+			return core.NewE201FromPosition(err.Error(), path, 1)
 		}
 
 		style := filepath.Base(filepath.Dir(path))

@@ -60,17 +60,19 @@ type LTResult struct {
 // CheckWithLT interfaces with a running instace of LanguageTool.
 //
 // TODO: How do we speed this up?
-func CheckWithLT(text string, f *core.File, cfg *config.Config) []core.Alert {
+func CheckWithLT(text string, f *core.File, cfg *config.Config) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
 	resp, err := checkWithURL(text, "en-US", cfg.LTPath, cfg.Timeout)
-	core.CheckError(err, cfg.Debug)
+	if err != nil {
+		return alerts, err
+	}
 
 	for _, m := range resp.Matches {
 		alerts = append(alerts, matchToAlert(m))
 	}
 
-	return alerts
+	return alerts, nil
 }
 
 // Convert a LanguageTool-style Match object to an Alert.

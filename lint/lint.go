@@ -29,7 +29,6 @@ package lint
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -45,24 +44,30 @@ import (
 
 // A Linter lints a File.
 type Linter struct {
-	CheckManager *check.Manager // loaded checks
+	Manager *check.Manager
+}
+
+type lintResult struct {
+	file *core.File
+	err  error
 }
 
 // NewLinter initializes a Linter.
 func NewLinter(cfg *config.Config) (*Linter, error) {
 	mgr, err := check.NewManager(cfg)
-	return &Linter{CheckManager: mgr}, err
+	return &Linter{Manager: mgr}, err
 }
 
 // LintString src according to its format.
 func (l *Linter) LintString(src string) ([]*core.File, error) {
-	return []*core.File{l.lintFile(src)}, nil
+	linted := l.lintFile(src)
+	return []*core.File{linted.file}, linted.err
 }
 
-// SetupContent handles any necessary building, compiling, or pre-processing.
-func (l *Linter) SetupContent() error {
-	if l.CheckManager.Config.SphinxAuto != "" {
-		parts := strings.Split(l.CheckManager.Config.SphinxAuto, " ")
+// setupContent handles any necessary building, compiling, or pre-processing.
+func (l *Linter) setupContent() error {
+	if l.Manager.Config.SphinxAuto != "" {
+		parts := strings.Split(l.Manager.Config.SphinxAuto, " ")
 		return exec.Command(parts[0], parts[1:]...).Run()
 	}
 	return nil
@@ -75,7 +80,7 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 	done := make(chan core.File)
 	defer close(done)
 
-	if err := l.SetupContent(); err != nil {
+	if err := l.setupContent(); err != nil {
 		return linted, err
 	}
 
@@ -84,21 +89,27 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 			continue
 		}
 
-		filesChan, errc := l.lintFiles(
-			done, src, core.NewGlob(pat, l.CheckManager.Config.Debug))
-
-		for f := range filesChan {
-			if l.CheckManager.Config.Normalize {
-				f.Path = filepath.ToSlash(f.Path)
-			}
-			linted = append(linted, f)
+		gp, err := core.NewGlob(pat)
+		if err != nil {
+			return linted, err
 		}
-		if err := <-errc; err != nil {
-			return nil, err
+
+		filesChan, errChan := l.lintFiles(done, src, gp)
+		for result := range filesChan {
+			if result.err != nil {
+				return linted, result.err
+			} else if l.Manager.Config.Normalize {
+				result.file.Path = filepath.ToSlash(result.file.Path)
+			}
+			linted = append(linted, result.file)
+		}
+
+		if err := <-errChan; err != nil {
+			return linted, err
 		}
 	}
 
-	if l.CheckManager.Config.Sorted {
+	if l.Manager.Config.Sorted {
 		sort.Sort(core.ByName(linted))
 	}
 
@@ -107,12 +118,12 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 
 // lintFiles walks the `root` directory, creating a new goroutine to lint any
 // file that matches the given glob pattern.
-func (l *Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan *core.File, <-chan error) {
-	filesChan := make(chan *core.File)
-	errc := make(chan error, 1)
-	nonGlobal := len(l.CheckManager.Config.GBaseStyles) == 0 && len(l.CheckManager.Config.GChecks) == 0
-	seen := make(map[string]bool)
+func (l *Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan lintResult, <-chan error) {
+	filesChan := make(chan lintResult)
+	errChan := make(chan error, 1)
+	nonGlobal := len(l.Manager.Config.GBaseStyles) == 0 && len(l.Manager.Config.GChecks) == 0
 
+	seen := make(map[string]bool)
 	go func() {
 		wg := sizedwaitgroup.New(5)
 		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
@@ -126,7 +137,7 @@ func (l *Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (
 				return nil
 			} else if nonGlobal {
 				found := false
-				for _, pat := range l.CheckManager.Config.SecToPat {
+				for _, pat := range l.Manager.Config.SecToPat {
 					if pat.Match(fp) {
 						found = true
 					}
@@ -158,78 +169,49 @@ func (l *Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (
 			wg.Wait()
 			close(filesChan)
 		}()
-		errc <- err
+		errChan <- err
 	}()
-	return filesChan, errc
+
+	return filesChan, errChan
 }
 
 // lintFile creates a new `File` from the path `src` and selects a linter based
 // on its format.
-//
-// TODO: remove dependencies on `asciidoctor` and `rst2html`.
-func (l *Linter) lintFile(src string) *core.File {
-	file := core.NewFile(src, l.CheckManager.Config)
-	if len(file.Checks) == 0 && len(file.BaseStyles) == 0 {
-		if len(l.CheckManager.Config.GBaseStyles) == 0 && len(l.CheckManager.Config.GChecks) == 0 {
+func (l *Linter) lintFile(src string) lintResult {
+	var err error
+
+	file, err := core.NewFile(src, l.Manager.Config)
+	if err != nil {
+		return lintResult{err: err}
+	} else if len(file.Checks) == 0 && len(file.BaseStyles) == 0 {
+		if len(l.Manager.Config.GBaseStyles) == 0 && len(l.Manager.Config.GChecks) == 0 {
 			// There's nothing to do; bail early.
-			return file
+			return lintResult{file: file}
 		}
 	}
 
-	if file.Command != "" {
-		// We've been given a custom command to execute.
-		parts := strings.Split(file.Command, " ")
-		exe := core.Which([]string{parts[0]})
-		if exe != "" {
-			l.lintCustom(file, exe, parts[1:])
-		} else {
-			fmt.Printf("%s not found!\n", parts[0])
-		}
-	} else if file.Format == "markup" && !l.CheckManager.Config.Simple {
+	if file.Format == "markup" && !l.Manager.Config.Simple {
 		switch file.NormedExt {
 		case ".adoc":
-			cmd := core.Which([]string{"asciidoctor"})
-			if cmd != "" {
-				l.lintADoc(file, cmd)
-			} else {
-				fmt.Println("asciidoctor not found!")
-			}
+			err = l.lintADoc(file)
 		case ".md":
-			l.lintMarkdown(file)
+			err = l.lintMarkdown(file)
 		case ".rst":
-			cmd := core.Which([]string{"rst2html", "rst2html.py"})
-			runtime := core.Which([]string{"python", "py", "python.exe", "python3", "python3.exe", "py3"})
-			if cmd != "" && runtime != "" {
-				l.lintRST(file, runtime, cmd)
-			} else {
-				fmt.Println(fmt.Sprintf("can't run rst2html: (%s, %s)!", runtime, cmd))
-			}
+			err = l.lintRST(file)
 		case ".xml":
-			cmd := core.Which([]string{"xsltproc", "xsltproc.exe"})
-			if cmd != "" && file.Transform != "" {
-				l.lintXML(file, cmd)
-			} else if file.Transform != "" {
-				fmt.Println("xsltproc not found!")
-			} else {
-				fmt.Println("No XSLT transform provided!")
-			}
+			err = l.lintXML(file)
 		case ".dita":
-			cmd := core.Which([]string{"dita", "dita.bat"})
-			if cmd != "" {
-				l.lintDITA(file, cmd)
-			} else {
-				fmt.Println("dita-ot not found!")
-			}
+			err = l.lintDITA(file)
 		case ".html":
 			l.lintHTML(file)
 		}
-	} else if file.Format == "code" && !l.CheckManager.Config.Simple {
+	} else if file.Format == "code" && !l.Manager.Config.Simple {
 		l.lintCode(file)
 	} else {
 		l.lintLines(file)
 	}
 
-	return file
+	return lintResult{file, err}
 }
 
 func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength int) {
@@ -238,7 +220,7 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 	text := core.PrepText(txt)
 	rawText := core.PrepText(raw)
 
-	if l.CheckManager.HasScope("paragraph") || l.CheckManager.HasScope("sentence") {
+	if l.Manager.HasScope("paragraph") || l.Manager.HasScope("sentence") {
 		senScope := "sentence" + f.RealExt
 		hasCtx := ctx != ""
 		for _, p := range strings.SplitAfter(text, "\n\n") {
@@ -284,8 +266,8 @@ func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 	hasCode := core.StringInSlice(f.NormedExt, []string{".md", ".adoc", ".rst"})
 
 	results := make(chan core.Alert)
-	for name, chk := range l.CheckManager.Rules() {
-		if chk.Fields().Code && hasCode && !l.CheckManager.Config.Simple {
+	for name, chk := range l.Manager.Rules() {
+		if chk.Fields().Code && hasCode && !l.Manager.Config.Simple {
 			txt = blk.Raw
 		} else {
 			txt = blk.Text
@@ -317,7 +299,7 @@ func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 }
 
 func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk core.Block) bool {
-	min := l.CheckManager.Config.MinAlertLevel
+	min := l.Manager.Config.MinAlertLevel
 	run := false
 
 	details := chk.Fields()
@@ -347,7 +329,7 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk core.B
 	}
 
 	// Has the check been disabled for all extensions?
-	if val, ok := l.CheckManager.Config.GChecks[name]; ok && !run {
+	if val, ok := l.Manager.Config.GChecks[name]; ok && !run {
 		if !val {
 			return false
 		}

@@ -168,11 +168,15 @@ func main() {
 
 		if err = source.From("ini", config); err != nil {
 			return err
-		} else if c.NArg() > 0 || core.Stat() {
-			linter, err := lint.NewLinter(config)
-			if err != nil {
-				return err
-			} else if c.NArg() > 0 {
+		}
+
+		linter, err := lint.NewLinter(config)
+		if err != nil {
+			return err
+		}
+
+		if c.NArg() > 0 || core.Stat() {
+			if c.NArg() > 0 {
 				if core.LooksLikeStdin(c.Args()[0]) {
 					linted, err = linter.LintString(c.Args()[0])
 				} else {
@@ -182,21 +186,24 @@ func main() {
 				stdin, _ := ioutil.ReadAll(os.Stdin)
 				linted, err = linter.LintString(string(stdin))
 			}
-
-			// How should we style the output?
-			if config.Output == "line" {
-				hasAlerts = ui.PrintLineAlerts(linted, config.Relative)
-			} else if config.Output == "JSON" {
-				hasAlerts = ui.PrintJSONAlerts(linted)
-			} else {
-				hasAlerts = ui.PrintVerboseAlerts(linted, config.Wrap)
-			}
-
-			return err
 		} else {
-			cli.ShowAppHelp(c)
-			return nil
+			return cli.ShowAppHelp(c)
 		}
+
+		if err != nil {
+			return err
+		}
+
+		// How should we style the output?
+		if config.Output == "line" {
+			hasAlerts = ui.PrintLineAlerts(linted, config.Relative)
+		} else if config.Output == "JSON" {
+			hasAlerts = ui.PrintJSONAlerts(linted)
+		} else {
+			hasAlerts = ui.PrintVerboseAlerts(linted, config.Wrap)
+		}
+
+		return nil
 	}
 
 	// TODO: Remove this.

@@ -20,7 +20,11 @@ func TestExistence(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	file := core.NewFile("This is a test.", cfg)
+	file, err := core.NewFile("", cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	alerts := rule.Run("This is a test.", file)
 
 	if len(alerts) != 1 {
