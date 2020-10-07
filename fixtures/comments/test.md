@@ -15,13 +15,13 @@ This is some text ACT test
 
 This is some text ACT test
 
-<!-- vale demo.EndingPreposition = NO -->
+<!-- vale demo.Ending-Preposition = NO -->
 
 This is some text ACT test. This is a sentence for.
 
 This is a sentance of.
 
-<!-- vale demo.EndingPreposition = YES -->
+<!-- vale demo.Ending-Preposition = YES -->
 
 This is a sentance of.
 

@@ -31,8 +31,8 @@ Feature: Styles
       test.md:26:110:demo.Meetup:Use 'meetup(s)' instead of 'meet-ups'
       test.md:26:381:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
       test.md:28:1:demo.Filters:Did you really mean 'FOOOOOO'?
-      test.md:30:38:demo.EndingPreposition:Don't end a sentence with 'of.'
-      test.md:32:61:demo.EndingPreposition:Don't end a sentence with 'by.'
+      test.md:30:38:demo.Ending-Preposition:Don't end a sentence with 'of.'
+      test.md:32:61:demo.Ending-Preposition:Don't end a sentence with 'by.'
       test.md:36:1:demo.SentenceLength:Sentences should be less than 25 words
       test.md:36:101:demo.Smart:Inconsistent use of '"' ('smart' mixed with 'dumb')
       test.md:38:6:demo.Contractions:Use 'are not' instead of 'aren't'
@@ -42,7 +42,7 @@ Feature: Styles
       test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
       test.rst:1:58:demo.Spacing:'. I' should have one space
       test.rst:3:1:demo.SentenceLength:Sentences should be less than 25 words
-      test.rst:5:28:demo.EndingPreposition:Don't end a sentence with 'by.'
+      test.rst:5:28:demo.Ending-Preposition:Don't end a sentence with 'by.'
       test.rst:9:1:demo.ParagraphLength:Paragraphs should be less than 150 words
       test.rst:20:25:demo.Spelling:Inconsistent spelling of 'center'
       test.rst:24:32:demo.Spelling:Inconsistent spelling of 'colour'

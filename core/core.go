@@ -325,7 +325,7 @@ func (f *File) AddAlert(a Alert, blk Block, lines, pad int) {
 	}
 }
 
-var commentControlRE = regexp.MustCompile(`^vale (\w+.\w+) = (YES|NO)$`)
+var commentControlRE = regexp.MustCompile(`^vale (.+\..+) = (YES|NO)$`)
 
 // UpdateComments sets a new status based on comment.
 func (f *File) UpdateComments(comment string) {
