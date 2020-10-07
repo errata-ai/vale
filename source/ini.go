@@ -224,11 +224,7 @@ func loadINI(cfg *config.Config) error {
 		return core.NewE100("loadINI/homedir", err)
 	}
 
-	base, err = loadConfig(names, []string{"", home})
-	if err != nil {
-		return err
-	}
-
+	base = loadConfig(names, []string{"", home})
 	if cfg.Sources != "" {
 		for _, source := range strings.Split(cfg.Sources, ",") {
 			abs, _ := filepath.Abs(source)
@@ -246,13 +242,13 @@ func loadINI(cfg *config.Config) error {
 	} else if cfg.Sources != "" {
 		uCfg, err = processSources(cfg, sources)
 	} else {
-		base, err = loadConfig(names, []string{cfg.Path, "", home})
+		base = loadConfig(names, []string{cfg.Path, "", home})
 		uCfg, err = ini.ShadowLoad(base)
 		cfg.Path = base
 	}
 
 	if err != nil {
-		return core.NewE100("loadINI/shadow", err)
+		return core.NewE100(".vale.ini", err)
 	} else if core.StringInSlice(cfg.AlertLevel, core.AlertLevels) {
 		cfg.MinAlertLevel = core.LevelToInt[cfg.AlertLevel]
 	}
@@ -264,7 +260,7 @@ func loadINI(cfg *config.Config) error {
 // loadConfig loads the .vale file. It checks the current directory up to the
 // user's home directory, stopping on the first occurrence of a .vale or _vale
 // file.
-func loadConfig(names, paths []string) (string, error) {
+func loadConfig(names, paths []string) string {
 	var configPath, dir string
 	var recur bool
 
@@ -294,10 +290,7 @@ func loadConfig(names, paths []string) (string, error) {
 		}
 	}
 
-	if !core.FileExists(configPath) {
-		return configPath, core.E200
-	}
-	return configPath, nil
+	return configPath
 }
 
 func processSources(cfg *config.Config, sources []string) (*ini.File, error) {

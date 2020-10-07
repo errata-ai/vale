@@ -78,9 +78,9 @@ Feature: Config
     When I test "/misc/one/two/three/four"
     Then the output should contain exactly:
       """
-      E200 Unable to locate a configuration file.
+      E100 [.vale.ini] Runtime error
 
-      See https://docs.errata.ai/vale/config#search-process for more information.
+      open : no such file or directory
 
       Execution stopped with code 1.
       """
