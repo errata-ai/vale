@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/errata-ai/vale/core"
@@ -20,11 +19,6 @@ func PrintJSONAlerts(linted []*core.File) bool {
 			formatted[f.Path] = append(formatted[f.Path], a)
 		}
 	}
-	b, err := json.MarshalIndent(formatted, "", "  ")
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(string(b))
-	}
+	fmt.Println(getJSON(formatted))
 	return alertCount != 0
 }

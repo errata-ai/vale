@@ -3,6 +3,7 @@ package check
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -57,7 +58,7 @@ func NewManager(config *config.Config) (*Manager, error) {
 			// individually.
 			fName := parts[1] + ".yml"
 			path = filepath.Join(mgr.Config.StylesPath, parts[0], fName)
-			if err = mgr.AddRuleFromSource(fName, path); err != nil {
+			if err = mgr.addRuleFromSource(fName, path); err != nil {
 				return &mgr, err
 			}
 		}
@@ -75,23 +76,13 @@ func (mgr *Manager) AddRule(name string, rule Rule) error {
 	return fmt.Errorf("the rule '%s' has already been added", name)
 }
 
-// AddRuleFromSource adds the given rule to the manager.
-func (mgr *Manager) AddRuleFromSource(name, path string) error {
-	if strings.HasSuffix(name, ".yml") {
-		f, err := mgr.Config.FsWrapper.ReadFile(path)
-		if err != nil {
-			return core.NewE201FromPosition(err.Error(), path, 1)
-		}
-
-		style := filepath.Base(filepath.Dir(path))
-		chkName := style + "." + strings.Split(name, ".")[0]
-		if _, ok := mgr.rules[chkName]; !ok {
-			if err = mgr.addCheck(f, chkName, path); err != nil {
-				return err
-			}
-		}
+// AddRuleFromFile adds the given rule to the manager.
+func (mgr *Manager) AddRuleFromFile(name, path string) error {
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		return core.NewE100("ReadFile", err)
 	}
-	return nil
+	return mgr.addCheck(content, name, path)
 }
 
 // Rules are all of the Manager's compiled `Rule`s.
@@ -111,8 +102,26 @@ func (mgr *Manager) addStyle(path string) error {
 			if err != nil || fi.IsDir() {
 				return err
 			}
-			return mgr.AddRuleFromSource(fi.Name(), fp)
+			return mgr.addRuleFromSource(fi.Name(), fp)
 		})
+}
+
+func (mgr *Manager) addRuleFromSource(name, path string) error {
+	if strings.HasSuffix(name, ".yml") {
+		f, err := mgr.Config.FsWrapper.ReadFile(path)
+		if err != nil {
+			return core.NewE201FromPosition(err.Error(), path, 1)
+		}
+
+		style := filepath.Base(filepath.Dir(path))
+		chkName := style + "." + strings.Split(name, ".")[0]
+		if _, ok := mgr.rules[chkName]; !ok {
+			if err = mgr.addCheck(f, chkName, path); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 func (mgr *Manager) addCheck(file []byte, chkName, path string) error {

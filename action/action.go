@@ -56,7 +56,7 @@ func CompileRule(config *config.Config, path string) error {
 			return err
 		}
 
-		err = mgr.AddRuleFromSource(fName, path)
+		err = mgr.AddRuleFromFile(fName, path)
 		if err != nil {
 			return err
 		}
@@ -78,7 +78,7 @@ func TestRule(args []string) error {
 		}
 
 		cfg.MinAlertLevel = 0
-		cfg.GBaseStyles = append(cfg.GBaseStyles, "Test")
+		cfg.GBaseStyles = []string{"Test"}
 		cfg.InExt = ".txt" // default value
 
 		// Create our check manager:
@@ -87,7 +87,7 @@ func TestRule(args []string) error {
 			return err
 		}
 
-		err = mgr.AddRuleFromSource(args[0], "Test.Rule")
+		err = mgr.AddRuleFromFile("Test.Rule", args[0])
 		if err != nil {
 			return err
 		}

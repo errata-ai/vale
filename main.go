@@ -2,7 +2,6 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -12,26 +11,19 @@ import (
 	"github.com/errata-ai/vale/lint"
 	"github.com/errata-ai/vale/source"
 	"github.com/errata-ai/vale/ui"
-	"github.com/mattn/go-colorable"
 	"github.com/urfave/cli"
 )
 
 // version is set during the release build process.
 var version = "master"
-var logger = log.New(os.Stderr, "", 0)
-
-func init() {
-	// https://github.com/logrusorgru/aurora/issues/2#issuecomment-299014211
-	logger.SetOutput(colorable.NewColorableStderr())
-}
 
 func main() {
 	var glob string
-	var hasAlerts bool
+	var hasErrors bool
 
 	config, err := config.New()
 	if err != nil {
-		logger.Fatalln(err)
+		ui.ShowError(err, config)
 	}
 
 	app := cli.NewApp()
@@ -194,15 +186,7 @@ func main() {
 			return err
 		}
 
-		// How should we style the output?
-		if config.Output == "line" {
-			hasAlerts = ui.PrintLineAlerts(linted, config.Relative)
-		} else if config.Output == "JSON" {
-			hasAlerts = ui.PrintJSONAlerts(linted)
-		} else {
-			hasAlerts = ui.PrintVerboseAlerts(linted, config.Wrap)
-		}
-
+		hasErrors = ui.PrintAlerts(linted, config)
 		return nil
 	}
 
@@ -212,11 +196,10 @@ func main() {
 	core.ExeDir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
 
 	if err = app.Run(os.Args); err != nil {
-		logger.Fatalln(err)
-	} else if hasAlerts && !config.NoExit {
-		// Should we return a nonzero value on errors?
+		ui.ShowError(err, config)
+	} else if hasErrors && !config.NoExit {
 		os.Exit(1)
+	} else {
+		os.Exit(0)
 	}
-
-	os.Exit(0)
 }
