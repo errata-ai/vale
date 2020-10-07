@@ -76,13 +76,9 @@ Feature: Config
 
   Scenario: Non-Existent Config
     When I test "/misc/one/two/three/four"
-    Then the output should contain exactly:
+    Then the output should contain:
       """
       E100 [.vale.ini] Runtime error
-
-      open : no such file or directory
-
-      Execution stopped with code 1.
       """
     And the exit status should be 1
 
