@@ -3,6 +3,7 @@ package ui
 import (
 	"encoding/json"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/errata-ai/vale/config"
@@ -34,6 +35,9 @@ func getJSON(data interface{}) string {
 
 // PrintAlerts prints the given alerts in the user-specified format.
 func PrintAlerts(linted []*core.File, config *config.Config) bool {
+	if config.Sorted {
+		sort.Sort(core.ByName(linted))
+	}
 	switch config.Output {
 	case "JSON":
 		return PrintJSONAlerts(linted)

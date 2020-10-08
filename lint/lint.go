@@ -32,7 +32,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"sort"
 	"strings"
 	"sync"
 
@@ -45,6 +44,10 @@ import (
 // A Linter lints a File.
 type Linter struct {
 	Manager *check.Manager
+
+	seen      map[string]bool
+	glob      *core.Glob
+	nonGlobal bool
 }
 
 type lintResult struct {
@@ -55,22 +58,21 @@ type lintResult struct {
 // NewLinter initializes a Linter.
 func NewLinter(cfg *config.Config) (*Linter, error) {
 	mgr, err := check.NewManager(cfg)
-	return &Linter{Manager: mgr}, err
+
+	globalStyles := len(cfg.GBaseStyles)
+	globalChecks := len(cfg.GChecks)
+
+	return &Linter{
+		Manager: mgr,
+
+		seen:      make(map[string]bool),
+		nonGlobal: globalStyles+globalChecks == 0}, err
 }
 
 // LintString src according to its format.
 func (l *Linter) LintString(src string) ([]*core.File, error) {
 	linted := l.lintFile(src)
 	return []*core.File{linted.file}, linted.err
-}
-
-// setupContent handles any necessary building, compiling, or pre-processing.
-func (l *Linter) setupContent() error {
-	if l.Manager.Config.SphinxAuto != "" {
-		parts := strings.Split(l.Manager.Config.SphinxAuto, " ")
-		return exec.Command(parts[0], parts[1:]...).Run()
-	}
-	return nil
 }
 
 // Lint src according to its format.
@@ -84,17 +86,15 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 		return linted, err
 	}
 
+	gp, err := core.NewGlob(pat)
+	if err != nil {
+		return linted, err
+	}
+
+	l.glob = &gp
 	for _, src := range input {
-		if !(core.IsDir(src) || core.FileExists(src)) {
-			continue
-		}
+		filesChan, errChan := l.lintFiles(done, src)
 
-		gp, err := core.NewGlob(pat)
-		if err != nil {
-			return linted, err
-		}
-
-		filesChan, errChan := l.lintFiles(done, src, gp)
 		for result := range filesChan {
 			if result.err != nil {
 				return linted, result.err
@@ -109,44 +109,25 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 		}
 	}
 
-	if l.Manager.Config.Sorted {
-		sort.Sort(core.ByName(linted))
-	}
-
 	return linted, nil
 }
 
 // lintFiles walks the `root` directory, creating a new goroutine to lint any
 // file that matches the given glob pattern.
-func (l *Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (<-chan lintResult, <-chan error) {
+func (l *Linter) lintFiles(done <-chan core.File, root string) (<-chan lintResult, <-chan error) {
 	filesChan := make(chan lintResult)
 	errChan := make(chan error, 1)
-	nonGlobal := len(l.Manager.Config.GBaseStyles) == 0 && len(l.Manager.Config.GChecks) == 0
 
-	seen := make(map[string]bool)
 	go func() {
 		wg := sizedwaitgroup.New(5)
+
 		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
-			ext := filepath.Ext(fp)
 			if err != nil || fi.IsDir() {
 				return nil
-			} else if skip, found := seen[ext]; found && skip {
+			} else if l.skip(fp) {
 				return nil
-			} else if !glob.Match(fp) {
-				seen[ext] = true
-				return nil
-			} else if nonGlobal {
-				found := false
-				for _, pat := range l.Manager.Config.SecToPat {
-					if pat.Match(fp) {
-						found = true
-					}
-				}
-				if !found {
-					seen[ext] = true
-					return nil
-				}
 			}
+
 			wg.Add()
 			go func(fp string) {
 				select {
@@ -155,6 +136,7 @@ func (l *Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (
 				}
 				wg.Done()
 			}(fp)
+
 			// Abort the walk if done is closed.
 			select {
 			case <-done:
@@ -163,6 +145,7 @@ func (l *Linter) lintFiles(done <-chan core.File, root string, glob core.Glob) (
 				return nil
 			}
 		})
+
 		// Walk has returned, so all calls to wg.Add are done.  Start a
 		// goroutine to close c once all the sends are done.
 		go func() {
@@ -342,4 +325,44 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk core.B
 	}
 
 	return true
+}
+
+// setupContent handles any necessary building, compiling, or pre-processing.
+func (l *Linter) setupContent() error {
+	if l.Manager.Config.SphinxAuto != "" {
+		parts := strings.Split(l.Manager.Config.SphinxAuto, " ")
+		return exec.Command(parts[0], parts[1:]...).Run()
+	}
+	return nil
+}
+
+func (l *Linter) match(s string) bool {
+	if l.glob == nil {
+		return true
+	}
+	return l.glob.Match(s)
+}
+
+func (l *Linter) skip(fp string) bool {
+	ext := filepath.Ext(fp)
+
+	if status, found := l.seen[ext]; found && status {
+		return true
+	} else if !l.match(fp) {
+		l.seen[ext] = true
+		return true
+	} else if l.nonGlobal {
+		found := false
+		for _, pat := range l.Manager.Config.SecToPat {
+			if pat.Match(fp) {
+				found = true
+			}
+		}
+		if !found {
+			l.seen[ext] = true
+			return true
+		}
+	}
+
+	return false
 }
