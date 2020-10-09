@@ -72,3 +72,14 @@ Feature: Misc
       zh.md:6:1:ZH.Simple:Avoid using "根据"
       zh.md:7:43:ZH.Simple:Avoid using "根据"
       """
+
+  Scenario: infostrings
+    When I test "misc/infostring"
+    Then the output should contain exactly:
+      """
+      test.md:16:24:Vale.Spelling:Did you really mean 'Encryptor'?
+      test.md:16:35:Vale.Spelling:Did you really mean 'Jasypt'?
+      test.md:17:25:Vale.Spelling:Did you really mean 'config'?
+      test.md:23:78:Vale.Spelling:Did you really mean 'config'?
+      test.md:23:85:Vale.Spelling:Did you really mean 'json'?
+      """

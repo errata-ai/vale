@@ -394,7 +394,17 @@ func (l Linter) lintMarkdown(f *core.File) error {
 		return core.NewE100(f.Path, err)
 	}
 
-	l.lintHTMLTokens(f, f.Content, buf.Bytes(), 0)
+	// NOTE: This is required to avoid finding matches info strings. For
+	// example, if we're looking for 'json' we many incorrectly report the
+	// location as being in an infostring like '```json'.
+	//
+	// See https://github.com/errata-ai/vale/issues/248.
+	body := reExInfo.ReplaceAllStringFunc(f.Content, func(m string) string {
+		parts := strings.Split(m, "`")
+		return "```" + strings.Repeat("*", len(parts[len(parts)-1]))
+	})
+
+	l.lintHTMLTokens(f, body, buf.Bytes(), 0)
 	return nil
 }
 
