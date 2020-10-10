@@ -19,6 +19,7 @@ type valeError struct {
 	path string
 	text string
 	code string
+	span int
 }
 
 var logger = log.New(os.Stderr, "", 0)
@@ -50,10 +51,15 @@ func parseError(err error) (valeError, error) {
 	if err != nil {
 		return parsed, errors.New("missing line")
 	}
-
 	parsed.line = i
-	parsed.text = lines[len(lines)-2]
 
+	i, err = strconv.Atoi(groups[4])
+	if err != nil {
+		return parsed, errors.New("missing span")
+	}
+	parsed.span = i
+
+	parsed.text = lines[len(lines)-2]
 	return parsed, nil
 }
 
@@ -78,11 +84,13 @@ func ShowError(err error, config *config.Config) {
 				Path string
 				Text string
 				Code string
+				Span int
 			}{
 				Line: parsed.line,
 				Path: parsed.path,
 				Text: parsed.text,
 				Code: parsed.code,
+				Span: parsed.span,
 			}
 		}
 
