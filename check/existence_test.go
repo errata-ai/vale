@@ -20,6 +20,10 @@ func TestExistence(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if rule.hasExceptions != false {
+		t.Fatal("shouldn't have exceptions")
+	}
+
 	file, err := core.NewFile("", cfg)
 	if err != nil {
 		t.Fatal(err)
@@ -28,7 +32,7 @@ func TestExistence(t *testing.T) {
 	alerts := rule.Run("This is a test.", file)
 
 	if len(alerts) != 1 {
-		t.Fatal("expected one alert")
+		t.Errorf("expected one alert, not %v", alerts)
 	}
 
 }

@@ -25,9 +25,12 @@ type Existence struct {
 	// `tokens` (`array`): A list of tokens to be transformed into a
 	// non-capturing group.
 	Tokens []string
+	// A list of tokens that should negate a potential match.
+	Exceptions []string
 
-	// `pattern` is created from the above options in `NewExistence`.
-	pattern *regexp.Regexp
+	pattern       *regexp.Regexp
+	exceptRe      *regexp.Regexp
+	hasExceptions bool
 }
 
 // NewExistence creates a new `Rule` that extends `Existence`.
@@ -57,8 +60,21 @@ func NewExistence(cfg *config.Config, generic baseCheck) (Existence, error) {
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
-
 	rule.pattern = re
+
+	for term := range cfg.AcceptedTokens {
+		rule.Exceptions = append(rule.Exceptions, term)
+	}
+
+	rule.hasExceptions = len(rule.Exceptions) > 0
+	if rule.hasExceptions {
+		re, err = regexp.Compile(strings.Join(rule.Exceptions, "|"))
+		if err != nil {
+			return rule, core.NewE201FromPosition(err.Error(), path, 1)
+		}
+		rule.exceptRe = re
+	}
+
 	return rule, nil
 }
 
@@ -69,10 +85,15 @@ func NewExistence(cfg *config.Config, generic baseCheck) (Existence, error) {
 // provided text.
 func (e Existence) Run(text string, file *core.File) []core.Alert {
 	alerts := []core.Alert{}
+
 	locs := e.pattern.FindAllStringIndex(text, -1)
 	for _, loc := range locs {
-		alerts = append(alerts, makeAlert(e.Definition, loc, text))
+		match := text[loc[0]:loc[1]]
+		if !e.hasExceptions || !e.exceptRe.MatchString(match) {
+			alerts = append(alerts, makeAlert(e.Definition, loc, text))
+		}
 	}
+
 	return alerts
 }
 
