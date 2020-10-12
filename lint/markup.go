@@ -281,6 +281,8 @@ func (l Linter) lintXML(file *core.File) error {
 }
 
 func (l Linter) lintDITA(file *core.File) error {
+	var out bytes.Buffer
+
 	dita := core.Which([]string{"dita", "dita.bat"})
 	if dita == "" {
 		return core.NewE100("lintDITA", errors.New("dita not found"))
@@ -295,10 +297,18 @@ func (l Linter) lintDITA(file *core.File) error {
 
 	// FIXME: The `dita` command is *slow* (~4s per file)!
 	cmd := exec.Command(dita, []string{
-		"-i", file.Path, "-f", "html5", "-o", tempDir, "--nav-toc=none"}...)
+		"-i",
+		file.Path,
+		"-f",
+		"html5",
+		"-o",
+		tempDir,
+		"--nav-toc=none",
+		"--outer.control=fail"}...)
+	cmd.Stderr = &out
 
 	if err := cmd.Run(); err != nil {
-		return core.NewE100(file.Path, err)
+		return core.NewE100(file.Path, errors.New(out.String()))
 	}
 
 	basename := filepath.Base(file.Path)
