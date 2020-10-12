@@ -224,3 +224,20 @@ Feature: Lint
     test.rb:11:3:vale.Annotations:'TODO' left in text
     """
     And the exit status should be 0
+
+
+  Scenario: Lint an assigned format
+    When I lint path "subdir3"
+    Then the output should contain exactly:
+      """
+      test.mdx:3:1:vale.Annotations:'NOTE' left in text
+      test.mdx:32:1:vale.Annotations:'XXX' left in text
+      test.mdx:34:29:vale.Annotations:'TODO' left in text
+      test.mdx:36:3:vale.Annotations:'TODO' left in text
+      test.mdx:36:10:vale.Annotations:'XXX' left in text
+      test.mdx:36:16:vale.Annotations:'FIXME' left in text
+      test.mdx:40:21:vale.Annotations:'FIXME' left in text
+      test.mdx:44:5:vale.Annotations:'TODO' left in text
+      test.mdx:46:3:vale.Annotations:'TODO' left in text
+      """
+    And the exit status should be 0

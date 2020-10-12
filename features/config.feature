@@ -310,8 +310,8 @@ Feature: Config
     And the exit status should be 0
 
   Scenario: Test another negated glob
-    When I test glob "!*.{mdx,py}"
-    Then the output should not contain "mdx"
+    When I test glob "!*.{md,py}"
+    Then the output should not contain "md"
     And the output should not contain "py"
     And the exit status should be 0
 

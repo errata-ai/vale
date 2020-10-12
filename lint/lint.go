@@ -344,7 +344,15 @@ func (l *Linter) match(s string) bool {
 }
 
 func (l *Linter) skip(fp string) bool {
-	ext := filepath.Ext(fp)
+	var ext string
+
+	old := filepath.Ext(fp)
+	if normed, found := l.Manager.Config.Formats[strings.Trim(old, ".")]; found {
+		ext = "." + normed
+		fp = fp[0:len(fp)-len(old)] + ext
+	} else {
+		ext = old
+	}
 
 	if status, found := l.seen[ext]; found && status {
 		return true

@@ -199,9 +199,15 @@ func NewFile(src string, config *config.Config) (*File, error) {
 		src = "stdin" + config.InExt
 	}
 
+	fp := src
+	old := filepath.Ext(fp)
+	if normed, found := config.Formats[strings.Trim(old, ".")]; found {
+		fp = fp[0:len(fp)-len(old)] + "." + normed
+	}
+
 	baseStyles := config.GBaseStyles
 	for sec, styles := range config.SBaseStyles {
-		if pat, found := config.SecToPat[sec]; found && pat.Match(src) {
+		if pat, found := config.SecToPat[sec]; found && pat.Match(fp) {
 			baseStyles = styles
 			break
 		}
@@ -209,7 +215,7 @@ func NewFile(src string, config *config.Config) (*File, error) {
 
 	checks := make(map[string]bool)
 	for sec, smap := range config.SChecks {
-		if pat, found := config.SecToPat[sec]; found && pat.Match(src) {
+		if pat, found := config.SecToPat[sec]; found && pat.Match(fp) {
 			checks = smap
 			break
 		}
