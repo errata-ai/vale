@@ -29,6 +29,21 @@ var code = regexp.MustCompile("`?`[^`@\n]+``?")
 // This is used to store patterns as we compute them in `initialPosition`.
 var cache = sync.Map{}
 
+// DefaultIgnoreDirectories is list of directories which will be ignored by vale, out of the box
+var DefaultIgnoreDirectories = []string{
+	"node_modules", ".git",
+}
+
+// ShouldIgnoreDirectory will check if directory should be ignored
+func ShouldIgnoreDirectory(directoryName string) bool {
+	for _, directory := range DefaultIgnoreDirectories {
+		if directory == directoryName {
+			return true
+		}
+	}
+	return false
+}
+
 // Hash computes the MD5 hash of the given string.
 func Hash(text string) string {
 	hasher := md5.New()
