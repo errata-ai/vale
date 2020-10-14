@@ -122,6 +122,11 @@ func (l *Linter) lintFiles(done <-chan core.File, root string) (<-chan lintResul
 		wg := sizedwaitgroup.New(5)
 
 		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
+
+			if fi.IsDir() && core.ShouldIgnoreDirectory(fi.Name()) {
+				return filepath.SkipDir
+			}
+
 			if err != nil || fi.IsDir() {
 				return nil
 			} else if l.skip(fp) {
