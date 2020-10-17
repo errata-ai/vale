@@ -35,6 +35,11 @@ func TestSentence(t *testing.T) {
 			match:      true,
 			exceptions: []string{"Event Store"},
 		},
+		{
+			heading:    "Using errata-ai/vale",
+			match:      true,
+			exceptions: []string{"errata-ai/vale"},
+		},
 	}
 
 	for _, h := range headings {

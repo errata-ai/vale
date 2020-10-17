@@ -16,7 +16,7 @@ func isMatch(r *regexp.Regexp, s string) bool {
 }
 
 func makeExceptions(ignore []string) *regexp.Regexp {
-	ignore = append(ignore, `[\p{N}\p{L}*]+[^\s-/]*`)
+	ignore = append(ignore, `[\p{N}\p{L}*]+[^\s]*`)
 	return regexp.MustCompile(`(?:` + strings.Join(ignore, "|") + `)`)
 }
 
