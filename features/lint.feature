@@ -1,5 +1,12 @@
 Feature: Lint
 
+  Scenario: Lint a path with excluded folders
+    When I lint path with exclusions
+    Then the output should contain exactly:
+      """
+      """
+    And the exit status should be 0
+
   Scenario: Lint a Sphinx file
     When I lint Sphinx "index.rst"
     Then the output should contain exactly:
