@@ -24,7 +24,6 @@ import (
 
 // ExeDir is our starting location.
 var ExeDir string
-var code = regexp.MustCompile("`?`[^`@\n]+``?")
 
 // This is used to store patterns as we compute them in `initialPosition`.
 var cache = sync.Map{}
@@ -118,19 +117,6 @@ func TextToWords(text string, nlp bool) []string {
 // InRange determines if the range r contains the integer n.
 func InRange(n int, r []int) bool {
 	return len(r) == 2 && (r[0] <= n && n <= r[1])
-}
-
-// SlicesEqual determines if the slices a and b are equal.
-func SlicesEqual(a, b []string) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
 }
 
 // Tag assigns part-of-speech tags to `words`.
@@ -347,22 +333,6 @@ func IsDir(filename string) bool {
 func FileExists(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil
-}
-
-// Min returns the min of `a` and `b`.
-func Min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-// Max returns the max of `a` and `b`.
-func Max(a, b int) int {
-	if a < b {
-		return b
-	}
-	return a
 }
 
 // StringInSlice determines if `slice` contains the string `a`.
