@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -16,6 +17,15 @@ import (
 
 // version is set during the release build process.
 var version = "master"
+
+func validateFlags(config *config.Config) error {
+	if config.Path != "" && !core.FileExists(config.Path) {
+		return core.NewE100(
+			"--config",
+			fmt.Errorf("path '%s' does not exist", config.Path))
+	}
+	return nil
+}
 
 func main() {
 	var glob string
@@ -158,7 +168,9 @@ func main() {
 		var linted []*core.File
 		var err error
 
-		if err = source.From("ini", config); err != nil {
+		if err = validateFlags(config); err != nil {
+			return err
+		} else if err = source.From("ini", config); err != nil {
 			return err
 		}
 
