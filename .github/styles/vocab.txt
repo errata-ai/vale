@@ -1,3 +1,4 @@
+alex
 api
 apos
 asciidoc
@@ -16,6 +17,7 @@ gunning fog
 haskell
 homebrew
 ignorecase
+joblint
 kincaid
 liau
 linode
@@ -31,6 +33,7 @@ ot
 passthrough
 pipenv
 pre
+proselint
 rcs
 restructuredtext
 sass
@@ -42,4 +45,5 @@ smog
 spotify
 tch
 testthedocs
+textlint
 tox
