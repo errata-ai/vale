@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <b>Vale</b> is a command-line tool that brings code-like linting to prose. It's <b><a href="#mag-at-a-glance-vale-vs-">Fast</a></b>, <b><a href="https://docs.errata.ai/vale/install">cross-platform</a></b> (Windows, macOS, and Linux), and <b><a href="https://docs.errata.ai/vale/styles">highly customizable</a></b>.
+  <b>Vale</b> is a command-line tool that brings code-like linting to prose. It's <b><a href="#mag-at-a-glance-vale-vs-">fast</a></b>, <b><a href="https://docs.errata.ai/vale/install">cross-platform</a></b> (Windows, macOS, and Linux), and <b><a href="https://docs.errata.ai/vale/styles">highly customizable</a></b>.
 </p>
 
 ## :heart: Sponsors
@@ -27,8 +27,7 @@
 
 - [x] **Support for markup**: Vale has a rich understanding of many [markup formats](https://docs.errata.ai/vale/scoping#formats), allowing it to avoid syntax-related false positives and intelligently exclude code snippets from prose-related rules.
 
-- [x] A **highly customizable** [extension system](https://docs.errata.ai/vale/styles): Vale is capable of enforcing *your style*&mdash;be it a standard [editorial style guide](https://github.com/errata-ai/styles#available-styles) or a custom in-house set of rules (such as those created by [GitLab](https://docs.gitlab.com/ee/development/documentation/#vale), [Homebrew](https://github.com/Homebrew/brew/tree/master/docs/vale-styles/Homebrew), [Linode](https://www.linode.com/blog/linode/docs-as-code-at-linode/), [CockroachDB
-](https://github.com/cockroachdb/docs/tree/master/ci/vale), and [Spotify](https://github.com/spotify/backstage)).
+- [x] A **highly customizable** [extension system](https://docs.errata.ai/vale/styles): Vale is capable of enforcing *your style*&mdash;be it a standard [editorial style guide](https://github.com/errata-ai/styles#available-styles) or a custom in-house set of rules (such as those created by [GitLab](https://docs.gitlab.com/ee/development/documentation/#vale), [Homebrew](https://github.com/Homebrew/brew/tree/master/docs/vale-styles/Homebrew), [Linode](https://www.linode.com/blog/linode/docs-as-code-at-linode/), [CockroachDB](https://github.com/cockroachdb/docs/tree/master/ci/vale), and [Spotify](https://github.com/spotify/backstage)).
 
 - [x] **Easy-to-install**, stand-alone binaries: Unlike other tools, Vale doesn't require you to install and configure a particular programming language and its related tooling (such as Python/pip or Node.js/npm).
 
