@@ -1,6 +1,6 @@
 # Vale: Your style, our editor
 
-[![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://img.shields.io/badge/%F0%9F%93%9D%20%20go%20report-A%2B-75C46B)](https://goreportcard.com/report/github.com/errata-ai/vale) ![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub) ![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=lgreen&logo=docker&logoColor=white)
+[![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://img.shields.io/badge/%F0%9F%93%9D%20%20go%20report-A%2B-75C46B?color=00ACD7)](https://goreportcard.com/report/github.com/errata-ai/vale) ![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub&color=00ACD7) ![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=00ACD7&logo=docker&logoColor=white)
 
 Vale is a command-line tool that brings code-like linting to prose. It's cross-platform (Windows, macOS, and Linux), written in Go, and released under the MIT license.
 
