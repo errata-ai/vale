@@ -237,13 +237,8 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 }
 
 func (l *Linter) lintLines(f *core.File) {
-	var line string
-	lines := 1
-	for f.Scanner.Scan() {
-		line = core.PrepText(f.Scanner.Text() + "\n")
-		l.lintText(f, core.NewBlock("", line, "", "text"+f.RealExt), lines+1, 0)
-		lines++
-	}
+	block := core.NewBlock("", f.Content, "", "text"+f.RealExt)
+	l.lintText(f, block, len(f.Lines), 0)
 }
 
 func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
