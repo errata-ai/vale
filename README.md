@@ -35,4 +35,19 @@ See the [documentation](https://docs.errata.ai/vale/about) for more information.
 
 ## :mag: At a Glance: Vale vs. `<...>`
 
-Coming Soon.
+> **NOTE**: While all of the options listed below are open-source (CLI-based) linters for prose, their implementations and features vary significantly. And so, the "best" option will depends on your specific needs and preferences.
+
+### Functionality
+
+| Tool       | Extensible           | Checks          | Supports Markup                                                         | Built With | License      |
+|------------|----------------------|-----------------|-------------------------------------------------------------------------|------------|--------------|
+| Vale       | Yes (via YAML)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, XML)                   | Go         | MIT          |
+| textlint   | Yes (via JavaScript) | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, Re:VIEW)               | JavaScript | MIT          |
+| RedPen     | Yes (via Java)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, Textile, Re:VIEW, and LaTeX) | Java       | Apache-2.0   |
+| write-good | Yes (via JavaScript) | style           | No                                                                      | JavaScript | MIT          |   
+| proselint  | No                   | style           | No                                                                      | Python     | BSD 3-Clause |
+| Joblint    | No                   | style           | No                                                                      | JavaScript | MIT          |
+| alex       | No                   | style           | Yes (Markdown)                                                          | JavaScript | MIT          |
+
+### Benchmarks
+
