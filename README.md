@@ -1,11 +1,19 @@
 # Vale: Your style, our editor [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://img.shields.io/badge/%F0%9F%93%9D%20%20go%20report-A%2B-75C46B?color=00ACD7)](https://goreportcard.com/report/github.com/errata-ai/vale) ![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub&color=ff69b4) ![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=orange&logo=docker&logoColor=white)
 
+> **:sparkles: Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features.  
+
 <p align="center">
     <img src="https://user-images.githubusercontent.com/8785025/96957750-5eab0d00-14b0-11eb-9f5f-52d862518ebf.png">
 </p>
 
 <p align="center">
   <b>Vale</b> is a command-line tool that brings code-like linting to prose. It's <b><a href="#mag-at-a-glance-vale-vs-">fast</a></b>, <b><a href="https://docs.errata.ai/vale/install">cross-platform</a></b> (Windows, macOS, and Linux), and <b><a href="https://docs.errata.ai/vale/styles">highly customizable</a></b>.
+</p>
+
+<p align="center">
+  <a href="https://docs.errata.ai/vale/about">Documentation</a> •
+  <a href="https://github.com/errata-ai/styles">Officially-maintained styles</a> •
+  <a href="https://errata.ai/vale-server/">Vale Server (desktop app)</a>
 </p>
 
 ## :heart: Sponsors
@@ -49,5 +57,53 @@ See the [documentation](https://docs.errata.ai/vale/about) for more information.
 | Joblint    | No                   | style           | No                                                                      | JavaScript | MIT          |
 | alex       | No                   | style           | Yes (Markdown)                                                          | JavaScript | MIT          |
 
+The exact definition of "Supports Markup" varies by tool but, in general, it means that the format is understood at a higher level than a regular plain-text file (for example, features like excluding code blocks from spell check).
+
+Extensibility means that there's a built-in means of creating your own rules without modifying the original source code.
+
 ### Benchmarks
 
+<table>
+    <tr>
+        <td width="50%">
+            <a href="https://user-images.githubusercontent.com/8785025/97052257-809aa300-1535-11eb-83cd-65a52b29d6de.png">
+                <img src="https://user-images.githubusercontent.com/8785025/97052257-809aa300-1535-11eb-83cd-65a52b29d6de.png" width="100%">
+            </a>
+        </td>
+        <td width="50%">
+            <a href="https://user-images.githubusercontent.com/8785025/97051175-91e2b000-1533-11eb-9a57-9d44d6def4c3.png">
+                <img src="https://user-images.githubusercontent.com/8785025/97051175-91e2b000-1533-11eb-9a57-9d44d6def4c3.png" width="100%">
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td width="50%">
+          This benchmark has all three tools configured to use their implementations of the <code>write-good</code> rule set and Unix-style output.
+        </td>
+        <td width="50%">This benchmark runs Vale's implementation of <code>proselint</code>'s rule set against the original. Both tools are configured to use JSON output.</td>
+    </tr>
+    <tr>
+        <td width="50%">
+            <a href="https://user-images.githubusercontent.com/8785025/97053402-c5bfd480-1537-11eb-815b-a33ab13a59cf.png">
+                <img src="https://user-images.githubusercontent.com/8785025/97053402-c5bfd480-1537-11eb-815b-a33ab13a59cf.png" width="100%">
+            </a>
+        </td>
+        <td width="50%">
+            <a href="https://user-images.githubusercontent.com/8785025/97055850-7b8d2200-153c-11eb-86fa-d882ce6babf8.png">
+                <img src="https://user-images.githubusercontent.com/8785025/97055850-7b8d2200-153c-11eb-86fa-d882ce6babf8.png" width="100%">
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td width="50%">
+          This benchmark runs Vale's implementation of Joblint's rule set against the original. Both tools are configured to use JSON output.
+        </td>
+        <td width="50%">This benchmark has all three tools configured to perform only English spell checking using their default output styles.</td>
+    </tr>
+</table>
+
+All benchmarking was performed using the open-source [hyperfine](https://github.com/sharkdp/hyperfine) tool on a MacBook Pro (2.9 GHz Intel Core i7):
+
+```console
+$ hyperfine --warmup 3 '<command>'
+```
