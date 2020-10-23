@@ -35,3 +35,5 @@
 See the [documentation](https://docs.errata.ai/vale/about) for more information.
 
 ## :mag: At a Glance: Vale vs. `<...>`
+
+Coming Soon.

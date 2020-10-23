@@ -26,6 +26,7 @@ macos
 markdata
 mkdocs
 nonword
+npm
 ot
 passthrough
 pipenv
@@ -38,6 +39,7 @@ shortcode
 shortcodes
 signavio
 smog
+spotify
 tch
 testthedocs
 tox
