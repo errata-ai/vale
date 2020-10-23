@@ -1,6 +1,6 @@
 # Vale: Your style, our editor [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://img.shields.io/badge/%F0%9F%93%9D%20%20go%20report-A%2B-75C46B?color=00ACD7)](https://goreportcard.com/report/github.com/errata-ai/vale) ![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub&color=ff69b4) ![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=orange&logo=docker&logoColor=white)
 
-> **:sparkles: Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features.  
+> **:sparkles: Tired of the command line?** Vale now has a [cross-platform desktop application](https://errata.ai/vale-server/) that introduces a number of new features.
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/8785025/96957750-5eab0d00-14b0-11eb-9f5f-52d862518ebf.png">
@@ -52,7 +52,7 @@ See the [documentation](https://docs.errata.ai/vale/about) for more information.
 | Vale       | Yes (via YAML)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, XML)                   | Go         | MIT          |
 | textlint   | Yes (via JavaScript) | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, Re:VIEW)               | JavaScript | MIT          |
 | RedPen     | Yes (via Java)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, Textile, Re:VIEW, and LaTeX) | Java       | Apache-2.0   |
-| write-good | Yes (via JavaScript) | style           | No                                                                      | JavaScript | MIT          |   
+| write-good | Yes (via JavaScript) | style           | No                                                                      | JavaScript | MIT          |
 | proselint  | No                   | style           | No                                                                      | Python     | BSD 3-Clause |
 | Joblint    | No                   | style           | No                                                                      | JavaScript | MIT          |
 | alex       | No                   | style           | Yes (Markdown)                                                          | JavaScript | MIT          |
@@ -107,3 +107,10 @@ All benchmarking was performed using the open-source [hyperfine](https://github.
 ```console
 $ hyperfine --warmup 3 '<command>'
 ```
+
+The corpus IDs in the above plots&mdash;`gitlab` and `ydkjs`&mdash;correspond to the following files:
+
+- A [snapshot](https://gitlab.com/gitlab-org/gitlab/-/tree/7d6a4025a0346f1f50d2825c85742e5a27b39a8b/doc
+) of GitLab's open-source documentation (1,500 Markdown files).
+
+- A [chapter](https://raw.githubusercontent.com/getify/You-Dont-Know-JS/1st-ed/es6%20%26%20beyond/ch2.md) from the open-soure book *You Don't Know JS*.
