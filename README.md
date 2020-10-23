@@ -1,20 +1,8 @@
 # Vale: Your style, our editor
 
-[![Financial Contributors on Open Collective](https://opencollective.com/vale/all/badge.svg?label=financial+contributors&style=flat-square)](https://opencollective.com/vale) [![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?style=flat-square&amp;logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://goreportcard.com/badge/github.com/gojp/goreportcard?style=flat-square&logo=go&logoColor=white)](https://goreportcard.com/report/github.com/errata-ai/vale) ![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub&style=flat-square) ![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=lgreen&logo=docker&logoColor=white&style=flat-square)
+[![Build Status](https://img.shields.io/travis/errata-ai/vale/master.svg?logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://img.shields.io/badge/%F0%9F%93%9D%20%20go%20report-A%2B-75C46B)](https://goreportcard.com/report/github.com/errata-ai/vale) ![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub) ![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=lgreen&logo=docker&logoColor=white)
 
-Vale is a command-line tool that brings code-like linting to prose. It's cross-platform (Windows, macOS, and Linux), written in Go, and released under the MIT license. Some of its key features are:
-
-* [Usability](https://docs.errata.ai/vale/scoping): Vale supports HTML, Markdown, AsciiDoc, reStructuredText, XML, and
-  DITA&mdash;allowing it to "just work" on *real-world* content.
-
-* [Extensibility](https://docs.errata.ai/vale/styles): Unlike most writing-related software, Vale's primary purpose isn't
-  to provide its own advice; it's designed to enforce an existing style guide through its
-  YAML-based extension system.
-
-* [Portability](https://docs.errata.ai/vale/config): Vale uses a plain-text (INI and YAML) configuration system that makes it
-  possible to share configurations across platforms, applications, and users.
-
-See the [documentation](https://docs.errata.ai/vale/about) for more information.
+Vale is a command-line tool that brings code-like linting to prose. It's cross-platform (Windows, macOS, and Linux), written in Go, and released under the MIT license.
 
 ## Funding
 
