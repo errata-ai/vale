@@ -60,10 +60,7 @@ func CompileRule(config *config.Config, path string) error {
 		if err != nil {
 			return err
 		}
-
-		for _, v := range mgr.Rules() {
-			fmt.Print(v.Pattern())
-		}
+		fmt.Print(mgr.Rules()[fName].Pattern())
 	}
 	return nil
 }
