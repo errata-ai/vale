@@ -22,6 +22,7 @@ require (
 	github.com/spf13/afero v1.2.2
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/urfave/cli v1.22.4
+	github.com/writeas/go-strip-markdown v2.0.1+incompatible
 	github.com/yuin/goldmark v1.1.25
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect

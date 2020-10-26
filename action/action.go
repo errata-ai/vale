@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"path/filepath"
-	"strings"
 
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/config"
@@ -16,11 +15,7 @@ import (
 
 // TagSentence assigns part-of-speech tags to the given sentence.
 func TagSentence(text string) error {
-	observed := []string{}
-	for _, tok := range core.TextToTokens(text, true) {
-		observed = append(observed, (tok.Text + "/" + tok.Tag))
-	}
-	fmt.Println(strings.Join(observed, " "))
+	core.PrintJSON(core.TextToContext(text))
 	return nil
 }
 

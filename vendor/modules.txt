@@ -114,6 +114,9 @@ github.com/spf13/afero/mem
 # github.com/urfave/cli v1.22.4
 ## explicit
 github.com/urfave/cli
+# github.com/writeas/go-strip-markdown v2.0.1+incompatible
+## explicit
+github.com/writeas/go-strip-markdown
 # github.com/yuin/goldmark v1.1.25
 ## explicit
 github.com/yuin/goldmark

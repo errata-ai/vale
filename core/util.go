@@ -20,7 +20,15 @@ import (
 	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/regexp"
 	"github.com/spf13/afero"
+	stripmd "github.com/writeas/go-strip-markdown"
 )
+
+// TaggedWord represents an NLP context for a word.
+type TaggedWord struct {
+	Token tag.Token
+	Line  int
+	Span  []int
+}
 
 // ExeDir is our starting location.
 var ExeDir string
@@ -137,6 +145,27 @@ func TextToTokens(text string, needsTagging bool) []tag.Token {
 		tokens = append(tokens, tag.Token{Text: word})
 	}
 	return tokens
+}
+
+// TextToContext returns an NLP context for the given text.
+func TextToContext(text string) []TaggedWord {
+	context := []TaggedWord{}
+	for idx, line := range strings.Split(text, "\n") {
+		plain := stripmd.Strip(line)
+		for _, tok := range TextToTokens(plain, true) {
+			if StringInSlice(tok.Tag, []string{"''", "``"}) {
+				continue
+			}
+			s := strings.Index(line, tok.Text)
+			context = append(context, TaggedWord{
+				Line:  idx + 1,
+				Token: tok,
+				Span:  []int{s + 1, s + len(tok.Text)},
+			})
+			line, _ = Substitute(line, tok.Text, '*')
+		}
+	}
+	return context
 }
 
 // CheckPOS determines if a match (as found by an extension point) also matches
