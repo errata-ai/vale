@@ -3,8 +3,8 @@ package check
 import (
 	"fmt"
 
-	"github.com/errata-ai/vale/config"
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/config"
+	"github.com/errata-ai/vale/v2/core"
 	"github.com/jdkato/prose/summarize"
 	"github.com/mitchellh/mapstructure"
 )

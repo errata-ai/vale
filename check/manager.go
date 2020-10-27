@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/errata-ai/vale/config"
-	"github.com/errata-ai/vale/core"
-	"github.com/errata-ai/vale/rule"
+	"github.com/errata-ai/vale/v2/config"
+	"github.com/errata-ai/vale/v2/core"
+	"github.com/errata-ai/vale/v2/rule"
 )
 
 // Manager controls the loading and validating of the check extension points.

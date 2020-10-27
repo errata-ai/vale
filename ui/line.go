@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/core"
 )
 
 // PrintLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.

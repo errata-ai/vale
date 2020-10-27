@@ -35,9 +35,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/errata-ai/vale/check"
-	"github.com/errata-ai/vale/config"
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/check"
+	"github.com/errata-ai/vale/v2/config"
+	"github.com/errata-ai/vale/v2/core"
 	"github.com/remeh/sizedwaitgroup"
 )
 
@@ -205,8 +205,8 @@ func (l *Linter) lintFile(src string) lintResult {
 func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength int) {
 	var b core.Block
 
-	text := core.PrepText(txt)
-	rawText := core.PrepText(raw)
+	text := core.Sanitize(txt)
+	rawText := core.Sanitize(raw)
 
 	if l.Manager.HasScope("paragraph") || l.Manager.HasScope("sentence") {
 		senScope := "sentence" + f.RealExt

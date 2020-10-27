@@ -11,7 +11,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/core"
 	"github.com/gobwas/glob"
 	"github.com/jdkato/regexp"
 	"github.com/yuin/goldmark"
@@ -29,7 +29,7 @@ var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (\w+)`)
 //
 // This isn't ideal, but it appears to be necessary.
 //
-// See https://github.com/errata-ai/vale/issues/119.
+// See https://github.com/errata-ai/vale/v2/issues/119.
 var reSphinx = regexp.MustCompile(`.. glossary::`)
 var rstArgs = []string{
 	"--quiet",
@@ -143,7 +143,7 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	// example, if we're looking for 'json' we many incorrectly report the
 	// location as being in an infostring like '```json'.
 	//
-	// See https://github.com/errata-ai/vale/issues/248.
+	// See https://github.com/errata-ai/vale/v2/issues/248.
 	body := reExInfo.ReplaceAllStringFunc(f.Content, func(m string) string {
 		parts := strings.Split(m, "`")
 		return "```" + strings.Repeat("*", len(parts[len(parts)-1]))

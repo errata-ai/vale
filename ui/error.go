@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/acarl005/stripansi"
-	"github.com/errata-ai/vale/config"
+	"github.com/errata-ai/vale/v2/config"
 	"github.com/mattn/go-colorable"
 )
 

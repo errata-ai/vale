@@ -1,5 +1,11 @@
 package core
 
+import (
+	"path/filepath"
+	"regexp"
+	"strings"
+)
+
 // CommentsByNormedExt determines what parts of a file we should lint -- e.g.,
 // we only want to lint // or /* comments in a C++ file. Multiple formats are
 // mapped to a single extension (e.g., .java -> .c) because many languages use
@@ -79,4 +85,21 @@ var FormatByExtension = map[string][]string{
 	`\.(?:hs)$`:                                   {".hs", "code"},
 	`\.(?:xml)$`:                                  {".xml", "markup"},
 	`\.(?:dita)$`:                                 {".dita", "markup"},
+}
+
+// FormatFromExt takes a file extension and returns its [normExt, format]
+// list, if supported.
+func FormatFromExt(path string, mapping map[string]string) (string, string) {
+	ext := strings.Trim(filepath.Ext(path), ".")
+	if format, found := mapping[ext]; found {
+		ext = format
+	}
+	ext = "." + ext
+	for r, f := range FormatByExtension {
+		m, _ := regexp.MatchString(r, ext)
+		if m {
+			return f[0], f[1]
+		}
+	}
+	return "unknown", "unknown"
 }

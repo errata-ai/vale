@@ -1,9 +1,9 @@
 package check
 
 import (
-	"github.com/errata-ai/vale/config"
-	"github.com/errata-ai/vale/core"
-	"github.com/errata-ai/vale/rule"
+	"github.com/errata-ai/vale/v2/config"
+	"github.com/errata-ai/vale/v2/core"
+	"github.com/errata-ai/vale/v2/rule"
 	"github.com/mitchellh/mapstructure"
 )
 

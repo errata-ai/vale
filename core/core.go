@@ -11,7 +11,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/errata-ai/vale/config"
+	"github.com/errata-ai/vale/v2/config"
 	"github.com/gobwas/glob"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
@@ -233,7 +233,7 @@ func NewFile(src string, config *config.Config) (*File, error) {
 	}
 
 	scanner.Split(SplitLines)
-	content := PrepText(string(fbytes))
+	content := Sanitize(string(fbytes))
 	lines := strings.SplitAfter(content, "\n")
 	file := File{
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),

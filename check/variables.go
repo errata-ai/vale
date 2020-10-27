@@ -3,7 +3,7 @@ package check
 import (
 	"strings"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/core"
 	"github.com/jdkato/prose/transform"
 	"github.com/jdkato/regexp"
 )

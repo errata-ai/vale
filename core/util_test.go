@@ -28,8 +28,8 @@ func TestPrepText(t *testing.T) {
 		"foo\r\n\r\nbar": "foo\n\nbar",
 	}
 	for raw, prepped := range rawToPrepped {
-		if prepped != PrepText(raw) {
-			t.Errorf("expected = %v, got = %v", prepped, PrepText(raw))
+		if prepped != Sanitize(raw) {
+			t.Errorf("expected = %v, got = %v", prepped, Sanitize(raw))
 		}
 	}
 }

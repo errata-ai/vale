@@ -3,7 +3,7 @@ package ui
 import (
 	"fmt"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/core"
 )
 
 // PrintJSONAlerts prints Alerts in map[file.path][]Alert form.

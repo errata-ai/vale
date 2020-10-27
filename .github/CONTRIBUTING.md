@@ -23,7 +23,7 @@ More specifically, Vale is written in Go and split into packages that are tasked
 - `rule` implements Vale's built-in style.
 - `ui` manages displaying information to users.
 
-If you're looking to improve Vale's documentation, check out the [`docs/`](https://github.com/errata-ai/vale/tree/master/docs) directory.
+If you're looking to improve Vale's documentation, check out the [`docs/`](https://github.com/errata-ai/vale/v2/tree/master/docs) directory.
 
 ## <a name="testing"></a> Testing
 
@@ -102,5 +102,5 @@ Related to #30.
 | Term  | Definition                                                                                                                                                                        |
 |:-----:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | check | A "check" is one of Vale's extension points (e.g., `existence` and `substitution`) that performs a single task such as looking for the existence of a word.                       |
-| rule  | A "rule" is an actual implementation of a check. For example, [`Hedging`](https://github.com/errata-ai/vale/blob/master/rule/vale/Hedging.yml) is one of Vale's built-in rules.         |
-| style | A "style" is a collection of rules. For example, [`Joblint`](https://github.com/errata-ai/vale/tree/master/rule/Joblint) is a style that consists of rules such as `LegacyTech`. |
+| rule  | A "rule" is an actual implementation of a check. For example, [`Hedging`](https://github.com/errata-ai/vale/v2/blob/master/rule/vale/Hedging.yml) is one of Vale's built-in rules.         |
+| style | A "style" is a collection of rules. For example, [`Joblint`](https://github.com/errata-ai/vale/v2/tree/master/rule/Joblint) is a style that consists of rules such as `LegacyTech`. |

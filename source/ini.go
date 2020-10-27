@@ -8,51 +8,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/errata-ai/vale/config"
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/config"
+	"github.com/errata-ai/vale/v2/core"
 	"github.com/gobwas/glob"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/afero"
 	"gopkg.in/ini.v1"
 )
-
-func mergeValues(shadows []string) []string {
-	values := []string{}
-	for _, v := range shadows {
-		for _, s := range strings.Split(v, ",") {
-			entry := strings.TrimSpace(s)
-			if entry != "" && !core.StringInSlice(entry, values) {
-				values = append(values, entry)
-			}
-		}
-	}
-	return values
-}
-
-func validateLevel(key, val string, cfg *config.Config) bool {
-	options := []string{"YES", "suggestion", "warning", "error"}
-	if val == "NO" || !core.StringInSlice(val, options) {
-		return false
-	} else if val != "YES" {
-		cfg.RuleToLevel[key] = val
-	}
-	return true
-}
-
-func loadVocab(root string, config *config.Config) error {
-	root = filepath.Join(config.StylesPath, "Vocab", root)
-
-	err := config.FsWrapper.Walk(root, func(fp string, fi os.FileInfo, err error) error {
-		if filepath.Base(fp) == "accept.txt" {
-			return config.AddWordListFile(fp, true)
-		} else if filepath.Base(fp) == "reject.txt" {
-			return config.AddWordListFile(fp, false)
-		}
-		return err
-	})
-
-	return err
-}
 
 var syntaxOpts = map[string]func(string, *ini.Section, *config.Config) error{
 	"BasedOnStyles": func(lbl string, sec *ini.Section, cfg *config.Config) error {
@@ -122,13 +84,13 @@ var coreOpts = map[string]func(*ini.Section, *config.Config, []string) error{
 	"StylesPath": func(sec *ini.Section, cfg *config.Config, args []string) error {
 		paths := sec.Key("StylesPath").ValueWithShadows()
 		if cfg.Local && len(paths) == 2 {
-			basePath := core.DeterminePath(args[0], filepath.FromSlash(paths[1]))
-			mockPath := core.DeterminePath(args[1], filepath.FromSlash(paths[0]))
+			basePath := determinePath(args[0], filepath.FromSlash(paths[1]))
+			mockPath := determinePath(args[1], filepath.FromSlash(paths[0]))
 			if basePath != mockPath {
 				baseFs := cfg.FsWrapper.Fs
 				mockFs := afero.NewMemMapFs()
 
-				err := core.CopyDir(baseFs, basePath, mockFs, mockPath)
+				err := copyDir(baseFs, basePath, mockFs, mockPath)
 				if err != nil {
 					return err
 				}
@@ -142,7 +104,7 @@ var coreOpts = map[string]func(*ini.Section, *config.Config, []string) error{
 			entry := sec.Key("StylesPath").MustString("")
 			canidate := filepath.FromSlash(entry)
 
-			cfg.StylesPath = core.DeterminePath(cfg.Path, canidate)
+			cfg.StylesPath = determinePath(cfg.Path, canidate)
 			if !core.FileExists(cfg.StylesPath) {
 				return core.NewE201FromTarget(
 					fmt.Sprintf("The path '%s' does not exist.", cfg.StylesPath),
@@ -197,7 +159,7 @@ var coreOpts = map[string]func(*ini.Section, *config.Config, []string) error{
 	},
 	"SphinxBuildPath": func(sec *ini.Section, cfg *config.Config, args []string) error {
 		canidate := filepath.FromSlash(sec.Key("SphinxBuildPath").MustString(""))
-		cfg.SphinxBuild = core.DeterminePath(cfg.Path, canidate)
+		cfg.SphinxBuild = determinePath(cfg.Path, canidate)
 		return nil
 	},
 	"SphinxAutoBuild": func(sec *ini.Section, cfg *config.Config, args []string) error {

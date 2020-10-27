@@ -6,12 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/errata-ai/vale/action"
-	"github.com/errata-ai/vale/config"
-	"github.com/errata-ai/vale/core"
-	"github.com/errata-ai/vale/lint"
-	"github.com/errata-ai/vale/source"
-	"github.com/errata-ai/vale/ui"
+	"github.com/errata-ai/vale/v2/config"
+	"github.com/errata-ai/vale/v2/core"
+	"github.com/errata-ai/vale/v2/lint"
+	"github.com/errata-ai/vale/v2/source"
+	"github.com/errata-ai/vale/v2/ui"
 	"github.com/urfave/cli"
 )
 
@@ -25,6 +24,18 @@ func validateFlags(config *config.Config) error {
 			fmt.Errorf("path '%s' does not exist", config.Path))
 	}
 	return nil
+}
+
+func stat() bool {
+	stat, err := os.Stdin.Stat()
+	if err != nil || (stat.Mode()&os.ModeCharDevice) != 0 {
+		return false
+	}
+	return true
+}
+
+func looksLikeStdin(s string) bool {
+	return !(core.FileExists(s) || core.IsDir(s)) && s != ""
 }
 
 func main() {
@@ -129,37 +140,9 @@ func main() {
 			Aliases: []string{"dc"},
 			Usage:   "List the current configuration options",
 			Action: func(c *cli.Context) error {
-				return action.ListConfig(config)
-			},
-		},
-		{
-			Name:  "new-rule",
-			Usage: "Generates a template for the given extension point",
-			Action: func(c *cli.Context) error {
-				return action.GetTemplate(c.Args().First())
-			},
-		},
-		{
-			Name:  "compile",
-			Usage: "Return a compiled regex for a given rule",
-			Action: func(c *cli.Context) error {
-				return action.CompileRule(config, c.Args().First())
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "test",
-			Usage: "Return linting results for a single rule",
-			Action: func(c *cli.Context) error {
-				return action.TestRule(c.Args())
-			},
-			Hidden: true,
-		},
-		{
-			Name:  "tag",
-			Usage: "Assign part-of-speech tags to the given sentence",
-			Action: func(c *cli.Context) error {
-				return action.TagSentence(c.Args().First())
+				err := source.From("ini", config)
+				fmt.Println(config.String())
+				return err
 			},
 		},
 	}
@@ -179,9 +162,9 @@ func main() {
 			return err
 		}
 
-		if c.NArg() > 0 || core.Stat() {
+		if c.NArg() > 0 || stat() {
 			if c.NArg() > 0 {
-				if core.LooksLikeStdin(c.Args()[0]) {
+				if looksLikeStdin(c.Args()[0]) {
 					linted, err = linter.LintString(c.Args()[0])
 				} else {
 					linted, err = linter.Lint(c.Args(), glob)

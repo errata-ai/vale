@@ -5,7 +5,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/core"
 	"golang.org/x/net/html"
 )
 
@@ -176,7 +176,7 @@ func checkClasses(attr string, ignore []string) bool {
 
 // HACK: We need to look for inserted `spans` within `tt` tags.
 //
-// See https://github.com/errata-ai/vale/issues/140.
+// See https://github.com/errata-ai/vale/v2/issues/140.
 func shouldBeSkipped(tagHistory []string, ext string) bool {
 	if ext == ".rst" {
 		n := len(tagHistory)

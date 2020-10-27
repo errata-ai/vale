@@ -6,10 +6,11 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/errata-ai/vale/config"
-	"github.com/errata-ai/vale/core"
-	"github.com/errata-ai/vale/data"
-	"github.com/errata-ai/vale/spell"
+	"github.com/errata-ai/vale/v2/config"
+	"github.com/errata-ai/vale/v2/core"
+	"github.com/errata-ai/vale/v2/data"
+	"github.com/errata-ai/vale/v2/source"
+	"github.com/errata-ai/vale/v2/spell"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
@@ -107,8 +108,8 @@ func NewSpelling(cfg *config.Config, generic baseCheck) (Spelling, error) {
 		return rule, readStructureError(err, path)
 	}
 
-	affloc := core.FindAsset(cfg, rule.Aff)
-	dicloc := core.FindAsset(cfg, rule.Dic)
+	affloc := source.FindAsset(cfg, rule.Aff)
+	dicloc := source.FindAsset(cfg, rule.Dic)
 	if core.FileExists(affloc) && core.FileExists(dicloc) {
 		model, err = spell.NewGoSpell(affloc, dicloc)
 	} else {
@@ -152,7 +153,7 @@ func (s Spelling) Run(txt string, f *core.File) []core.Alert {
 	// This ensures that we respect `.aff` entries like `ICONV ’ '`,
 	// allowing us to avoid false positives.
 	//
-	// See https://github.com/errata-ai/vale/issues/148.
+	// See https://github.com/errata-ai/vale/v2/issues/148.
 	txt = s.gs.InputConversion([]byte(txt))
 
 OUTER:

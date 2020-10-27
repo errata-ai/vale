@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/errata-ai/vale/config"
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/config"
+	"github.com/errata-ai/vale/v2/core"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"

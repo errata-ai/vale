@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/core"
 	"github.com/logrusorgru/aurora/v3"
 	"github.com/olekukonko/tablewriter"
 )

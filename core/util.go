@@ -2,33 +2,18 @@ package core
 
 import (
 	"bytes"
-	"crypto/md5"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"sync"
 	"unicode"
-	"unicode/utf8"
 
-	"github.com/errata-ai/vale/config"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/regexp"
-	"github.com/spf13/afero"
-	stripmd "github.com/writeas/go-strip-markdown"
 )
-
-// TaggedWord represents an NLP context for a word.
-type TaggedWord struct {
-	Token tag.Token
-	Line  int
-	Span  []int
-}
 
 // ExeDir is our starting location.
 var ExeDir string
@@ -41,6 +26,11 @@ var DefaultIgnoreDirectories = []string{
 	"node_modules", ".git",
 }
 
+var sanitizer = strings.NewReplacer(
+	"&rsquo;", "'",
+	"\r\n", "\n",
+	"\r", "\n")
+
 // ShouldIgnoreDirectory will check if directory should be ignored
 func ShouldIgnoreDirectory(directoryName string) bool {
 	for _, directory := range DefaultIgnoreDirectories {
@@ -49,13 +39,6 @@ func ShouldIgnoreDirectory(directoryName string) bool {
 		}
 	}
 	return false
-}
-
-// Hash computes the MD5 hash of the given string.
-func Hash(text string) string {
-	hasher := md5.New()
-	hasher.Write([]byte(text))
-	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 // PrintJSON prints the data type `t` as JSON.
@@ -105,6 +88,19 @@ func IsPhrase(s string) bool {
 	return true
 }
 
+// InRange determines if the range r contains the integer n.
+func InRange(n int, r []int) bool {
+	return len(r) == 2 && (r[0] <= n && n <= r[1])
+}
+
+// Tag assigns part-of-speech tags to `words`.
+func Tag(words []string) []tag.Token {
+	if Tagger == nil {
+		Tagger = tag.NewPerceptronTagger()
+	}
+	return Tagger.Tag(words)
+}
+
 // TextToWords convert raw text into a slice of words.
 func TextToWords(text string, nlp bool) []string {
 	// TODO: Replace with iterTokenizer?
@@ -122,19 +118,6 @@ func TextToWords(text string, nlp bool) []string {
 	return words
 }
 
-// InRange determines if the range r contains the integer n.
-func InRange(n int, r []int) bool {
-	return len(r) == 2 && (r[0] <= n && n <= r[1])
-}
-
-// Tag assigns part-of-speech tags to `words`.
-func Tag(words []string) []tag.Token {
-	if Tagger == nil {
-		Tagger = tag.NewPerceptronTagger()
-	}
-	return Tagger.Tag(words)
-}
-
 // TextToTokens converts a string to a slice of tokens.
 func TextToTokens(text string, needsTagging bool) []tag.Token {
 	if needsTagging {
@@ -145,27 +128,6 @@ func TextToTokens(text string, needsTagging bool) []tag.Token {
 		tokens = append(tokens, tag.Token{Text: word})
 	}
 	return tokens
-}
-
-// TextToContext returns an NLP context for the given text.
-func TextToContext(text string) []TaggedWord {
-	context := []TaggedWord{}
-	for idx, line := range strings.Split(text, "\n") {
-		plain := stripmd.Strip(line)
-		for _, tok := range TextToTokens(plain, true) {
-			if StringInSlice(tok.Tag, []string{"''", "``"}) {
-				continue
-			}
-			s := strings.Index(line, tok.Text)
-			context = append(context, TaggedWord{
-				Line:  idx + 1,
-				Token: tok,
-				Span:  []int{s + 1, s + len(tok.Text)},
-			})
-			line, _ = Substitute(line, tok.Text, '*')
-		}
-	}
-	return context
 }
 
 // CheckPOS determines if a match (as found by an extension point) also matches
@@ -189,15 +151,6 @@ func CheckPOS(loc []int, expected, text string) bool {
 
 	match, _ := regexp.MatchString(expected, strings.Join(observed, " "))
 	return !match
-}
-
-// Stat checks if we have anything waiting in stdin.
-func Stat() bool {
-	stat, err := os.Stdin.Stat()
-	if err != nil || (stat.Mode()&os.ModeCharDevice) != 0 {
-		return false
-	}
-	return true
 }
 
 // Which checks for the existence of any command in `cmds`.
@@ -247,75 +200,8 @@ func StringsToInterface(strings []string) []interface{} {
 	return intf
 }
 
-func guessLocation(ctx, sub, match string) (int, string) {
-	target := ""
-	for _, s := range SentenceTokenizer.Tokenize(sub) {
-		if s == match || strings.Index(s, match) > 0 {
-			target = s
-		}
-	}
-
-	if target == "" {
-		return -1, sub
-	}
-
-	tokens := WordTokenizer.Tokenize(target)
-	for _, text := range strings.Split(ctx, "\n") {
-		if allStringsInString(tokens, text) {
-			return strings.Index(ctx, text) + 1, text
-		}
-	}
-
-	return -1, sub
-}
-
-// initialPosition calculates the position of a match (given by the location in
-// the reference document, `loc`) in the source document (`ctx`).
-func initialPosition(ctx, txt string, a Alert) (int, string) {
-	var idx int
-	var pat *regexp.Regexp
-
-	if a.Match == "" {
-		// We have nothing to look for -- assume the rule applies to the entire
-		// document (e.g., readability).
-		return 1, ""
-	}
-
-	sub := strings.ToValidUTF8(a.Match, "")
-	if p, ok := cache.Load(sub); ok {
-		pat = p.(*regexp.Regexp)
-	} else {
-		pat = regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|\b|$)`)
-		cache.Store(sub, pat)
-	}
-
-	fsi := pat.FindStringIndex(ctx)
-	if fsi == nil {
-		idx = strings.Index(ctx, sub)
-		if idx < 0 {
-			// This should only happen if we're in a scope that contains inline
-			// markup (e.g., a sentence with code spans).
-			return guessLocation(ctx, txt, sub)
-		}
-	} else {
-		idx = fsi[0]
-	}
-
-	if strings.HasPrefix(ctx[idx:], "_") {
-		idx++ // We don't want to include the underscore boundary.
-	}
-
-	return utf8.RuneCountInString(ctx[:idx]) + 1, sub
-}
-
-// sanitizer replaces a set of unicode characters with ASCII equivalents.
-var sanitizer = strings.NewReplacer(
-	"&rsquo;", "'",
-	"\r\n", "\n",
-	"\r", "\n")
-
-// PrepText prepares text for our check functions.
-func PrepText(txt string) string {
+// Sanitize prepares text for our check functions.
+func Sanitize(txt string) string {
 	return sanitizer.Replace(txt)
 }
 
@@ -333,23 +219,6 @@ func Indent(text, indent string) string {
 		result += indent + j + "\n"
 	}
 	return result[:len(result)-1]
-}
-
-// FormatFromExt takes a file extension and returns its [normExt, format]
-// list, if supported.
-func FormatFromExt(path string, mapping map[string]string) (string, string) {
-	ext := strings.Trim(filepath.Ext(path), ".")
-	if format, found := mapping[ext]; found {
-		ext = format
-	}
-	ext = "." + ext
-	for r, f := range FormatByExtension {
-		m, _ := regexp.MatchString(r, ext)
-		if m {
-			return f[0], f[1]
-		}
-	}
-	return "unknown", "unknown"
 }
 
 // IsDir determines if the path given by `filename` is a directory.
@@ -394,40 +263,6 @@ func AllStringsInSlice(strings []string, slice []string) bool {
 	return true
 }
 
-func allStringsInString(subs []string, s string) bool {
-	for _, sub := range subs {
-		if strings.Index(s, sub) < 0 {
-			return false
-		}
-	}
-	return true
-}
-
-// HasAnyPrefix determines if `text` has any prefix contained in `slice`.
-func HasAnyPrefix(text string, slice []string) bool {
-	for _, s := range slice {
-		if strings.HasPrefix(text, s) {
-			return true
-		}
-	}
-	return false
-}
-
-// ContainsAny determines if `text` contains any string in `slice`.
-func ContainsAny(text string, slice []string) bool {
-	for _, s := range slice {
-		if strings.Contains(text, s) {
-			return true
-		}
-	}
-	return false
-}
-
-// LooksLikeStdin determines if s appears to be a string.
-func LooksLikeStdin(s string) bool {
-	return !(FileExists(s) || IsDir(s)) && s != ""
-}
-
 // SplitLines splits on CRLF, CR not followed by LF, and LF.
 func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) {
 	if atEOF && len(data) == 0 {
@@ -447,109 +282,4 @@ func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) {
 		return len(data), data, nil
 	}
 	return 0, nil, nil
-}
-
-// FindAsset tries to locate a Vale-related resource by looking in the
-// user-defined StylesPath.
-func FindAsset(cfg *config.Config, path string) string {
-	if path == "" {
-		return path
-	}
-
-	inPath := filepath.Join(cfg.StylesPath, path)
-	if FileExists(inPath) {
-		return inPath
-	}
-
-	return DeterminePath(cfg.Path, path)
-}
-
-// DeterminePath decides if `keyPath` is relative or absolute.
-func DeterminePath(configPath string, keyPath string) string {
-	if !IsDir(configPath) {
-		configPath = filepath.Dir(configPath)
-	}
-	sep := string(filepath.Separator)
-	abs, _ := filepath.Abs(keyPath)
-	rel := strings.TrimRight(keyPath, sep)
-	if abs != rel || !strings.Contains(keyPath, sep) {
-		// The path was relative
-		return filepath.Join(configPath, keyPath)
-	}
-	return abs
-}
-
-// CopyFile from a source file system to destination file system.
-func CopyFile(srcFs afero.Fs, srcFilePath string, destFs afero.Fs, destFilePath string) error {
-	srcFile, err := srcFs.Open(srcFilePath)
-	if err != nil {
-		return err
-	}
-	defer srcFile.Close()
-
-	srcInfo, err := srcFile.Stat()
-	if err != nil {
-		return err
-	}
-
-	destFile, err := destFs.Create(destFilePath)
-	if err != nil {
-		return err
-	}
-	defer destFile.Close()
-
-	_, err = io.Copy(destFile, srcFile)
-	if err != nil {
-		return err
-	}
-
-	if err != nil {
-		err = destFs.Chmod(destFilePath, srcInfo.Mode())
-	}
-
-	return nil
-}
-
-// CopyDir from a source file system to destination file system.
-func CopyDir(srcFs afero.Fs, srcDirPath string, destFs afero.Fs, destDirPath string) error {
-	// get properties of source dir
-	srcInfo, err := srcFs.Stat(srcDirPath)
-	if err != nil {
-		return err
-	}
-
-	// create dest dir
-	if err = destFs.MkdirAll(destDirPath, srcInfo.Mode()); err != nil {
-		return err
-	}
-
-	directory, err := srcFs.Open(srcDirPath)
-	if err != nil {
-		return err
-	}
-	defer directory.Close()
-
-	entries, err := directory.Readdir(-1)
-	if err != nil {
-		return err
-	}
-
-	for _, e := range entries {
-		srcFullPath := filepath.Join(srcDirPath, e.Name())
-		destFullPath := filepath.Join(destDirPath, e.Name())
-
-		if e.IsDir() {
-			// create sub-directories - recursively
-			if err = CopyDir(srcFs, srcFullPath, destFs, destFullPath); err != nil {
-				return err
-			}
-		} else {
-			// perform copy
-			if err = CopyFile(srcFs, srcFullPath, destFs, destFullPath); err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
 }

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/core"
 	"github.com/jdkato/regexp"
 )
 
@@ -29,7 +29,7 @@ func (l *Linter) lintCode(f *core.File) int {
 	inBlock := false
 
 	for f.Scanner.Scan() {
-		line = core.PrepText(f.Scanner.Text() + "\n")
+		line = core.Sanitize(f.Scanner.Text() + "\n")
 		lnLength = len(line)
 		lines++
 		if inBlock {
