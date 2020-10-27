@@ -192,9 +192,10 @@ func main() {
 
 	if err = app.Run(os.Args); err != nil {
 		ui.ShowError(err, config)
+		os.Exit(2)
 	} else if hasErrors && !config.NoExit {
 		os.Exit(1)
-	} else {
-		os.Exit(0)
 	}
+
+	os.Exit(0)
 }

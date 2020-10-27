@@ -80,7 +80,7 @@ Feature: Config
       """
       E100 [.vale.ini] Runtime error
       """
-    And the exit status should be 1
+    And the exit status should be 2
 
 
   #  Scenario: Fall back to root config

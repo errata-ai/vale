@@ -94,7 +94,7 @@ func ShowError(err error, config *config.Config) {
 			}
 		}
 
-		logger.Fatalln(getJSON(data))
+		logger.Println(getJSON(data))
 	case "line":
 		var data string
 
@@ -105,8 +105,8 @@ func ShowError(err error, config *config.Config) {
 				parsed.path, parsed.line, parsed.code, parsed.text)
 		}
 
-		logger.Fatalln(data)
+		logger.Println(data)
 	default:
-		logger.Fatalln(err)
+		logger.Println(err)
 	}
 }
