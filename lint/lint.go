@@ -65,7 +65,6 @@ func NewLinter(cfg *config.Config) (*Linter, error) {
 	return &Linter{
 		Manager: mgr,
 
-		seen:      make(map[string]bool),
 		nonGlobal: globalStyles+globalChecks == 0}, err
 }
 
@@ -122,14 +121,9 @@ func (l *Linter) lintFiles(done <-chan core.File, root string) (<-chan lintResul
 		wg := sizedwaitgroup.New(5)
 
 		err := filepath.Walk(root, func(fp string, fi os.FileInfo, err error) error {
-
 			if fi.IsDir() && core.ShouldIgnoreDirectory(fi.Name()) {
 				return filepath.SkipDir
-			}
-
-			if err != nil || fi.IsDir() {
-				return nil
-			} else if l.skip(fp) {
+			} else if err != nil || fi.IsDir() || l.skip(fp) {
 				return nil
 			}
 
@@ -354,22 +348,18 @@ func (l *Linter) skip(fp string) bool {
 		ext = old
 	}
 
+	fp = filepath.ToSlash(fp)
 	if status, found := l.seen[ext]; found && status {
 		return true
 	} else if !l.match(fp) {
-		l.seen[ext] = true
 		return true
 	} else if l.nonGlobal {
-		found := false
 		for _, pat := range l.Manager.Config.SecToPat {
 			if pat.Match(fp) {
-				found = true
+				return false
 			}
 		}
-		if !found {
-			l.seen[ext] = true
-			return true
-		}
+		return true
 	}
 
 	return false

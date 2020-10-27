@@ -123,6 +123,11 @@ When(/^I test glob "(.*)"$/) do |glob|
   step %(I run `#{cmd} --glob='#{glob}' .`)
 end
 
+When(/^I test dir glob "(.*)"$/) do |glob|
+  step %(I cd to "../../fixtures/glob")
+  step %(I run `#{cmd} --glob='#{glob}' .`)
+end
+
 When(/^I run cat "([^\s]+)" "([^\s]+)"$/) do |file, ext|
   step %(I cd to "../../fixtures/formats")
   if OS.windows?

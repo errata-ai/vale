@@ -1,47 +1,47 @@
 Feature: Config
   Background:
     Given a file named "test.md" with:
-    """
-    This is a very important sentence. There is a sentence here too. javascript agendize
+      """
+      This is a very important sentence. There is a sentence here too. javascript agendize
 
-    """
+      """
     And a file named "test.py" with:
-    """
-    # There is always something to say. Very good! (e.g., this is good)
-    # The centre issue is that everything is going to the center.
+      """
+      # There is always something to say. Very good! (e.g., this is good)
+      # The centre issue is that everything is going to the center.
 
-    """
+      """
 
   Scenario: MinAlertLevel = warning
     Given a file named ".vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = warning
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
 
-    [*]
-    BasedOnStyles = vale
-    """
+      [*]
+      BasedOnStyles = vale
+      """
     When I run vale "test.md"
     Then the output should contain exactly:
-    """
-    test.md:1:11:vale.Editorializing:Consider removing 'very'
-    """
+      """
+      test.md:1:11:vale.Editorializing:Consider removing 'very'
+      """
     And the exit status should be 0
 
   Scenario: MinAlertLevel = error
     Given a file named ".vale" with:
-    """
-    MinAlertLevel = error
+      """
+      MinAlertLevel = error
 
-    [*]
-    BasedOnStyles = vale
+      [*]
+      BasedOnStyles = vale
 
-    vale.Spelling = NO
-    """
+      vale.Spelling = NO
+      """
     When I run vale "test.md"
     Then the output should contain exactly:
-    """
-    """
+      """
+      """
     And the exit status should be 0
 
   Scenario: External config (direct)
@@ -83,231 +83,242 @@ Feature: Config
     And the exit status should be 1
 
 
-#  Scenario: Fall back to root config
-#    When I test "/misc/one/two/three"
-#    Then the output should contain exactly:
-#      """
-#      four/test.yml:1:7:docs.Spelling:Did you really mean 'foos'?
-#      test.yml:1:7:docs.Spelling:Did you really mean 'foos'?
-#      """
-#    And the exit status should be 0
+  #  Scenario: Fall back to root config
+  #    When I test "/misc/one/two/three"
+  #    Then the output should contain exactly:
+  #      """
+  #      four/test.yml:1:7:docs.Spelling:Did you really mean 'foos'?
+  #      test.yml:1:7:docs.Spelling:Did you really mean 'foos'?
+  #      """
+  #    And the exit status should be 0
 
   Scenario: Ignore BasedOnStyle for formats it doesn't match
     Given a file named ".vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = warning
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
 
-    [*.py]
-    BasedOnStyles = vale
+      [*.py]
+      BasedOnStyles = vale
 
-    vale.Spelling = NO
-    """
+      vale.Spelling = NO
+      """
     When I run vale "test.md"
     Then the output should contain exactly:
-    """
-    """
+      """
+      """
     And the exit status should be 0
 
   Scenario: Ignore syntax
     When I lint simple "test.md"
     Then the output should contain exactly:
-    """
-    test.md:3:1:vale.Annotations:'NOTE' left in text
-    test.md:8:5:vale.Annotations:'NOTE' left in text
-    test.md:18:4:vale.Annotations:'XXX' left in text
-    test.md:20:9:vale.Annotations:'XXX' left in text
-    test.md:29:5:vale.Annotations:'XXX' left in text
-    test.md:32:1:vale.Annotations:'XXX' left in text
-    test.md:34:29:vale.Annotations:'TODO' left in text
-    test.md:36:3:vale.Annotations:'TODO' left in text
-    test.md:36:10:vale.Annotations:'XXX' left in text
-    test.md:36:16:vale.Annotations:'FIXME' left in text
-    test.md:40:21:vale.Annotations:'FIXME' left in text
-    test.md:44:5:vale.Annotations:'TODO' left in text
-    test.md:46:3:vale.Annotations:'TODO' left in text
-    """
+      """
+      test.md:3:1:vale.Annotations:'NOTE' left in text
+      test.md:8:5:vale.Annotations:'NOTE' left in text
+      test.md:18:4:vale.Annotations:'XXX' left in text
+      test.md:20:9:vale.Annotations:'XXX' left in text
+      test.md:29:5:vale.Annotations:'XXX' left in text
+      test.md:32:1:vale.Annotations:'XXX' left in text
+      test.md:34:29:vale.Annotations:'TODO' left in text
+      test.md:36:3:vale.Annotations:'TODO' left in text
+      test.md:36:10:vale.Annotations:'XXX' left in text
+      test.md:36:16:vale.Annotations:'FIXME' left in text
+      test.md:40:21:vale.Annotations:'FIXME' left in text
+      test.md:44:5:vale.Annotations:'TODO' left in text
+      test.md:46:3:vale.Annotations:'TODO' left in text
+      """
     And the exit status should be 0
 
   Scenario: Specify BasedOnStyle on a per-syntax basis
     Given a file named ".vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = warning
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
 
-    [*.md]
-    BasedOnStyles = vale
+      [*.md]
+      BasedOnStyles = vale
 
-    vale.Spelling = NO
+      vale.Spelling = NO
 
-    [*.py]
-    BasedOnStyles = write-good
-    write-good.E-Prime = NO
-    """
+      [*.py]
+      BasedOnStyles = write-good
+      write-good.E-Prime = NO
+      """
     When I run vale "."
     Then the output should contain exactly:
-    """
-    test.md:1:11:vale.Editorializing:Consider removing 'very'
-    test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
-    """
+      """
+      test.md:1:11:vale.Editorializing:Consider removing 'very'
+      test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
+      test.py:1:37:write-good.Weasel:'Very' is a weasel word!
+      """
     And the exit status should be 1
 
   Scenario: Disable/enable checks on a per-syntax basis
     Given a file named "_vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = warning
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
 
-    [*.md]
-    BasedOnStyles = vale
+      [*.md]
+      BasedOnStyles = vale
 
-    vale.Spelling = NO
+      vale.Spelling = NO
 
-    [*.py]
-    BasedOnStyles = write-good
-    write-good.E-Prime = NO
-    write-good.Weasel = NO
-    """
+      [*.py]
+      BasedOnStyles = write-good
+      write-good.E-Prime = NO
+      write-good.Weasel = NO
+      """
     When I run vale "."
     Then the output should contain exactly:
-    """
-    test.md:1:11:vale.Editorializing:Consider removing 'very'
-    test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    """
+      """
+      test.md:1:11:vale.Editorializing:Consider removing 'very'
+      test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
+      """
     And the exit status should be 1
 
   Scenario: Overwrite BasedOnStyle on a per-syntax basis
     Given a file named "_vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = warning
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
 
-    [*]
-    BasedOnStyles = vale
+      [*]
+      BasedOnStyles = vale
 
-    vale.Spelling = NO
+      vale.Spelling = NO
 
-    [*.py]
-    BasedOnStyles = write-good
-    write-good.E-Prime = NO
-    """
+      [*.py]
+      BasedOnStyles = write-good
+      write-good.E-Prime = NO
+      """
     When I run vale "test.py"
     Then the output should contain exactly:
-    """
-    test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
-    """
+      """
+      test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
+      test.py:1:37:write-good.Weasel:'Very' is a weasel word!
+      """
     And the exit status should be 1
 
   Scenario: Overwrite disabled rules on a per-syntax basis
     Given a file named "_vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = warning
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
 
-    [*]
-    BasedOnStyles = write-good
-    write-good.Weasel = NO
+      [*]
+      BasedOnStyles = write-good
+      write-good.Weasel = NO
 
-    [*.py]
-    write-good.Weasel = YES
-    """
+      [*.py]
+      write-good.Weasel = YES
+      """
     When I run vale "test.py test.md"
     Then the output should contain exactly:
-    """
-    test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
-    """
+      """
+      test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
+      test.py:1:37:write-good.Weasel:'Very' is a weasel word!
+      """
     And the exit status should be 1
 
   Scenario: Load two base styles
     Given a file named "_vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = warning
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
 
-    [*]
-    BasedOnStyles = Joblint, write-good
-    write-good.E-Prime = NO
-    """
+      [*]
+      BasedOnStyles = Joblint, write-good
+      write-good.E-Prime = NO
+      """
     When I run vale "test.py test.md"
     Then the output should contain exactly:
-    """
-    test.md:1:11:write-good.Weasel:'very' is a weasel word!
-    test.md:1:66:Joblint.TechTerms:Use 'JavaScript' instead of 'javascript'
-    test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
-    """
+      """
+      test.md:1:11:write-good.Weasel:'very' is a weasel word!
+      test.md:1:66:Joblint.TechTerms:Use 'JavaScript' instead of 'javascript'
+      test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
+      test.py:1:37:write-good.Weasel:'Very' is a weasel word!
+      """
     And the exit status should be 1
 
   Scenario: Load individual rules
     Given a file named "_vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = warning
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
 
-    [*]
-    BasedOnStyles = vale
-    write-good.ThereIs = YES
-    demo.Spelling = YES
-    """
+      [*]
+      BasedOnStyles = vale
+      write-good.ThereIs = YES
+      demo.Spelling = YES
+      """
     When I run vale "test.py"
     Then the output should contain exactly:
-    """
-    test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:vale.Editorializing:Consider removing 'Very'
-    test.py:2:55:demo.Spelling:Inconsistent spelling of 'center'
-    """
+      """
+      test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
+      test.py:1:37:vale.Editorializing:Consider removing 'Very'
+      test.py:2:55:demo.Spelling:Inconsistent spelling of 'center'
+      """
     And the exit status should be 1
 
   Scenario: Load section with glob as name
     Given a file named "_vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = warning
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = warning
 
-    [*.{md,py}]
-    BasedOnStyles = vale
+      [*.{md,py}]
+      BasedOnStyles = vale
 
-    write-good.ThereIs = YES
-    vale.Spelling = NO
-    """
+      write-good.ThereIs = YES
+      vale.Spelling = NO
+      """
     When I run vale "test.py"
     Then the output should contain exactly:
-    """
-    test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
-    test.py:1:37:vale.Editorializing:Consider removing 'Very'
-    """
+      """
+      test.py:1:1:write-good.ThereIs:Don't start a sentence with '# There is'
+      test.py:1:37:vale.Editorializing:Consider removing 'Very'
+      """
     And the exit status should be 1
 
   Scenario: Test a glob
     When I test glob "*.{py,cc}"
     Then the output should contain exactly:
-    """
-    test.cc:1:4:vale.Annotations:'XXX' left in text
-    test.cc:9:6:vale.Annotations:'NOTE' left in text
-    test.cc:13:6:vale.Annotations:'XXX' left in text
-    test.cc:17:5:vale.Annotations:'FIXME' left in text
-    test.cc:20:5:vale.Annotations:'XXX' left in text
-    test.cc:23:37:vale.Annotations:'XXX' left in text
-    test.py:1:3:vale.Annotations:'FIXME' left in text
-    test.py:5:5:vale.Annotations:'FIXME' left in text
-    test.py:11:3:vale.Annotations:'XXX' left in text
-    test.py:13:16:vale.Annotations:'XXX' left in text
-    test.py:14:14:vale.Annotations:'NOTE' left in text
-    test.py:17:1:vale.Annotations:'NOTE' left in text
-    test.py:23:1:vale.Annotations:'XXX' left in text
-    test.py:28:5:vale.Annotations:'NOTE' left in text
-    test.py:35:8:vale.Annotations:'NOTE' left in text
-    test.py:37:5:vale.Annotations:'TODO' left in text
-    """
+      """
+      test.cc:1:4:vale.Annotations:'XXX' left in text
+      test.cc:9:6:vale.Annotations:'NOTE' left in text
+      test.cc:13:6:vale.Annotations:'XXX' left in text
+      test.cc:17:5:vale.Annotations:'FIXME' left in text
+      test.cc:20:5:vale.Annotations:'XXX' left in text
+      test.cc:23:37:vale.Annotations:'XXX' left in text
+      test.py:1:3:vale.Annotations:'FIXME' left in text
+      test.py:5:5:vale.Annotations:'FIXME' left in text
+      test.py:11:3:vale.Annotations:'XXX' left in text
+      test.py:13:16:vale.Annotations:'XXX' left in text
+      test.py:14:14:vale.Annotations:'NOTE' left in text
+      test.py:17:1:vale.Annotations:'NOTE' left in text
+      test.py:23:1:vale.Annotations:'XXX' left in text
+      test.py:28:5:vale.Annotations:'NOTE' left in text
+      test.py:35:8:vale.Annotations:'NOTE' left in text
+      test.py:37:5:vale.Annotations:'TODO' left in text
+      """
     And the exit status should be 0
 
   Scenario: Test a negated glob
     When I test glob "!*.py"
     Then the output should not contain "py"
     And the exit status should be 0
+
+  Scenario: Test a negated glob directory
+    When I test dir glob "!content/b/*"
+    Then the output should contain exactly:
+      """
+      content/a.md:1:1:Vale.Spelling:Did you really mean 'Lorem'?
+      content/a.md:1:7:Vale.Spelling:Did you really mean 'ipsum'?
+      content/c.md:1:1:Vale.Spelling:Did you really mean 'Lorem'?
+      content/c.md:1:7:Vale.Spelling:Did you really mean 'ipsum'?
+      """
+    And the exit status should be 1
 
   Scenario: Test another negated glob
     When I test glob "!*.{md,py}"
@@ -317,34 +328,34 @@ Feature: Config
 
   Scenario: Change a built-in rule's level
     Given a file named ".vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = error
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = error
 
-    [*]
-    vale.Editorializing = error
-    """
+      [*]
+      vale.Editorializing = error
+      """
     When I run vale "test.md"
     Then the output should contain exactly:
-    """
-    test.md:1:11:vale.Editorializing:Consider removing 'very'
-    """
+      """
+      test.md:1:11:vale.Editorializing:Consider removing 'very'
+      """
     And the exit status should be 1
 
   Scenario: Change an external rule's level
     Given a file named "_vale" with:
-    """
-    StylesPath = ../../styles/
-    MinAlertLevel = error
+      """
+      StylesPath = ../../styles/
+      MinAlertLevel = error
 
-    [*.{md,py}]
-    write-good.Weasel = error
-    """
+      [*.{md,py}]
+      write-good.Weasel = error
+      """
     When I run vale "test.py"
     Then the output should contain exactly:
-    """
-    test.py:1:37:write-good.Weasel:'Very' is a weasel word!
-    """
+      """
+      test.py:1:37:write-good.Weasel:'Very' is a weasel word!
+      """
     And the exit status should be 1
 
   Scenario: Overwrite MinAlertLevel (suggestion)
