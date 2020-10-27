@@ -3,6 +3,7 @@ package ui
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"regexp"
@@ -10,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/acarl005/stripansi"
-	"github.com/errata-ai/vale/v2/config"
 	"github.com/mattn/go-colorable"
 )
 
@@ -64,9 +64,11 @@ func parseError(err error) (valeError, error) {
 }
 
 // ShowError displays the given error in the user-specified format.
-func ShowError(err error, config *config.Config) {
+func ShowError(err error, style string, out io.Writer) {
 	parsed, failed := parseError(err)
-	switch config.Output {
+
+	logger.SetOutput(out)
+	switch style {
 	case "JSON":
 		var data interface{}
 

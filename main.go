@@ -44,7 +44,7 @@ func main() {
 
 	config, err := config.New()
 	if err != nil {
-		ui.ShowError(err, config)
+		ui.ShowError(err, config.Output, os.Stderr)
 	}
 
 	app := cli.NewApp()
@@ -191,7 +191,7 @@ func main() {
 	core.ExeDir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
 
 	if err = app.Run(os.Args); err != nil {
-		ui.ShowError(err, config)
+		ui.ShowError(err, config.Output, os.Stderr)
 		os.Exit(2)
 	} else if hasErrors && !config.NoExit {
 		os.Exit(1)
