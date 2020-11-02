@@ -153,7 +153,7 @@ func parse(file []byte, path string) (map[string]interface{}, error) {
 }
 
 func validateDefinition(generic map[string]interface{}, path string) error {
-	if point, ok := generic["extends"]; !ok {
+	if point, ok := generic["extends"]; !ok || point == nil {
 		return core.NewE201FromPosition(
 			"Missing the required 'extends' key.",
 			path,
@@ -170,7 +170,7 @@ func validateDefinition(generic map[string]interface{}, path string) error {
 			path,
 			1)
 	} else if level, ok := generic["level"]; ok {
-		if !core.StringInSlice(level.(string), core.AlertLevels) {
+		if level == nil || !core.StringInSlice(level.(string), core.AlertLevels) {
 			return core.NewE201FromTarget(
 				fmt.Sprintf("'level' must be one of %v", core.AlertLevels),
 				"level",
