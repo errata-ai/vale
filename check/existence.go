@@ -78,7 +78,7 @@ func NewExistence(cfg *config.Config, generic baseCheck) (Existence, error) {
 	return rule, nil
 }
 
-// Run executes the the existence-based rule.
+// Run executes the the `existence`-based rule.
 //
 // This is simplest of the available extension points: it looks for any matches
 // of its internal `pattern` (calculated from `NewExistence`) against the

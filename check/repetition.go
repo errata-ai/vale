@@ -24,7 +24,7 @@ type Repetition struct {
 	pattern *regexp.Regexp
 }
 
-// NewRepetition ...
+// NewRepetition creates a new `repetition`-based rule.
 func NewRepetition(cfg *config.Config, generic baseCheck) (Repetition, error) {
 	rule := Repetition{}
 	path := generic["path"].(string)
@@ -49,7 +49,9 @@ func NewRepetition(cfg *config.Config, generic baseCheck) (Repetition, error) {
 	return rule, nil
 }
 
-// Run ...
+// Run executes the the `repetition`-based rule.
+//
+// The rule looks for repeated matches of its regex -- such as "this this".
 func (o Repetition) Run(txt string, f *core.File) []core.Alert {
 	var curr, prev string
 	var hit bool
@@ -87,12 +89,12 @@ func (o Repetition) Run(txt string, f *core.File) []core.Alert {
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (o Repetition) Fields() Definition {
 	return o.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (o Repetition) Pattern() string {
 	return o.pattern.String()
 }
