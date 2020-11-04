@@ -140,7 +140,7 @@ func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
 	} else if _, ok := generic["level"]; !ok {
 		generic["level"] = "warning"
 	}
-	if _, ok := generic["scope"]; !ok {
+	if scope, ok := generic["scope"]; scope == nil || !ok {
 		generic["scope"] = "text"
 	}
 
