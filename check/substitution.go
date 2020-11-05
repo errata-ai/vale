@@ -27,7 +27,7 @@ type Substitution struct {
 	repl    []string
 }
 
-// NewSubstitution ...
+// NewSubstitution creates a new `substitution`-based rule.
 func NewSubstitution(cfg *config.Config, generic baseCheck) (Substitution, error) {
 	rule := Substitution{}
 	path := generic["path"].(string)
@@ -78,7 +78,9 @@ func NewSubstitution(cfg *config.Config, generic baseCheck) (Substitution, error
 	return rule, nil
 }
 
-// Run ...
+// Run executes the the `substitution`-based rule.
+//
+// The rule looks for one pattern and then suggests a replacement.
 func (s Substitution) Run(txt string, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 	pos := false
@@ -128,12 +130,12 @@ func (s Substitution) Run(txt string, f *core.File) []core.Alert {
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (s Substitution) Fields() Definition {
 	return s.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (s Substitution) Pattern() string {
 	return s.pattern.String()
 }

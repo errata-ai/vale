@@ -45,6 +45,8 @@ var rstArgs = []string{
 // AsciiDoc configuration.
 var adocArgs = []string{
 	"-s",
+	"-a",
+	"notitle!",
 	"--quiet",
 	"--safe-mode",
 	"secure",

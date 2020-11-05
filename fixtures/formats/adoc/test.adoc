@@ -1,0 +1,40 @@
+= Module 1: Creating a Web Source
+
+In this module, you'll create a web Source to index an employee site.
+
+== Learning Objectives
+
+By the end of this module you should:
+
+* Have basic knowledge of what _web sources_ are.
+
+* Be able to add and build a basic Web Source from the Administration Console.
+
+== Lesson 1: Creating Web Sources
+
+A *Web Source* is a named, persistent set of options that tells a _connector_ how and when to index original content from a given repository.
+
+== Action 1: Add and Build a Web Source
+
+Web source Web Source web source Web sources Web Sources web sources.
+
+* Web source
+* Web Source
+* web source
+* Web sources
+* Web Sources
+* web sources
+
+|===
+|Web source
+|Web Source
+|web source
+
+|Web source
+|Web Source
+|web source
+
+|Web sources
+|Web Sources
+|web sources
+|===
