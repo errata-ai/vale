@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/acarl005/stripansi"
+	"github.com/errata-ai/vale/v2/core"
 	"github.com/mattn/go-colorable"
 )
 
@@ -33,7 +33,7 @@ func init() {
 func parseError(err error) (valeError, error) {
 	var parsed valeError
 
-	plain := stripansi.Strip(err.Error())
+	plain := core.StripANSI(err.Error())
 	lines := strings.Split(plain, "\n\n")
 
 	if len(lines) < 3 {

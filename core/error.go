@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/acarl005/stripansi"
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/quick"
 	"github.com/logrusorgru/aurora/v3"
@@ -49,7 +48,7 @@ func annotate(file []byte, target string, finder errorCondition) (lineError, err
 	idx := 1
 	for scanner.Scan() {
 		markup := scanner.Text()
-		plain := stripansi.Strip(markup)
+		plain := StripANSI(markup)
 		if idx-context.line > 2 && context.line != 0 {
 			break
 		} else if finder(idx, plain, target) && context.line == 0 {

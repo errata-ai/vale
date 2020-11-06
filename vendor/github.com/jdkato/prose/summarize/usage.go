@@ -3,7 +3,6 @@ package summarize
 import (
 	"strings"
 
-	"github.com/jdkato/prose/internal/util"
 	"github.com/montanaflynn/stats"
 )
 
@@ -26,7 +25,7 @@ func (d *Document) Keywords() map[string]int {
 	scores := map[string]int{}
 	for word, freq := range d.WordFrequency {
 		normalized := strings.ToLower(word)
-		if util.StringInSlice(normalized, stopWords) {
+		if _, found := stopWords[normalized]; found {
 			continue
 		}
 		if _, found := scores[normalized]; found {

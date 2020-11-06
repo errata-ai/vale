@@ -15,6 +15,10 @@ import (
 	"github.com/jdkato/regexp"
 )
 
+const ansi = "[\u001B\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))"
+
+var reANSI = regexp.MustCompile(ansi)
+
 // ExeDir is our starting location.
 var ExeDir string
 
@@ -30,6 +34,11 @@ var sanitizer = strings.NewReplacer(
 	"&rsquo;", "'",
 	"\r\n", "\n",
 	"\r", "\n")
+
+// StripANSI removes all ANSI characters from the given string.
+func StripANSI(s string) string {
+	return reANSI.ReplaceAllString(s, "")
+}
 
 // ShouldIgnoreDirectory will check if directory should be ignored
 func ShouldIgnoreDirectory(directoryName string) bool {
