@@ -7,7 +7,7 @@ package main
 import (
 	"strings"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/core"
 )
 
 // Example extends Vale by implementing a custom rule.

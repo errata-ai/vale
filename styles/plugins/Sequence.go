@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/v2/core"
 )
 
 var pat = regexp.MustCompile(`dialog \w+`)
