@@ -1,0 +1,3 @@
+{{- range . -}}
+    {{- .Path}}:{{.Line}}:{{index .Span 0}}:{{.Check}}:{{.Severity}}:{{.Message}}
+{{end -}}

@@ -1,0 +1,29 @@
+{{- $e := 0 -}}
+{{- $w := 0 -}}
+{{- $s := 0 -}}
+{{- $f := 0 -}}
+
+{{$last := ""}}
+{{- range $index, $alert := . -}}
+{{$f = add $f 1}}
+
+{{- $error := "" -}}
+{{- if eq .Severity "error" -}}
+    {{- $error = .Severity | red -}}
+    {{- $e = add $e 1 -}}
+{{- else if eq .Severity "warning" -}}
+    {{- $error = .Severity | yellow -}}
+    {{- $w = add $w 1 -}}
+{{- else -}}
+    {{- $error = .Severity | blue -}}
+    {{- $s = add $s 1 -}}
+{{- end}}
+
+{{- if ne $alert.Name $last -}}
+{{$last = $alert.Name}}
+ {{$alert.Name | underline}}
+{{- end}}
+ {{.Line }}:{{index .Span 0}}<align>{{$error}}<align>{{.Message}}<align>{{.Check}}
+ {{.Link}}
+{{end}}
+{{$e}} {{"errors" | red}}, {{$w}} {{"warnings" | yellow}} and {{$s}} {{"suggestions" | blue}} in {{$f}} files.

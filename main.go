@@ -181,8 +181,8 @@ func main() {
 			return err
 		}
 
-		hasErrors = ui.PrintAlerts(linted, config)
-		return nil
+		hasErrors, err = ui.PrintAlerts(linted, config)
+		return err
 	}
 
 	// TODO: Remove this.

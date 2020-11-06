@@ -40,6 +40,11 @@ When(/^I lint Sphinx "(.*)"$/) do |file|
   step %(I run `#{cmd} #{file}`)
 end
 
+When(/^I test template "(.*)"$/) do |t|
+  step %(I cd to "../../fixtures/templates")
+  step %(I run `#{cmd} --output='tmpl/#{t}' .`)
+end
+
 When(/^I lint AsciiDoc "(.*)"$/) do |file|
   step %(I cd to "../../fixtures/formats/adoc")
   step %(I run `#{cmd} #{file}`)
