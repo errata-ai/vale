@@ -1,3 +1,6 @@
-{{- range . -}}
-    {{- .Path}}:{{.Line}}:{{index .Span 0}}:{{.Check}}:{{.Severity}}:{{.Message}}
+{{range .Files}}
+{{- $path := .Path -}}
+{{- range .Alerts -}}
+{{$path}}:{{.Line}}:{{index .Span 0}}:{{.Check}}:{{.Severity}}:{{.Message}}
+{{end -}}
 {{end -}}
