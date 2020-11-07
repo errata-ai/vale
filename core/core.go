@@ -296,6 +296,7 @@ func FormatAlert(a *Alert, limit int, level, name string) {
 		a.Check = name
 	}
 	a.Limit = limit
+	a.Message = fixOutputSpacing(a.Message)
 }
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.

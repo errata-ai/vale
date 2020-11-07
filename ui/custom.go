@@ -62,7 +62,6 @@ func PrintCustomAlerts(linted []*core.File, path string) (bool, error) {
 			if a.Severity == "error" {
 				alertCount++
 			}
-			a.Message = fixOutputSpacing(a.Message)
 			formatted = append(formatted, ProcessedFile{
 				Path:  f.Path,
 				Name:  filepath.Base(f.Path),

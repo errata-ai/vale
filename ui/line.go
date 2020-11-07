@@ -29,7 +29,6 @@ func PrintLineAlerts(linted []*core.File, relative bool) bool {
 			if a.Severity == "error" {
 				alertCount++
 			}
-			a.Message = fixOutputSpacing(a.Message)
 			fmt.Print(fmt.Sprintf("%s:%d:%d:%s:%s\n",
 				base, a.Line, a.Span[0], a.Check, a.Message))
 		}

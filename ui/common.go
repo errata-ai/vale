@@ -2,21 +2,11 @@ package ui
 
 import (
 	"encoding/json"
-	"regexp"
 	"sort"
-	"strings"
 
 	"github.com/errata-ai/vale/v2/config"
 	"github.com/errata-ai/vale/v2/core"
 )
-
-var spaces = regexp.MustCompile(" +")
-
-func fixOutputSpacing(msg string) string {
-	msg = strings.Replace(msg, "\n", " ", -1)
-	msg = spaces.ReplaceAllString(msg, " ")
-	return msg
-}
 
 func pluralize(s string, n int) string {
 	if n != 1 {

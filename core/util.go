@@ -35,6 +35,14 @@ var sanitizer = strings.NewReplacer(
 	"\r\n", "\n",
 	"\r", "\n")
 
+var spaces = regexp.MustCompile(" +")
+
+func fixOutputSpacing(msg string) string {
+	msg = strings.Replace(msg, "\n", " ", -1)
+	msg = spaces.ReplaceAllString(msg, " ")
+	return msg
+}
+
 // StripANSI removes all ANSI characters from the given string.
 func StripANSI(s string) string {
 	return reANSI.ReplaceAllString(s, "")

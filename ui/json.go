@@ -15,7 +15,6 @@ func PrintJSONAlerts(linted []*core.File) bool {
 			if a.Severity == "error" {
 				alertCount++
 			}
-			a.Message = fixOutputSpacing(a.Message)
 			formatted[f.Path] = append(formatted[f.Path], a)
 		}
 	}

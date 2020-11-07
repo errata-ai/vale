@@ -65,7 +65,6 @@ func printVerboseAlert(f *core.File, wrap bool) (int, int, int) {
 
 	fmt.Printf("\n %s", aurora.Underline(f.Path))
 	for _, a := range alerts {
-		a.Message = fixOutputSpacing(a.Message)
 		if a.Severity == "suggestion" {
 			level = aurora.Blue(a.Severity).String()
 			notifications++
