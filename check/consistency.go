@@ -29,7 +29,7 @@ type Consistency struct {
 	steps []step
 }
 
-// NewConsistency ...
+// NewConsistency creates a new `consistency`-based rule.
 func NewConsistency(cfg *config.Config, generic baseCheck) (Consistency, error) {
 	var chkRE string
 
@@ -71,7 +71,7 @@ func NewConsistency(cfg *config.Config, generic baseCheck) (Consistency, error) 
 	return rule, nil
 }
 
-// Run ...
+// Run looks for inconsistent use of a user-defined regex.
 func (o Consistency) Run(txt string, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 	loc := []int{}
@@ -96,12 +96,12 @@ func (o Consistency) Run(txt string, f *core.File) []core.Alert {
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (o Consistency) Fields() Definition {
 	return o.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (o Consistency) Pattern() string {
 	return ""
 }

@@ -25,7 +25,7 @@ type Conditional struct {
 	patterns []*regexp.Regexp
 }
 
-// NewConditional ...
+// NewConditional creates a new `conditional`-based rule.
 func NewConditional(cfg *config.Config, generic baseCheck) (Conditional, error) {
 	var re *regexp.Regexp
 	var expression []*regexp.Regexp
@@ -60,7 +60,7 @@ func NewConditional(cfg *config.Config, generic baseCheck) (Conditional, error) 
 	return rule, nil
 }
 
-// Run ...
+// Run evalutes the given conditional statement.
 func (c Conditional) Run(txt string, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
@@ -95,12 +95,12 @@ func (c Conditional) Run(txt string, f *core.File) []core.Alert {
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (c Conditional) Fields() Definition {
 	return c.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (c Conditional) Pattern() string {
 	return ""
 }

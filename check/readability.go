@@ -19,7 +19,7 @@ type Readability struct {
 	Grade float64
 }
 
-// NewReadability ...
+// NewReadability creates a new `readability`-based rule.
 func NewReadability(cfg *config.Config, generic baseCheck) (Readability, error) {
 	rule := Readability{}
 	path := generic["path"].(string)
@@ -41,7 +41,7 @@ func NewReadability(cfg *config.Config, generic baseCheck) (Readability, error) 
 	return rule, nil
 }
 
-// Run ...
+// Run calculates the readability level of the given text.
 func (o Readability) Run(txt string, f *core.File) []core.Alert {
 	var grade float64
 	alerts := []core.Alert{}
@@ -75,12 +75,12 @@ func (o Readability) Run(txt string, f *core.File) []core.Alert {
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (o Readability) Fields() Definition {
 	return o.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (o Readability) Pattern() string {
 	return ""
 }

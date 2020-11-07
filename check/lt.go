@@ -7,14 +7,14 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
-// LanguageTool ...
+// LanguageTool connects to to an instance of LanguageTool's HTTP server.
 type LanguageTool struct {
 	Definition `mapstructure:",squash"`
 
 	config *config.Config
 }
 
-// NewLanguageTool ...
+// NewLanguageTool creates a new `LanguageTool`-based rule.
 func NewLanguageTool(cfg *config.Config, generic baseCheck) (LanguageTool, error) {
 	rule := LanguageTool{}
 	path := generic["path"].(string)
@@ -28,7 +28,7 @@ func NewLanguageTool(cfg *config.Config, generic baseCheck) (LanguageTool, error
 	return rule, nil
 }
 
-// Run ...
+// Run sends the given text to an instance of LanguageTool.
 func (l LanguageTool) Run(text string, file *core.File) []core.Alert {
 	alerts, err := rule.CheckWithLT(text, file, l.config)
 	if err != nil {
@@ -38,12 +38,12 @@ func (l LanguageTool) Run(text string, file *core.File) []core.Alert {
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (l LanguageTool) Fields() Definition {
 	return l.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (l LanguageTool) Pattern() string {
 	return ""
 }

@@ -25,7 +25,7 @@ type Occurrence struct {
 	pattern *regexp.Regexp
 }
 
-// NewOccurrence ...
+// NewOccurrence creates a new `occurrence`-based rule.
 func NewOccurrence(cfg *config.Config, generic baseCheck) (Occurrence, error) {
 	rule := Occurrence{}
 	path := generic["path"].(string)
@@ -50,7 +50,8 @@ func NewOccurrence(cfg *config.Config, generic baseCheck) (Occurrence, error) {
 	return rule, nil
 }
 
-// Run ...
+// Run checks the number of occurrences of a user-defined regex against a
+// certain threshold.
 func (o Occurrence) Run(txt string, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
@@ -70,12 +71,12 @@ func (o Occurrence) Run(txt string, f *core.File) []core.Alert {
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (o Occurrence) Fields() Definition {
 	return o.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (o Occurrence) Pattern() string {
 	return o.pattern.String()
 }

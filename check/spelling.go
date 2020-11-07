@@ -92,7 +92,7 @@ func addExceptions(s *Spelling, generic baseCheck, cfg *config.Config) error {
 	return nil
 }
 
-// NewSpelling ...
+// NewSpelling creates a new `spelling`-based rule.
 func NewSpelling(cfg *config.Config, generic baseCheck) (Spelling, error) {
 	var model *spell.GoSpell
 
@@ -146,7 +146,7 @@ func NewSpelling(cfg *config.Config, generic baseCheck) (Spelling, error) {
 	return rule, nil
 }
 
-// Run ...
+// Run performs spell-checking on the provided text.
 func (s Spelling) Run(txt string, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
@@ -182,12 +182,12 @@ OUTER:
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (s Spelling) Fields() Definition {
 	return s.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (s Spelling) Pattern() string {
 	return ""
 }

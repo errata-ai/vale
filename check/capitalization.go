@@ -28,7 +28,7 @@ type Capitalization struct {
 	exceptRe *regexp.Regexp
 }
 
-// NewCapitalization ...
+// NewCapitalization creates a new `capitalization`-based rule.
 func NewCapitalization(cfg *config.Config, generic baseCheck) (Capitalization, error) {
 	rule := Capitalization{}
 	path := generic["path"].(string)
@@ -72,7 +72,7 @@ func NewCapitalization(cfg *config.Config, generic baseCheck) (Capitalization, e
 	return rule, nil
 }
 
-// Run ...
+// Run checks the capitalization style of the provided text.
 func (o Capitalization) Run(txt string, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 	if !o.Check(txt, o.Exceptions, o.exceptRe) {
@@ -81,12 +81,12 @@ func (o Capitalization) Run(txt string, f *core.File) []core.Alert {
 	return alerts
 }
 
-// Fields ...
+// Fields provides access to the internal rule definition.
 func (o Capitalization) Fields() Definition {
 	return o.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (o Capitalization) Pattern() string {
 	return ""
 }

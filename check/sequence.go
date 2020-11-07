@@ -76,7 +76,7 @@ func (s Sequence) Fields() Definition {
 	return s.Definition
 }
 
-// Pattern ...
+// Pattern is the internal regex pattern used by this rule.
 func (s Sequence) Pattern() string {
 	return ""
 }
@@ -180,7 +180,7 @@ func stepsToString(steps []string) string {
 	return strings.Trim(s, " ")
 }
 
-// Run ...
+// Run looks for the user-defined sequence of tokens.
 func (s Sequence) Run(txt string, f *core.File) []core.Alert {
 	var alerts []core.Alert
 
