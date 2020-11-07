@@ -223,3 +223,11 @@ func makeRegexp(
 
 	return regex
 }
+
+func matchToken(expected, observed string) bool {
+	r, err := regexp.Compile(expected)
+	if core.IsPhrase(expected) || err != nil {
+		return expected == observed
+	}
+	return r.MatchString(observed)
+}

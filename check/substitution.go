@@ -98,10 +98,8 @@ func (s Substitution) Run(txt string, f *core.File) []core.Alert {
 				// Based on the current capture group (`idx`), we can determine
 				// the associated replacement string by using the `repl` slice:
 				expected := s.repl[(idx/2)-1]
-				r, err := regexp.Compile(expected)
-
 				observed := strings.TrimSpace(txt[loc[0]:loc[1]])
-				if (err != nil && expected != observed) || !r.MatchString(observed) {
+				if !matchToken(expected, observed) {
 					if s.POS != "" {
 						// If we're given a POS pattern, check that it matches.
 						//
