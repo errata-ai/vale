@@ -75,9 +75,13 @@ func PrintCustomAlerts(linted []*core.File, path string) (bool, error) {
 
 	formatted := []ProcessedFile{}
 	for _, f := range linted {
+		if len(f.Alerts) == 0 {
+			continue
+		}
 		for _, a := range f.SortedAlerts() {
 			if a.Severity == "error" {
 				alertCount++
+				break
 			}
 		}
 		formatted = append(formatted, ProcessedFile{
