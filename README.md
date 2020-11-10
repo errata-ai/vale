@@ -1,7 +1,7 @@
 # Vale: Your style, our editor [![Build Status](https://img.shields.io/travis/errata-ai/vale/v2.svg?logo=travis)](https://travis-ci.org/errata-ai/vale) [![Go Report Card](https://img.shields.io/badge/%F0%9F%93%9D%20%20go%20report-A%2B-75C46B?color=00ACD7)](https://goreportcard.com/report/github.com/errata-ai/vale) ![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub&color=ff69b4) ![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=orange&logo=docker&logoColor=white)
 
 > :sparkles: Want support for **PCRE regex** (lookarounds)? State-of-the-art
-        **NLP in 60+ languages**? [Check out our 3x10 funding compaign](https://opencollective.com/vale/contribute/3x10-funding-campaign-22663)!
+        **NLP in 60+ languages**? [Check out our 3x10 funding campaign](https://opencollective.com/vale/contribute/3x10-funding-campaign-22663)!
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/8785025/96957750-5eab0d00-14b0-11eb-9f5f-52d862518ebf.png">
