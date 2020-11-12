@@ -1,6 +1,7 @@
 package check
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -45,12 +46,19 @@ func TestSentence(t *testing.T) {
 	for _, h := range headings {
 		var r *regexp.Regexp
 		if len(h.exceptions) > 0 {
-			r = regexp.MustCompile(strings.Join(h.exceptions, "|"))
+			regex := makeRegexp(
+				"",
+				false,
+				func() bool { return true },
+				func() string { return "" },
+				true)
+			regex = fmt.Sprintf(regex, strings.Join(h.exceptions, "|"))
+			r = regexp.MustCompile(regex)
 		}
 
 		s := sentence(h.heading, h.exceptions, h.indicators, r)
 		if s != h.match {
-			t.Errorf("expected = %v, got = %v", s, h.match)
+			t.Errorf("expected = %v, got = %v (%s)", h.match, s, h.heading)
 		}
 	}
 }

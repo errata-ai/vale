@@ -16,8 +16,11 @@ func isMatch(r *regexp.Regexp, s string) bool {
 }
 
 func makeExceptions(ignore []string) *regexp.Regexp {
-	ignore = append(ignore, `[\p{N}\p{L}*]+[^\s]*`)
-	return regexp.MustCompile(`(?:` + strings.Join(ignore, "|") + `)`)
+	s := ""
+	if len(ignore) > 0 {
+		s = `\b(?:` + strings.Join(ignore, "|") + `)\b|`
+	}
+	return regexp.MustCompile(s + `[\p{N}\p{L}*]+[^\s]*`)
 }
 
 func lower(s string, ignore []string, re *regexp.Regexp) bool {

@@ -1,6 +1,7 @@
 package check
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/config"
@@ -38,11 +39,19 @@ func NewCapitalization(cfg *config.Config, generic baseCheck) (Capitalization, e
 		return rule, readStructureError(err, path)
 	}
 
+	regex := makeRegexp(
+		"",
+		false,
+		func() bool { return true },
+		func() string { return "" },
+		true)
+
 	for term := range cfg.AcceptedTokens {
 		rule.Exceptions = append(rule.Exceptions, term)
 	}
-	rule.exceptRe = regexp.MustCompile(strings.Join(rule.Exceptions, "|"))
+	regex = fmt.Sprintf(regex, strings.Join(rule.Exceptions, "|"))
 
+	rule.exceptRe = regexp.MustCompile(regex)
 	if rule.Match == "$title" {
 		var tc *transform.TitleConverter
 		if rule.Style == "Chicago" {
