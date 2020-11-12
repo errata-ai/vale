@@ -49,9 +49,12 @@ func NewCapitalization(cfg *config.Config, generic baseCheck) (Capitalization, e
 	for term := range cfg.AcceptedTokens {
 		rule.Exceptions = append(rule.Exceptions, term)
 	}
-	regex = fmt.Sprintf(regex, strings.Join(rule.Exceptions, "|"))
 
-	rule.exceptRe = regexp.MustCompile(regex)
+	regex = fmt.Sprintf(regex, strings.Join(rule.Exceptions, "|"))
+	if len(rule.Exceptions) > 0 {
+		rule.exceptRe = regexp.MustCompile(regex)
+	}
+
 	if rule.Match == "$title" {
 		var tc *transform.TitleConverter
 		if rule.Style == "Chicago" {
