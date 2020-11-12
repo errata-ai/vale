@@ -224,8 +224,13 @@ func makeRegexp(
 	return regex
 }
 
-func matchToken(expected, observed string) bool {
-	r, err := regexp.Compile(expected)
+func matchToken(expected, observed string, ignorecase bool) bool {
+	p := expected
+	if ignorecase {
+		p = ignoreCase + p
+	}
+
+	r, err := regexp.Compile(p)
 	if core.IsPhrase(expected) || err != nil {
 		return expected == observed
 	}

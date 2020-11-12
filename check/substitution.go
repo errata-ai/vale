@@ -99,7 +99,7 @@ func (s Substitution) Run(txt string, f *core.File) []core.Alert {
 				// the associated replacement string by using the `repl` slice:
 				expected := s.repl[(idx/2)-1]
 				observed := strings.TrimSpace(txt[loc[0]:loc[1]])
-				if !matchToken(expected, observed) {
+				if !matchToken(expected, observed, s.Ignorecase) {
 					if s.POS != "" {
 						// If we're given a POS pattern, check that it matches.
 						//
