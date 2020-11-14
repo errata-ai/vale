@@ -2,10 +2,14 @@ package core
 
 import (
 	"strings"
+	"sync"
 	"unicode/utf8"
 
 	"github.com/jdkato/regexp"
 )
+
+// This is used to store patterns as we compute them in `initialPosition`.
+var cache = sync.Map{}
 
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).

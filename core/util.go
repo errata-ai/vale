@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"sync"
 	"unicode"
 
 	"github.com/jdkato/prose/tag"
@@ -15,18 +14,10 @@ import (
 	"github.com/jdkato/regexp"
 )
 
-const ansi = "[\u001B\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))"
-
-var reANSI = regexp.MustCompile(ansi)
-
 // ExeDir is our starting location.
 var ExeDir string
 
-// This is used to store patterns as we compute them in `initialPosition`.
-var cache = sync.Map{}
-
-// DefaultIgnoreDirectories is list of directories which will be ignored by vale, out of the box
-var DefaultIgnoreDirectories = []string{
+var defaultIgnoreDirectories = []string{
 	"node_modules", ".git",
 }
 
@@ -37,20 +28,24 @@ var sanitizer = strings.NewReplacer(
 
 var spaces = regexp.MustCompile(" +")
 
-func fixOutputSpacing(msg string) string {
-	msg = strings.Replace(msg, "\n", " ", -1)
-	msg = spaces.ReplaceAllString(msg, " ")
-	return msg
-}
+var reANSI = regexp.MustCompile("[\u001B\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))")
 
 // StripANSI removes all ANSI characters from the given string.
 func StripANSI(s string) string {
 	return reANSI.ReplaceAllString(s, "")
 }
 
+// WhitespaceToSpace converts newlines and multiple spaces (e.g., "  ") into a
+// single space.
+func WhitespaceToSpace(msg string) string {
+	msg = strings.Replace(msg, "\n", " ", -1)
+	msg = spaces.ReplaceAllString(msg, " ")
+	return msg
+}
+
 // ShouldIgnoreDirectory will check if directory should be ignored
 func ShouldIgnoreDirectory(directoryName string) bool {
-	for _, directory := range DefaultIgnoreDirectories {
+	for _, directory := range defaultIgnoreDirectories {
 		if directory == directoryName {
 			return true
 		}
