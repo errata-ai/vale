@@ -18,6 +18,9 @@ release:
 # make build os=linux
 build:
 	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin
+
+upx:
+	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin
 ifeq ($(os),windows)
 	upx -9 -k bin/vale.exe
 else
