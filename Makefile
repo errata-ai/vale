@@ -17,7 +17,7 @@ release:
 # make build os=windows
 # make build os=linux
 build:
-	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin
+	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin/$(exe)
 
 upx:
 	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin
