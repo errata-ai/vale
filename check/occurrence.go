@@ -1,10 +1,9 @@
 package check
 
 import (
-	"regexp"
-
 	"github.com/errata-ai/vale/v2/config"
 	"github.com/errata-ai/vale/v2/core"
+	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 

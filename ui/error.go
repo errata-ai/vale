@@ -6,11 +6,11 @@ import (
 	"io"
 	"log"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/core"
+	"github.com/jdkato/regexp"
 	"github.com/mattn/go-colorable"
 )
 

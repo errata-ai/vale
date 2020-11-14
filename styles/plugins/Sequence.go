@@ -5,10 +5,10 @@
 package main
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/core"
+	"github.com/jdkato/regexp"
 )
 
 var pat = regexp.MustCompile(`dialog \w+`)

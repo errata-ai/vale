@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"io/ioutil"
 	"path/filepath"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -15,6 +14,7 @@ import (
 	"github.com/gobwas/glob"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
+	"github.com/jdkato/regexp"
 )
 
 // AlertLevels holds the possible values for "level" in an external rule.

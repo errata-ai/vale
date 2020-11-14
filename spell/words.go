@@ -1,9 +1,10 @@
 package spell
 
 import (
-	"regexp"
 	"strings"
 	"unicode"
+
+	"github.com/jdkato/regexp"
 )
 
 // number form, may include dots, commas and dashes

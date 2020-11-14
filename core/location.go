@@ -1,9 +1,10 @@
 package core
 
 import (
-	"regexp"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/jdkato/regexp"
 )
 
 // initialPosition calculates the position of a match (given by the location in

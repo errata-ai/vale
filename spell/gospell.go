@@ -6,8 +6,9 @@ import (
 	"io"
 	"log"
 	"os"
-	"regexp"
 	"strings"
+
+	"github.com/jdkato/regexp"
 )
 
 // GoSpell is main struct
