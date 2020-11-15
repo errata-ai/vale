@@ -201,7 +201,11 @@ func (mgr *Manager) loadStyles(styles []string) error {
 			// We've already loaded this style.
 			continue
 		} else if has, _ := mgr.Config.FsWrapper.DirExists(p); !has {
-			return errors.New("missing style: '" + style + "'")
+			if style != "LanguageTool" {
+				return core.NewE100(
+					"loadStyles",
+					errors.New("style '"+style+"' does not exist on StylesPath"))
+			}
 		}
 		if err := mgr.addStyle(p); err != nil {
 			return err
