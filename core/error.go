@@ -124,6 +124,10 @@ func NewE201(msg, value, path string, finder errorCondition) error {
 	}
 
 	lexer := lexers.Match(path)
+	if lexer == nil {
+		lexer = lexers.Fallback
+	}
+
 	err = quick.Highlight(
 		&sb,
 		string(f),
