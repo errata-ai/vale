@@ -77,7 +77,7 @@ var reFrontMatter = regexp.MustCompile(
 
 // Convert extended info strings -- e.g., ```callout{'title': 'NOTE'} -- that
 // might confuse Blackfriday into normal "```".
-var reExInfo = regexp.MustCompile("```" + `.+`)
+var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
 
 // HTML configuration.
 var heading = regexp.MustCompile(`^h\d$`)
@@ -148,7 +148,15 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	// See https://github.com/errata-ai/vale/v2/issues/248.
 	body := reExInfo.ReplaceAllStringFunc(f.Content, func(m string) string {
 		parts := strings.Split(m, "`")
-		return "```" + strings.Repeat("*", len(parts[len(parts)-1]))
+
+		// This ensure that we respect the number of openning backticks, which
+		// could be more than 3.
+		//
+		// See https://github.com/errata-ai/vale/v2/issues/271.
+		tags := strings.Repeat("`", len(parts)-1)
+		span := strings.Repeat("*", len(parts[len(parts)-1]))
+
+		return tags + span
 	})
 
 	l.lintHTMLTokens(f, body, buf.Bytes(), 0)
