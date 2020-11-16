@@ -21,7 +21,8 @@ type ProcessedFile struct {
 
 // Data holds the information exposed to UI templates.
 type Data struct {
-	Files []ProcessedFile
+	Files       []ProcessedFile
+	LintedTotal int
 }
 
 var funcs = sprig.TxtFuncMap()
@@ -91,6 +92,7 @@ func PrintCustomAlerts(linted []*core.File, path string) (bool, error) {
 	}
 
 	return alertCount != 0, t.Execute(os.Stdout, Data{
-		Files: formatted,
+		Files:       formatted,
+		LintedTotal: len(linted),
 	})
 }
