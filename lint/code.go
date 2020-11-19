@@ -40,7 +40,7 @@ func (l *Linter) lintCode(f *core.File) int {
 				txt = block.String()
 				b := core.NewBlock(
 					txt, txt, fmt.Sprintf(scope, "text.comment.block"))
-				l.lintText(f, b, lines+1, 0)
+				l.lintBlock(f, b, lines+1, 0, true)
 				block.Reset()
 				inBlock = false
 			} else {
@@ -53,7 +53,7 @@ func (l *Linter) lintCode(f *core.File) int {
 			padding = lnLength - len(match)
 			b := core.NewBlock(
 				match, match, fmt.Sprintf(scope, "text.comment.line"))
-			l.lintText(f, b, lines, padding-1)
+			l.lintBlock(f, b, lines, padding-1, true)
 		} else if match = blockStart.FindString(line); len(match) > 0 && !ignore {
 			// We've found the start of a block comment.
 			block.WriteString(line)

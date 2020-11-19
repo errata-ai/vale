@@ -83,7 +83,7 @@ var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
 var heading = regexp.MustCompile(`^h\d$`)
 
 func (l Linter) lintHTML(f *core.File) {
-	l.lintHTMLTokens(f, f.Content, []byte(f.Content), 0)
+	l.lintHTMLTokens(f, []byte(f.Content), 0)
 }
 
 func (l Linter) prep(content, block, inline, ext string) (string, error) {
@@ -159,7 +159,9 @@ func (l Linter) lintMarkdown(f *core.File) error {
 		return tags + span
 	})
 
-	l.lintHTMLTokens(f, body, buf.Bytes(), 0)
+	f.Content = body
+	l.lintHTMLTokens(f, buf.Bytes(), 0)
+
 	return nil
 }
 
@@ -174,7 +176,7 @@ func (l Linter) lintSphinx(f *core.File) error {
 		return core.NewE100(f.Path, err)
 	}
 
-	l.lintHTMLTokens(f, f.Content, html, 0)
+	l.lintHTMLTokens(f, html, 0)
 	return nil
 }
 
@@ -224,7 +226,7 @@ func (l Linter) lintRST(file *core.File) error {
 			bodyEnd = 0
 		}
 	}
-	l.lintHTMLTokens(file, file.Content, html[bodyStart+7:bodyEnd], 0)
+	l.lintHTMLTokens(file, html[bodyStart+7:bodyEnd], 0)
 
 	return nil
 }
@@ -260,7 +262,7 @@ func (l Linter) lintADoc(file *core.File) error {
 		"&rsquo;", "&apos;")
 	input := sanitizer.Replace(out.String())
 
-	l.lintHTMLTokens(file, file.Content, []byte(input), 0)
+	l.lintHTMLTokens(file, []byte(input), 0)
 	return nil
 }
 
@@ -286,7 +288,7 @@ func (l Linter) lintXML(file *core.File) error {
 		return core.NewE100(file.Path, err)
 	}
 
-	l.lintHTMLTokens(file, file.Content, out.Bytes(), 0)
+	l.lintHTMLTokens(file, out.Bytes(), 0)
 	return nil
 }
 
@@ -335,7 +337,7 @@ func (l Linter) lintDITA(file *core.File) error {
 	head1 := bytes.Index(data, []byte("<head>"))
 	head2 := bytes.Index(data, []byte("</head>"))
 	l.lintHTMLTokens(
-		file, file.Content, append(data[:head1], data[head2:]...), 0)
+		file, append(data[:head1], data[head2:]...), 0)
 
 	return nil
 }

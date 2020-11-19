@@ -196,44 +196,47 @@ func (l *Linter) lintFile(src string) lintResult {
 	return lintResult{file, err}
 }
 
-func (l *Linter) lintProse(f *core.File, ctx, txt string, lnTotal, lnLength int) {
+func (l *Linter) lintProse(f *core.File, parent core.Block, lines int) {
 	var b core.Block
 
-	text := core.Sanitize(txt)
+	// FIXME: This is required for paragraphs that lack a newline delimiter:
+	//
+	// p1
+	// p2
+	//
+	// See fixtures/i18n for an example.
+	needsLookup := strings.Count(parent.Text, "\n") > 0
+
+	text := core.Sanitize(parent.Text)
 	if l.Manager.HasScope("paragraph") || l.Manager.HasScope("sentence") {
-		senScope := "sentence" + f.RealExt
-		hasCtx := ctx != ""
 		for _, p := range strings.SplitAfter(text, "\n\n") {
 			for _, s := range core.SentenceTokenizer.Tokenize(p) {
-				sent := strings.TrimSpace(s)
-				if hasCtx {
-					b = core.NewBlock(ctx, sent, senScope)
-				} else {
-					b = core.NewBlock(p, sent, senScope)
-				}
-				l.lintText(f, b, lnTotal, lnLength)
+				b = core.NewLinedBlock(
+					parent.Context,
+					strings.TrimSpace(s),
+					"sentence"+f.RealExt,
+					parent.Line)
+				l.lintBlock(f, b, lines, 0, needsLookup)
 			}
-			l.lintText(
-				f,
-				core.NewBlock(ctx, p, "paragraph"+f.RealExt),
-				lnTotal,
-				lnLength)
+			b = core.NewLinedBlock(
+				parent.Context,
+				p,
+				"paragraph"+f.RealExt,
+				parent.Line)
+			l.lintBlock(f, b, lines, 0, needsLookup)
 		}
 	}
 
-	l.lintText(
-		f,
-		core.NewBlock(ctx, text, "text"+f.RealExt),
-		lnTotal,
-		lnLength)
+	b = core.NewLinedBlock(parent.Context, text, "text"+f.RealExt, parent.Line)
+	l.lintBlock(f, b, lines, 0, needsLookup)
 }
 
 func (l *Linter) lintLines(f *core.File) {
 	block := core.NewBlock("", f.Content, "text"+f.RealExt)
-	l.lintText(f, block, len(f.Lines), 0)
+	l.lintBlock(f, block, len(f.Lines), 0, true)
 }
 
-func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
+func (l *Linter) lintBlock(f *core.File, blk core.Block, lines, pad int, lookup bool) {
 	var wg sync.WaitGroup
 
 	f.ChkToCtx = make(map[string]string)
@@ -261,7 +264,7 @@ func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 	}()
 
 	for a := range results {
-		f.AddAlert(a, blk, lines, pad)
+		f.AddAlert(a, blk, lines, pad, lookup)
 	}
 }
 
