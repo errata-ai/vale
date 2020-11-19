@@ -38,9 +38,7 @@ func NewConditional(cfg *config.Config, generic baseCheck) (Conditional, error) 
 		return rule, readStructureError(err, path)
 	}
 
-	for term := range cfg.AcceptedTokens {
-		rule.Exceptions = append(rule.Exceptions, term)
-	}
+	rule.Exceptions = updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
 	rule.exceptRe = regexp.MustCompile(strings.Join(rule.Exceptions, "|"))
 
 	re, err = regexp.Compile(rule.Second)

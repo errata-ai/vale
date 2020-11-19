@@ -46,9 +46,7 @@ func NewCapitalization(cfg *config.Config, generic baseCheck) (Capitalization, e
 		func() string { return "" },
 		true)
 
-	for term := range cfg.AcceptedTokens {
-		rule.Exceptions = append(rule.Exceptions, term)
-	}
+	rule.Exceptions = updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
 
 	regex = fmt.Sprintf(regex, strings.Join(rule.Exceptions, "|"))
 	if len(rule.Exceptions) > 0 {

@@ -2,6 +2,7 @@ package check
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -246,4 +247,17 @@ func matchToken(expected, observed string, ignorecase bool) bool {
 		return expected == observed
 	}
 	return r.MatchString(observed)
+}
+
+func updateExceptions(previous []string, current map[string]struct{}) []string {
+	for term := range current {
+		previous = append(previous, term)
+	}
+
+	// NOTE: This is required to ensure that we have greedy alternation.
+	sort.Slice(previous, func(p, q int) bool {
+		return len(previous[p]) > len(previous[q])
+	})
+
+	return previous
 }
