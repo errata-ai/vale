@@ -61,12 +61,12 @@ type Block struct {
 }
 
 // NewBlock makes a new Block with prepared text and a Selector.
-func NewBlock(ctx, txt, raw, sel string) Block {
+func NewBlock(ctx, txt, sel string) Block {
 	if ctx == "" {
 		ctx = txt
 	}
 	return Block{
-		Context: ctx, Text: txt, Raw: raw, Scope: Selector{Value: sel}}
+		Context: ctx, Text: txt, Scope: Selector{Value: sel}}
 }
 
 // A File represents a linted text file.

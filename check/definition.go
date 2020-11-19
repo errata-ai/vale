@@ -21,7 +21,6 @@ type Rule interface {
 // Definition holds the common attributes of rule definitions.
 type Definition struct {
 	Action      core.Action
-	Code        bool
 	Description string
 	Extends     string
 	Level       string
@@ -164,12 +163,16 @@ func validateDefinition(generic map[string]interface{}, path string) error {
 			fmt.Sprintf("'extends' key must be one of %v.", extensionPoints),
 			key,
 			path)
-	} else if _, ok := generic["message"]; !ok {
+	}
+
+	if _, ok := generic["message"]; !ok {
 		return core.NewE201FromPosition(
 			"Missing the required 'message' key.",
 			path,
 			1)
-	} else if level, ok := generic["level"]; ok {
+	}
+
+	if level, ok := generic["level"]; ok {
 		if level == nil || !core.StringInSlice(level.(string), core.AlertLevels) {
 			return core.NewE201FromTarget(
 				fmt.Sprintf("'level' must be one of %v", core.AlertLevels),
@@ -177,6 +180,14 @@ func validateDefinition(generic map[string]interface{}, path string) error {
 				path)
 		}
 	}
+
+	if generic["code"] != nil && generic["code"].(bool) {
+		return core.NewE201FromTarget(
+			"`code` is deprecated; please use `scope: raw` instead.",
+			"code",
+			path)
+	}
+
 	return nil
 }
 

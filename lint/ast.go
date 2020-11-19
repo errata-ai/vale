@@ -37,14 +37,13 @@ var tagToScope = map[string]string{
 }
 
 func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int) {
-	var txt, attr, raw, tag string
+	var txt, attr, tag string
 	var tokt html.TokenType
 	var tok html.Token
 	var inBlock, inline, skip, skipClass bool
 
 	lines := len(f.Lines) + offset
 	buf := bytes.NewBufferString("")
-	act := bytes.NewBufferString("")
 
 	// The user has specified a custom list of tags/classes to ignore.
 	if len(l.Manager.Config.SkippedScopes) > 0 {
@@ -98,22 +97,20 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 				// text is actually linted twice: once as a 'link' and once as
 				// part of the overall paragraph. See issue #105 for more info.
 				tempCtx := updateContext(ctx, queue)
-				l.lintText(f, core.NewBlock(tempCtx, txt, txt, scope), lines, 0)
+				l.lintText(f, core.NewBlock(tempCtx, txt, scope), lines, 0)
 				tag = ""
 			}
 			queue = append(queue, txt)
 			if !inBlock && txt != "" {
-				txt, raw, skip = clean(txt, f.NormedExt, skip, skipClass, inline)
+				txt, skip = clean(txt, f.NormedExt, skip, skipClass, inline)
 				buf.WriteString(txt)
-				act.WriteString(raw)
 			}
 		}
 
 		if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
 			content := buf.String()
-			actual := act.String()
 			if strings.TrimSpace(content) != "" {
-				l.lintScope(f, ctx, content, actual, tagHistory, lines)
+				l.lintScope(f, ctx, content, tagHistory, lines)
 			}
 
 			ctx = updateContext(ctx, queue)
@@ -121,7 +118,6 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 			tagHistory = []string{}
 
 			buf.Reset()
-			act.Reset()
 		}
 
 		attr = getAttribute(tok, "class")
@@ -130,21 +126,21 @@ func (l Linter) lintHTMLTokens(f *core.File, ctx string, fsrc []byte, offset int
 		if tok.Data == "img" {
 			for _, a := range tok.Attr {
 				if a.Key == "alt" {
-					block := core.NewBlock(ctx, a.Val, a.Val, "text.attr."+a.Key)
+					block := core.NewBlock(ctx, a.Val, "text.attr."+a.Key)
 					l.lintText(f, block, lines, 0)
 				}
 			}
 		}
 	}
 
-	summary := core.NewBlock(f.Content, f.Summary.String(), "", "summary."+f.RealExt)
+	summary := core.NewBlock(f.Content, f.Summary.String(), "summary."+f.RealExt)
 	l.lintText(f, summary, lines, 0)
 
 	// Run all rules with `scope: raw`
-	l.lintText(f, core.NewBlock("", f.Content, "", "raw."+f.RealExt), lines, 0)
+	l.lintText(f, core.NewBlock("", f.Content, "raw."+f.RealExt), lines, 0)
 }
 
-func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lines int) {
+func (l Linter) lintScope(f *core.File, ctx, txt string, tags []string, lines int) {
 	for _, tag := range tags {
 		scope, match := tagToScope[tag]
 		if (match && !core.StringInSlice(tag, inlineTags)) || heading.MatchString(tag) {
@@ -154,7 +150,7 @@ func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lin
 				scope = "text.heading." + tag + f.RealExt
 			}
 			txt = strings.TrimLeft(txt, " ")
-			l.lintText(f, core.NewBlock(ctx, txt, raw, scope), lines, 0)
+			l.lintText(f, core.NewBlock(ctx, txt, scope), lines, 0)
 			return
 		}
 	}
@@ -162,7 +158,7 @@ func (l Linter) lintScope(f *core.File, ctx, txt, raw string, tags []string, lin
 	// NOTE: We don't include headings, list items, or table cells (which are
 	// processed above) in our Summary content.
 	f.Summary.WriteString(txt + " ")
-	l.lintProse(f, ctx, txt, raw, lines, 0)
+	l.lintProse(f, ctx, txt, lines, 0)
 }
 
 func checkClasses(attr string, ignore []string) bool {
@@ -206,22 +202,19 @@ func updateContext(ctx string, queue []string) string {
 	return ctx
 }
 
-func clean(txt, ext string, skip, skipClass, inline bool) (string, string, bool) {
+func clean(txt, ext string, skip, skipClass, inline bool) (string, bool) {
 	punct := []string{".", "?", "!", ",", ":", ";"}
 	first, _ := utf8.DecodeRuneInString(txt)
 	starter := core.StringInSlice(string(first), punct) && !skip
-	raw := txt
 	if skip || skipClass {
-		raw = codify(ext, txt)
 		txt, _ = core.Substitute(txt, txt, '*')
 		txt = codify(ext, txt)
 		skip = false
 	}
 	if inline && !starter {
 		txt = " " + txt
-		raw = " " + raw
 	}
-	return txt, raw, skip
+	return txt, skip
 }
 
 func getAttribute(tok html.Token, key string) string {

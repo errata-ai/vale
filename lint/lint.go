@@ -196,12 +196,10 @@ func (l *Linter) lintFile(src string) lintResult {
 	return lintResult{file, err}
 }
 
-func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength int) {
+func (l *Linter) lintProse(f *core.File, ctx, txt string, lnTotal, lnLength int) {
 	var b core.Block
 
 	text := core.Sanitize(txt)
-	rawText := core.Sanitize(raw)
-
 	if l.Manager.HasScope("paragraph") || l.Manager.HasScope("sentence") {
 		senScope := "sentence" + f.RealExt
 		hasCtx := ctx != ""
@@ -209,15 +207,15 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 			for _, s := range core.SentenceTokenizer.Tokenize(p) {
 				sent := strings.TrimSpace(s)
 				if hasCtx {
-					b = core.NewBlock(ctx, sent, "", senScope)
+					b = core.NewBlock(ctx, sent, senScope)
 				} else {
-					b = core.NewBlock(p, sent, "", senScope)
+					b = core.NewBlock(p, sent, senScope)
 				}
 				l.lintText(f, b, lnTotal, lnLength)
 			}
 			l.lintText(
 				f,
-				core.NewBlock(ctx, p, "", "paragraph"+f.RealExt),
+				core.NewBlock(ctx, p, "paragraph"+f.RealExt),
 				lnTotal,
 				lnLength)
 		}
@@ -225,31 +223,23 @@ func (l *Linter) lintProse(f *core.File, ctx, txt, raw string, lnTotal, lnLength
 
 	l.lintText(
 		f,
-		core.NewBlock(ctx, text, rawText, "text"+f.RealExt),
+		core.NewBlock(ctx, text, "text"+f.RealExt),
 		lnTotal,
 		lnLength)
 }
 
 func (l *Linter) lintLines(f *core.File) {
-	block := core.NewBlock("", f.Content, "", "text"+f.RealExt)
+	block := core.NewBlock("", f.Content, "text"+f.RealExt)
 	l.lintText(f, block, len(f.Lines), 0)
 }
 
 func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
-	var txt string
 	var wg sync.WaitGroup
 
 	f.ChkToCtx = make(map[string]string)
-	hasCode := core.StringInSlice(f.NormedExt, []string{".md", ".adoc", ".rst"})
 
 	results := make(chan core.Alert)
 	for name, chk := range l.Manager.Rules() {
-		if chk.Fields().Code && hasCode && !l.Manager.Config.Simple {
-			txt = blk.Raw
-		} else {
-			txt = blk.Text
-		}
-
 		if !l.shouldRun(name, f, chk, blk) {
 			continue
 		}
@@ -262,7 +252,7 @@ func (l *Linter) lintText(f *core.File, blk core.Block, lines int, pad int) {
 				results <- a
 			}
 			wg.Done()
-		}(txt, name, f, chk)
+		}(blk.Text, name, f, chk)
 	}
 
 	go func() {
