@@ -145,20 +145,18 @@ func TextToTokens(text string, needsTagging bool) []tag.Token {
 // CheckPOS determines if a match (as found by an extension point) also matches
 // the expected part-of-speech in text.
 func CheckPOS(loc []int, expected, text string) bool {
-	var word string
-
 	pos := 1
+
 	observed := []string{}
-	for _, tok := range Tag(TextToWords(text, false)) {
+	for _, tok := range TextToTokens(text, true) {
 		if InRange(pos, loc) {
-			if len(tok.Text) > 1 {
-				word = strings.ToLower(strings.TrimRight(tok.Text, ",.!?:;"))
-			} else {
-				word = tok.Text
-			}
-			observed = append(observed, (word + "/" + tok.Tag))
+			observed = append(observed, (tok.Text + "/" + tok.Tag))
 		}
-		pos += len(tok.Text) + 1
+		pos += len(tok.Text)
+		if !StringInSlice(tok.Tag, []string{"POS", ".", ",", ":", ";", "?"}) {
+			// Space-bounded ...
+			pos++
+		}
 	}
 
 	match, _ := regexp.MatchString(expected, strings.Join(observed, " "))
