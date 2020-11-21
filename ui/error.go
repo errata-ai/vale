@@ -77,7 +77,7 @@ func ShowError(err error, style string, out io.Writer) {
 				Code string
 				Text string
 			}{
-				Text: err.Error(),
+				Text: core.StripANSI(err.Error()),
 				Code: "E100",
 			}
 		} else {
