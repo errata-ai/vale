@@ -196,16 +196,19 @@ func (mgr *Manager) loadStyles(styles []string) error {
 
 	baseDir := mgr.Config.StylesPath
 	for _, style := range styles {
+		if style == "LanguageTool" {
+			// Special case
+			continue
+		}
 		p := filepath.Join(baseDir, style)
 		if mgr.hasStyle(style) {
 			// We've already loaded this style.
 			continue
 		} else if has, _ := mgr.Config.FsWrapper.DirExists(p); !has {
-			if style != "LanguageTool" {
-				return core.NewE100(
-					"loadStyles",
-					errors.New("style '"+style+"' does not exist on StylesPath"))
-			}
+
+			return core.NewE100(
+				"loadStyles",
+				errors.New("style '"+style+"' does not exist on StylesPath"))
 		}
 		if err := mgr.addStyle(p); err != nil {
 			return err
