@@ -104,7 +104,7 @@ func matchToAlert(m match) core.Alert {
 			target)
 	} else if len(suggestions) > 0 {
 		alert.Message = fmt.Sprintf(
-			"Did you mean '%s'?",
+			"Did you mean %s?",
 			core.ToSentence(suggestions, "or"))
 	} else if len(m.ShortMessage) > 0 {
 		alert.Message = strings.Replace(m.ShortMessage, `"`, "'", -1)

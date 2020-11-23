@@ -107,9 +107,10 @@ func (s Substitution) Run(txt string, f *core.File) []core.Alert {
 						// a File (i.e., `hide` == true).
 						pos = core.CheckPOS(loc, s.POS, txt)
 					}
-					if s.Action.Name == "replace" && len(s.Action.Params) == 0 {
-						s.Action.Params = strings.Split(expected, "|")
-						expected = core.ToSentence(s.Action.Params, "or")
+					action := s.Fields().Action
+					if action.Name == "replace" && len(action.Params) == 0 {
+						action.Params = strings.Split(expected, "|")
+						expected = core.ToSentence(action.Params, "or")
 					}
 					a := core.Alert{
 						Check: s.Name, Severity: s.Level, Span: loc,

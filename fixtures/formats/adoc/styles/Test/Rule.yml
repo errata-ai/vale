@@ -1,5 +1,5 @@
 extends: substitution
-message: "Use '%s' instead of '%s'."
+message: "Use %s instead of '%s'."
 ignorecase: false
 level: error
 action:
