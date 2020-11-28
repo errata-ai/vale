@@ -337,14 +337,10 @@ func (l *Linter) skip(fp string) bool {
 	if normed, found := l.Manager.Config.Formats[strings.Trim(old, ".")]; found {
 		ext = "." + normed
 		fp = fp[0:len(fp)-len(old)] + ext
-	} else {
-		ext = old
 	}
 
 	fp = filepath.ToSlash(fp)
-	if status, found := l.seen[ext]; found && status {
-		return true
-	} else if !l.match(fp) {
+	if !l.match(fp) {
 		return true
 	} else if l.nonGlobal {
 		for _, pat := range l.Manager.Config.SecToPat {

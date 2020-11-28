@@ -37,6 +37,8 @@ type Config struct {
 	AcceptedTokens map[string]struct{} `json:"-"` // Project-specific vocabulary (okay)
 	RejectedTokens map[string]struct{} `json:"-"` // Project-specific vocabulary (avoid)
 
+	Built string // A path to a pre-built file (e.g., an HTML file made from a Markdown file)
+
 	SphinxBuild string // The location of Sphinx's `_build` path
 	SphinxAuto  string // Should we call `sphinx-build`?
 

@@ -16,7 +16,7 @@ var skipTags = []string{"script", "style", "pre", "figure"}
 // 	- `problematic` is added by rst2html to processing errors which, in our
 // 	  case, could be things like file-insertion URLs.
 // 	- `pre` is added by rst2html to code spans.
-var skipClasses = []string{"problematic", "pre"}
+var skipClasses = []string{"problematic", "pre", "code"}
 var inlineTags = []string{
 	"b", "big", "i", "small", "abbr", "acronym", "cite", "dfn", "em", "kbd",
 	"strong", "a", "br", "img", "span", "sub", "sup", "code", "tt", "del"}

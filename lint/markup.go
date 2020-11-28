@@ -83,7 +83,11 @@ var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
 var heading = regexp.MustCompile(`^h\d$`)
 
 func (l Linter) lintHTML(f *core.File) {
-	l.lintHTMLTokens(f, []byte(f.Content), 0)
+	if l.Manager.Config.Built != "" {
+		l.lintTxtToHTML(f)
+	} else {
+		l.lintHTMLTokens(f, []byte(f.Content), 0)
+	}
 }
 
 func (l Linter) prep(content, block, inline, ext string) (string, error) {
@@ -162,6 +166,15 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	f.Content = body
 	l.lintHTMLTokens(f, buf.Bytes(), 0)
 
+	return nil
+}
+
+func (l Linter) lintTxtToHTML(f *core.File) error {
+	html, err := ioutil.ReadFile(l.Manager.Config.Built)
+	if err != nil {
+		return core.NewE100(f.Path, err)
+	}
+	l.lintHTMLTokens(f, html, 0)
 	return nil
 }
 

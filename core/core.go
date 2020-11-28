@@ -102,8 +102,8 @@ type File struct {
 	RealExt    string            // actual file extension
 	Scanner    *bufio.Scanner    // used by lintXXX functions
 	Sequences  []string          // tracks various info (e.g., defined abbreviations)
-	Simple     bool
-	Summary    bytes.Buffer // holds content to be included in summarization checks
+	Simple     bool              // indicates that we should ignore syntax (lint lint-by-line)
+	Summary    bytes.Buffer      // holds content to be included in summarization checks
 
 	history  map[string]int
 	limits   map[string]int

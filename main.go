@@ -85,6 +85,12 @@ func main() {
 			Usage:       `extension to associate with stdin`,
 			Destination: &config.InExt,
 		},
+		cli.StringFlag{
+			Name:        "built",
+			Usage:       `post-processed file path`,
+			Destination: &config.Built,
+			Hidden:      true,
+		},
 		cli.BoolFlag{
 			Name:        "mode-compat",
 			Usage:       `Respect local Vale configurations`,
