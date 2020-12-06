@@ -126,6 +126,7 @@ Feature: Config
       test.md:40:21:vale.Annotations:'FIXME' left in text
       test.md:44:5:vale.Annotations:'TODO' left in text
       test.md:46:3:vale.Annotations:'TODO' left in text
+      test.md:52:41:vale.Annotations:'TODO' left in text
       """
     And the exit status should be 0
 

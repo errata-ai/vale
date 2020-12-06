@@ -48,3 +48,5 @@ is *TODO* by
 [img-monokai]: https://
 
 RedHat
+
+This link [has square brackets](https://TODO.com/dashboard/merge_requests?label_name[]=tw-style).
