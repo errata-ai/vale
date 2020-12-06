@@ -140,6 +140,8 @@ func (l Linter) lintScope(f *core.File, state walker, txt string) {
 }
 
 func (l Linter) lintSizedScopes(f *core.File) {
+	f.ResetComments()
+
 	// Run all rules with `scope: summary`
 	l.lintBlock(
 		f,

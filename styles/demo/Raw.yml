@@ -1,0 +1,7 @@
+extends: existence
+message: 'Link "%s" must use the .md file extension.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#links-to-internal-documentation
+level: error
+scope: raw
+raw:
+  - '\[.+\]\((https?:){0}[\w\/\.-]+(\.html).*?\)'

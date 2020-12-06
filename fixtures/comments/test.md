@@ -82,3 +82,7 @@ This is a sentance of.
 - This is a sentance of.
 <!-- vale on -->
 - one more item.
+
+<!-- vale demo.Raw = NO -->
+
+Internal Links [must not use `.html`](../index.html)
