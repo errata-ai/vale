@@ -2,6 +2,7 @@ package lint
 
 import (
 	"bytes"
+	"net/url"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/core"
@@ -77,7 +78,10 @@ func (w *walker) walk() (html.TokenType, html.Token, string) {
 func (w *walker) replaceToks(tok html.Token) {
 	if core.StringInSlice(tok.Data, []string{"img", "a", "p", "script"}) {
 		for _, a := range tok.Attr {
-			if a.Key == "href" || a.Key == "id" || a.Key == "src" {
+			if core.StringInSlice(a.Key, []string{"href", "id", "src"}) {
+				if a.Key == "href" {
+					a.Val, _ = url.QueryUnescape(a.Val)
+				}
 				w.context = updateCtx(w.context, a.Val, html.TextToken)
 			}
 		}

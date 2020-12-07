@@ -25,6 +25,13 @@ Feature: Checks
       """
       """
 
+  Scenario: Spelling
+    When I test "checks/Spelling"
+    Then the output should contain exactly:
+      """
+      test.md:16:1:Vale.Spelling:Did you really mean 'gitlab'?
+      """
+
   Scenario: Sequence
     When I test "checks/Sequence"
     Then the output should contain exactly:
