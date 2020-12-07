@@ -19,7 +19,7 @@ require (
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/afero v1.2.2
 	github.com/urfave/cli v1.22.4
-	github.com/yuin/goldmark v1.1.25
+	github.com/yuin/goldmark v1.2.1
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
 	gopkg.in/ini.v1 v1.52.0

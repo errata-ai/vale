@@ -126,7 +126,7 @@ github.com/spf13/cast
 # github.com/urfave/cli v1.22.4
 ## explicit
 github.com/urfave/cli
-# github.com/yuin/goldmark v1.1.25
+# github.com/yuin/goldmark v1.2.1
 ## explicit
 github.com/yuin/goldmark
 github.com/yuin/goldmark/ast
