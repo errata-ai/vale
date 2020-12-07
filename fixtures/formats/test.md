@@ -50,3 +50,9 @@ is *TODO* by
 RedHat
 
 This link [has square brackets](https://TODO.com/dashboard/merge_requests?label_name[]=tw-style).
+
+````********
+```****
+external_url "https://TODO.example.com"
+```
+````

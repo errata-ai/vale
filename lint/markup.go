@@ -92,7 +92,6 @@ func (l Linter) lintHTML(f *core.File) {
 
 func (l Linter) prep(content, block, inline, ext string) (string, error) {
 	s := reFrontMatter.ReplaceAllString(content, block)
-	s = reExInfo.ReplaceAllString(s, "```")
 
 	for syntax, regexes := range l.Manager.Config.TokenIgnores {
 		sec, err := glob.Compile(syntax)
