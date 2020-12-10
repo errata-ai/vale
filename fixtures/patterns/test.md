@@ -19,3 +19,10 @@ This is some text **ACT test**
 ACT test
 
 $ACT test$
+
+<https://gitlan.com/config>
+
+Some backtick text like `--config`.
+
+- <https://gitlab.com/gitlab-org/security-products/license-management/-/blob/0b976fcffe0a9b8e80587adb076bcdf279c9331c/config/install.sh#L168-170>
+- <https://gitlab.com/gitlab-org/security-products/license-management/-/blob/0b976fcffe0a9b8e80587adb076bcdf279c9331c/config/.bashrc#L49>

@@ -3,7 +3,7 @@ MinAlertLevel = suggestion
 IgnoredScopes = code, tt, strong
 
 [*]
-TokenIgnores = (\$+?[^\d][^\n$]+\$+?)
+TokenIgnores = (\$+?[^\d][^\n$]+\$+?), (<http[^\n]+>+?)
 
 [*.{md,rst,adoc}]
 BasedOnStyles = vale, demo
