@@ -114,8 +114,7 @@ func (s Substitution) Run(txt string, f *core.File) []core.Alert {
 
 						// NOTE: For backwards-compatibility, we need to ensure
 						// that we don't double quote.
-						s.Message = strings.Replace(s.Message, "'%s'", "%s", 1)
-						s.Message = strings.Replace(s.Message, "\"%s\"", "%s", 1)
+						s.Message = convertMessage(s.Message)
 					}
 					a := core.Alert{
 						Check: s.Name, Severity: s.Level, Span: loc,
@@ -142,4 +141,13 @@ func (s Substitution) Fields() Definition {
 // Pattern is the internal regex pattern used by this rule.
 func (s Substitution) Pattern() string {
 	return s.pattern.String()
+}
+
+func convertMessage(s string) string {
+	for _, spec := range []string{"'%s'", "\"%s\""} {
+		if strings.Count(s, spec) == 2 {
+			s = strings.Replace(s, spec, "%s", 1)
+		}
+	}
+	return s
 }
