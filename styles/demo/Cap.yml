@@ -9,3 +9,8 @@ exceptions:
   - bar
   - lorem
   - ipsum
+  - brew(1)
+  - macOS
+  - Homebrew/homebrew-core
+  - Homebrew/linuxbrew-core
+  - (or Linux)

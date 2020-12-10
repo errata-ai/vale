@@ -38,8 +38,21 @@ func title(s string, ignore []string, except *regexp.Regexp, tc *transform.Title
 	re := makeExceptions(ignore)
 	expected := re.FindAllString(tc.Title(s), -1)
 
+	extent := len(expected)
 	for i, word := range re.FindAllString(s, -1) {
-		if word == expected[i] || isMatch(except, word) {
+		if i >= extent {
+			// TODO: Look into this more.
+			//
+			// The problem is that `prose/transform` uses a different split
+			// regex than `makeExceptions`, and we can't change the latter due
+			// to https://github.com/errata-ai/vale/pull/253.
+			//
+			// In theory, this works because the only we'd find ourselves in
+			// this situation is if the would-be entry at `expected[i]` is
+			// listed as an exception, but it doesn't feel like a great
+			// solution.
+			count++
+		} else if word == expected[i] || isMatch(except, word) {
 			count++
 		} else if word == strings.ToUpper(word) {
 			count++
