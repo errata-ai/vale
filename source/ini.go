@@ -172,6 +172,12 @@ var coreOpts = map[string]func(*ini.Section, *config.Config, []string) error{
 	},
 }
 
+func shadowLoad(source interface{}, others ...interface{}) (*ini.File, error) {
+	return ini.LoadSources(ini.LoadOptions{
+		AllowShadows:             true,
+		SpaceBeforeInlineComment: true}, source, others...)
+}
+
 func loadINI(cfg *config.Config) error {
 	var base string
 	var uCfg *ini.File
@@ -197,15 +203,15 @@ func loadINI(cfg *config.Config) error {
 	}
 
 	if cfg.Local && core.FileExists(base) && core.FileExists(cfg.Path) {
-		uCfg, err = ini.ShadowLoad(cfg.Path, base)
+		uCfg, err = shadowLoad(cfg.Path, base)
 	} else if cfg.Remote && core.FileExists(base) && core.FileExists(cfg.Path) {
-		uCfg, err = ini.ShadowLoad(base, cfg.Path)
+		uCfg, err = shadowLoad(base, cfg.Path)
 		cfg.Path = base
 	} else if cfg.Sources != "" {
 		uCfg, err = processSources(cfg, sources)
 	} else {
 		base = loadConfig(names, []string{cfg.Path, "", home})
-		uCfg, err = ini.ShadowLoad(base)
+		uCfg, err = shadowLoad(base)
 		cfg.Path = base
 	}
 
