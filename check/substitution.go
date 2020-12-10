@@ -111,6 +111,11 @@ func (s Substitution) Run(txt string, f *core.File) []core.Alert {
 					if action.Name == "replace" && len(action.Params) == 0 {
 						action.Params = strings.Split(expected, "|")
 						expected = core.ToSentence(action.Params, "or")
+
+						// NOTE: For backwards-compatibility, we need to ensure
+						// that we don't double quote.
+						s.Message = strings.Replace(s.Message, "'%s'", "%s", 1)
+						s.Message = strings.Replace(s.Message, "\"%s\"", "%s", 1)
 					}
 					a := core.Alert{
 						Check: s.Name, Severity: s.Level, Span: loc,
