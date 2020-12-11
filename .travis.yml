@@ -7,7 +7,7 @@ cache:
 services:
   - docker
 go:
-  - 1.13.x
+  - 1.15.x
 
 before_install:
   - export BUNDLE_GEMFILE=$PWD/Gemfile
