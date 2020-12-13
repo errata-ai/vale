@@ -329,7 +329,7 @@ func (l Linter) lintDITA(file *core.File) error {
 		"-o",
 		tempDir,
 		"--nav-toc=none",
-		"--outer.control=warn", // allows DITA files to reference external files, like in conrefs.
+		"--outer.control=quiet", // allows DITA files to reference external files, like in conrefs.
 	}...)
 	cmd.Stderr = &out
 
