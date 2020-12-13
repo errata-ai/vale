@@ -306,6 +306,7 @@ func (l Linter) lintXML(file *core.File) error {
 
 func (l Linter) lintDITA(file *core.File) error {
 	var out bytes.Buffer
+	var htmlFile string
 
 	dita := core.Which([]string{"dita", "dita.bat"})
 	if dita == "" {
@@ -328,18 +329,26 @@ func (l Linter) lintDITA(file *core.File) error {
 		"-o",
 		tempDir,
 		"--nav-toc=none",
-		"--outer.control=fail"}...)
+		"--outer.control=warn", // allows DITA files to reference external files, like in conrefs.
+	}...)
 	cmd.Stderr = &out
 
 	if err := cmd.Run(); err != nil {
 		return core.NewE100(file.Path, errors.New(out.String()))
 	}
 
-	basename := filepath.Base(file.Path)
-	data, err := ioutil.ReadFile(filepath.Join(
-		tempDir,
-		strings.TrimSuffix(basename, filepath.Ext(basename))+".html"))
+	targetFileName := strings.TrimSuffix(filepath.Base(file.Path), filepath.Ext(file.Path)) + ".html"
+	_ = filepath.Walk(tempDir, func(path string, info os.FileInfo, err error) error {
+		// Find .html file, also looking in subdirectories in case an "outer"
+		// file was referenced in the DITA file, which is allowed because of
+		// the outer.control option of the dita command.
+		if filepath.Base(path) == targetFileName {
+			htmlFile = path
+		}
+		return nil
+	})
 
+	data, err := ioutil.ReadFile(htmlFile)
 	if err != nil {
 		return core.NewE201FromPosition(err.Error(), file.Path, 1)
 	}
