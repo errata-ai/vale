@@ -9,7 +9,7 @@ before_script:
   - export PATH="${PATH}:~/bin:${PWD}/dita-ot-3.4/bin/"
 
   - apt-get -qq update
-  - apt-get install -y xsltproc zip unzip
+  - apt-get install -y xsltproc zip unzip python-pip
 
   - pip install --user sphinx
   - gem update --system
