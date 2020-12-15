@@ -31,3 +31,5 @@ test:
   stage: test
   script:
     - make test
+
+# TODO: Add deploy stage ...
