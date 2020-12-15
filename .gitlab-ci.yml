@@ -14,7 +14,7 @@ before_script:
 
   - pip install --user sphinx
   - gem update --system
-  - gem install asciidoctor
+  - gem install asciidoctor bundler
 
   # NOTE: This is just for testing purposes -- we want to ensure that
   # GoDownloader is working.
