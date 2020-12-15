@@ -12,7 +12,7 @@ before_script:
   - apt-get install -y curl gnupg build-essential
   - apt-get install -y xsltproc zip unzip python-pip ruby-full
 
-  - pip install --user sphinx
+  - pip install sphinx
   - gem update --system
   - gem install asciidoctor bundler
 
