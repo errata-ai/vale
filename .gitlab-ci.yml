@@ -1,0 +1,33 @@
+image: golang:1.15
+
+stages:
+  - build
+  - test
+
+before_script:
+  - export BUNDLE_GEMFILE=$PWD/Gemfile
+  - export PATH="${PATH}:~/bin:${PWD}/dita-ot-3.4/bin/"
+
+  - apt-get install -y xsltproc zip unzip
+  - pip install --user sphinx
+  - gem update --system
+  - gem install asciidoctor
+
+  # NOTE: This is just for testing purposes -- we want to ensure that
+  # GoDownloader is working.
+  - curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s latest
+
+  - wget https://github.com/dita-ot/dita-ot/releases/download/3.4/dita-ot-3.4.zip
+  - unzip dita-ot-3.4.zip > /dev/null 2>&1
+
+  - make setup
+
+build:
+  stage: build
+  script:
+    - make build os=linux exe=vale
+
+test:
+  stage: test
+  script:
+    - make test
