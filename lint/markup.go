@@ -334,7 +334,7 @@ func (l Linter) lintDITA(file *core.File) error {
 	cmd.Stderr = &out
 
 	if err := cmd.Run(); err != nil {
-		return core.NewE100(file.Path, errors.New(out.String()))
+		return core.NewE100(file.Path, err)
 	}
 
 	targetFileName := strings.TrimSuffix(filepath.Base(file.Path), filepath.Ext(file.Path)) + ".html"
@@ -350,7 +350,7 @@ func (l Linter) lintDITA(file *core.File) error {
 
 	data, err := ioutil.ReadFile(htmlFile)
 	if err != nil {
-		return core.NewE201FromPosition(err.Error(), file.Path, 1)
+		return core.NewE100(htmlFile, err)
 	}
 
 	// NOTE: We have to remove the `<head>` tag to avoid
