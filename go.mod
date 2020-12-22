@@ -4,8 +4,6 @@ go 1.15
 
 require (
 	github.com/Masterminds/sprig/v3 v3.1.0
-	github.com/alecthomas/chroma v0.8.1
-	github.com/dlclark/regexp2 v1.2.1 // indirect
 	github.com/gobwas/glob v0.2.3
 	github.com/jdkato/prose v1.2.0
 	github.com/jdkato/regexp v0.1.0

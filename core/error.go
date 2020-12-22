@@ -9,8 +9,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/alecthomas/chroma/lexers"
-	"github.com/alecthomas/chroma/quick"
 	"github.com/logrusorgru/aurora/v3"
 )
 
@@ -116,30 +114,16 @@ func NewE100(context string, err error) error {
 //
 // <path>:<line>:<start>:<end>
 func NewE201(msg, value, path string, finder errorCondition) error {
-	var sb bytes.Buffer
-
 	f, err := ioutil.ReadFile(path)
 	if err != nil {
 		return NewE100("NewE201", errors.New(msg))
 	}
 
-	lexer := lexers.Match(path)
-	if lexer == nil {
-		lexer = lexers.Fallback
-	}
-
-	err = quick.Highlight(
-		&sb,
-		string(f),
-		lexer.Config().Name,
-		"terminal256",
-		"monokai")
-
 	if err != nil {
 		return NewE100("NewE201/Highlight", err)
 	}
 
-	ctx, err := annotate(sb.Bytes(), value, finder)
+	ctx, err := annotate(f, value, finder)
 	if err != nil {
 		return NewE100("NewE201/annotate", err)
 	}
