@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 
 	"github.com/errata-ai/vale/v2/config"
 	"github.com/errata-ai/vale/v2/core"
@@ -57,6 +56,12 @@ func main() {
 			Destination: &config.Sources,
 			Hidden:      true,
 		},
+		cli.BoolFlag{
+			Name:        "mode-compat",
+			Usage:       `Respect local Vale configurations`,
+			Destination: &config.Local,
+			Hidden:      true,
+		},
 		cli.StringFlag{
 			Name:        "glob",
 			Value:       "*",
@@ -85,24 +90,6 @@ func main() {
 			Usage:       `extension to associate with stdin`,
 			Destination: &config.InExt,
 		},
-		cli.StringFlag{
-			Name:        "built",
-			Usage:       `post-processed file path`,
-			Destination: &config.Built,
-			Hidden:      true,
-		},
-		cli.BoolFlag{
-			Name:        "mode-compat",
-			Usage:       `Respect local Vale configurations`,
-			Destination: &config.Local,
-			Hidden:      true,
-		},
-		cli.BoolFlag{
-			Name:        "mode-rev-compat",
-			Usage:       `Treat --config as local`,
-			Destination: &config.Remote,
-			Hidden:      true,
-		},
 		cli.BoolFlag{
 			Name:        "no-wrap",
 			Usage:       "don't wrap CLI output",
@@ -117,11 +104,6 @@ func main() {
 			Name:        "sort",
 			Usage:       "sort files by their name in output",
 			Destination: &config.Sorted,
-		},
-		cli.BoolFlag{
-			Name:        "debug",
-			Usage:       "print debugging information to stdout",
-			Destination: &config.Debug,
 		},
 		cli.BoolFlag{
 			Name:        "normalize",
@@ -190,11 +172,6 @@ func main() {
 		hasErrors, err = ui.PrintAlerts(linted, config)
 		return err
 	}
-
-	// TODO: Remove this.
-	//
-	// See ui/line.go.
-	core.ExeDir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
 
 	if err = app.Run(os.Args); err != nil {
 		ui.ShowError(err, config.Output, os.Stderr)

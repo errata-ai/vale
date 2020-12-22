@@ -14,9 +14,6 @@ import (
 	"github.com/jdkato/regexp"
 )
 
-// ExeDir is our starting location.
-var ExeDir string
-
 var defaultIgnoreDirectories = []string{
 	"node_modules", ".git",
 }
