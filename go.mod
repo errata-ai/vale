@@ -8,7 +8,6 @@ require (
 	github.com/jdkato/prose v1.2.0
 	github.com/jdkato/regexp v0.1.0
 	github.com/logrusorgru/aurora/v3 v3.0.0
-	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/neurosnap/sentences v1.0.6 // indirect
 	github.com/olekukonko/tablewriter v0.0.4

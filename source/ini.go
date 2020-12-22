@@ -11,7 +11,6 @@ import (
 	"github.com/errata-ai/vale/v2/config"
 	"github.com/errata-ai/vale/v2/core"
 	"github.com/gobwas/glob"
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/afero"
 	"gopkg.in/ini.v1"
 )
@@ -187,7 +186,7 @@ func loadINI(cfg *config.Config) error {
 	names := []string{
 		".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini", ""}
 
-	home, err := homedir.Dir()
+	home, err := os.UserHomeDir()
 	if err != nil {
 		return core.NewE100("loadINI/homedir", err)
 	}

@@ -44,9 +44,6 @@ github.com/logrusorgru/aurora/v3
 github.com/mattn/go-runewidth
 # github.com/mitchellh/copystructure v1.0.0
 github.com/mitchellh/copystructure
-# github.com/mitchellh/go-homedir v1.1.0
-## explicit
-github.com/mitchellh/go-homedir
 # github.com/mitchellh/mapstructure v1.1.2
 ## explicit
 github.com/mitchellh/mapstructure
