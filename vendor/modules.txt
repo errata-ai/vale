@@ -40,11 +40,6 @@ github.com/jdkato/regexp/syntax
 # github.com/logrusorgru/aurora/v3 v3.0.0
 ## explicit
 github.com/logrusorgru/aurora/v3
-# github.com/mattn/go-colorable v0.1.7
-## explicit
-github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.12
-github.com/mattn/go-isatty
 # github.com/mattn/go-runewidth v0.0.7
 github.com/mattn/go-runewidth
 # github.com/mitchellh/copystructure v1.0.0
@@ -104,10 +99,6 @@ golang.org/x/crypto/scrypt
 ## explicit
 golang.org/x/net/html
 golang.org/x/net/html/atom
-# golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
-## explicit
-golang.org/x/sys/internal/unsafeheader
-golang.org/x/sys/unix
 # golang.org/x/text v0.3.0
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm

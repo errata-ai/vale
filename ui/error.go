@@ -11,7 +11,6 @@ import (
 
 	"github.com/errata-ai/vale/v2/core"
 	"github.com/jdkato/regexp"
-	"github.com/mattn/go-colorable"
 )
 
 type valeError struct {
@@ -24,11 +23,6 @@ type valeError struct {
 
 var logger = log.New(os.Stderr, "", 0)
 var header = regexp.MustCompile(`(\w+) .+ \[(.+):(\d+):(\d+)\]`)
-
-func init() {
-	// https://github.com/logrusorgru/aurora/issues/2#issuecomment-299014211
-	logger.SetOutput(colorable.NewColorableStderr())
-}
 
 func parseError(err error) (valeError, error) {
 	var parsed valeError
