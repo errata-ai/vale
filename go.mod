@@ -5,11 +5,10 @@ go 1.15
 require (
 	github.com/Masterminds/sprig/v3 v3.1.0
 	github.com/gobwas/glob v0.2.3
-	github.com/jdkato/prose v1.2.0
+	github.com/jdkato/prose v1.2.1
 	github.com/jdkato/regexp v0.1.0
 	github.com/logrusorgru/aurora/v3 v3.0.0
 	github.com/mitchellh/mapstructure v1.1.2
-	github.com/neurosnap/sentences v1.0.6 // indirect
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/remeh/sizedwaitgroup v1.0.0
 	github.com/smartystreets/goconvey v1.6.4 // indirect
