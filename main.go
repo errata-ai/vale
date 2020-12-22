@@ -37,6 +37,46 @@ func looksLikeStdin(s string) bool {
 	return !(core.FileExists(s) || core.IsDir(s)) && s != ""
 }
 
+func doLint(c *cli.Context, l *lint.Linter, glob string) ([]*core.File, error) {
+	var linted []*core.File
+	var err error
+
+	if c.NArg() > 0 {
+		if c.NArg() == 1 && looksLikeStdin(c.Args()[0]) {
+			// Case 1:
+			//
+			// $ vale "some text in a string"
+			linted, err = l.LintString(c.Args()[0])
+		} else {
+			// Case 2:
+			//
+			// $ vale file1 dir1 file2
+			input := []string{}
+			for _, file := range c.Args() {
+				if looksLikeStdin(file) {
+					return linted, core.NewE100(
+						"doLint",
+						fmt.Errorf("argument '%s' does not exist", file),
+					)
+				}
+				input = append(input, file)
+			}
+			linted, err = l.Lint(input, glob)
+		}
+	} else {
+		// Case 3:
+		//
+		// $ cat file.md | vale
+		stdin, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			return linted, core.NewE100("doLint", err)
+		}
+		linted, err = l.LintString(string(stdin))
+	}
+
+	return linted, err
+}
+
 func main() {
 	var glob string
 	var hasErrors bool
@@ -136,10 +176,9 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
-		var linted []*core.File
-		var err error
-
-		if err = validateFlags(config); err != nil {
+		if c.NArg() == 0 && !stat() {
+			return cli.ShowAppHelp(c)
+		} else if err := validateFlags(config); err != nil {
 			return err
 		} else if err = source.From("ini", config); err != nil {
 			return err
@@ -150,21 +189,7 @@ func main() {
 			return err
 		}
 
-		if c.NArg() > 0 || stat() {
-			if c.NArg() > 0 {
-				if looksLikeStdin(c.Args()[0]) {
-					linted, err = linter.LintString(c.Args()[0])
-				} else {
-					linted, err = linter.Lint(c.Args(), glob)
-				}
-			} else {
-				stdin, _ := ioutil.ReadAll(os.Stdin)
-				linted, err = linter.LintString(string(stdin))
-			}
-		} else {
-			return cli.ShowAppHelp(c)
-		}
-
+		linted, err := doLint(c, linter, glob)
 		if err != nil {
 			return err
 		}
