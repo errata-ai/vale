@@ -11,7 +11,7 @@ jobs:
     - name: Vale
       uses: errata-ai/vale-action@master
       with:
-        files: README.md
+        files: __onlyModified
         debug: true
 
       env:
