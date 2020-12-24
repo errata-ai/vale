@@ -47,6 +47,8 @@ var adocArgs = []string{
 	"-s",
 	"-a",
 	"notitle!",
+	"-a",
+	"attribute-missing=drop",
 	"--quiet",
 	"--safe-mode",
 	"secure",
