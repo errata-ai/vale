@@ -105,9 +105,10 @@ func (l Linter) prep(content, block, inline, ext string) (string, error) {
 		} else if sec.Match(ext) {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
-				if err == nil {
-					s = pat.ReplaceAllString(s, inline)
+				if err != nil {
+					return s, err
 				}
+				s = pat.ReplaceAllString(s, inline)
 			}
 		}
 	}
@@ -119,16 +120,16 @@ func (l Linter) prep(content, block, inline, ext string) (string, error) {
 		} else if sec.Match(ext) {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
-				if err == nil {
-					if ext == ".rst" {
-						// HACK: We need to add padding for the literal block.
-						for _, c := range pat.FindAllStringSubmatch(s, -1) {
-							new := fmt.Sprintf(block, core.Indent(c[0], "    "))
-							s = strings.Replace(s, c[0], new, 1)
-						}
-					} else {
-						s = pat.ReplaceAllString(s, block)
+				if err != nil {
+					return s, err
+				} else if ext == ".rst" {
+					// HACK: We need to add padding for the literal block.
+					for _, c := range pat.FindAllStringSubmatch(s, -1) {
+						new := fmt.Sprintf(block, core.Indent(c[0], "    "))
+						s = strings.Replace(s, c[0], new, 1)
 					}
+				} else {
+					s = pat.ReplaceAllString(s, block)
 				}
 			}
 		}
