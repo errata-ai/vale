@@ -28,15 +28,46 @@ Feature: Config
       """
     And the exit status should be 0
 
+  Scenario: Missing StylesPath (only Vale)
+    Given a file named ".vale" with:
+      """
+      MinAlertLevel = suggestion
+
+      [*]
+      BasedOnStyles = Vale
+      """
+    When I run vale "test.md"
+    Then the output should contain exactly:
+      """
+      test.md:1:66:Vale.Spelling:Did you really mean 'javascript'?
+      test.md:1:77:Vale.Spelling:Did you really mean 'agendize'?
+      """
+    And the exit status should be 1
+
+  Scenario: Missing StylesPath (Vale + other)
+    Given a file named ".vale" with:
+      """
+      MinAlertLevel = suggestion
+
+      [*]
+      BasedOnStyles = Vale, proselint
+      """
+    When I run vale "test.md"
+    Then the output should contain:
+      """
+      E100 [loadStyles] Runtime error
+      """
+    And the exit status should be 2
+
   Scenario: MinAlertLevel = error
     Given a file named ".vale" with:
       """
       MinAlertLevel = error
 
       [*]
-      BasedOnStyles = vale
+      BasedOnStyles = Vale
 
-      vale.Spelling = NO
+      Vale.Spelling = NO
       """
     When I run vale "test.md"
     Then the output should contain exactly:

@@ -35,8 +35,7 @@ func NewManager(config *config.Config) (*Manager, error) {
 	}
 
 	err := mgr.loadDefaultRules()
-	if mgr.Config.StylesPath == "" {
-		// If we're not given a StylesPath, there's nothing left to look for.
+	if err != nil {
 		return &mgr, err
 	}
 
