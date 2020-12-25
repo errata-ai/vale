@@ -75,3 +75,12 @@ FIXME *bold phrase* TODO _XXX_
 image:logo.png[TODO]
 
 This should not {TODO} raise an alert.
+
+This NOTE should be found.
+
+[source,NOTE]
+----
+some NOTE
+----
+
+This NOTE should be found too.

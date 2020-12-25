@@ -43,6 +43,9 @@ var rstArgs = []string{
 }
 
 // AsciiDoc configuration.
+
+// Convert listing blocks of the form `[source,.+]` to `[source]`
+var reSource = regexp.MustCompile(`\[source,.+\]`)
 var adocArgs = []string{
 	"-s",
 	"-a",
@@ -245,7 +248,7 @@ func (l Linter) lintRST(file *core.File) error {
 	return nil
 }
 
-func (l Linter) lintADoc(file *core.File) error {
+func (l Linter) lintADoc(f *core.File) error {
 	var out bytes.Buffer
 
 	asciidoctor := core.Which([]string{"asciidoctor"})
@@ -254,16 +257,16 @@ func (l Linter) lintADoc(file *core.File) error {
 	}
 
 	cmd := exec.Command(asciidoctor, adocArgs...)
-	s, err := l.prep(file.Content, "\n----\n$1\n----\n", "`$1`", ".adoc")
+	s, err := l.prep(f.Content, "\n----\n$1\n----\n", "`$1`", ".adoc")
 	if err != nil {
-		return core.NewE100(file.Path, err)
+		return core.NewE100(f.Path, err)
 	}
 
 	cmd.Stdin = strings.NewReader(s)
 	cmd.Stdout = &out
 
 	if err := cmd.Run(); err != nil {
-		return core.NewE100(file.Path, err)
+		return core.NewE100(f.Path, err)
 	}
 
 	// NOTE: Asciidoctor converts "'" to "’".
@@ -276,7 +279,12 @@ func (l Linter) lintADoc(file *core.File) error {
 		"&rsquo;", "&apos;")
 	input := sanitizer.Replace(out.String())
 
-	l.lintHTMLTokens(file, []byte(input), 0)
+	// NOTE: This is required to avoid finding matches in block attributes.
+	//
+	// See https://github.com/errata-ai/vale/issues/296.
+	f.Content = reSource.ReplaceAllString(f.Content, "[source]")
+
+	l.lintHTMLTokens(f, []byte(input), 0)
 	return nil
 }
 

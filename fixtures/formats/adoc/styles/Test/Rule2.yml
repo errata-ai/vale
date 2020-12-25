@@ -1,0 +1,6 @@
+extends: substitution
+message: Consider using '%s' instead of '%s'
+level: error
+ignorecase: true
+swap:
+  asciidoc: AsciiDoc

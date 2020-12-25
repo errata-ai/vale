@@ -45,6 +45,15 @@ Feature: Lint
       """
     And the exit status should be 1
 
+  Scenario: Lint a AsciiDoc file with a listing block
+    When I lint AsciiDoc "test2.adoc"
+    Then the output should contain exactly:
+      """
+      test2.adoc:3:17:Test.Rule2:Consider using 'AsciiDoc' instead of 'Asciidoc'
+      test2.adoc:11:7:Test.Rule2:Consider using 'AsciiDoc' instead of 'asciidoc'
+      """
+    And the exit status should be 1
+
   Scenario: Lint a DITA file
     When I lint "test.dita"
     Then the output should contain exactly:
@@ -96,6 +105,8 @@ Feature: Lint
       test.adoc:64:38:vale.Annotations:'XXX' left in text
       test.adoc:66:20:vale.Annotations:'TODO' left in text
       test.adoc:75:16:vale.Annotations:'TODO' left in text
+      test.adoc:79:6:vale.Annotations:'NOTE' left in text
+      test.adoc:86:6:vale.Annotations:'NOTE' left in text
       """
     And the exit status should be 0
 
