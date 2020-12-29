@@ -12,6 +12,9 @@ for converting asciidoc content to HTML5, DocBook, PDF, and other formats.
 
 == Learn more
 
+// ignore bare links
 * xref:about-asciidoc.adoc[]
 * https://docs.asciidoc.org
 * https://docs.org#asciidoc
+// Vale must lint text link: Asciidoc -> AsciiDoc
+* https://docs.asciidoctor.org/asciidoc/latest/[Asciidoc Language Documentation]
