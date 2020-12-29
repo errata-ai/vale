@@ -14,6 +14,7 @@ type walker struct {
 	section   string
 	context   string
 	activeTag string
+	activeHref string
 
 	idx int
 	z   *html.Tokenizer
@@ -53,9 +54,13 @@ func (w *walker) append(text string) {
 	}
 }
 
-func (w *walker) addTag(tag string) {
+func (w *walker) addTag(tok html.Token) {
+	tag := html.UnescapeString(strings.TrimSpace(tok.Data))
 	w.tagHistory = append(w.tagHistory, tag)
 	w.activeTag = tag
+	if tag == "a" {
+		w.activeHref = getAttribute(tok, "href")
+	}
 }
 
 func (w *walker) block(text, scope string) core.Block {

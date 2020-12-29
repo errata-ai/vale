@@ -68,13 +68,18 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) {
 		} else if tokt == html.StartTagToken {
 			inline = core.StringInSlice(txt, inlineTags)
 			skip = core.StringInSlice(txt, skipped)
-			walker.addTag(txt)
+			walker.addTag(tok)
 		} else if tokt == html.EndTagToken && core.StringInSlice(txt, inlineTags) {
 			walker.activeTag = ""
+			walker.activeHref = ""
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
 		} else if tokt == html.TextToken {
 			skip = skip || shouldBeSkipped(walker.tagHistory, f.NormedExt)
+			if walker.activeTag == "a" && walker.activeHref == txt {
+				// txt is actually a link, ignoring
+				skip = true
+			}
 			if scope, match := tagToScope[walker.activeTag]; match {
 				if core.StringInSlice(walker.activeTag, inlineTags) {
 					// NOTE: We need to create a "temporary" context because
@@ -89,6 +94,7 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) {
 						0,
 						true)
 					walker.activeTag = ""
+					walker.activeHref = ""
 				}
 			}
 			walker.append(txt)

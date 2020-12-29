@@ -9,3 +9,7 @@ some asciidoc
 
 Asciidoctor is a fast, open source text processor and publishing toolchain
 for converting asciidoc content to HTML5, DocBook, PDF, and other formats.
+
+== Learn more
+
+* xref:about-asciidoc.adoc[]
