@@ -90,8 +90,7 @@ func main() {
 
 	args := flag.Args()
 	if len(args) == 0 && !stat() {
-		flag.PrintDefaults()
-		os.Exit(2)
+		printIntro()
 	} else if len(args) == 1 && core.StringInSlice(args[0], commands) {
 		if err = doCommand(args[0]); err != nil {
 			os.Exit(2)
