@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
@@ -10,12 +11,20 @@ import (
 var commands = []string{
 	"dc",
 	"ls-config",
+	"help",
+}
+
+var commandInfo = map[string]string{
+	"ls-config": "Print the current configuration to stdout and exit.",
 }
 
 func doCommand(name string) error {
 	switch name {
 	case "ls-config", "dc":
 		return printConfig()
+	case "help":
+		flag.Usage()
+		return nil
 	}
 	return nil
 }

@@ -1,10 +1,13 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
+	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/logrusorgru/aurora/v3"
+	"github.com/olekukonko/tablewriter"
 )
 
 var exampleConfig = `StylesPath = a/path/to/your/styles
@@ -13,9 +16,9 @@ var exampleConfig = `StylesPath = a/path/to/your/styles
 	[*]
 	BasedOnStyles = Vale`
 
-var info = fmt.Sprintf(`vale - A command-line linter for prose [%s]
+var intro = fmt.Sprintf(`vale - A command-line linter for prose [%s]
 
-Usage:	%s
+%s:	%s
 	%s
 	%s
 
@@ -27,14 +30,14 @@ It's designed to enforce custom rulesets (referred to as "styles"). See
 
 To get started, you'll need a configuration file (%s):
 
-Example:
+%s:
 
 	%s
 
-See %s for more setup information or %s for a listing of CLI options.`,
+See %s for more setup information.`,
 	aurora.Faint(version),
+	aurora.Bold("Usage"),
 
-	// Examples
 	aurora.Faint("vale [options] [input...]"),
 	aurora.Faint("vale myfile.md myfile1.md mydir1"),
 	aurora.Faint("vale --output=JSON [input...]"),
@@ -42,12 +45,56 @@ See %s for more setup information or %s for a listing of CLI options.`,
 	aurora.Underline("https://github.com/errata-ai/styles"),
 
 	aurora.Faint(".vale.ini"),
+	aurora.Bold("Example"),
 	aurora.Faint(exampleConfig),
 
-	aurora.Underline("https://docs.errata.ai/vale/about"),
+	aurora.Underline("https://docs.errata.ai/vale/about"))
+
+var info = fmt.Sprintf(`%s
+
+(Or use %s for a listing of all CLI options.)`,
+	intro,
 	aurora.Faint("vale --help"))
+
+var hidden = []string{
+	"mode-compat",
+	"normalize",
+	"relative",
+	"sort",
+	"sources",
+}
 
 func printIntro() {
 	fmt.Println(info)
 	os.Exit(0)
+}
+
+func init() {
+	flag.Usage = func() {
+		fmt.Println(intro)
+
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetCenterSeparator("")
+		table.SetColumnSeparator("")
+		table.SetRowSeparator("")
+		table.SetAutoWrapText(false)
+
+		fmt.Println(aurora.Bold("\nFlags:"))
+		flag.VisitAll(func(f *flag.Flag) {
+			if !core.StringInSlice(f.Name, hidden) {
+				table.Append([]string{"--" + f.Name, f.Usage})
+			}
+		})
+
+		table.Render()
+		table.ClearRows()
+
+		fmt.Println(aurora.Bold("Commands:"))
+		for cmd, use := range commandInfo {
+			table.Append([]string{cmd, use})
+		}
+		table.Render()
+
+		os.Exit(0)
+	}
 }
