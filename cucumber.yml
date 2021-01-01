@@ -1,3 +1,0 @@
-default: --format progress -t ~@completion
-completion: --format pretty -t @completion
-all: --format progress
