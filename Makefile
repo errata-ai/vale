@@ -17,21 +17,10 @@ release:
 # make build os=windows
 # make build os=linux
 build:
-	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin/$(exe)
+	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin/$(exe) ./cmd/vale
 
-upx:
-	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin
-ifeq ($(os),windows)
-	upx -9 -k bin/vale.exe
-else
-	upx -9 -k bin/vale
-endif
-
-install:
-	go install ${LDFLAGS}
-
-spell:
-	./bin/vale --glob='!*{Needless,Diacritical,DenizenLabels,AnimalLabels}.yml' rule styles
+gcc:
+	GOOS=$(os) GOARCH=amd64 go build -compiler gccgo -gccgoflags "-s -w" -o bin/$(exe) ./cmd/vale
 
 bench:
 	go test -bench=. -benchmem ./core ./lint ./check
@@ -43,26 +32,7 @@ compare:
 	benchcmp old.txt new.txt && \
 	benchstat old.txt new.txt
 
-lint:
-	gometalinter --vendor --disable-all \
-		--enable=deadcode \
-		--enable=ineffassign \
-		--enable=gosimple \
-		--enable=staticcheck \
-		--enable=goimports \
-		--enable=dupl \
-		--enable=misspell \
-		--enable=errcheck \
-		--enable=vet \
-		--enable=vetshadow \
-		--deadline=1m \
-		./core ./lint ./ui ./check
-
 setup:
-	# go get golang.org/x/perf/cmd/benchstat
-	# go get golang.org/x/tools/cmd/benchcmp
-	# go get github.com/aclements/go-misc/benchmany
-	# go get -u github.com/jteeuwen/go-bindata/...
 	bundle install
 	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
 
@@ -73,7 +43,7 @@ data:
 	go-bindata -ignore=\\.DS_Store -pkg="data" -o data/data.go data/*.{dic,aff}
 
 test:
-	go test -race ./core ./lint ./check
+	go test -race ./internal/core ./internal/lint ./internal/check ./pkg/glob
 	cucumber
 
 docker:
@@ -82,21 +52,3 @@ docker:
 	docker build -f Dockerfile -t jdkato/vale:latest .
 	docker tag jdkato/vale:latest jdkato/vale:${LAST_TAG}
 	docker push jdkato/vale
-
-cross:
-	mkdir -p $(BUILD_DIR)
-
-	GOOS=linux GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/vale_$(LAST_TAG)_Linux_64-bit.tar.gz" ./vale
-
-	rm -rf vale
-
-	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS}
-	tar -czvf "$(BUILD_DIR)/vale_$(LAST_TAG)_macOS_64-bit.tar.gz" ./vale
-
-	rm -rf vale
-
-	GOOS=windows GOARCH=amd64 go build ${LDFLAGS}
-	zip -r "$(BUILD_DIR)/vale_$(LAST_TAG)_Windows_64-bit.zip" ./vale.exe
-
-	rm -rf vale.exe

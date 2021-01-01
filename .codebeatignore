@@ -1,2 +1,2 @@
 fixtures/**
-data/**
+internal/data/**

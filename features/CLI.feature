@@ -1,5 +1,5 @@
 Feature: CLI
-  Scenario: Lint with a custom output format
+  Scenario: Lint with a custom output format (line)
     When I test template "line.tmpl"
     Then the output should contain exactly:
       """

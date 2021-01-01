@@ -1,5 +1,5 @@
 build:
-  main: main.go
+  main: ./cmd/vale/main.go
   binary: vale
   goos:
     - windows
