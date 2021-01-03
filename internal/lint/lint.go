@@ -185,7 +185,7 @@ func (l *Linter) lintFile(src string) lintResult {
 		case ".dita":
 			err = l.lintDITA(file)
 		case ".html":
-			l.lintHTML(file)
+			err = l.lintHTML(file)
 		}
 	} else if file.Format == "code" && !l.Manager.Config.Flags.Simple {
 		l.lintCode(file)

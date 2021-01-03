@@ -47,8 +47,7 @@ func (l Linter) lintSphinx(f *core.File) error {
 		return core.NewE100(f.Path, err)
 	}
 
-	l.lintHTMLTokens(f, html, 0)
-	return nil
+	return l.lintHTMLTokens(f, html, 0)
 }
 
 func (l Linter) lintRST(file *core.File) error {
@@ -97,7 +96,6 @@ func (l Linter) lintRST(file *core.File) error {
 			bodyEnd = 0
 		}
 	}
-	l.lintHTMLTokens(file, html[bodyStart+7:bodyEnd], 0)
 
-	return nil
+	return l.lintHTMLTokens(file, html[bodyStart+7:bodyEnd], 0)
 }

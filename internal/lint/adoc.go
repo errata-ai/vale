@@ -62,6 +62,5 @@ func (l Linter) lintADoc(f *core.File) error {
 	// See https://github.com/errata-ai/vale/issues/296.
 	f.Content = reSource.ReplaceAllString(f.Content, "[source]")
 
-	l.lintHTMLTokens(f, []byte(input), 0)
-	return nil
+	return l.lintHTMLTokens(f, []byte(input), 0)
 }

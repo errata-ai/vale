@@ -15,12 +15,11 @@ var reFrontMatter = regexp.MustCompile(
 
 var heading = regexp.MustCompile(`^h\d$`)
 
-func (l Linter) lintHTML(f *core.File) {
+func (l Linter) lintHTML(f *core.File) error {
 	if l.Manager.Config.Built != "" {
-		l.lintTxtToHTML(f)
-	} else {
-		l.lintHTMLTokens(f, []byte(f.Content), 0)
+		return l.lintTxtToHTML(f)
 	}
+	return l.lintHTMLTokens(f, []byte(f.Content), 0)
 }
 
 func (l Linter) prep(content, block, inline, ext string) (string, error) {
@@ -71,6 +70,5 @@ func (l Linter) lintTxtToHTML(f *core.File) error {
 	if err != nil {
 		return core.NewE100(f.Path, err)
 	}
-	l.lintHTMLTokens(f, html, 0)
-	return nil
+	return l.lintHTMLTokens(f, html, 0)
 }

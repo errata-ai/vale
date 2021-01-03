@@ -65,8 +65,7 @@ func (l Linter) lintDITA(file *core.File) error {
 	// introducing new content into the HTML.
 	head1 := bytes.Index(data, []byte("<head>"))
 	head2 := bytes.Index(data, []byte("</head>"))
-	l.lintHTMLTokens(
-		file, append(data[:head1], data[head2:]...), 0)
 
-	return nil
+	return l.lintHTMLTokens(
+		file, append(data[:head1], data[head2:]...), 0)
 }

@@ -41,6 +41,5 @@ func (l Linter) lintXML(file *core.File) error {
 		return core.NewE100(file.Path, err)
 	}
 
-	l.lintHTMLTokens(file, out.Bytes(), 0)
-	return nil
+	return l.lintHTMLTokens(file, out.Bytes(), 0)
 }

@@ -36,7 +36,7 @@ var tagToScope = map[string]string{
 	"code":   "code",
 }
 
-func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) {
+func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 	var attr string
 	var inBlock, inline, skip, skipClass bool
 
@@ -112,7 +112,9 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) {
 		walker.replaceToks(tok)
 		l.lintTags(f, walker, tok)
 	}
+
 	l.lintSizedScopes(f)
+	return nil
 }
 
 func (l Linter) lintScope(f *core.File, state walker, txt string) {

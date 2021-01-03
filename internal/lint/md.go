@@ -56,7 +56,5 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	})
 
 	f.Content = body
-	l.lintHTMLTokens(f, buf.Bytes(), 0)
-
-	return nil
+	return l.lintHTMLTokens(f, buf.Bytes(), 0)
 }
