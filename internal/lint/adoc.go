@@ -10,8 +10,6 @@ import (
 	"github.com/jdkato/regexp"
 )
 
-// AsciiDoc configuration.
-
 // Convert listing blocks of the form `[source,.+]` to `[source]`
 var reSource = regexp.MustCompile(`\[source,.+\]`)
 var adocArgs = []string{

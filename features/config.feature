@@ -335,12 +335,10 @@ Feature: Config
       test.py:35:8:vale.Annotations:'NOTE' left in text
       test.py:37:5:vale.Annotations:'TODO' left in text
       """
-    And the exit status should be 0
 
   Scenario: Test a negated glob
     When I test glob "!*.py"
     Then the output should not contain "py"
-    And the exit status should be 0
 
   Scenario: Test a negated glob directory
     When I test dir glob "!content/b/*"
@@ -351,13 +349,11 @@ Feature: Config
       content/c.md:1:1:Vale.Spelling:Did you really mean 'Lorem'?
       content/c.md:1:7:Vale.Spelling:Did you really mean 'ipsum'?
       """
-    And the exit status should be 1
 
   Scenario: Test another negated glob
     When I test glob "!*.{md,py}"
     Then the output should not contain "md"
     And the output should not contain "py"
-    And the exit status should be 0
 
   Scenario: Change a built-in rule's level
     Given a file named ".vale" with:
