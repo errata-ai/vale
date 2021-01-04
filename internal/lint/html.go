@@ -1,8 +1,11 @@
 package lint
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
@@ -63,6 +66,27 @@ func (l Linter) prep(content, block, inline, ext string) (string, error) {
 	}
 
 	return s, nil
+}
+
+func post(f *core.File, text, url string) (string, error) {
+	req, err := http.NewRequest("POST", url, bytes.NewBufferString(text))
+	if err != nil {
+		return "", core.NewE100(f.Path, err)
+	}
+	req.Header.Set("Content-Type", "text/plain")
+	req.Header.Set("Accept", "text/plain")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", core.NewE100(f.Path, err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode == 200 {
+		return string(body), nil
+	}
+	return "", core.NewE100(f.Path, errors.New("bad status"))
 }
 
 func (l Linter) lintTxtToHTML(f *core.File) error {

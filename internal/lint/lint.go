@@ -47,6 +47,7 @@ type Linter struct {
 
 	seen      map[string]bool
 	glob      *glob.Glob
+	pids      []int
 	nonGlobal bool
 }
 
@@ -81,12 +82,12 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 	done := make(chan core.File)
 	defer close(done)
 
-	if err := l.setupContent(); err != nil {
+	gp, err := glob.NewGlob(pat)
+	if err != nil {
 		return linted, err
 	}
 
-	gp, err := glob.NewGlob(pat)
-	if err != nil {
+	if err := l.setup(); err != nil {
 		return linted, err
 	}
 
@@ -96,6 +97,7 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 
 		for result := range filesChan {
 			if result.err != nil {
+				l.teardown()
 				return linted, result.err
 			} else if l.Manager.Config.Flags.Normalize {
 				result.file.Path = filepath.ToSlash(result.file.Path)
@@ -104,10 +106,12 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 		}
 
 		if err := <-errChan; err != nil {
+			l.teardown()
 			return linted, err
 		}
 	}
 
+	l.teardown()
 	return linted, nil
 }
 
@@ -314,11 +318,22 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk core.B
 	return true
 }
 
-// setupContent handles any necessary building, compiling, or pre-processing.
-func (l *Linter) setupContent() error {
+// setup handles any necessary building, compiling, or pre-processing.
+func (l *Linter) setup() error {
 	if l.Manager.Config.SphinxAuto != "" {
 		parts := strings.Split(l.Manager.Config.SphinxAuto, " ")
 		return exec.Command(parts[0], parts[1:]...).Run()
+	}
+	return nil
+}
+
+func (l *Linter) teardown() error {
+	for _, pid := range l.pids {
+		if p, err := os.FindProcess(pid); err == nil {
+			if p.Kill() != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
