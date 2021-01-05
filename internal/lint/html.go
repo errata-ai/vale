@@ -5,8 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/gobwas/glob"
@@ -18,14 +20,14 @@ var reFrontMatter = regexp.MustCompile(
 
 var heading = regexp.MustCompile(`^h\d$`)
 
-func (l Linter) lintHTML(f *core.File) error {
+func (l *Linter) lintHTML(f *core.File) error {
 	if l.Manager.Config.Built != "" {
 		return l.lintTxtToHTML(f)
 	}
 	return l.lintHTMLTokens(f, []byte(f.Content), 0)
 }
 
-func (l Linter) prep(content, block, inline, ext string) (string, error) {
+func (l *Linter) prep(content, block, inline, ext string) (string, error) {
 	s := reFrontMatter.ReplaceAllString(content, block)
 
 	for syntax, regexes := range l.Manager.Config.TokenIgnores {
@@ -68,7 +70,7 @@ func (l Linter) prep(content, block, inline, ext string) (string, error) {
 	return s, nil
 }
 
-func post(f *core.File, text, url string) (string, error) {
+func (l *Linter) post(f *core.File, text, url string) (string, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBufferString(text))
 	if err != nil {
 		return "", core.NewE100(f.Path, err)
@@ -76,7 +78,7 @@ func post(f *core.File, text, url string) (string, error) {
 	req.Header.Set("Content-Type", "text/plain")
 	req.Header.Set("Accept", "text/plain")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := l.client.Do(req)
 	if err != nil {
 		return "", core.NewE100(f.Path, err)
 	}
@@ -86,13 +88,24 @@ func post(f *core.File, text, url string) (string, error) {
 	if resp.StatusCode == 200 {
 		return string(body), nil
 	}
+
 	return "", core.NewE100(f.Path, errors.New("bad status"))
 }
 
-func (l Linter) lintTxtToHTML(f *core.File) error {
+func (l *Linter) lintTxtToHTML(f *core.File) error {
 	html, err := ioutil.ReadFile(l.Manager.Config.Built)
 	if err != nil {
 		return core.NewE100(f.Path, err)
 	}
 	return l.lintHTMLTokens(f, html, 0)
+}
+
+func ping(domain string) {
+	for {
+		conn, err := net.DialTimeout("tcp", domain, 2*time.Millisecond)
+		if err == nil {
+			conn.Close()
+			break
+		}
+	}
 }

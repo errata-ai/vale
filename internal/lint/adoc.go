@@ -4,11 +4,9 @@ import (
 	"bytes"
 	"errors"
 	"io/ioutil"
-	"net"
 	"os"
 	"os/exec"
 	"strings"
-	"time"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/jdkato/regexp"
@@ -102,7 +100,7 @@ func (l *Linter) lintADoc(f *core.File) error {
 	if err := l.startAdocServer(exe); err != nil {
 		html, err = callAdoc(f, s, exe)
 	} else {
-		html, err = post(f, s, adocURL)
+		html, err = l.post(f, s, adocURL)
 	}
 
 	if err != nil {
@@ -152,14 +150,10 @@ func (l *Linter) startAdocServer(exe string) error {
 		return err
 	}
 
-	for {
-		conn, err := net.DialTimeout("tcp", adocDomain, 20*time.Millisecond)
-		if err == nil {
-			conn.Close()
-			break
-		}
-	}
+	ping(adocDomain)
+
 	l.pids = append(l.pids, cmd.Process.Pid)
+	l.temps = append(l.temps, tmpfile)
 
 	adocRunning = true
 	return nil

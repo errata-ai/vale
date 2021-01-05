@@ -29,6 +29,7 @@ package lint
 
 import (
 	"errors"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -45,9 +46,13 @@ import (
 type Linter struct {
 	Manager *check.Manager
 
-	seen      map[string]bool
-	glob      *glob.Glob
-	pids      []int
+	seen map[string]bool
+	glob *glob.Glob
+
+	client *http.Client
+	pids   []int
+	temps  []*os.File
+
 	nonGlobal bool
 }
 
@@ -66,6 +71,7 @@ func NewLinter(cfg *core.Config) (*Linter, error) {
 	return &Linter{
 		Manager: mgr,
 
+		client:    http.DefaultClient,
 		nonGlobal: globalStyles+globalChecks == 0}, err
 }
 
@@ -335,6 +341,13 @@ func (l *Linter) teardown() error {
 			}
 		}
 	}
+
+	for _, f := range l.temps {
+		if err := os.Remove(f.Name()); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
