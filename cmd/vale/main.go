@@ -81,11 +81,17 @@ func handleError(err error) {
 }
 
 func main() {
+	v := flag.Bool("v", false, "prints current version")
 	flag.Parse()
 
 	config, err := core.NewConfig(&flags)
 	if err != nil {
 		ShowError(err, flags.Output, os.Stderr)
+	}
+
+	if *v {
+		fmt.Println("vale version " + version)
+		os.Exit(0)
 	}
 
 	args := flag.Args()
