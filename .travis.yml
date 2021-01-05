@@ -25,6 +25,9 @@ before_install:
   - pip install --user sphinx
   - gem update --system
   - gem install asciidoctor
+  - cat $(which asciidoctor)
+  - echo $GEM_PATH
+  - echo $GEM_HOME
 
 install:
   - make setup
