@@ -2,6 +2,8 @@ package check
 
 import (
 	"bytes"
+	"fmt"
+	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -47,8 +49,11 @@ type Spelling struct {
 	Exceptions []string
 	Threshold  int
 
+	// A slice of Hunspell-compatible dictionaries to load.
+	Dictionaries []spell.Dictionary
+
 	exceptRe *regexp.Regexp
-	gs       *spell.GoSpell
+	gs       *spell.MultiSpell
 }
 
 func addFilters(s *Spelling, generic baseCheck, cfg *core.Config) error {
@@ -92,7 +97,7 @@ func addExceptions(s *Spelling, generic baseCheck, cfg *core.Config) error {
 
 // NewSpelling creates a new `spelling`-based rule.
 func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
-	var model *spell.GoSpell
+	var model *spell.MultiSpell
 
 	rule := Spelling{}
 	path := generic["path"].(string)
@@ -106,16 +111,9 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 		return rule, readStructureError(err, path)
 	}
 
-	affloc := core.FindAsset(cfg, rule.Aff)
-	dicloc := core.FindAsset(cfg, rule.Dic)
-	if core.FileExists(affloc) && core.FileExists(dicloc) {
-		model, err = spell.NewGoSpell(affloc, dicloc)
-	} else {
-		// Fall back to the defaults:
-		aff, _ := data.Asset("data/en_US-web.aff")
-		dic, _ := data.Asset("data/en_US-web.dic")
-		model, err = spell.NewGoSpellReader(
-			bytes.NewReader(aff), bytes.NewReader(dic))
+	model, err = makeSpeller(&rule, cfg)
+	if err != nil {
+		return rule, err
 	}
 
 	for _, ignore := range rule.Ignore {
@@ -128,10 +126,10 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 				cfg.Project,
 				ignore)
 		}
-		_, exists := model.AddWordListFile(vocab)
+		exists := model.AddWordListFile(vocab)
 		if exists != nil {
 			vocab, _ = filepath.Abs(ignore)
-			_, exists = model.AddWordListFile(vocab)
+			exists = model.AddWordListFile(vocab)
 			// TODO: check error?
 		}
 	}
@@ -152,7 +150,7 @@ func (s Spelling) Run(txt string, f *core.File) []core.Alert {
 	// allowing us to avoid false positives.
 	//
 	// See https://github.com/errata-ai/vale/v2/issues/148.
-	txt = s.gs.InputConversion([]byte(txt))
+	txt = s.gs.Convert(txt)
 
 OUTER:
 	for _, word := range core.WordTokenizer.Tokenize(txt) {
@@ -162,8 +160,7 @@ OUTER:
 			}
 		}
 
-		known := s.gs.Spell(word) || s.gs.Spell(strings.ToLower(word))
-		if !known && !isMatch(s.exceptRe, word) {
+		if !s.gs.Spell(word) && !isMatch(s.exceptRe, word) {
 			offset := strings.Index(txt, word)
 			loc := []int{offset, offset + len(word)}
 
@@ -188,4 +185,37 @@ func (s Spelling) Fields() Definition {
 // Pattern is the internal regex pattern used by this rule.
 func (s Spelling) Pattern() string {
 	return ""
+}
+
+func makeSpeller(s *Spelling, cfg *core.Config) (*spell.MultiSpell, error) {
+	affloc := core.FindAsset(cfg, s.Aff)
+	dicloc := core.FindAsset(cfg, s.Dic)
+
+	if core.FileExists(affloc) && core.FileExists(dicloc) {
+		aff, err := os.Open(affloc)
+		if err != nil {
+			return nil, fmt.Errorf("Unable to open aff: %s", err)
+		}
+		defer aff.Close()
+
+		dic, err := os.Open(dicloc)
+		if err != nil {
+			return nil, fmt.Errorf("Unable to open dic: %s", err)
+		}
+		defer dic.Close()
+
+		return spell.NewMultiSpellReader([]spell.Dictionary{
+			{Dic: dic, Aff: aff}})
+	} else if len(s.Dictionaries) > 0 {
+		return spell.NewMultiSpellReader(s.Dictionaries)
+	}
+
+	// Fall back to the defaults:
+	aff, _ := data.Asset("data/en_US-web.aff")
+	dic, _ := data.Asset("data/en_US-web.dic")
+
+	return spell.NewMultiSpellReader(
+		[]spell.Dictionary{{
+			Dic: bytes.NewReader(dic),
+			Aff: bytes.NewReader(aff)}})
 }

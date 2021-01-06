@@ -4,9 +4,11 @@ import (
 	"flag"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/mholt/archiver/v3"
 )
 
 var flags core.CLIFlags
+var zip archiver.Unarchiver
 
 func init() {
 	flag.StringVar(&flags.Sources, "sources", "", "config files to load")
@@ -24,8 +26,6 @@ func init() {
 	flag.BoolVar(&flags.Wrap, "no-wrap", false, "Don't wrap CLI output.")
 	flag.BoolVar(&flags.NoExit, "no-exit", false,
 		"Don't return a nonzero exit code on errors.")
-	flag.BoolVar(&flags.Local, "mode-compat", false,
-		"prioritize local Vale configurations")
 	flag.BoolVar(&flags.Sorted, "sort", false,
 		"sort files by their name in output")
 	flag.BoolVar(&flags.Normalize, "normalize", false,

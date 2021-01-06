@@ -5,6 +5,15 @@ github.com/Masterminds/semver/v3
 # github.com/Masterminds/sprig/v3 v3.2.0
 ## explicit
 github.com/Masterminds/sprig/v3
+# github.com/andybalholm/brotli v1.0.0
+github.com/andybalholm/brotli
+# github.com/dsnet/compress v0.0.1
+github.com/dsnet/compress
+github.com/dsnet/compress/bzip2
+github.com/dsnet/compress/bzip2/internal/sais
+github.com/dsnet/compress/internal
+github.com/dsnet/compress/internal/errors
+github.com/dsnet/compress/internal/prefix
 # github.com/errata-ai/ini v1.63.0
 ## explicit
 github.com/errata-ai/ini
@@ -18,6 +27,8 @@ github.com/gobwas/glob/syntax/ast
 github.com/gobwas/glob/syntax/lexer
 github.com/gobwas/glob/util/runes
 github.com/gobwas/glob/util/strings
+# github.com/golang/snappy v0.0.1
+github.com/golang/snappy
 # github.com/google/uuid v1.1.1
 github.com/google/uuid
 # github.com/huandu/xstrings v1.3.1
@@ -38,11 +49,24 @@ github.com/jdkato/regexp
 github.com/jdkato/regexp/internal/dfa
 github.com/jdkato/regexp/internal/input
 github.com/jdkato/regexp/syntax
+# github.com/klauspost/compress v1.10.10
+github.com/klauspost/compress/flate
+github.com/klauspost/compress/fse
+github.com/klauspost/compress/gzip
+github.com/klauspost/compress/huff0
+github.com/klauspost/compress/snappy
+github.com/klauspost/compress/zstd
+github.com/klauspost/compress/zstd/internal/xxhash
+# github.com/klauspost/pgzip v1.2.4
+github.com/klauspost/pgzip
 # github.com/logrusorgru/aurora/v3 v3.0.0
 ## explicit
 github.com/logrusorgru/aurora/v3
 # github.com/mattn/go-runewidth v0.0.7
 github.com/mattn/go-runewidth
+# github.com/mholt/archiver/v3 v3.5.0
+## explicit
+github.com/mholt/archiver/v3
 # github.com/mitchellh/copystructure v1.0.0
 github.com/mitchellh/copystructure
 # github.com/mitchellh/mapstructure v1.4.0
@@ -52,9 +76,17 @@ github.com/mitchellh/mapstructure
 github.com/mitchellh/reflectwalk
 # github.com/montanaflynn/stats v0.6.3
 github.com/montanaflynn/stats
+# github.com/nwaples/rardecode v1.1.0
+github.com/nwaples/rardecode
 # github.com/olekukonko/tablewriter v0.0.4
 ## explicit
 github.com/olekukonko/tablewriter
+# github.com/pierrec/lz4/v4 v4.0.3
+github.com/pierrec/lz4/v4
+github.com/pierrec/lz4/v4/internal/lz4block
+github.com/pierrec/lz4/v4/internal/lz4errors
+github.com/pierrec/lz4/v4/internal/lz4stream
+github.com/pierrec/lz4/v4/internal/xxh32
 # github.com/remeh/sizedwaitgroup v1.0.0
 ## explicit
 github.com/remeh/sizedwaitgroup
@@ -64,6 +96,13 @@ github.com/shogo82148/go-shuffle
 github.com/shopspring/decimal
 # github.com/spf13/cast v1.3.1
 github.com/spf13/cast
+# github.com/ulikunitz/xz v0.5.7
+github.com/ulikunitz/xz
+github.com/ulikunitz/xz/internal/hash
+github.com/ulikunitz/xz/internal/xlog
+github.com/ulikunitz/xz/lzma
+# github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8
+github.com/xi2/xz
 # github.com/yuin/goldmark v1.3.1
 ## explicit
 github.com/yuin/goldmark

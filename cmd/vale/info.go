@@ -58,6 +58,7 @@ var info = fmt.Sprintf(`%s
 
 var hidden = []string{
 	"mode-compat",
+	"mode-rev-compat",
 	"normalize",
 	"relative",
 	"sort",

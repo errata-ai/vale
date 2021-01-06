@@ -9,6 +9,7 @@ require (
 	github.com/jdkato/prose v1.2.1
 	github.com/jdkato/regexp v0.1.0
 	github.com/logrusorgru/aurora/v3 v3.0.0
+	github.com/mholt/archiver/v3 v3.5.0
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/remeh/sizedwaitgroup v1.0.0
