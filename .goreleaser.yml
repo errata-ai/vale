@@ -1,12 +1,12 @@
-build:
-  main: ./cmd/vale/main.go
-  binary: vale
-  goos:
-    - windows
-    - darwin
-    - linux
-  goarch:
-    - amd64
+builds:
+  - main: ./cmd/vale/main.go
+    binary: vale
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
 
 archives:
   -
