@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/errata-ai/vale/v2/internal/cli"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/lint"
 )
@@ -76,7 +77,7 @@ func doLint(args []string, l *lint.Linter, glob string) ([]*core.File, error) {
 }
 
 func handleError(err error) {
-	ShowError(err, flags.Output, os.Stderr)
+	cli.ShowError(err, cli.Flags.Output, os.Stderr)
 	os.Exit(2)
 }
 
@@ -84,9 +85,9 @@ func main() {
 	v := flag.Bool("v", false, "prints current version")
 	flag.Parse()
 
-	config, err := core.NewConfig(&flags)
+	config, err := core.NewConfig(&cli.Flags)
 	if err != nil {
-		ShowError(err, flags.Output, os.Stderr)
+		cli.ShowError(err, cli.Flags.Output, os.Stderr)
 	}
 
 	if *v {
@@ -98,7 +99,7 @@ func main() {
 	argc := len(args)
 
 	if argc == 0 && !stat() {
-		printIntro()
+		cli.PrintIntro()
 	}
 
 	if err := validateFlags(config); err != nil {
@@ -108,7 +109,7 @@ func main() {
 	}
 
 	if argc > 0 {
-		cmd, exists := actions[args[0]]
+		cmd, exists := cli.Actions[args[0]]
 		if exists {
 			if err = cmd(args[1:], config); err != nil {
 				os.Exit(2)
@@ -122,15 +123,15 @@ func main() {
 		handleError(err)
 	}
 
-	linted, err := doLint(args, linter, flags.Glob)
+	linted, err := doLint(args, linter, cli.Flags.Glob)
 	if err != nil {
 		handleError(err)
 	}
 
-	hasErrors, err := PrintAlerts(linted, config)
+	hasErrors, err := cli.PrintAlerts(linted, config)
 	if err != nil {
 		handleError(err)
-	} else if hasErrors && !flags.NoExit {
+	} else if hasErrors && !cli.Flags.NoExit {
 		os.Exit(1)
 	}
 

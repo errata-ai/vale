@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"flag"
@@ -12,21 +12,22 @@ var commandInfo = map[string]string{
 	"ls-config": "Print the current configuration to stdout and exit.",
 }
 
-var actions = map[string]func(args []string, cfg *core.Config) error{
+// Actions are the available CLI commands.
+var Actions = map[string]func(args []string, cfg *core.Config) error{
 	"ls-config": printConfig,
 	"dc":        printConfig,
 	"help":      printUsage,
 }
 
 func printConfig(args []string, cfg *core.Config) error {
-	cfg, err := core.NewConfig(&flags)
+	cfg, err := core.NewConfig(&Flags)
 	if err != nil {
-		ShowError(err, flags.Output, os.Stderr)
+		ShowError(err, Flags.Output, os.Stderr)
 	}
 
 	err = core.From("ini", cfg)
 	if err != nil {
-		ShowError(err, flags.Output, os.Stderr)
+		ShowError(err, Flags.Output, os.Stderr)
 	}
 
 	fmt.Println(cfg.String())

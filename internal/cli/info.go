@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"flag"
@@ -16,7 +16,7 @@ var exampleConfig = `StylesPath = a/path/to/your/styles
 	[*]
 	BasedOnStyles = Vale`
 
-var intro = fmt.Sprintf(`vale - A command-line linter for prose [%s]
+var intro = fmt.Sprintf(`vale - A command-line linter for prose.
 
 %s:	%s
 	%s
@@ -35,7 +35,6 @@ To get started, you'll need a configuration file (%s):
 	%s
 
 See %s for more setup information.`,
-	aurora.Faint(version),
 	aurora.Bold("Usage"),
 
 	aurora.Faint("vale [options] [input...]"),
@@ -65,7 +64,8 @@ var hidden = []string{
 	"sources",
 }
 
-func printIntro() {
+// PrintIntro shows basic usage / gettting started info.
+func PrintIntro() {
 	fmt.Println(info)
 	os.Exit(0)
 }
