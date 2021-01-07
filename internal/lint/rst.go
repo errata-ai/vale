@@ -142,7 +142,8 @@ func (l *Linter) lintSphinx(f *core.File) error {
 func (l *Linter) lintRST(f *core.File) error {
 	var html string
 
-	rst2html := core.Which([]string{"rst2html", "rst2html.py"})
+	rst2html := core.Which([]string{
+		"rst2html", "rst2html.py", "rst2html-3", "rst2html-3.py"})
 	python := core.Which([]string{
 		"python", "py", "python.exe", "python3", "python3.exe", "py3"})
 
