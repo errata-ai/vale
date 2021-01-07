@@ -1,17 +1,20 @@
 # See https://cloud.docker.com/repository/docker/jdkato/vale
 FROM alpine:3.10
 
-RUN apk add --no-cache --update \
-    libxslt \
-    wget \
-    unzip \
-    py3-sphinx \
-    asciidoctor
+# TODO: DITA / XML:
+#    openjdk11 \
+#    libxslt \
+# COPY bin/dita-ot-3.6 /
+#
+# This currently isn't packaged because it makes the size 7x as big.
 
-RUN wget https://github.com/dita-ot/dita-ot/releases/download/3.6/dita-ot-3.6.zip
-RUN unzip dita-ot-3.6.zip > /dev/null 2>&1
+# Debug shell: $ docker run -it --entrypoint /bin/sh jdkato/vale -s
+
+RUN apk add --no-cache --update \
+    py3-docutils \
+    asciidoctor
 
 COPY bin/vale /bin
 
-ENV PATH="/bin:/dita-ot-3.6/bin:${PATH}"
+ENV PATH="/bin:/dita-ot-3.6/bin:$PATH"
 ENTRYPOINT ["/bin/vale"]
