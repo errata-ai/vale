@@ -118,6 +118,10 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		cfg.WordTemplate = sec.Key("WordTemplate").String()
 		return nil
 	},
+	"DictionaryPath": func(sec *ini.Section, cfg *Config, args []string) error {
+		cfg.DictionaryPath = sec.Key("DictionaryPath").String()
+		return nil
+	},
 	"SkippedScopes": func(sec *ini.Section, cfg *Config, args []string) error {
 		cfg.SkippedScopes = mergeValues(sec.Key("SkippedScopes").ValueWithShadows())
 		return nil

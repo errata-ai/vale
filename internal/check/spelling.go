@@ -34,7 +34,7 @@ type Spelling struct {
 	// `aff` (`string`): The fully-qualified path to a Hunspell-compatible
 	// `.aff` file.
 	Aff string
-	// `custom` (`bool`): Turn off the s.ult filters for acronyms,
+	// `custom` (`bool`): Turn off the default filters for acronyms,
 	// abbreviations, and numbers.
 	Custom bool
 	// `dic` (`string`): The fully-qualified path to a Hunspell-compatible
