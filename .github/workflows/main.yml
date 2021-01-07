@@ -9,8 +9,14 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Vale
-      uses: errata-ai/vale-action@master
+      uses: errata-ai/vale-action@v1.3.0
       with:
+        styles: |
+          https://github.com/errata-ai/Microsoft/releases/latest/download/Microsoft.zip
+          https://github.com/errata-ai/write-good/releases/latest/download/write-good.zip
+
+        config: https://gist.githubusercontent.com/jdkato/9eff65084a3fa5f835a0aff328ec80ce/raw/b6d40e4e19325b253ed55bf8dd6879ee7822c61a/.vale.ini
+
         files: README.md
         debug: true
 
