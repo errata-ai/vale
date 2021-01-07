@@ -7,7 +7,7 @@ test:
   stage: test
   script:
     - export BUNDLE_GEMFILE=$PWD/Gemfile
-    - export PATH=$PATH:$PWD/dita-ot-3.4/bin
+    - export PATH=$PATH:$PWD/dita-ot-3.6/bin
 
     - apt-get -qq update
     - apt-get install -y curl gnupg build-essential default-jre
@@ -20,8 +20,8 @@ test:
     # GoDownloader is working.
     - curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s latest
 
-    - wget https://github.com/dita-ot/dita-ot/releases/download/3.4/dita-ot-3.4.zip
-    - unzip dita-ot-3.4.zip > /dev/null 2>&1
+    - wget https://github.com/dita-ot/dita-ot/releases/download/3.6/dita-ot-3.6.zip
+    - unzip dita-ot-3.6.zip > /dev/null 2>&1
     - which dita
     - dita -h
 
