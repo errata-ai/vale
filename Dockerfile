@@ -8,10 +8,10 @@ RUN apk add --no-cache --update \
     py3-sphinx \
     asciidoctor
 
-RUN wget https://github.com/dita-ot/dita-ot/releases/download/3.4/dita-ot-3.4.zip
-RUN unzip dita-ot-3.4.zip > /dev/null 2>&1
+RUN wget https://github.com/dita-ot/dita-ot/releases/download/3.6/dita-ot-3.6.zip
+RUN unzip dita-ot-3.6.zip > /dev/null 2>&1
 
 COPY bin/vale /bin
 
-ENV PATH="/bin:/dita-ot-3.4/bin:${PATH}"
+ENV PATH="/bin:/dita-ot-3.6/bin:${PATH}"
 ENTRYPOINT ["/bin/vale"]
