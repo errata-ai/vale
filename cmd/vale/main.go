@@ -95,7 +95,9 @@ func main() {
 	}
 
 	args := flag.Args()
-	if len(args) == 0 && !stat() {
+	argc := len(args)
+
+	if argc == 0 && !stat() {
 		printIntro()
 	}
 
@@ -105,11 +107,12 @@ func main() {
 		handleError(err)
 	}
 
-	cmd, exists := actions[args[0]]
-	if exists {
-		if err = cmd(args[1:], config); err != nil {
-			os.Exit(2)
-		} else {
+	if argc > 0 {
+		cmd, exists := actions[args[0]]
+		if exists {
+			if err = cmd(args[1:], config); err != nil {
+				os.Exit(2)
+			}
 			os.Exit(0)
 		}
 	}
