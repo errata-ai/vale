@@ -155,7 +155,7 @@ func (l *Linter) lintRST(f *core.File) error {
 
 	s, err := l.prep(f.Content, "\n::\n\n%s\n", "``$1``", ".rst")
 	if err != nil {
-		return core.NewE100(f.Path, err)
+		return err
 	}
 
 	s = reSphinx.ReplaceAllString(s, ".. code::")

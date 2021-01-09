@@ -93,7 +93,7 @@ func (l *Linter) lintADoc(f *core.File) error {
 
 	s, err := l.prep(f.Content, "\n----\n$1\n----\n", "`$1`", ".adoc")
 	if err != nil {
-		return core.NewE100(f.Path, err)
+		return err
 	}
 
 	s = adocSanitizer.Replace(s)

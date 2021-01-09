@@ -314,11 +314,9 @@ func determinePath(configPath string, keyPath string) string {
 func mergeValues(shadows []string) []string {
 	values := []string{}
 	for _, v := range shadows {
-		for _, s := range strings.Split(v, ",") {
-			entry := strings.TrimSpace(s)
-			if entry != "" && !StringInSlice(entry, values) {
-				values = append(values, entry)
-			}
+		entry := strings.TrimSpace(v)
+		if entry != "" && !StringInSlice(entry, values) {
+			values = append(values, entry)
 		}
 	}
 	return values

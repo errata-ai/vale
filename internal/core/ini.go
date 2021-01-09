@@ -23,7 +23,7 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 		} else if _, found := cfg.SecToPat[lbl]; !found {
 			cfg.SecToPat[lbl] = pat
 		}
-		sStyles := mergeValues(sec.Key("BasedOnStyles").ValueWithShadows())
+		sStyles := mergeValues(sec.Key("BasedOnStyles").StringsWithShadows(","))
 
 		cfg.Styles = append(cfg.Styles, sStyles...)
 		cfg.SBaseStyles[lbl] = sStyles
@@ -31,15 +31,15 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 		return nil
 	},
 	"IgnorePatterns": func(label string, sec *ini.Section, cfg *Config) error {
-		cfg.BlockIgnores[label] = mergeValues(sec.Key("IgnorePatterns").ValueWithShadows())
+		cfg.BlockIgnores[label] = sec.Key("IgnorePatterns").Strings(",")
 		return nil
 	},
 	"BlockIgnores": func(label string, sec *ini.Section, cfg *Config) error {
-		cfg.BlockIgnores[label] = mergeValues(sec.Key("BlockIgnores").ValueWithShadows())
+		cfg.BlockIgnores[label] = sec.Key("BlockIgnores").Strings(",")
 		return nil
 	},
 	"TokenIgnores": func(label string, sec *ini.Section, cfg *Config) error {
-		cfg.TokenIgnores[label] = mergeValues(sec.Key("TokenIgnores").ValueWithShadows())
+		cfg.TokenIgnores[label] = sec.Key("TokenIgnores").Strings(",")
 		return nil
 	},
 	"Transform": func(label string, sec *ini.Section, cfg *Config) error {
@@ -58,17 +58,17 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 
 var globalOpts = map[string]func(*ini.Section, *Config, []string){
 	"BasedOnStyles": func(sec *ini.Section, cfg *Config, args []string) {
-		cfg.GBaseStyles = mergeValues(sec.Key("BasedOnStyles").ValueWithShadows())
+		cfg.GBaseStyles = mergeValues(sec.Key("BasedOnStyles").StringsWithShadows(","))
 		cfg.Styles = append(cfg.Styles, cfg.GBaseStyles...)
 	},
 	"IgnorePatterns": func(sec *ini.Section, cfg *Config, args []string) {
-		cfg.BlockIgnores["*"] = mergeValues(sec.Key("IgnorePatterns").ValueWithShadows())
+		cfg.BlockIgnores["*"] = sec.Key("IgnorePatterns").Strings(",")
 	},
 	"BlockIgnores": func(sec *ini.Section, cfg *Config, args []string) {
-		cfg.BlockIgnores["*"] = mergeValues(sec.Key("BlockIgnores").ValueWithShadows())
+		cfg.BlockIgnores["*"] = sec.Key("BlockIgnores").Strings(",")
 	},
 	"TokenIgnores": func(sec *ini.Section, cfg *Config, args []string) {
-		cfg.TokenIgnores["*"] = mergeValues(sec.Key("TokenIgnores").ValueWithShadows())
+		cfg.TokenIgnores["*"] = sec.Key("TokenIgnores").Strings(",")
 	},
 }
 
@@ -111,7 +111,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		return nil
 	},
 	"IgnoredScopes": func(sec *ini.Section, cfg *Config, args []string) error {
-		cfg.IgnoredScopes = mergeValues(sec.Key("IgnoredScopes").ValueWithShadows())
+		cfg.IgnoredScopes = mergeValues(sec.Key("IgnoredScopes").StringsWithShadows(","))
 		return nil
 	},
 	"WordTemplate": func(sec *ini.Section, cfg *Config, args []string) error {
@@ -123,11 +123,11 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		return nil
 	},
 	"SkippedScopes": func(sec *ini.Section, cfg *Config, args []string) error {
-		cfg.SkippedScopes = mergeValues(sec.Key("SkippedScopes").ValueWithShadows())
+		cfg.SkippedScopes = mergeValues(sec.Key("SkippedScopes").StringsWithShadows(","))
 		return nil
 	},
 	"IgnoredClasses": func(sec *ini.Section, cfg *Config, args []string) error {
-		cfg.IgnoredClasses = mergeValues(sec.Key("IgnoredClasses").ValueWithShadows())
+		cfg.IgnoredClasses = mergeValues(sec.Key("IgnoredClasses").StringsWithShadows(","))
 		return nil
 	},
 	"Project": func(sec *ini.Section, cfg *Config, args []string) error {

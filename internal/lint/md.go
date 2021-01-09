@@ -30,7 +30,7 @@ func (l Linter) lintMarkdown(f *core.File) error {
 
 	s, err := l.prep(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
 	if err != nil {
-		return core.NewE100(f.Path, err)
+		return err
 	}
 
 	if err := goldMd.Convert([]byte(s), &buf); err != nil {

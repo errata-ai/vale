@@ -38,7 +38,11 @@ func (l *Linter) prep(content, block, inline, ext string) (string, error) {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
 				if err != nil {
-					return s, err
+					return s, core.NewE201FromTarget(
+						err.Error(),
+						r,
+						l.Manager.Config.Flags.Path,
+					)
 				}
 				s = pat.ReplaceAllString(s, inline)
 			}
@@ -53,7 +57,11 @@ func (l *Linter) prep(content, block, inline, ext string) (string, error) {
 			for _, r := range regexes {
 				pat, err := regexp.Compile(r)
 				if err != nil {
-					return s, err
+					return s, core.NewE201FromTarget(
+						err.Error(),
+						r,
+						l.Manager.Config.Flags.Path,
+					)
 				} else if ext == ".rst" {
 					// HACK: We need to add padding for the literal block.
 					for _, c := range pat.FindAllStringSubmatch(s, -1) {
