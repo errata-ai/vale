@@ -9,7 +9,7 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Vale
-      uses: errata-ai/vale-action@api
+      uses: errata-ai/vale-action@master
       with:
         styles: |
           https://github.com/errata-ai/Microsoft/releases/latest/download/Microsoft.zip
