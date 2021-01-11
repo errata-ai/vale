@@ -5,3 +5,4 @@ MinAlertLevel = suggestion
 BasedOnStyles = vale
 
 write-good.E-Prime = YES
+demo.CommasPerSentence = YES

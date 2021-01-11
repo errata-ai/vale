@@ -43,6 +43,8 @@ Feature: Misc
     test.md:1:57:vale.Editorializing:Consider removing 'very'
     test.md:3:14:write-good.E-Prime:Avoid using "are"
     test.md:3:28:write-good.E-Prime:Avoid using "be"
+    test.md:5:9:write-good.E-Prime:Avoid using "is"
+    test.md:5:193:demo.CommasPerSentence:More than 3 commas!
     """
 
   Scenario: Nested markup

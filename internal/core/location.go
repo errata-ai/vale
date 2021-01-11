@@ -23,6 +23,11 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 		return 1, ""
 	}
 
+	offset := strings.Index(ctx, txt)
+	if offset >= 0 {
+		ctx, _ = Substitute(ctx, ctx[:offset], '@')
+	}
+
 	sub := strings.ToValidUTF8(a.Match, "")
 	if p, ok := cache.Load(sub); ok {
 		pat = p.(*regexp.Regexp)
