@@ -11,12 +11,11 @@ import (
 	"github.com/jdkato/regexp"
 )
 
-// goSpell is main struct
 type goSpell struct {
-	Config dictConfig
-	Dict   map[string]struct{} // likely will contain some value later
+	config dictConfig
+	dict   map[string]struct{}
 
-	ireplacer *strings.Replacer // input conversion
+	ireplacer *strings.Replacer
 	compounds []*regexp.Regexp
 	splitter  *splitter
 }
@@ -45,12 +44,12 @@ func (s *goSpell) split(text string) []string {
 // returns true if added
 // return false is already exists
 func (s *goSpell) addWordRaw(word string) bool {
-	_, ok := s.Dict[word]
+	_, ok := s.dict[word]
 	if ok {
 		// already exists
 		return false
 	}
-	s.Dict[word] = struct{}{}
+	s.dict[word] = struct{}{}
 	return true
 }
 
@@ -90,11 +89,11 @@ func (s *goSpell) addWordList(r io.Reader) ([]string, error) {
 // spell checks to see if a given word is in the internal dictionaries
 // TODO: add multiple dictionaries
 func (s *goSpell) spell(word string) bool {
-	_, ok := s.Dict[word]
+	_, ok := s.dict[word]
 	if ok {
 		return true
 	}
-	_, ok = s.Dict[strings.ToLower(word)]
+	_, ok = s.dict[strings.ToLower(word)]
 	if ok {
 		return true
 	}
@@ -125,7 +124,7 @@ func (s *goSpell) spell(word string) bool {
 	units := isNumberUnits(word)
 	if units != "" {
 		// dictionary appears to have list of units
-		if _, ok = s.Dict[units]; ok {
+		if _, ok = s.dict[units]; ok {
 			return true
 		}
 	}
@@ -135,7 +134,7 @@ func (s *goSpell) spell(word string) bool {
 	if chunks := splitCamelCase(word); len(chunks) > 0 {
 		if false {
 			for _, chunk := range chunks {
-				if _, ok = s.Dict[chunk]; !ok {
+				if _, ok = s.dict[chunk]; !ok {
 					return false
 				}
 			}
@@ -175,7 +174,7 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 	}*/
 
 	gs := goSpell{
-		Dict:      make(map[string]struct{}),
+		dict:      make(map[string]struct{}),
 		compounds: make([]*regexp.Regexp, 0, len(affix.CompoundRule)),
 		splitter:  newSplitter(affix.WordChars),
 	}
@@ -193,7 +192,7 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 		}
 
 		for _, word := range words {
-			gs.Dict[word] = struct{}{}
+			gs.dict[word] = struct{}{}
 		}
 	}
 
