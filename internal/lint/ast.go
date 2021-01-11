@@ -153,9 +153,14 @@ func (l Linter) lintSizedScopes(f *core.File) {
 		true)
 
 	// Run all rules with `scope: raw`
+	//
+	// NOTE: We need to use `f.Lines` (instead of `f.Content`) to ensure that
+	// we don't include any markup preprocessing.
+	//
+	// See #248, #306.
 	l.lintBlock(
 		f,
-		core.NewBlock("", f.Content, "raw."+f.RealExt),
+		core.NewBlock("", strings.Join(f.Lines, ""), "raw."+f.RealExt),
 		len(f.Lines),
 		0,
 		true)
