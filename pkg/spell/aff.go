@@ -10,24 +10,24 @@ import (
 	"github.com/jdkato/regexp"
 )
 
-// AffixType is either an affix prefix or suffix
-type AffixType int
+// affixType is either an affix prefix or suffix
+type affixType int
 
 // specific Affix types
 const (
-	Prefix AffixType = iota
+	Prefix affixType = iota
 	Suffix
 )
 
-// Affix is a rule for affix (adding prefixes or suffixes)
-type Affix struct {
-	Type         AffixType // either PFX or SFX
+// affix is a rule for affix (adding prefixes or suffixes)
+type affix struct {
+	Type         affixType // either PFX or SFX
 	CrossProduct bool
-	Rules        []Rule
+	Rules        []rule
 }
 
-// Expand provides all variations of a given word based on this affix rule
-func (a Affix) Expand(word string, out []string) []string {
+// expand provides all variations of a given word based on this affix rule
+func (a affix) expand(word string, out []string) []string {
 	for _, r := range a.Rules {
 		if r.matcher != nil && !r.matcher.MatchString(word) {
 			continue
@@ -46,23 +46,23 @@ func (a Affix) Expand(word string, out []string) []string {
 	return out
 }
 
-// Rule is a Affix rule
-type Rule struct {
+// rule is a Affix rule
+type rule struct {
 	Strip     string
 	AffixText string         // suffix or prefix text to add
 	Pattern   string         // original matching pattern from AFF file
 	matcher   *regexp.Regexp // matcher to see if this rule applies or not
 }
 
-// DictConfig is a partial representation of a Hunspell AFF (Affix) file.
-type DictConfig struct {
+// dictConfig is a partial representation of a Hunspell AFF (Affix) file.
+type dictConfig struct {
 	Flag              string
 	TryChars          string
 	WordChars         string
 	NoSuggestFlag     rune
 	IconvReplacements []string
 	Replacements      [][2]string
-	AffixMap          map[rune]Affix
+	AffixMap          map[rune]affix
 	CamelCase         int
 	CompoundMin       int
 	CompoundOnly      string
@@ -70,9 +70,9 @@ type DictConfig struct {
 	compoundMap       map[rune][]string
 }
 
-// Expand expands a word/affix using dictionary/affix rules
+// expand expands a word/affix using dictionary/affix rules
 //  This also supports CompoundRule flags
-func (a DictConfig) Expand(wordAffix string, out []string) ([]string, error) {
+func (a dictConfig) expand(wordAffix string, out []string) ([]string, error) {
 	out = out[:0]
 	idx := strings.Index(wordAffix, "/")
 
@@ -108,8 +108,8 @@ func (a DictConfig) Expand(wordAffix string, out []string) ([]string, error) {
 	}
 
 	out = append(out, word)
-	prefixes := make([]Affix, 0, 5)
-	suffixes := make([]Affix, 0, 5)
+	prefixes := make([]affix, 0, 5)
+	suffixes := make([]affix, 0, 5)
 	for _, key := range keyString {
 		// want keyString to []?something?
 		// then iterate over that
@@ -127,7 +127,7 @@ func (a DictConfig) Expand(wordAffix string, out []string) ([]string, error) {
 			return nil, fmt.Errorf("unable to find affix key %v", key)
 		}
 		if !af.CrossProduct {
-			out = af.Expand(word, out)
+			out = af.expand(word, out)
 			continue
 		}
 		if af.Type == Prefix {
@@ -139,16 +139,16 @@ func (a DictConfig) Expand(wordAffix string, out []string) ([]string, error) {
 
 	// expand all suffixes with out any prefixes
 	for _, suf := range suffixes {
-		out = suf.Expand(word, out)
+		out = suf.expand(word, out)
 	}
 	for _, pre := range prefixes {
-		prewords := pre.Expand(word, nil)
+		prewords := pre.expand(word, nil)
 		out = append(out, prewords...)
 
 		// now do cross product
 		for _, suf := range suffixes {
 			for _, w := range prewords {
-				out = suf.Expand(w, out)
+				out = suf.expand(w, out)
 			}
 		}
 	}
@@ -165,11 +165,11 @@ func isCrossProduct(val string) (bool, error) {
 	return false, fmt.Errorf("CrossProduct is not Y or N: got %q", val)
 }
 
-// NewDictConfig reads an Hunspell AFF file
-func NewDictConfig(file io.Reader) (*DictConfig, error) {
-	aff := DictConfig{
+// newDictConfig reads an Hunspell AFF file
+func newDictConfig(file io.Reader) (*dictConfig, error) {
+	aff := dictConfig{
 		Flag:        "ASCII",
-		AffixMap:    make(map[rune]Affix),
+		AffixMap:    make(map[rune]affix),
 		compoundMap: make(map[rune][]string),
 		CompoundMin: 3, // default in Hunspell
 	}
@@ -273,7 +273,7 @@ func NewDictConfig(file io.Reader) (*DictConfig, error) {
 					return nil, err
 				}
 				// this is a new Affix!
-				a := Affix{
+				a := affix{
 					Type:         atype,
 					CrossProduct: cross,
 				}
@@ -307,7 +307,7 @@ func NewDictConfig(file io.Reader) (*DictConfig, error) {
 					}
 				}
 
-				a.Rules = append(a.Rules, Rule{
+				a.Rules = append(a.Rules, rule{
 					Strip:     strip,
 					AffixText: parts[3],
 					Pattern:   parts[4],

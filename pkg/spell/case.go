@@ -5,20 +5,20 @@ import (
 	"unicode"
 )
 
-// WordCase is an enum of various word casing styles
-type WordCase int
+// wordCase is an enum of various word casing styles
+type wordCase int
 
 // Various WordCase types.. likely to be not correct
 const (
-	AllLower WordCase = iota
+	AllLower wordCase = iota
 	AllUpper
 	Title
 	Mixed
 	Camel
 )
 
-// CaseStyle returns what case style a word is in
-func CaseStyle(word string) WordCase {
+// caseStyle returns what case style a word is in
+func caseStyle(word string) wordCase {
 	hasTitle := false
 	upperCount := 0
 	lowerCount := 0
@@ -60,12 +60,12 @@ func CaseStyle(word string) WordCase {
 	}
 }
 
-// CaseVariations returns
+// caseVariations returns
 // If AllUpper or First-Letter-Only is upcased: add the all upper case version
 // If AllLower, add the original, the title and upcase forms
 // If Mixed, return the original, and the all upcase form
 //
-func CaseVariations(word string, style WordCase) []string {
+func caseVariations(word string, style wordCase) []string {
 	switch style {
 	case AllLower:
 		return []string{word, strings.ToUpper(word[0:1]) + word[1:], strings.ToUpper(word)}

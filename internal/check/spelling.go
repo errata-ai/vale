@@ -1,15 +1,11 @@
 package check
 
 import (
-	"bytes"
-	"fmt"
-	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/data"
 	"github.com/errata-ai/vale/v2/pkg/spell"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
@@ -50,10 +46,10 @@ type Spelling struct {
 	Threshold  int
 
 	// A slice of Hunspell-compatible dictionaries to load.
-	Dictionaries []spell.Dictionary
+	Dictionaries []string
 
 	exceptRe *regexp.Regexp
-	gs       *spell.MultiSpell
+	gs       *spell.Checker
 }
 
 func addFilters(s *Spelling, generic baseCheck, cfg *core.Config) error {
@@ -97,7 +93,7 @@ func addExceptions(s *Spelling, generic baseCheck, cfg *core.Config) error {
 
 // NewSpelling creates a new `spelling`-based rule.
 func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
-	var model *spell.MultiSpell
+	var model *spell.Checker
 
 	rule := Spelling{}
 	path := generic["path"].(string)
@@ -187,35 +183,19 @@ func (s Spelling) Pattern() string {
 	return ""
 }
 
-func makeSpeller(s *Spelling, cfg *core.Config) (*spell.MultiSpell, error) {
+func makeSpeller(s *Spelling, cfg *core.Config) (*spell.Checker, error) {
 	affloc := core.FindAsset(cfg, s.Aff)
 	dicloc := core.FindAsset(cfg, s.Dic)
 
 	if core.FileExists(affloc) && core.FileExists(dicloc) {
-		aff, err := os.Open(affloc)
-		if err != nil {
-			return nil, fmt.Errorf("Unable to open aff: %s", err)
-		}
-		defer aff.Close()
-
-		dic, err := os.Open(dicloc)
-		if err != nil {
-			return nil, fmt.Errorf("Unable to open dic: %s", err)
-		}
-		defer dic.Close()
-
-		return spell.NewMultiSpellReader([]spell.Dictionary{
-			{Dic: dic, Aff: aff}})
+		return spell.NewChecker(spell.UsingDictionaryByPath(dicloc, affloc))
 	} else if len(s.Dictionaries) > 0 {
-		return spell.NewMultiSpellReader(s.Dictionaries)
+		options := []spell.CheckerOption{}
+		for _, name := range s.Dictionaries {
+			options = append(options, spell.UsingDictionary(name))
+		}
+		return spell.NewChecker(options...)
 	}
 
-	// Fall back to the defaults:
-	aff, _ := data.Asset("data/en_US-web.aff")
-	dic, _ := data.Asset("data/en_US-web.dic")
-
-	return spell.NewMultiSpellReader(
-		[]spell.Dictionary{{
-			Dic: bytes.NewReader(dic),
-			Aff: bytes.NewReader(aff)}})
+	return spell.NewChecker()
 }

@@ -11,19 +11,24 @@ import (
 	"github.com/jdkato/regexp"
 )
 
-// GoSpell is main struct
-type GoSpell struct {
-	Config DictConfig
+// goSpell is main struct
+type goSpell struct {
+	Config dictConfig
 	Dict   map[string]struct{} // likely will contain some value later
 
 	ireplacer *strings.Replacer // input conversion
 	compounds []*regexp.Regexp
-	splitter  *Splitter
+	splitter  *splitter
 }
 
-// InputConversion does any character substitution before checking
+type dictionary struct {
+	dic string
+	aff string
+}
+
+// inputConversion does any character substitution before checking
 //  This is based on the ICONV stanza
-func (s *GoSpell) InputConversion(raw []byte) string {
+func (s *goSpell) inputConversion(raw []byte) string {
 	sraw := string(raw)
 	if s.ireplacer == nil {
 		return sraw
@@ -31,15 +36,15 @@ func (s *GoSpell) InputConversion(raw []byte) string {
 	return s.ireplacer.Replace(sraw)
 }
 
-// Split a text into Words
-func (s *GoSpell) Split(text string) []string {
-	return s.splitter.Split(text)
+// split a text into Words
+func (s *goSpell) split(text string) []string {
+	return s.splitter.split(text)
 }
 
-// AddWordRaw adds a single word to the internal dictionary without modifications
+// addWordRaw adds a single word to the internal dictionary without modifications
 // returns true if added
 // return false is already exists
-func (s *GoSpell) AddWordRaw(word string) bool {
+func (s *goSpell) addWordRaw(word string) bool {
 	_, ok := s.Dict[word]
 	if ok {
 		// already exists
@@ -49,22 +54,22 @@ func (s *GoSpell) AddWordRaw(word string) bool {
 	return true
 }
 
-// AddWordListFile reads in a word list file
-func (s *GoSpell) AddWordListFile(name string) ([]string, error) {
+// addWordListFile reads in a word list file
+func (s *goSpell) addWordListFile(name string) ([]string, error) {
 	fd, err := os.Open(name)
 	if err != nil {
 		return nil, err
 	}
 	defer fd.Close()
-	return s.AddWordList(fd)
+	return s.addWordList(fd)
 }
 
-// AddWordList adds basic word lists, just one word per line
+// addWordList adds basic word lists, just one word per line
 //  Assumed to be in UTF-8
 // TODO: hunspell compatible with "*" prefix for forbidden words
 // and affix support
 // returns list of duplicated words and/or error
-func (s *GoSpell) AddWordList(r io.Reader) ([]string, error) {
+func (s *goSpell) addWordList(r io.Reader) ([]string, error) {
 	var duplicates []string
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
@@ -72,7 +77,7 @@ func (s *GoSpell) AddWordList(r io.Reader) ([]string, error) {
 		if len(word) == 0 || word == "#" {
 			continue
 		}
-		if !s.AddWordRaw(word) {
+		if !s.addWordRaw(word) {
 			duplicates = append(duplicates, word)
 		}
 	}
@@ -82,9 +87,9 @@ func (s *GoSpell) AddWordList(r io.Reader) ([]string, error) {
 	return duplicates, nil
 }
 
-// Spell checks to see if a given word is in the internal dictionaries
+// spell checks to see if a given word is in the internal dictionaries
 // TODO: add multiple dictionaries
-func (s *GoSpell) Spell(word string) bool {
+func (s *goSpell) spell(word string) bool {
 	_, ok := s.Dict[word]
 	if ok {
 		return true
@@ -141,10 +146,10 @@ func (s *GoSpell) Spell(word string) bool {
 	return false
 }
 
-// NewGoSpellReader creates a speller from io.Readers for
+// newGoSpellReader creates a speller from io.Readers for
 // Hunspell files
-func NewGoSpellReader(aff, dic io.Reader) (*GoSpell, error) {
-	affix, err := NewDictConfig(aff)
+func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
+	affix, err := newDictConfig(aff)
 	if err != nil {
 		return nil, err
 	}
@@ -169,16 +174,16 @@ func NewGoSpellReader(aff, dic io.Reader) (*GoSpell, error) {
 		splitter:  NewSplitter(affix.WordChars),
 	}*/
 
-	gs := GoSpell{
+	gs := goSpell{
 		Dict:      make(map[string]struct{}),
 		compounds: make([]*regexp.Regexp, 0, len(affix.CompoundRule)),
-		splitter:  NewSplitter(affix.WordChars),
+		splitter:  newSplitter(affix.WordChars),
 	}
 
 	words := []string{}
 	for scanner.Scan() {
 		line := scanner.Text()
-		words, err = affix.Expand(line, words)
+		words, err = affix.expand(line, words)
 		if err != nil {
 			return nil, fmt.Errorf("Unable to process %q: %s", line, err)
 		}
@@ -223,8 +228,8 @@ func NewGoSpellReader(aff, dic io.Reader) (*GoSpell, error) {
 	return &gs, nil
 }
 
-// NewGoSpell from AFF and DIC Hunspell filenames
-func NewGoSpell(affFile, dicFile string) (*GoSpell, error) {
+// newGoSpell from AFF and DIC Hunspell filenames
+func newGoSpell(affFile, dicFile string) (*goSpell, error) {
 	aff, err := os.Open(affFile)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to open aff: %s", err)
@@ -235,6 +240,6 @@ func NewGoSpell(affFile, dicFile string) (*GoSpell, error) {
 		return nil, fmt.Errorf("Unable to open dic: %s", err)
 	}
 	defer dic.Close()
-	h, err := NewGoSpellReader(aff, dic)
+	h, err := newGoSpellReader(aff, dic)
 	return h, err
 }

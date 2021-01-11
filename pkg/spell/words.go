@@ -23,24 +23,24 @@ var camelCaseRegexp1 = regexp.MustCompile("[A-Z]+")
 
 var shaHashRegexp = regexp.MustCompile("^[0-9a-z]{40}$")
 
-// Splitter splits a text into words
+// splitter splits a text into words
 // Highly likely this implementation will change so we are encapsulating.
-type Splitter struct {
+type splitter struct {
 	fn func(c rune) bool
 }
 
-// Split is the function to split an input into a `[]string`
-func (s *Splitter) Split(in string) []string {
+// split is the function to split an input into a `[]string`
+func (s *splitter) split(in string) []string {
 	return strings.FieldsFunc(in, s.fn)
 }
 
-// NewSplitter creates a new splitter.  The input is a string in
+// newSplitter creates a new splitter.  The input is a string in
 // UTF-8 encoding.  Each rune in the string will be considered to be a
 // valid word character.  Runes that are NOT here are deemed a word
 // boundary Current implementation uses
 // https://golang.org/pkg/strings/#FieldsFunc
-func NewSplitter(chars string) *Splitter {
-	s := Splitter{}
+func newSplitter(chars string) *splitter {
+	s := splitter{}
 	s.fn = (func(c rune) bool {
 		// break if it's not a letter, and not another special character
 		return !unicode.IsLetter(c) && -1 == strings.IndexRune(chars, c)

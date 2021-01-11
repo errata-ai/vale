@@ -43,7 +43,7 @@ rules:
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/**/*.yml
 
 data:
-	go-bindata -ignore=\\.DS_Store -pkg="data" -o data/data.go data/*.{dic,aff}
+	go-bindata -ignore=\\.DS_Store -pkg="spell" -o pkg/spell/data.go pkg/spell/data/*.{dic,aff}
 
 test:
 	go test -race ./internal/core ./internal/lint ./internal/check ./pkg/glob
