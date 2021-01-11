@@ -1,7 +1,6 @@
 package core
 
 import (
-	"bufio"
 	"bytes"
 	"io/ioutil"
 	"path/filepath"
@@ -66,22 +65,19 @@ type File struct {
 	ChkToCtx   map[string]string // maps a temporary context to a particular check
 	Comments   map[string]bool   // comment control statements
 	Content    string            // the raw file contents
-	Counts     map[string]int    // word counts
 	Format     string            // 'code', 'markup' or 'prose'
 	Lines      []string          // the File's Content split into lines
-	Command    string            // a user-provided parsing CLI command
 	NormedExt  string            // the normalized extension (see util/format.go)
 	Path       string            // the full path
 	Transform  string            // XLST transform
 	RealExt    string            // actual file extension
-	Scanner    *bufio.Scanner    // used by lintXXX functions
 	Sequences  []string          // tracks various info (e.g., defined abbreviations)
-	Simple     bool              // indicates that we should ignore syntax (lint lint-by-line)
 	Summary    bytes.Buffer      // holds content to be included in summarization checks
 
 	history  map[string]int
 	limits   map[string]int
 	isGlobal bool
+	simple   bool
 }
 
 // An Action represents a possible solution to an Alert.
@@ -169,20 +165,17 @@ func (a ByName) Less(i, j int) bool {
 
 // NewFile initilizes a File.
 func NewFile(src string, config *Config) (*File, error) {
-	var scanner *bufio.Scanner
 	var format, ext string
 	var fbytes []byte
 
 	if FileExists(src) {
 		fbytes, _ = ioutil.ReadFile(src)
-		scanner = bufio.NewScanner(bytes.NewReader(fbytes))
 		if config.Flags.InExt != ".txt" {
 			ext, format = FormatFromExt(config.Flags.InExt, config.Formats)
 		} else {
 			ext, format = FormatFromExt(src, config.Formats)
 		}
 	} else {
-		scanner = bufio.NewScanner(strings.NewReader(src))
 		ext, format = FormatFromExt(config.Flags.InExt, config.Formats)
 		fbytes = []byte(src)
 		src = "stdin" + config.Flags.InExt
@@ -221,15 +214,14 @@ func NewFile(src string, config *Config) (*File, error) {
 		}
 	}
 
-	scanner.Split(SplitLines)
 	content := Sanitize(string(fbytes))
 	lines := strings.SplitAfter(content, "\n")
 	file := File{
 		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
-		BaseStyles: baseStyles, Checks: checks, Scanner: scanner, Lines: lines,
-		Comments: make(map[string]bool), Content: content,
-		history: make(map[string]int), Simple: config.Flags.Simple,
-		Transform: transform, limits: make(map[string]int),
+		BaseStyles: baseStyles, Checks: checks, Lines: lines, Content: content,
+		Comments: make(map[string]bool), history: make(map[string]int),
+		simple: config.Flags.Simple, Transform: transform,
+		limits: make(map[string]int),
 	}
 
 	return &file, nil
@@ -253,7 +245,7 @@ func (f *File) FindLoc(ctx, s string, pad, count int, a Alert) (int, []int) {
 	}
 
 	loc := a.Span
-	if f.Format == "markup" && !f.Simple {
+	if f.Format == "markup" && !f.simple {
 		lines = f.Lines
 	} else {
 		lines = strings.SplitAfter(ctx, "\n")

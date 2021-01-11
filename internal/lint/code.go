@@ -1,8 +1,10 @@
 package lint
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/jdkato/regexp"
@@ -20,6 +22,7 @@ func (l *Linter) lintCode(f *core.File) int {
 	if len(comments) == 0 {
 		return lines
 	}
+	scanner := bufio.NewScanner(strings.NewReader(f.Content))
 
 	scope := "%s" + f.RealExt
 	inline := regexp.MustCompile(comments["inline"])
@@ -28,8 +31,9 @@ func (l *Linter) lintCode(f *core.File) int {
 	ignore := false
 	inBlock := false
 
-	for f.Scanner.Scan() {
-		line = core.Sanitize(f.Scanner.Text() + "\n")
+	scanner.Split(core.SplitLines)
+	for scanner.Scan() {
+		line = core.Sanitize(scanner.Text() + "\n")
 		lnLength = len(line)
 		lines++
 		if inBlock {
