@@ -52,6 +52,7 @@ func benchmarkLint(path string, b *testing.B) {
 	if err != nil {
 		panic(err)
 	}
+	cfg.GBaseStyles = []string{"Vale"}
 
 	path, err = filepath.Abs(path)
 	if err != nil {
@@ -70,9 +71,9 @@ func benchmarkLint(path string, b *testing.B) {
 }
 
 func BenchmarkLintRST(b *testing.B) {
-	benchmarkLint("../fixtures/benchmarks/bench.rst", b)
+	benchmarkLint("../../fixtures/benchmarks/bench.rst", b)
 }
 
 func BenchmarkLintMD(b *testing.B) {
-	benchmarkLint("../fixtures/benchmarks/bench.md", b)
+	benchmarkLint("../../fixtures/benchmarks/bench.md", b)
 }
