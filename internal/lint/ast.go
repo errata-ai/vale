@@ -243,17 +243,6 @@ func updateContext(ctx string, queue []string) string {
 	return ctx
 }
 
-func clearElements(ctx string, tok html.Token) string {
-	if tok.Data == "img" || tok.Data == "a" || tok.Data == "p" || tok.Data == "script" {
-		for _, a := range tok.Attr {
-			if a.Key == "href" || a.Key == "id" || a.Key == "src" {
-				ctx = updateCtx(ctx, a.Val, html.TextToken)
-			}
-		}
-	}
-	return ctx
-}
-
 func updateCtx(ctx, txt string, tokt html.TokenType) string {
 	var found bool
 	if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
