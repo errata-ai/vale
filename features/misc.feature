@@ -12,40 +12,40 @@ Feature: Misc
   Scenario: Line Endings
     When I test "misc/line-endings"
     Then the output should contain exactly:
-    """
-    CR.md:3:11:vale.Editorializing:Consider removing 'very'
-    CR.md:32:11:vale.Editorializing:Consider removing 'very'
-    CRLF.md:3:11:vale.Editorializing:Consider removing 'very'
-    CRLF.md:32:11:vale.Editorializing:Consider removing 'very'
-    """
+      """
+      CR.md:3:11:vale.Editorializing:Consider removing 'very'
+      CR.md:32:11:vale.Editorializing:Consider removing 'very'
+      CRLF.md:3:11:vale.Editorializing:Consider removing 'very'
+      CRLF.md:32:11:vale.Editorializing:Consider removing 'very'
+      """
 
   Scenario: Unicode
     When I test "misc/unicode"
     Then the output should contain exactly:
-    """
-    test.py:2:27:vale.Hedging:Consider removing 'probably'
-    test.rst:1:36:vale.Annotations:'TODO' left in text
-    test.rst:2:55:vale.Hedging:Consider removing 'probably'
-    test.rst:4:23:vale.Editorializing:Consider removing 'very'
-    test.txt:1:36:vale.Annotations:'TODO' left in text
-    test.txt:2:55:vale.Hedging:Consider removing 'probably'
-    test.txt:4:23:vale.Editorializing:Consider removing 'very'
-    """
+      """
+      test.py:2:27:vale.Hedging:Consider removing 'probably'
+      test.rst:1:36:vale.Annotations:'TODO' left in text
+      test.rst:2:55:vale.Hedging:Consider removing 'probably'
+      test.rst:4:23:vale.Editorializing:Consider removing 'very'
+      test.txt:1:36:vale.Annotations:'TODO' left in text
+      test.txt:2:55:vale.Hedging:Consider removing 'probably'
+      test.txt:4:23:vale.Editorializing:Consider removing 'very'
+      """
 
   Scenario: Duplicate matches
     When I test "misc/duplicates"
     Then the output should contain exactly:
-    """
-    test.md:1:6:write-good.E-Prime:Avoid using "is"
-    test.md:1:9:vale.Editorializing:Consider removing 'very'
-    test.md:1:15:vale.Editorializing:Consider removing 'very'
-    test.md:1:39:vale.Editorializing:Consider removing 'very'
-    test.md:1:57:vale.Editorializing:Consider removing 'very'
-    test.md:3:14:write-good.E-Prime:Avoid using "are"
-    test.md:3:28:write-good.E-Prime:Avoid using "be"
-    test.md:5:9:write-good.E-Prime:Avoid using "is"
-    test.md:5:193:demo.CommasPerSentence:More than 3 commas!
-    """
+      """
+      test.md:1:6:write-good.E-Prime:Avoid using "is"
+      test.md:1:9:vale.Editorializing:Consider removing 'very'
+      test.md:1:15:vale.Editorializing:Consider removing 'very'
+      test.md:1:39:vale.Editorializing:Consider removing 'very'
+      test.md:1:57:vale.Editorializing:Consider removing 'very'
+      test.md:3:14:write-good.E-Prime:Avoid using "are"
+      test.md:3:28:write-good.E-Prime:Avoid using "be"
+      test.md:5:9:write-good.E-Prime:Avoid using "is"
+      test.md:5:193:demo.CommasPerSentence:More than 3 commas!
+      """
 
   Scenario: Nested markup
     When I test "misc/markup"
@@ -63,7 +63,6 @@ Feature: Misc
       test.html:5:21:Spelling.Ignores:Did you really mean 'docbook'?
       test.html:14:96:Spelling.Ignores:Did you really mean 'TODO'?
       test.md:3:1:Spelling.Ignore:'HTTPie' is a typo!
-      test.md:3:59:Spelling.Ignore:'CLI' is a typo!
       test.md:3:96:Spelling.Ignore:'human-friendly' is a typo!
       """
 

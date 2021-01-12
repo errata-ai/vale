@@ -45,6 +45,9 @@ type Spelling struct {
 	Exceptions []string
 	Threshold  int
 
+	// `dicpath` overrides the environments `DICPATH` setting.
+	Dicpath string
+
 	// A slice of Hunspell-compatible dictionaries to load.
 	Dictionaries []string
 
@@ -109,7 +112,7 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 
 	model, err = makeSpeller(&rule, cfg)
 	if err != nil {
-		return rule, err
+		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
 
 	for _, ignore := range rule.Ignore {
@@ -184,13 +187,22 @@ func (s Spelling) Pattern() string {
 }
 
 func makeSpeller(s *Spelling, cfg *core.Config) (*spell.Checker, error) {
+	var options []spell.CheckerOption
+
 	affloc := core.FindAsset(cfg, s.Aff)
 	dicloc := core.FindAsset(cfg, s.Dic)
+
+	if s.Dicpath != "" {
+		p, err := filepath.Abs(s.Dicpath)
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, spell.WithPath(p))
+	}
 
 	if core.FileExists(affloc) && core.FileExists(dicloc) {
 		return spell.NewChecker(spell.UsingDictionaryByPath(dicloc, affloc))
 	} else if len(s.Dictionaries) > 0 {
-		options := []spell.CheckerOption{}
 		for _, name := range s.Dictionaries {
 			options = append(options, spell.UsingDictionary(name))
 		}

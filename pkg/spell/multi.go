@@ -12,9 +12,9 @@ var defaultOpts = Options{
 
 // Options controls the checker-creation process:
 type Options struct {
-	path string
+	path  string
 	names []string
-	dics []dictionary
+	dics  []dictionary
 }
 
 // A CheckerOption is a setting that changes the checker-creation process.
@@ -44,7 +44,7 @@ func UsingDictionaryByPath(dic, aff string) CheckerOption {
 
 // Checker is a spell-checker based on multiple dictionaries.
 type Checker struct {
-	options Options
+	options  Options
 	checkers []*goSpell
 }
 
@@ -123,13 +123,13 @@ func (m *Checker) AddWordListFile(name string) error {
 	return nil
 }
 
-func (m *Checker) loadDic(name string) (error) {
-	dic, err := os.Open(filepath.Join(m.options.path, name +".dic"))
+func (m *Checker) loadDic(name string) error {
+	dic, err := os.Open(filepath.Join(m.options.path, name+".dic"))
 	if err != nil {
 		return err
 	}
 
-	aff, err := os.Open(filepath.Join(m.options.path, name +".aff"))
+	aff, err := os.Open(filepath.Join(m.options.path, name+".aff"))
 	if err != nil {
 		return err
 	}
