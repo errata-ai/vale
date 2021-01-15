@@ -50,7 +50,8 @@ Feature: Lint
     Then the output should contain exactly:
       """
       test2.adoc:3:17:Test.Rule2:Consider using 'AsciiDoc' instead of 'Asciidoc'
-      test2.adoc:11:7:Test.Rule2:Consider using 'AsciiDoc' instead of 'asciidoc'
+      test2.adoc:11:16:Test.Rule2:Consider using 'AsciiDoc' instead of 'asciidoc'
+      test2.adoc:19:16:Test.Rule2:Consider using 'AsciiDoc' instead of 'asciidoc'
       """
     And the exit status should be 1
 

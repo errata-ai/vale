@@ -108,10 +108,16 @@ func (l *Linter) lintADoc(f *core.File) error {
 	}
 
 	html = adocSanitizer.Replace(html)
-	// NOTE: This is required to avoid finding matches in block attributes.
-	//
-	// See https://github.com/errata-ai/vale/issues/296.
-	f.Content = reSource.ReplaceAllString(f.Content, "[source]")
+	body := reSource.ReplaceAllStringFunc(f.Content, func(m string) string {
+		// NOTE: This is required to avoid finding matches in block attributes.
+		//
+		// See https://github.com/errata-ai/vale/issues/296.
+		parts := strings.Split(m, ",")
+		span := strings.Repeat("*", len(parts[len(parts)-1])-2)
+		return "[source, " + span + "]"
+	})
+
+	f.Content = body
 	return l.lintHTMLTokens(f, []byte(html), 0)
 }
 
