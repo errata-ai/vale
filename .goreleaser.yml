@@ -1,5 +1,7 @@
 builds:
-  - main: ./cmd/vale/main.go
+  - env:
+      - CGO_ENABLED=0
+    main: ./cmd/vale/main.go
     binary: vale
     goos:
       - windows
@@ -9,8 +11,7 @@ builds:
       - amd64
 
 archives:
-  -
-    format: tar.gz
+  - format: tar.gz
     format_overrides:
       - goos: windows
         format: zip

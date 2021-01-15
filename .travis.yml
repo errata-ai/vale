@@ -31,7 +31,7 @@ before_install:
 
 install:
   - make setup
-  - # FIXME: make rules
+  -  # FIXME: make rules
   - make build os=linux exe=vale
 
 script:
@@ -42,9 +42,9 @@ after_success:
   - test -n "$TRAVIS_TAG" && docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 
 deploy:
-- provider: script
-  skip_cleanup: true
-  script: curl -sL https://git.io/goreleaser | bash
-  on:
-    tags: true
-    condition: $TRAVIS_OS_NAME = linux
+  - provider: script
+    skip_cleanup: true
+    script: curl -sL https://git.io/goreleaser | bash
+    on:
+      tags: true
+      condition: $TRAVIS_OS_NAME = linux
