@@ -342,6 +342,10 @@ func loadVocab(root string, cfg *Config) error {
 		}
 	}
 
+	if target == "" {
+		return NewE100("vocab", fmt.Errorf("Vocab '%s' does not exist", root))
+	}
+
 	err := filepath.Walk(target, func(fp string, fi os.FileInfo, err error) error {
 		if filepath.Base(fp) == "accept.txt" {
 			return cfg.AddWordListFile(fp, true)
