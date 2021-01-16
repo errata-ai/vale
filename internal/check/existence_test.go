@@ -19,10 +19,6 @@ func TestExistence(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if rule.hasExceptions != false {
-		t.Fatal("shouldn't have exceptions")
-	}
-
 	file, err := core.NewFile("", cfg)
 	if err != nil {
 		t.Fatal(err)
