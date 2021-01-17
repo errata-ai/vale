@@ -1,2 +1,2 @@
-// Package core contains cofiguration and utility internals.
+// Package core contains configuration and utility internals.
 package core
