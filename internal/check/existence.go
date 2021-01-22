@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/dlclark/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -25,7 +25,7 @@ type Existence struct {
 	// non-capturing group.
 	Tokens []string
 
-	pattern *regexp.Regexp
+	pattern *regexp2.Regexp
 }
 
 // NewExistence creates a new `Rule` that extends `Existence`.
@@ -50,7 +50,7 @@ func NewExistence(cfg *core.Config, generic baseCheck) (Existence, error) {
 		rule.Append)
 	regex = fmt.Sprintf(regex, strings.Join(rule.Tokens, "|"))
 
-	re, err := regexp.Compile(regex)
+	re, err := core.Compile(regex)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
@@ -67,9 +67,16 @@ func NewExistence(cfg *core.Config, generic baseCheck) (Existence, error) {
 func (e Existence) Run(text string, file *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
-	locs := e.pattern.FindAllStringIndex(text, -1)
-	for _, loc := range locs {
-		alerts = append(alerts, makeAlert(e.Definition, loc, text))
+	for _, m := range core.FindAllString(e.pattern, text) {
+		loc := []int{m.Index, m.Index + m.Length}
+
+		a := core.Alert{Check: e.Name, Severity: e.Level, Span: loc,
+			Link: e.Link, Match: m.String(), Action: e.Action}
+
+		a.Message, a.Description = formatMessages(e.Message,
+			e.Description, m.String())
+
+		alerts = append(alerts, a)
 	}
 
 	return alerts
