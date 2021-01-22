@@ -10,9 +10,10 @@ import (
 )
 
 type walker struct {
-	lines     int
-	section   string
-	context   string
+	lines   int
+	section string
+	context string
+
 	activeTag string
 
 	idx int

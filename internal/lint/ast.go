@@ -37,7 +37,7 @@ var tagToScope = map[string]string{
 }
 
 func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
-	var attr string
+	var class, attr string
 	var inBlock, inline, skip, skipClass bool
 
 	buf := bytes.NewBufferString("")
@@ -58,7 +58,7 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 	walker := newWalker(f, raw, offset)
 	for {
 		tokt, tok, txt := walker.walk()
-		skipClass = checkClasses(attr, skipClasses)
+		skipClass = checkClasses(class, skipClasses)
 		if tokt == html.ErrorToken {
 			break
 		} else if tokt == html.StartTagToken && core.StringInSlice(txt, skipTags) {
@@ -93,7 +93,7 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 			}
 			walker.append(txt)
 			if !inBlock && txt != "" {
-				txt, skip = clean(txt, f.NormedExt, skip, skipClass, inline)
+				txt, skip = clean(txt, f.NormedExt, attr, skip || skipClass, inline)
 				buf.WriteString(txt)
 			}
 		}
@@ -107,7 +107,8 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 			buf.Reset()
 		}
 
-		attr = getAttribute(tok, "class")
+		class = getAttribute(tok, "class")
+		attr = getAttribute(tok, "href")
 
 		walker.replaceToks(tok)
 		l.lintTags(f, walker, tok)
@@ -212,11 +213,11 @@ func codify(ext, text string) string {
 	return text
 }
 
-func clean(txt, ext string, skip, skipClass, inline bool) (string, bool) {
+func clean(txt, ext, attr string, skip, inline bool) (string, bool) {
 	punct := []string{".", "?", "!", ",", ":", ";"}
 	first, _ := utf8.DecodeRuneInString(txt)
 	starter := core.StringInSlice(string(first), punct) && !skip
-	if skip || skipClass {
+	if skip || attr == txt {
 		txt, _ = core.Substitute(txt, txt, '*')
 		txt = codify(ext, txt)
 		skip = false

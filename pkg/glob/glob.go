@@ -1,3 +1,4 @@
+// Package glob implements pure-Go globbing utilities.
 package glob
 
 import (
