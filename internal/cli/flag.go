@@ -4,13 +4,10 @@ import (
 	"flag"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/mholt/archiver/v3"
 )
 
 // Flags are the user-defined CLI flags.
 var Flags core.CLIFlags
-
-var zip archiver.Unarchiver
 
 func init() {
 	flag.StringVar(&Flags.Sources, "sources", "", "config files to load")
