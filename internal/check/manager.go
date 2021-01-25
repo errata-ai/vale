@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/rule"
+	"github.com/karrick/godirwalk"
 )
 
 // Manager controls the loading and validating of the check extension points.
@@ -95,13 +95,17 @@ func (mgr *Manager) HasScope(scope string) bool {
 }
 
 func (mgr *Manager) addStyle(path string) error {
-	return filepath.Walk(path,
-		func(fp string, fi os.FileInfo, err error) error {
-			if err != nil || fi.IsDir() {
-				return err
+	return godirwalk.Walk(path, &godirwalk.Options{
+		Callback: func(fp string, de *godirwalk.Dirent) error {
+			if de.IsDir() {
+				return nil
 			}
-			return mgr.addRuleFromSource(fi.Name(), fp)
-		})
+			return mgr.addRuleFromSource(de.Name(), fp)
+		},
+		Unsorted:            true,
+		AllowNonDirectory:   true,
+		FollowSymbolicLinks: true,
+	})
 }
 
 func (mgr *Manager) addRuleFromSource(name, path string) error {

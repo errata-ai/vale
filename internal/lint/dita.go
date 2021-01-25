@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/karrick/godirwalk"
 )
 
 func (l Linter) lintDITA(file *core.File) error {
@@ -46,14 +47,19 @@ func (l Linter) lintDITA(file *core.File) error {
 	}
 
 	targetFileName := strings.TrimSuffix(filepath.Base(file.Path), filepath.Ext(file.Path)) + ".html"
-	_ = filepath.Walk(tempDir, func(path string, info os.FileInfo, err error) error {
-		// Find .html file, also looking in subdirectories in case an "outer"
-		// file was referenced in the DITA file, which is allowed because of
-		// the outer.control option of the dita command.
-		if filepath.Base(path) == targetFileName {
-			htmlFile = path
-		}
-		return nil
+	_ = godirwalk.Walk(tempDir, &godirwalk.Options{
+		Callback: func(fp string, de *godirwalk.Dirent) error {
+			// Find .html file, also looking in subdirectories in case an
+			// "outer" file was referenced in the DITA file, which is allowed
+			// because of the outer.control option of the dita command.
+			if de.Name() == targetFileName {
+				htmlFile = fp
+			}
+			return nil
+		},
+		Unsorted:            true,
+		AllowNonDirectory:   true,
+		FollowSymbolicLinks: true,
 	})
 
 	data, err := ioutil.ReadFile(htmlFile)

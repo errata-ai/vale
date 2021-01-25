@@ -29,6 +29,9 @@ github.com/jdkato/regexp
 github.com/jdkato/regexp/internal/dfa
 github.com/jdkato/regexp/internal/input
 github.com/jdkato/regexp/syntax
+# github.com/karrick/godirwalk v1.16.1
+## explicit
+github.com/karrick/godirwalk
 # github.com/logrusorgru/aurora/v3 v3.0.0
 ## explicit
 github.com/logrusorgru/aurora/v3
