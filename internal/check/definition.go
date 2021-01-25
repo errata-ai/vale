@@ -79,6 +79,7 @@ const (
 	ignoreCase      = `(?i)`
 	wordTemplate    = `(?m)\b(?:%s)\b`
 	nonwordTemplate = `(?m)(?:%s)`
+	tokenTemplate   = `^(?:%s)$`
 )
 
 type baseCheck map[string]interface{}
@@ -241,7 +242,7 @@ func matchToken(expected, observed string, ignorecase bool) bool {
 		p = ignoreCase + p
 	}
 
-	r, err := regexp.Compile(p)
+	r, err := regexp.Compile(fmt.Sprintf(tokenTemplate, expected))
 	if core.IsPhrase(expected) || err != nil {
 		return expected == observed
 	}

@@ -1,0 +1,9 @@
+extends: substitution
+message: "Use '%s' instead of '%s'."
+link: "https://developers.google.com/style/word-list"
+level: warning
+ignorecase: false
+action:
+  name: replace
+swap:
+  "(?:cell ?phone|smart ?phone)": phone|mobile phone

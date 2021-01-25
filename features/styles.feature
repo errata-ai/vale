@@ -11,7 +11,7 @@ Feature: Styles
       test.html:10:35:demo.Hyphen:' Randomly-' doesn't need a hyphen
       test.html:12:12:demo.SentenceLength:Sentences should be less than 25 words
       test.html:32:17:demo.ScopedHeading:'this is a heading' should be in title case
-      test.md:1:1:demo.Reading:Grade level (8.09) too high!
+      test.md:1:1:demo.Reading:Grade level (8.08) too high!
       test.md:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
       test.md:7:1:demo.HeadingStartsWithCapital:'this is another heading!' should be capitalized
       test.md:12:1:demo.SentenceLength:Sentences should be less than 25 words
@@ -37,6 +37,7 @@ Feature: Styles
       test.md:36:101:demo.Smart:Inconsistent use of '"' ('smart' mixed with 'dumb')
       test.md:38:6:demo.Contractions:Use 'are not' instead of 'aren't'
       test.md:40:1:demo.LookAround:The alert box text for CAUTION: can only use 'Caution:', 'Warning:', or 'Important:'.
+      test.md:44:11:demo.Terms:Use 'phone' or 'mobile phone' instead of 'cell phone'.
       test.mdx:1:3:demo.HeadingStartsWithCapital:'this is a heading' should be capitalized
       test.mdx:9:4:demo.ScopedHeading:'this is another heading!' should be in title case
       test.rst:1:22:demo.CommasPerSentence:More than 3 commas!
