@@ -50,7 +50,7 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 		skipClasses = append(skipClasses, l.Manager.Config.IgnoredClasses...)
 	}
 
-	skipped := []string{"tt", "code"}
+	skipped := []string{"tt", "code", "kbd"}
 	if len(l.Manager.Config.IgnoredScopes) > 0 {
 		skipped = l.Manager.Config.IgnoredScopes
 	}
