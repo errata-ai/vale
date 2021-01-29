@@ -48,6 +48,9 @@ type Spelling struct {
 	// `dicpath` overrides the environments `DICPATH` setting.
 	Dicpath string
 
+	// Custom dictionaries will be loaded on top of the built-in one.
+	Append bool
+
 	// A slice of Hunspell-compatible dictionaries to load.
 	Dictionaries []string
 
@@ -192,6 +195,7 @@ func makeSpeller(s *Spelling, cfg *core.Config) (*spell.Checker, error) {
 	affloc := core.FindAsset(cfg, s.Aff)
 	dicloc := core.FindAsset(cfg, s.Dic)
 
+	options = append(options, spell.WithDefault(s.Append))
 	if s.Dicpath != "" {
 		p, err := filepath.Abs(s.Dicpath)
 		if err != nil {

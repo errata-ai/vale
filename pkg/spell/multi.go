@@ -8,6 +8,7 @@ import (
 
 var defaultOpts = Options{
 	path: os.Getenv("DICPATH"),
+	load: false,
 }
 
 // Options controls the checker-creation process:
@@ -15,6 +16,7 @@ type Options struct {
 	path  string
 	names []string
 	dics  []dictionary
+	load  bool
 }
 
 // A CheckerOption is a setting that changes the checker-creation process.
@@ -24,6 +26,13 @@ type CheckerOption func(opts *Options)
 func WithPath(path string) CheckerOption {
 	return func(opts *Options) {
 		opts.path = path
+	}
+}
+
+// WithDefault specifies if Vale's default dictionary should be loaded.
+func WithDefault(load bool) CheckerOption {
+	return func(opts *Options) {
+		opts.load = load
 	}
 }
 
@@ -71,7 +80,7 @@ func NewChecker(options ...CheckerOption) (*Checker, error) {
 		checker.checkers = append(checker.checkers, c)
 	}
 
-	if len(checker.checkers) == 0 {
+	if len(checker.checkers) == 0 || base.load {
 		// use default dictionary ...
 		aff, err := Asset("pkg/spell/data/en_US-web.aff")
 		if err != nil {
