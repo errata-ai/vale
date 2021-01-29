@@ -10,7 +10,7 @@ import (
 )
 
 // skipTags are tags that we don't want to lint.
-var skipTags = []string{"script", "style", "pre", "figure"}
+var skipTags = []string{"script", "style", "pre", "figure", "noscript"}
 
 // skipClasses are classes that we don't want to lint:
 // 	- `problematic` is added by rst2html to processing errors which, in our
