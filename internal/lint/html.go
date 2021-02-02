@@ -21,7 +21,7 @@ var reFrontMatter = regexp.MustCompile(
 var heading = regexp.MustCompile(`^h\d$`)
 
 func (l *Linter) lintHTML(f *core.File) error {
-	if l.Manager.Config.Built != "" {
+	if l.Manager.Config.Flags.Built != "" {
 		return l.lintTxtToHTML(f)
 	}
 	return l.lintHTMLTokens(f, []byte(f.Content), 0)
@@ -101,7 +101,7 @@ func (l *Linter) post(f *core.File, text, url string) (string, error) {
 }
 
 func (l *Linter) lintTxtToHTML(f *core.File) error {
-	html, err := ioutil.ReadFile(l.Manager.Config.Built)
+	html, err := ioutil.ReadFile(l.Manager.Config.Flags.Built)
 	if err != nil {
 		return core.NewE100(f.Path, err)
 	}

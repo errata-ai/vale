@@ -16,6 +16,7 @@ import (
 // For example, `vale --minAlertLevel=error`.
 type CLIFlags struct {
 	AlertLevel string
+	Built      string
 	Glob       string
 	InExt      string
 	Local      bool
@@ -56,8 +57,6 @@ type Config struct {
 	RejectedTokens map[string]struct{} `json:"-"` // Project-specific vocabulary (avoid)
 
 	DictionaryPath string // Location to search for dictionaries.
-
-	Built string // A path to a pre-built file (e.g., an HTML file made from a Markdown file)
 
 	// TODO: Remove these.
 	SphinxBuild string `json:"-"` // The location of Sphinx's `_build` path
