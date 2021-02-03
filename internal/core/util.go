@@ -4,15 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"unicode"
 
-	"github.com/denisbrodbeck/machineid"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/regexp"
@@ -366,16 +363,4 @@ func loadVocab(root string, cfg *Config) error {
 	})
 
 	return err
-}
-
-func uuid(app string) (string, error) {
-	return machineid.ProtectedID(app)
-}
-
-func getJSON(url string) ([]byte, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return []byte{}, err
-	}
-	return ioutil.ReadAll(resp.Body)
 }

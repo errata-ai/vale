@@ -15,6 +15,7 @@ require (
 	github.com/mmcdole/gofeed v1.1.0
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/remeh/sizedwaitgroup v1.0.0
+	github.com/schollz/closestmatch v2.1.0+incompatible
 	github.com/spf13/cast v1.3.1
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673
 	github.com/yuin/goldmark v1.3.1

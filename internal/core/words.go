@@ -1,19 +1,9 @@
 package core
 
-import (
-	"sort"
-
-	"github.com/xrash/smetrics"
-)
-
-func processSuggestions(word string, opt []string) []string {
-	sort.SliceStable(opt, func(i, j int) bool {
-		return smetrics.Jaro(word, opt[i]) > smetrics.Jaro(word, opt[j])
-	})
-	return opt[:3]
-}
-
-var words = []string{
+// Words is a slice of common English words.
+//
+// TODO: move to prose?
+var Words = []string{
 	"a",
 	"ab",
 	"abacus",
