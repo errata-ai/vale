@@ -1,9 +1,6 @@
 dist: xenial
 sudo: required
 language: go
-cache:
-  directories:
-    - vendor/bundle
 services:
   - docker
 go:
