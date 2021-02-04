@@ -41,28 +41,26 @@ func doLint(args []string, l *lint.Linter, glob string) ([]*core.File, error) {
 	var err error
 
 	length := len(args)
-	if length > 0 {
-		if length == 1 && looksLikeStdin(args[0]) {
-			// Case 1:
-			//
-			// $ vale "some text in a string"
-			linted, err = l.LintString(args[0])
-		} else {
-			// Case 2:
-			//
-			// $ vale file1 dir1 file2
-			input := []string{}
-			for _, file := range args {
-				if looksLikeStdin(file) {
-					return linted, core.NewE100(
-						"doLint",
-						fmt.Errorf("argument '%s' does not exist", file),
-					)
-				}
-				input = append(input, file)
+	if length == 1 && looksLikeStdin(args[0]) {
+		// Case 1:
+		//
+		// $ vale "some text in a string"
+		linted, err = l.LintString(args[0])
+	} else if length > 0 {
+		// Case 2:
+		//
+		// $ vale file1 dir1 file2
+		input := []string{}
+		for _, file := range args {
+			if looksLikeStdin(file) {
+				return linted, core.NewE100(
+					"doLint",
+					fmt.Errorf("argument '%s' does not exist", file),
+				)
 			}
-			linted, err = l.Lint(input, glob)
+			input = append(input, file)
 		}
+		linted, err = l.Lint(input, glob)
 	} else {
 		// Case 3:
 		//
