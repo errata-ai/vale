@@ -105,10 +105,11 @@ func main() {
 
 	if err := validateFlags(config); err != nil {
 		handleError(err)
-	} else if err = core.From("ini", config); err != nil {
-		handleError(err)
 	}
 
+	err = core.From("ini", config)
+	// NOTE: we need to delay checking the error because some command don't
+	// require a config file.
 	if argc > 0 {
 		cmd, exists := cli.Actions[args[0]]
 		if exists {
@@ -117,6 +118,10 @@ func main() {
 			}
 			os.Exit(0)
 		}
+	}
+
+	if err != nil {
+		handleError(err)
 	}
 
 	linter, err := lint.NewLinter(config)
