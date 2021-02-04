@@ -204,22 +204,12 @@ func shouldBeSkipped(tagHistory []string, ext string) bool {
 	return false
 }
 
-func codify(ext, text string) string {
-	if ext == ".md" || ext == ".adoc" {
-		return "`" + text + "`"
-	} else if ext == ".rst" {
-		return "``" + text + "``"
-	}
-	return text
-}
-
 func clean(txt, ext, attr string, skip, inline bool) (string, bool) {
 	punct := []string{".", "?", "!", ",", ":", ";"}
 	first, _ := utf8.DecodeRuneInString(txt)
 	starter := core.StringInSlice(string(first), punct) && !skip
 	if skip || attr == txt {
 		txt, _ = core.Substitute(txt, txt, '*')
-		txt = codify(ext, txt)
 		skip = false
 	}
 	if inline && !starter {
