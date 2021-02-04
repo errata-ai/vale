@@ -60,7 +60,8 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 			//
 			// TODO: Should we change this? Perhaps by creating a map of regex
 			// to replacements?
-			continue
+			return rule, core.NewE201FromTarget(
+				"capture group not supported; use '(?:' instead of '('", regexstr, path)
 		}
 		tokens += `(` + regexstr + `)|`
 		replacements = append(replacements, replacement)
