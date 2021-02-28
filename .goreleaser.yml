@@ -9,6 +9,7 @@ builds:
       - linux
     goarch:
       - amd64
+      - arm64
 
 archives:
   - format: tar.gz
@@ -16,7 +17,6 @@ archives:
       - goos: windows
         format: zip
     replacements:
-      amd64: 64-bit
       darwin: macOS
       linux: Linux
       windows: Windows
