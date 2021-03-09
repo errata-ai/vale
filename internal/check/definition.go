@@ -28,7 +28,7 @@ type Definition struct {
 	Link        string
 	Message     string
 	Name        string
-	Scope       string
+	Scope       []string
 	Selector    core.Selector
 }
 

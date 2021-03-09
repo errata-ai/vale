@@ -143,7 +143,7 @@ func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
 		generic["level"] = "warning"
 	}
 	if scope, ok := generic["scope"]; scope == nil || !ok {
-		generic["scope"] = "text"
+		generic["scope"] = []string{"text"}
 	}
 
 	rule, err := buildRule(mgr.Config, generic)
@@ -151,8 +151,10 @@ func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
 		return err
 	}
 
-	base := strings.Split(generic["scope"].(string), ".")[0]
-	mgr.scopes[base] = struct{}{}
+	for _, s := range rule.Fields().Scope {
+		base := strings.Split(s, ".")[0]
+		mgr.scopes[base] = struct{}{}
+	}
 
 	return mgr.AddRule(chkName, rule)
 }

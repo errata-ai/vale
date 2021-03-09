@@ -36,7 +36,7 @@ func NewConsistency(cfg *core.Config, generic baseCheck) (Consistency, error) {
 	path := generic["path"].(string)
 	name := generic["name"].(string)
 
-	err := mapstructure.Decode(generic, &rule)
+	err := mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

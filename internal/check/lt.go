@@ -18,7 +18,7 @@ func NewLanguageTool(cfg *core.Config, generic baseCheck) (LanguageTool, error) 
 	rule := LanguageTool{}
 	path := generic["path"].(string)
 
-	err := mapstructure.Decode(generic, &rule)
+	err := mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

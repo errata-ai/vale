@@ -32,7 +32,7 @@ func NewConditional(cfg *core.Config, generic baseCheck) (Conditional, error) {
 	rule := Conditional{}
 	path := generic["path"].(string)
 
-	err := mapstructure.Decode(generic, &rule)
+	err := mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

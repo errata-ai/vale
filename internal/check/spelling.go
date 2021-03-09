@@ -108,7 +108,7 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 	addFilters(&rule, generic, cfg)
 	addExceptions(&rule, generic, cfg)
 
-	err := mapstructure.Decode(generic, &rule)
+	err := mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

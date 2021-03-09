@@ -8,6 +8,7 @@ rules.H3 = YES
 
 [*.md]
 rules.MinH2 = YES
+rules.HN = YES
 
 [*.xml]
 Transform = ../../XSL/docbook-xsl-snapshot/html/docbook.xsl

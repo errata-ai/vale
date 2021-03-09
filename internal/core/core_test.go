@@ -5,8 +5,8 @@ import (
 )
 
 func TestSelectors(t *testing.T) {
-	s1 := Selector{Value: "text.comment.line.py"}
-	s2 := Selector{Value: "text.comment"}
+	s1 := Selector{Value: []string{"text.comment.line.py"}}
+	s2 := Selector{Value: []string{"text.comment"}}
 	// s3 := Selector{Value: "text.comment.line.rb"}
 
 	sec := []string{"text", "comment", "line", "py"}

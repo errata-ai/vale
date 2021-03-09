@@ -28,7 +28,7 @@ func NewRepetition(cfg *core.Config, generic baseCheck) (Repetition, error) {
 	rule := Repetition{}
 	path := generic["path"].(string)
 
-	err := mapstructure.Decode(generic, &rule)
+	err := mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

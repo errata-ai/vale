@@ -23,7 +23,7 @@ func NewReadability(cfg *core.Config, generic baseCheck) (Readability, error) {
 	rule := Readability{}
 	path := generic["path"].(string)
 
-	err := mapstructure.Decode(generic, &rule)
+	err := mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}
@@ -34,7 +34,7 @@ func NewReadability(cfg *core.Config, generic baseCheck) (Readability, error) {
 		// calculate readability, which means that specifying a scope smaller
 		// than a paragraph or including non-block level content (i.e.,
 		// headings, list items or table cells) doesn't make sense.
-		rule.Definition.Scope = "summary"
+		rule.Definition.Scope = []string{"summary"}
 	}
 
 	return rule, nil

@@ -33,7 +33,7 @@ func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, err
 	rule := Capitalization{}
 	path := generic["path"].(string)
 
-	err := mapstructure.Decode(generic, &rule)
+	err := mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

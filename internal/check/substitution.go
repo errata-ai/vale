@@ -31,7 +31,7 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 	rule := Substitution{}
 	path := generic["path"].(string)
 
-	err := mapstructure.Decode(generic, &rule)
+	err := mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}
