@@ -1,15 +1,10 @@
 package core
 
 import (
+	"regexp"
 	"strings"
-	"sync"
 	"unicode/utf8"
-
-	"github.com/jdkato/regexp"
 )
-
-// This is used to store patterns as we compute them in `initialPosition`.
-var cache = sync.Map{}
 
 // initialPosition calculates the position of a match (given by the location in
 // the reference document, `loc`) in the source document (`ctx`).
@@ -29,12 +24,7 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 	}
 
 	sub := strings.ToValidUTF8(a.Match, "")
-	if p, ok := cache.Load(sub); ok {
-		pat = p.(*regexp.Regexp)
-	} else {
-		pat = regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|\b|$)`)
-		cache.Store(sub, pat)
-	}
+	pat = regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|\b|$)`)
 
 	fsi := pat.FindStringIndex(ctx)
 	if fsi == nil {
