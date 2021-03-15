@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/errata-ai/vale/v2/internal/check"
 	"github.com/errata-ai/vale/v2/internal/core"
@@ -226,34 +225,17 @@ func (l *Linter) lintLines(f *core.File) {
 }
 
 func (l *Linter) lintBlock(f *core.File, blk core.Block, lines, pad int, lookup bool) {
-	var wg sync.WaitGroup
-
 	f.ChkToCtx = make(map[string]string)
-
-	results := make(chan core.Alert)
 	for name, chk := range l.Manager.Rules() {
 		if !l.shouldRun(name, f, chk, blk) {
 			continue
 		}
 
-		wg.Add(1)
-		go func(txt, name string, f *core.File, chk check.Rule) {
-			info := chk.Fields()
-			for _, a := range chk.Run(txt, f) {
-				core.FormatAlert(&a, info.Limit, info.Level, name)
-				results <- a
-			}
-			wg.Done()
-		}(blk.Text, name, f, chk)
-	}
-
-	go func() {
-		wg.Wait()
-		close(results)
-	}()
-
-	for a := range results {
-		f.AddAlert(a, blk, lines, pad, lookup)
+		info := chk.Fields()
+		for _, a := range chk.Run(blk.Text, f) {
+			core.FormatAlert(&a, info.Limit, info.Level, name)
+			f.AddAlert(a, blk, lines, pad, lookup)
+		}
 	}
 }
 
