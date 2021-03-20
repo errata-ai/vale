@@ -110,7 +110,7 @@ func main() {
 	// require a config file.
 	if argc > 0 {
 		cmd, exists := cli.Actions[args[0]]
-		if exists && len(args[1:]) > 1 {
+		if exists {
 			if err = cmd(args[1:], config); err != nil {
 				log.Fatal(err)
 			}
