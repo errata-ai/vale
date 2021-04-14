@@ -1,4 +1,4 @@
 CRLF.md text eol=crlf
 CR.md text eol=cr
 
-fixtures/* linguist-vendored
+*.xsl linguist-vendored=true
