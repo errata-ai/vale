@@ -37,7 +37,7 @@ func (l Linter) lintMarkdown(f *core.File) error {
 		return core.NewE100(f.Path, err)
 	}
 
-	// NOTE: This is required to avoid finding matches info strings. For
+	// NOTE: This is required to avoid finding matches inside info strings. For
 	// example, if we're looking for 'json' we many incorrectly report the
 	// location as being in an infostring like '```json'.
 	//
@@ -45,7 +45,7 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	body := reExInfo.ReplaceAllStringFunc(f.Content, func(m string) string {
 		parts := strings.Split(m, "`")
 
-		// This ensure that we respect the number of openning backticks, which
+		// This ensures that we respect the number of openning backticks, which
 		// could be more than 3.
 		//
 		// See https://github.com/errata-ai/vale/v2/issues/271.
@@ -54,9 +54,6 @@ func (l Linter) lintMarkdown(f *core.File) error {
 
 		return tags + span
 	})
-
-	t, err := newAST(buf.Bytes())
-	core.PrintJSON(t.nodes)
 
 	f.Content = body
 	return l.lintHTMLTokens(f, buf.Bytes(), 0)
