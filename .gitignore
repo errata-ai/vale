@@ -14,7 +14,9 @@ _vendor-*
 docs/public/
 fixtures/formats/Sphinx/_build/
 .vscode
+
 *.sublime-workspace
+*.sublime-project
 
 # Files
 *.o
