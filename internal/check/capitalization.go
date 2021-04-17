@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/prose/transform"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
@@ -82,11 +83,14 @@ func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, err
 }
 
 // Run checks the capitalization style of the provided text.
-func (o Capitalization) Run(txt string, f *core.File) []core.Alert {
+func (o Capitalization) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
+
+	txt := blk.Text
 	if !o.Check(txt, o.Exceptions, o.exceptRe) {
 		alerts = append(alerts, makeAlert(o.Definition, []int{0, len(txt)}, txt))
 	}
+
 	return alerts
 }
 

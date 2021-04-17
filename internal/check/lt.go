@@ -2,6 +2,7 @@ package check
 
 import (
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/errata-ai/vale/v2/internal/rule"
 	"github.com/mitchellh/mapstructure"
 )
@@ -28,8 +29,8 @@ func NewLanguageTool(cfg *core.Config, generic baseCheck) (LanguageTool, error) 
 }
 
 // Run sends the given text to an instance of LanguageTool.
-func (l LanguageTool) Run(text string, file *core.File) []core.Alert {
-	alerts, err := rule.CheckWithLT(text, file, l.config)
+func (l LanguageTool) Run(blk nlp.Block, file *core.File) []core.Alert {
+	alerts, err := rule.CheckWithLT(blk.Text, file, l.config)
 	if err != nil {
 		// FIXME: don't panic here
 		panic(err)

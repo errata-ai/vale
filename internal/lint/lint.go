@@ -10,6 +10,7 @@ import (
 
 	"github.com/errata-ai/vale/v2/internal/check"
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/errata-ai/vale/v2/pkg/glob"
 	"github.com/karrick/godirwalk"
 	"github.com/remeh/sizedwaitgroup"
@@ -184,47 +185,36 @@ func (l *Linter) lintFile(src string) lintResult {
 	return lintResult{file, err}
 }
 
-func (l *Linter) lintProse(f *core.File, parent core.Block, lines int) {
-	var b core.Block
+func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) {
+	nlp := nlp.NLP{
+		Tagging:      l.Manager.NeedsTagging(),
+		Splitting:    l.Manager.HasScope("paragraph"),
+		Segmentation: l.Manager.HasScope("sentence"),
+	}
 
+	blks, err := nlp.Compute(&blk, f.RealExt)
+	if err != nil {
+		// FIXME: ...
+		panic(err)
+	}
 	// FIXME: This is required for paragraphs that lack a newline delimiter:
 	//
 	// p1
 	// p2
 	//
 	// See fixtures/i18n for an example.
-	needsLookup := strings.Count(parent.Text, "\n") > 0
-
-	text := core.Sanitize(parent.Text)
-	if l.Manager.HasScope("paragraph") || l.Manager.HasScope("sentence") {
-		for _, p := range strings.SplitAfter(text, "\n\n") {
-			for _, s := range core.SentenceTokenizer.Tokenize(p) {
-				b = core.NewLinedBlock(
-					parent.Context,
-					strings.TrimSpace(s),
-					"sentence"+f.RealExt,
-					parent.Line)
-				l.lintBlock(f, b, lines, 0, needsLookup)
-			}
-			b = core.NewLinedBlock(
-				parent.Context,
-				p,
-				"paragraph"+f.RealExt,
-				parent.Line)
-			l.lintBlock(f, b, lines, 0, needsLookup)
-		}
+	needsLookup := strings.Count(blk.Text, "\n") > 0
+	for _, b := range blks {
+		l.lintBlock(f, b, lines, 0, needsLookup)
 	}
-
-	b = core.NewLinedBlock(parent.Context, text, "text"+f.RealExt, parent.Line)
-	l.lintBlock(f, b, lines, 0, needsLookup)
 }
 
 func (l *Linter) lintLines(f *core.File) {
-	block := core.NewBlock("", f.Content, "text"+f.RealExt)
+	block := nlp.NewBlock("", f.Content, "text"+f.RealExt)
 	l.lintBlock(f, block, len(f.Lines), 0, true)
 }
 
-func (l *Linter) lintBlock(f *core.File, blk core.Block, lines, pad int, lookup bool) {
+func (l *Linter) lintBlock(f *core.File, blk nlp.Block, lines, pad int, lookup bool) {
 	f.ChkToCtx = make(map[string]string)
 	for name, chk := range l.Manager.Rules() {
 		if !l.shouldRun(name, f, chk, blk) {
@@ -232,14 +222,14 @@ func (l *Linter) lintBlock(f *core.File, blk core.Block, lines, pad int, lookup 
 		}
 
 		info := chk.Fields()
-		for _, a := range chk.Run(blk.Text, f) {
+		for _, a := range chk.Run(blk, f) {
 			core.FormatAlert(&a, info.Limit, info.Level, name)
 			f.AddAlert(a, blk, lines, pad, lookup)
 		}
 	}
 }
 
-func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk core.Block) bool {
+func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk nlp.Block) bool {
 	min := l.Manager.Config.MinAlertLevel
 	run := false
 
@@ -252,12 +242,13 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk core.B
 		name = strings.Join([]string{list[0], list[1]}, ".")
 	}
 
-	// It has been disabled via an in-text comment.
+	sel := core.Selector{Value: []string{blk.Scope}}
 	if f.QueryComments(name) {
+		// It has been disabled via an in-text comment.
 		return false
 	} else if core.LevelToInt[details.Level] < min {
 		return false
-	} else if !blk.Scope.ContainsString(details.Scope) {
+	} else if !sel.ContainsString(details.Scope) {
 		return false
 	}
 

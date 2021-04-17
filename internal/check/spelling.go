@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/errata-ai/vale/v2/pkg/spell"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
@@ -145,9 +146,10 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 }
 
 // Run performs spell-checking on the provided text.
-func (s Spelling) Run(txt string, f *core.File) []core.Alert {
+func (s Spelling) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
+	txt := blk.Text
 	// This ensures that we respect `.aff` entries like `ICONV ’ '`,
 	// allowing us to avoid false positives.
 	//
@@ -155,7 +157,7 @@ func (s Spelling) Run(txt string, f *core.File) []core.Alert {
 	txt = s.gs.Convert(txt)
 
 OUTER:
-	for _, word := range core.WordTokenizer.Tokenize(txt) {
+	for _, word := range nlp.WordTokenizer.Tokenize(txt) {
 		for _, filter := range s.Filters {
 			if filter.MatchString(word) {
 				continue OUTER

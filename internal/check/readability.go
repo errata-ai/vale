@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/prose/summarize"
 	"github.com/mitchellh/mapstructure"
 )
@@ -41,11 +42,11 @@ func NewReadability(cfg *core.Config, generic baseCheck) (Readability, error) {
 }
 
 // Run calculates the readability level of the given text.
-func (o Readability) Run(txt string, f *core.File) []core.Alert {
+func (o Readability) Run(blk nlp.Block, f *core.File) []core.Alert {
 	var grade float64
 	alerts := []core.Alert{}
 
-	doc := summarize.NewDocument(txt)
+	doc := summarize.NewDocument(blk.Text)
 	if core.StringInSlice("SMOG", o.Metrics) {
 		grade += doc.SMOG()
 	}

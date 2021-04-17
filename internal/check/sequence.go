@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/prose/tag"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
@@ -115,12 +116,12 @@ func tokensMatch(token NLPToken, word tag.Token) bool {
 	return true
 }
 
-func sequenceMatches(idx int, chk Sequence, target, src string) ([]string, int) {
+func sequenceMatches(idx int, chk Sequence, target string, blk nlp.Block) ([]string, int) {
 	toks := chk.Tokens
 	text := []string{}
 
 	sizeT := len(toks)
-	words := core.TextToTokens(src, chk.needsTagging)
+	words := blk.Tokens
 	index := 0
 
 	for jdx, tok := range words {
@@ -180,15 +181,16 @@ func stepsToString(steps []string) string {
 }
 
 // Run looks for the user-defined sequence of tokens.
-func (s Sequence) Run(txt string, f *core.File) []core.Alert {
+func (s Sequence) Run(blk nlp.Block, f *core.File) []core.Alert {
 	var alerts []core.Alert
 
+	txt := blk.Text
 	for idx, tok := range s.Tokens {
 		if !tok.Negate && tok.Pattern != "" {
 			for _, loc := range tok.re.FindAllStringIndex(txt, -1) {
 				target := txt[loc[0]:loc[1]]
 				// These are all possible violations in `txt`:
-				steps, index := sequenceMatches(idx, s, target, txt)
+				steps, index := sequenceMatches(idx, s, target, blk)
 				s.history = append(s.history, index)
 
 				if len(steps) > 0 {

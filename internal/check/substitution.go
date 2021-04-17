@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
@@ -81,9 +82,11 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 // Run executes the the `substitution`-based rule.
 //
 // The rule looks for one pattern and then suggests a replacement.
-func (s Substitution) Run(txt string, f *core.File) []core.Alert {
+func (s Substitution) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
+
 	pos := false
+	txt := blk.Text
 
 	// Leave early if we can to avoid calling `FindAllStringSubmatchIndex`
 	// unnecessarily.

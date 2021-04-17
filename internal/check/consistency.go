@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
@@ -71,9 +72,11 @@ func NewConsistency(cfg *core.Config, generic baseCheck) (Consistency, error) {
 }
 
 // Run looks for inconsistent use of a user-defined regex.
-func (o Consistency) Run(txt string, f *core.File) []core.Alert {
+func (o Consistency) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
+
 	loc := []int{}
+	txt := blk.Text
 
 	for _, s := range o.steps {
 		matches := s.pattern.FindAllStringSubmatchIndex(txt, -1)

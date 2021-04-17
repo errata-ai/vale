@@ -9,9 +9,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/gobwas/glob"
-	"github.com/jdkato/prose/tag"
-	"github.com/jdkato/prose/tokenize"
 	"github.com/jdkato/regexp"
 )
 
@@ -23,38 +22,6 @@ var LevelToInt = map[string]int{
 	"suggestion": 0,
 	"warning":    1,
 	"error":      2,
-}
-
-// A Block represents a section of text.
-type Block struct {
-	Context string   // parent content - e.g., sentence -> paragraph
-	Line    int      // Line of the block
-	Scope   Selector // section selector
-	Text    string   // text content
-}
-
-// NewBlock makes a new Block with prepared text and a Selector.
-func NewBlock(ctx, txt, sel string) Block {
-	if ctx == "" {
-		ctx = txt
-	}
-	return Block{
-		Context: ctx,
-		Text:    txt,
-		Scope:   Selector{Value: []string{sel}},
-		Line:    -1}
-}
-
-// NewLinedBlock ...
-func NewLinedBlock(ctx, txt, sel string, line int) Block {
-	if ctx == "" {
-		ctx = txt
-	}
-	return Block{
-		Context: ctx,
-		Text:    txt,
-		Scope:   Selector{Value: []string{sel}},
-		Line:    line}
 }
 
 // A File represents a linted text file.
@@ -302,7 +269,7 @@ func FormatAlert(a *Alert, limit int, level, name string) {
 	a.Message = WhitespaceToSpace(a.Message)
 }
 
-func (f *File) assignLoc(ctx string, blk Block, pad int, a Alert) (int, []int) {
+func (f *File) assignLoc(ctx string, blk nlp.Block, pad int, a Alert) (int, []int) {
 	loc := a.Span
 	for idx, l := range strings.SplitAfter(ctx, "\n") {
 		if idx == blk.Line {
@@ -324,7 +291,7 @@ func (f *File) assignLoc(ctx string, blk Block, pad int, a Alert) (int, []int) {
 }
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
-func (f *File) AddAlert(a Alert, blk Block, lines, pad int, lookup bool) {
+func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 	ctx := blk.Context
 	if old, ok := f.ChkToCtx[a.Check]; ok {
 		ctx = old
@@ -396,16 +363,3 @@ func (f *File) ResetComments() {
 		}
 	}
 }
-
-// WordTokenizer splits text into words.
-var WordTokenizer = tokenize.NewRegexpTokenizer(
-	`[\p{L}[\p{N}]+(?:\.\w{2,4}\b)|(?:[A-Z]\.){2,}|[\p{L}[\p{N}]+['-][\p{L}\p{N}]+|[\p{L}[\p{N}@]+`, false, true)
-
-// SentenceTokenizer splits text into sentences.
-var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
-
-// Tagger tags a sentence.
-//
-// We wait to initialize it until we need it since it's slow (~1s) and we may
-// not need it.
-var Tagger *tag.PerceptronTagger

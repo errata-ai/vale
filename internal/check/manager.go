@@ -16,9 +16,10 @@ import (
 type Manager struct {
 	Config *core.Config
 
-	scopes map[string]struct{}
-	rules  map[string]Rule
-	styles []string
+	scopes       map[string]struct{}
+	rules        map[string]Rule
+	styles       []string
+	needsTagging bool
 }
 
 // NewManager creates a new Manager and loads the rule definitions (that is,
@@ -94,6 +95,11 @@ func (mgr *Manager) HasScope(scope string) bool {
 	return found
 }
 
+// NeedsTagging indicates if POS tagging is needed.
+func (mgr *Manager) NeedsTagging() bool {
+	return mgr.needsTagging
+}
+
 func (mgr *Manager) addStyle(path string) error {
 	return godirwalk.Walk(path, &godirwalk.Options{
 		Callback: func(fp string, de *godirwalk.Dirent) error {
@@ -154,6 +160,14 @@ func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
 	for _, s := range rule.Fields().Scope {
 		base := strings.Split(s, ".")[0]
 		mgr.scopes[base] = struct{}{}
+	}
+
+	if rule.Fields().Extends == "sequence" {
+		mgr.needsTagging = true
+	}
+
+	if pos, ok := generic["pos"]; ok && pos != "" {
+		mgr.needsTagging = true
 	}
 
 	return mgr.AddRule(chkName, rule)

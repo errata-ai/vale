@@ -4,6 +4,8 @@ import (
 	"regexp"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/errata-ai/vale/v2/internal/nlp"
 )
 
 // initialPosition calculates the position of a match (given by the location in
@@ -47,7 +49,7 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 
 func guessLocation(ctx, sub, match string) (int, string) {
 	target := ""
-	for _, s := range SentenceTokenizer.Tokenize(sub) {
+	for _, s := range nlp.SentenceTokenizer.Tokenize(sub) {
 		if s == match || strings.Index(s, match) > 0 {
 			target = s
 		}
@@ -57,7 +59,7 @@ func guessLocation(ctx, sub, match string) (int, string) {
 		return -1, sub
 	}
 
-	tokens := WordTokenizer.Tokenize(target)
+	tokens := nlp.WordTokenizer.Tokenize(target)
 	for _, text := range strings.Split(ctx, "\n") {
 		if allStringsInString(tokens, text) {
 			return strings.Index(ctx, text) + 1, text

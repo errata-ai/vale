@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"golang.org/x/net/html"
 )
 
@@ -59,7 +60,7 @@ func (w *walker) addTag(tag string) {
 	w.activeTag = tag
 }
 
-func (w *walker) block(text, scope string) core.Block {
+func (w *walker) block(text, scope string) nlp.Block {
 	line := w.idx
 
 	pos := w.advance(text)
@@ -67,7 +68,7 @@ func (w *walker) block(text, scope string) core.Block {
 		line = pos
 	}
 
-	return core.NewLinedBlock(w.context, text, scope, line)
+	return nlp.NewLinedBlock(w.context, text, scope, line, false)
 }
 
 func (w *walker) walk() (html.TokenType, html.Token, string) {

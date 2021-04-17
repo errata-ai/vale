@@ -6,6 +6,7 @@ import (
 
 	"github.com/dlclark/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -64,10 +65,10 @@ func NewExistence(cfg *core.Config, generic baseCheck) (Existence, error) {
 // This is simplest of the available extension points: it looks for any matches
 // of its internal `pattern` (calculated from `NewExistence`) against the
 // provided text.
-func (e Existence) Run(text string, file *core.File) []core.Alert {
+func (e Existence) Run(blk nlp.Block, file *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
-	for _, m := range core.FindAllString(e.pattern, text) {
+	for _, m := range core.FindAllString(e.pattern, blk.Text) {
 		loc := []int{m.Index, m.Index + m.Length}
 
 		a := core.Alert{Check: e.Name, Severity: e.Level, Span: loc,

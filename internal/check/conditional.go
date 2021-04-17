@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
@@ -58,9 +59,10 @@ func NewConditional(cfg *core.Config, generic baseCheck) (Conditional, error) {
 }
 
 // Run evalutes the given conditional statement.
-func (c Conditional) Run(txt string, f *core.File) []core.Alert {
+func (c Conditional) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
+	txt := blk.Text
 	// We first look for the consequent of the conditional statement.
 	// For example, if we're ensuring that abbreviations have been defined
 	// parenthetically, we'd have something like:

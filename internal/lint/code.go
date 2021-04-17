@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
 )
 
@@ -42,7 +43,7 @@ func (l *Linter) lintCode(f *core.File) int {
 				// We've found the end of the block.
 				block.WriteString(line)
 				txt = block.String()
-				b := core.NewBlock(
+				b := nlp.NewBlock(
 					txt, txt, fmt.Sprintf(scope, "text.comment.block"))
 				l.lintBlock(f, b, lines+1, 0, true)
 				block.Reset()
@@ -55,7 +56,7 @@ func (l *Linter) lintCode(f *core.File) int {
 			// calculate the column span because, for example, a line like
 			// 'print("foo") # ...' will be condensed to '# ...'.
 			padding = lnLength - len(match)
-			b := core.NewBlock(
+			b := nlp.NewBlock(
 				match, match, fmt.Sprintf(scope, "text.comment.line"))
 			l.lintBlock(f, b, lines, padding-1, true)
 		} else if match = blockStart.FindString(line); len(match) > 0 && !ignore {

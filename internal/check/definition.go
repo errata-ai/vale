@@ -7,13 +7,14 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
 	"gopkg.in/yaml.v2"
 )
 
 // Rule represents in individual writing construct to enforce.
 type Rule interface {
-	Run(text string, file *core.File) []core.Alert
+	Run(blk nlp.Block, file *core.File) []core.Alert
 	Fields() Definition
 	Pattern() string
 }

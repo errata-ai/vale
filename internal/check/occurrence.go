@@ -2,6 +2,7 @@ package check
 
 import (
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
@@ -50,10 +51,12 @@ func NewOccurrence(cfg *core.Config, generic baseCheck) (Occurrence, error) {
 
 // Run checks the number of occurrences of a user-defined regex against a
 // certain threshold.
-func (o Occurrence) Run(txt string, f *core.File) []core.Alert {
+func (o Occurrence) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
+	txt := blk.Text
 	locs := o.pattern.FindAllStringIndex(txt, -1)
+
 	occurrences := len(locs)
 	if occurrences > o.Max || occurrences < o.Min {
 		// NOTE: We take only the first match (`locs[0]`) instead of the whole

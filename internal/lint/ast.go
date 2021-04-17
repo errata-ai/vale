@@ -6,6 +6,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"golang.org/x/net/html"
 )
 
@@ -84,7 +85,7 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 					tempCtx := updateContext(walker.context, walker.queue)
 					l.lintBlock(
 						f,
-						core.NewBlock(tempCtx, txt, scope),
+						nlp.NewBlock(tempCtx, txt, scope),
 						walker.lines,
 						0,
 						true)
@@ -146,12 +147,12 @@ func (l Linter) lintSizedScopes(f *core.File) {
 	f.ResetComments()
 
 	// Run all rules with `scope: summary`
-	l.lintBlock(
-		f,
-		core.NewBlock(f.Content, f.Summary.String(), "summary."+f.RealExt),
-		len(f.Lines),
+	//
+	// TODO: is this the most efficient place to assign tagging?
+	summary := nlp.NewLinedBlock(f.Content, f.Summary.String(),
+		"summary."+f.RealExt,
 		0,
-		true)
+		l.Manager.NeedsTagging())
 
 	// Run all rules with `scope: raw`
 	//
@@ -159,12 +160,11 @@ func (l Linter) lintSizedScopes(f *core.File) {
 	// we don't include any markup preprocessing.
 	//
 	// See #248, #306.
-	l.lintBlock(
-		f,
-		core.NewBlock("", strings.Join(f.Lines, ""), "raw."+f.RealExt),
-		len(f.Lines),
-		0,
-		true)
+	raw := nlp.NewBlock("", strings.Join(f.Lines, ""), "raw."+f.RealExt)
+
+	for _, blk := range []nlp.Block{summary, raw} {
+		l.lintBlock(f, blk, len(f.Lines), 0, true)
+	}
 }
 
 func (l Linter) lintTags(f *core.File, state walker, tok html.Token) {

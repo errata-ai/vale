@@ -10,8 +10,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/jdkato/prose/tag"
-	"github.com/jdkato/prose/tokenize"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
 	"github.com/karrick/godirwalk"
 )
@@ -19,15 +18,18 @@ import (
 var defaultIgnoreDirectories = []string{
 	"node_modules", ".git",
 }
-
+var spaces = regexp.MustCompile(" +")
+var reANSI = regexp.MustCompile("[\u001B\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))")
 var sanitizer = strings.NewReplacer(
 	"&rsquo;", "'",
 	"\r\n", "\n",
 	"\r", "\n")
 
-var spaces = regexp.MustCompile(" +")
-
-var reANSI = regexp.MustCompile("[\u001B\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))")
+// Sanitize prepares text for our check functions.
+func Sanitize(txt string) string {
+	// TODO: symbols?
+	return sanitizer.Replace(txt)
+}
 
 // StripANSI removes all ANSI characters from the given string.
 func StripANSI(s string) string {
@@ -109,64 +111,6 @@ func InRange(n int, r []int) bool {
 	return len(r) == 2 && (r[0] <= n && n <= r[1])
 }
 
-// Tag assigns part-of-speech tags to `words`.
-func Tag(words []string) []tag.Token {
-	if Tagger == nil {
-		Tagger = tag.NewPerceptronTagger()
-	}
-	return Tagger.Tag(words)
-}
-
-// TextToWords convert raw text into a slice of words.
-func TextToWords(text string, nlp bool) []string {
-	// TODO: Replace with iterTokenizer?
-	tok := tokenize.NewTreebankWordTokenizer()
-
-	words := []string{}
-	for _, s := range SentenceTokenizer.Tokenize(text) {
-		if nlp {
-			words = append(words, tok.Tokenize(s)...)
-		} else {
-			words = append(words, strings.Fields(s)...)
-		}
-	}
-
-	return words
-}
-
-// TextToTokens converts a string to a slice of tokens.
-func TextToTokens(text string, needsTagging bool) []tag.Token {
-	if needsTagging {
-		return Tag(TextToWords(text, true))
-	}
-	tokens := []tag.Token{}
-	for _, word := range TextToWords(text, true) {
-		tokens = append(tokens, tag.Token{Text: word})
-	}
-	return tokens
-}
-
-// CheckPOS determines if a match (as found by an extension point) also matches
-// the expected part-of-speech in text.
-func CheckPOS(loc []int, expected, text string) bool {
-	pos := 1
-
-	observed := []string{}
-	for _, tok := range TextToTokens(text, true) {
-		if InRange(pos, loc) {
-			observed = append(observed, (tok.Text + "/" + tok.Tag))
-		}
-		pos += len(tok.Text)
-		if !StringInSlice(tok.Tag, []string{"POS", ".", ",", ":", ";", "?"}) {
-			// Space-bounded ...
-			pos++
-		}
-	}
-
-	match, _ := regexp.MatchString(expected, strings.Join(observed, " "))
-	return !match
-}
-
 // Which checks for the existence of any command in `cmds`.
 func Which(cmds []string) string {
 	for _, cmd := range cmds {
@@ -212,11 +156,6 @@ func StringsToInterface(strings []string) []interface{} {
 		intf[i] = v
 	}
 	return intf
-}
-
-// Sanitize prepares text for our check functions.
-func Sanitize(txt string) string {
-	return sanitizer.Replace(txt)
 }
 
 // Indent adds padding to every line of `text`.
@@ -363,4 +302,27 @@ func loadVocab(root string, cfg *Config) error {
 	})
 
 	return err
+}
+
+// CheckPOS determines if a match (as found by an extension point) also matches
+// the expected part-of-speech in text.
+//
+// TODO: Deprecate. This isn't offically documented and should be removed ...
+func CheckPOS(loc []int, expected, text string) bool {
+	pos := 1
+
+	observed := []string{}
+	for _, tok := range nlp.TextToTokens(text, true) {
+		if InRange(pos, loc) {
+			observed = append(observed, (tok.Text + "/" + tok.Tag))
+		}
+		pos += len(tok.Text)
+		if !StringInSlice(tok.Tag, []string{"POS", ".", ",", ":", ";", "?"}) {
+			// Space-bounded ...
+			pos++
+		}
+	}
+
+	match, _ := regexp.MatchString(expected, strings.Join(observed, " "))
+	return !match
 }

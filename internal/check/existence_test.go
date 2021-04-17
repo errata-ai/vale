@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 )
 
 func TestExistence(t *testing.T) {
@@ -24,8 +25,7 @@ func TestExistence(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	alerts := rule.Run("This is a test.", file)
-
+	alerts := rule.Run(nlp.NewBlock("", "This is a test.", ""), file)
 	if len(alerts) != 1 {
 		t.Errorf("expected one alert, not %v", alerts)
 	}
