@@ -2,13 +2,6 @@ package nlp
 
 import "github.com/jdkato/prose/tag"
 
-// NLP handles NLP-related tasks.
-type NLP struct {
-	Tagging      bool
-	Segmentation bool
-	Splitting    bool
-}
-
 // A Block represents a section of text.
 type Block struct {
 	Context string      // parent content - e.g., sentence -> paragraph
@@ -42,12 +35,26 @@ func NewLinedBlock(ctx, txt, sel string, line int, tagging bool) Block {
 		Tokens:  tokens}
 }
 
+// NLPInfo handles NLP-related tasks.
+//
+// Assigning this on a per-file basis allows us to handle multi-language
+// projects -- one file might be `en` while another is `ja`, for example.
+type NLPInfo struct {
+	Tagging      bool // Does the file need POS tagging?
+	Segmentation bool // Does the file need sentence segmentation?
+	Splitting    bool // Does the file need paragraph splitting?
+
+	Lang     string // Language of the file.
+	Endpoint string // API endpoint (optional); TODO: should this be per-file?
+	Scope    string // The file's ext scope.
+}
+
 // An NLP provider is a library to implements part-of-speech tagging, sentence
 // segmentation, and word tokenization.
 //
 // The default implementation is the pure-Go prose library, but the goal is to
 // allow (fairly) seamless integration with non-Go libraries too (such as
 // spaCy).
-func (n *NLP) Compute(block *Block, ext string) ([]Block, error) {
-	return prose(n, block, ext)
+func (n *NLPInfo) Compute(block *Block) ([]Block, error) {
+	return prose(n, block)
 }

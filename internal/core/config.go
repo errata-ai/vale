@@ -38,6 +38,7 @@ type Config struct {
 	BlockIgnores   map[string][]string        // A list of blocks to ignore
 	Checks         []string                   // All checks to load
 	Formats        map[string]string          // A map of unknown -> known formats
+	FormatToLang   map[string]string          // A map of format to lang ID
 	GBaseStyles    []string                   // Global base style
 	GChecks        map[string]bool            // Global checks
 	IgnoredClasses []string                   // A list of HTML classes to ignore
@@ -69,6 +70,8 @@ type Config struct {
 	Timeout      int                  `json:"-"`
 	Paths        []string             `json:"-"`
 
+	NLPEndpoint string // An external API to call for NLP-related work.
+
 	// Command-line configuration
 	Flags *CLIFlags `json:"-"`
 }
@@ -93,6 +96,7 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.Timeout = 2
 	cfg.TokenIgnores = make(map[string][]string)
 	cfg.Paths = []string{""}
+	cfg.FormatToLang = make(map[string]string)
 
 	return &cfg, nil
 }

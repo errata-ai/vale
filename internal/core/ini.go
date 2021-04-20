@@ -54,6 +54,10 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 		return nil
 
 	},
+	"Lang": func(label string, sec *ini.Section, cfg *Config) error {
+		cfg.FormatToLang[label] = sec.Key("Lang").String()
+		return nil
+	},
 }
 
 var globalOpts = map[string]func(*ini.Section, *Config, []string){
@@ -69,6 +73,9 @@ var globalOpts = map[string]func(*ini.Section, *Config, []string){
 	},
 	"TokenIgnores": func(sec *ini.Section, cfg *Config, args []string) {
 		cfg.TokenIgnores["*"] = sec.Key("TokenIgnores").Strings(",")
+	},
+	"Lang": func(sec *ini.Section, cfg *Config, args []string) {
+		cfg.FormatToLang["*"] = sec.Key("Lang").String()
 	},
 }
 
@@ -153,6 +160,10 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 	},
 	"ProcessTimeout": func(sec *ini.Section, cfg *Config, args []string) error {
 		cfg.Timeout = sec.Key("ProcessTimeout").MustInt()
+		return nil
+	},
+	"NLPEndpoint": func(sec *ini.Section, cfg *Config, args []string) error {
+		cfg.NLPEndpoint = sec.Key("NLPEndpoint").MustString("")
 		return nil
 	},
 }

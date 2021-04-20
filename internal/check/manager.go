@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/errata-ai/vale/v2/internal/rule"
 	"github.com/karrick/godirwalk"
 )
@@ -98,6 +99,15 @@ func (mgr *Manager) HasScope(scope string) bool {
 // NeedsTagging indicates if POS tagging is needed.
 func (mgr *Manager) NeedsTagging() bool {
 	return mgr.needsTagging
+}
+
+// AssignNLP determines what NLP tasks a file needs.
+func (mgr *Manager) AssignNLP(f *core.File) nlp.NLPInfo {
+	return nlp.NLPInfo{
+		Scope:        f.RealExt,
+		Segmentation: mgr.HasScope("sentence"),
+		Splitting:    mgr.HasScope("paragraph"),
+	}
 }
 
 func (mgr *Manager) addStyle(path string) error {

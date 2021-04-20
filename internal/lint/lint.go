@@ -186,17 +186,16 @@ func (l *Linter) lintFile(src string) lintResult {
 }
 
 func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) {
-	nlp := nlp.NLP{
-		Tagging:      l.Manager.NeedsTagging(),
-		Splitting:    l.Manager.HasScope("paragraph"),
-		Segmentation: l.Manager.HasScope("sentence"),
-	}
+	// Determine what NLP tasks this particular file needs; the goal is to do
+	// the least amount of work possible.
+	f.NLP = l.Manager.AssignNLP(f)
 
-	blks, err := nlp.Compute(&blk, f.RealExt)
+	blks, err := f.NLP.Compute(&blk)
 	if err != nil {
-		// FIXME: ...
+		// FIXME: propagate this error instead.
 		panic(err)
 	}
+
 	// FIXME: This is required for paragraphs that lack a newline delimiter:
 	//
 	// p1

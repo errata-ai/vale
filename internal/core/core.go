@@ -45,6 +45,8 @@ type File struct {
 	limits   map[string]int
 	isGlobal bool
 	simple   bool
+
+	NLP nlp.NLPInfo
 }
 
 // An Action represents a possible solution to an Alert.
@@ -209,7 +211,7 @@ func NewFile(src string, config *Config) (*File, error) {
 		BaseStyles: baseStyles, Checks: checks, Lines: lines, Content: content,
 		Comments: make(map[string]bool), history: make(map[string]int),
 		simple: config.Flags.Simple, Transform: transform,
-		limits: make(map[string]int),
+		limits: make(map[string]int), NLP: nlp.NLPInfo{},
 	}
 
 	return &file, nil
