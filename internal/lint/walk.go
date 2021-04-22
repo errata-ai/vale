@@ -68,7 +68,7 @@ func (w *walker) block(text, scope string) nlp.Block {
 		line = pos
 	}
 
-	return nlp.NewLinedBlock(w.context, text, scope, line, false)
+	return nlp.NewLinedBlock(w.context, text, scope, line, nil)
 }
 
 func (w *walker) walk() (html.TokenType, html.Token, string) {

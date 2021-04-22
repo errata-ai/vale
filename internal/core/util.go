@@ -312,7 +312,7 @@ func CheckPOS(loc []int, expected, text string) bool {
 	pos := 1
 
 	observed := []string{}
-	for _, tok := range nlp.TextToTokens(text, true) {
+	for _, tok := range nlp.TextToTokens(text, nil) {
 		if InRange(pos, loc) {
 			observed = append(observed, (tok.Text + "/" + tok.Tag))
 		}

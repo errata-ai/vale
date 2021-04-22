@@ -5,10 +5,16 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	"github.com/jdkato/prose/tag"
 )
 
 type SegmentResult struct {
 	Sents []string
+}
+
+type TagResult struct {
+	Tokens []tag.Token
 }
 
 func post(url string) ([]byte, error) {
@@ -33,6 +39,25 @@ func segment(text, lang, apiURL string) (SegmentResult, error) {
 
 	data := url.Values{"lang": {lang}, "text": {text}}
 	path := apiURL + "/segment?" + data.Encode()
+
+	body, err := post(path)
+	if err != nil {
+		return result, err
+	}
+
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
+}
+
+func pos(text, lang, apiURL string) (TagResult, error) {
+	var result TagResult
+
+	data := url.Values{"lang": {lang}, "text": {text}}
+	path := apiURL + "/tag?" + data.Encode()
 
 	body, err := post(path)
 	if err != nil {

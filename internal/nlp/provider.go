@@ -2,43 +2,34 @@ package nlp
 
 import (
 	"strings"
-
-	"github.com/jdkato/prose/tag"
 )
 
 type segmenter func(string) []string
 
 // A Block represents a section of text.
 type Block struct {
-	Context string      // parent content - e.g., sentence -> paragraph
-	Line    int         // line of the block
-	Scope   string      // section selector
-	Text    string      // text content
-	Tokens  []tag.Token // POS-tagged tokens
+	Context string // parent content - e.g., sentence -> paragraph
+	Line    int    // line of the block
+	Scope   string // section selector
+	Text    string // text content
 }
 
 // NewBlock makes a new Block with prepared text and a Selector.
 func NewBlock(ctx, txt, sel string) Block {
-	return NewLinedBlock(ctx, txt, sel, -1, false)
+	return NewLinedBlock(ctx, txt, sel, -1, nil)
 }
 
 // NewLinedBlock creates a Block with an already-known location.
-func NewLinedBlock(ctx, txt, sel string, line int, tagging bool) Block {
-	var tokens []tag.Token
-
+func NewLinedBlock(ctx, txt, sel string, line int, nlp *NLPInfo) Block {
 	if ctx == "" {
 		ctx = txt
-	}
-	if tagging {
-		tokens = TextToTokens(txt, true)
 	}
 
 	return Block{
 		Context: ctx,
 		Text:    txt,
 		Scope:   sel,
-		Line:    line,
-		Tokens:  tokens}
+		Line:    line}
 }
 
 // NLPInfo handles NLP-related tasks.
@@ -87,19 +78,19 @@ func (n *NLPInfo) doNLP(blk *Block, seg segmenter) ([]Block, error) {
 	if n.Splitting {
 		for _, p := range strings.SplitAfter(blk.Text, "\n\n") {
 			blks = append(
-				blks, NewLinedBlock(ctx, p, "paragraph"+ext, idx, false))
+				blks, NewLinedBlock(ctx, p, "paragraph"+ext, idx, nil))
 		}
 	}
 
 	if n.Segmentation {
 		for _, s := range seg(blk.Text) {
 			blks = append(
-				blks, NewLinedBlock(ctx, s, "sentence"+ext, idx, false))
+				blks, NewLinedBlock(ctx, s, "sentence"+ext, idx, nil))
 		}
 	}
 
 	blks = append(
-		blks, NewLinedBlock(ctx, blk.Text, "text"+ext, idx, false))
+		blks, NewLinedBlock(ctx, blk.Text, "text"+ext, idx, nil))
 
 	return blks, nil
 }

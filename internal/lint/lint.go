@@ -161,6 +161,10 @@ func (l *Linter) lintFile(src string) lintResult {
 		}
 	}
 
+	// Determine what NLP tasks this particular file needs; the goal is to do
+	// the least amount of work possible.
+	file.NLP = l.Manager.AssignNLP(file)
+
 	if file.Format == "markup" && !l.Manager.Config.Flags.Simple {
 		switch file.NormedExt {
 		case ".adoc":
@@ -186,10 +190,6 @@ func (l *Linter) lintFile(src string) lintResult {
 }
 
 func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) {
-	// Determine what NLP tasks this particular file needs; the goal is to do
-	// the least amount of work possible.
-	f.NLP = l.Manager.AssignNLP(f)
-
 	blks, err := f.NLP.Compute(&blk)
 	if err != nil {
 		// FIXME: propagate this error instead.

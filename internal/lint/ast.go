@@ -150,9 +150,7 @@ func (l Linter) lintSizedScopes(f *core.File) {
 	//
 	// TODO: is this the most efficient place to assign tagging?
 	summary := nlp.NewLinedBlock(f.Content, f.Summary.String(),
-		"summary."+f.RealExt,
-		0,
-		l.Manager.NeedsTagging())
+		"summary."+f.RealExt, 0, &f.NLP)
 
 	// Run all rules with `scope: raw`
 	//
