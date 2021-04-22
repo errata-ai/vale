@@ -107,6 +107,8 @@ func (mgr *Manager) AssignNLP(f *core.File) nlp.NLPInfo {
 		Scope:        f.RealExt,
 		Segmentation: mgr.HasScope("sentence"),
 		Splitting:    mgr.HasScope("paragraph"),
+		Endpoint:     f.NLP.Endpoint,
+		Lang:         f.NLP.Lang,
 	}
 }
 

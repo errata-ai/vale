@@ -193,6 +193,17 @@ func NewFile(src string, config *Config) (*File, error) {
 		}
 	}
 
+	lang := "en"
+	for syntax, code := range config.FormatToLang {
+		sec, err := glob.Compile(syntax)
+		if err != nil {
+			return &File{}, err
+		} else if sec.Match(fp) {
+			lang = code
+			break
+		}
+	}
+
 	transform := ""
 	for sec, p := range config.Stylesheets {
 		pat, err := glob.Compile(sec)
@@ -207,11 +218,12 @@ func NewFile(src string, config *Config) (*File, error) {
 	content := Sanitize(string(fbytes))
 	lines := strings.SplitAfter(content, "\n")
 	file := File{
-		Path: src, NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
+		NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
 		BaseStyles: baseStyles, Checks: checks, Lines: lines, Content: content,
 		Comments: make(map[string]bool), history: make(map[string]int),
 		simple: config.Flags.Simple, Transform: transform,
-		limits: make(map[string]int), NLP: nlp.NLPInfo{},
+		limits: make(map[string]int), Path: src,
+		NLP: nlp.NLPInfo{Endpoint: config.NLPEndpoint, Lang: lang},
 	}
 
 	return &file, nil

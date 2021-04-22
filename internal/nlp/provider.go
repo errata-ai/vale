@@ -1,6 +1,12 @@
 package nlp
 
-import "github.com/jdkato/prose/tag"
+import (
+	"strings"
+
+	"github.com/jdkato/prose/tag"
+)
+
+type segmenter func(string) []string
 
 // A Block represents a section of text.
 type Block struct {
@@ -56,5 +62,44 @@ type NLPInfo struct {
 // allow (fairly) seamless integration with non-Go libraries too (such as
 // spaCy).
 func (n *NLPInfo) Compute(block *Block) ([]Block, error) {
-	return prose(n, block)
+	seg := SentenceTokenizer.Tokenize
+	if n.Endpoint != "" && n.Lang != "en" {
+		// We only use external segmentation for non-English text since prose
+		// (our native library) is more efficient.
+		seg = func(text string) []string {
+			ret, err := segment(text, n.Lang, n.Endpoint)
+			if err != nil {
+				panic(err)
+			}
+			return ret.Sents
+		}
+	}
+	return n.doNLP(block, seg)
+}
+
+func (n *NLPInfo) doNLP(blk *Block, seg segmenter) ([]Block, error) {
+	blks := []Block{}
+
+	ctx := blk.Context
+	idx := blk.Line
+	ext := n.Scope
+
+	if n.Splitting {
+		for _, p := range strings.SplitAfter(blk.Text, "\n\n") {
+			blks = append(
+				blks, NewLinedBlock(ctx, p, "paragraph"+ext, idx, false))
+		}
+	}
+
+	if n.Segmentation {
+		for _, s := range seg(blk.Text) {
+			blks = append(
+				blks, NewLinedBlock(ctx, s, "sentence"+ext, idx, false))
+		}
+	}
+
+	blks = append(
+		blks, NewLinedBlock(ctx, blk.Text, "text"+ext, idx, false))
+
+	return blks, nil
 }
