@@ -326,3 +326,27 @@ func CheckPOS(loc []int, expected, text string) bool {
 	match, _ := regexp.MatchString(expected, strings.Join(observed, " "))
 	return !match
 }
+
+func TextToContext(text string, meta *nlp.NLPInfo) []nlp.TaggedWord {
+	context := []nlp.TaggedWord{}
+
+	for idx, line := range strings.Split(text, "\n") {
+		plain := stripMarkdown(line)
+
+		pos := 0
+		for _, tok := range nlp.TextToTokens(plain, meta) {
+			s := strings.Index(line[pos:], tok.Text) + len(line[:pos])
+			if !StringInSlice(tok.Tag, []string{"''", "``"}) {
+				context = append(context, nlp.TaggedWord{
+					Line:  idx + 1,
+					Token: tok,
+					Span:  []int{s + 1, s + len(tok.Text)},
+				})
+			}
+			pos = s
+			line, _ = Substitute(line, tok.Text, '*')
+		}
+	}
+
+	return context
+}
