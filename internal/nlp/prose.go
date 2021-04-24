@@ -1,7 +1,6 @@
 package nlp
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/jdkato/prose/tag"
@@ -64,6 +63,5 @@ func TextToTokens(text string, nlp *NLPInfo) []tag.Token {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("WOOO", result)
 	return result.Tokens
 }

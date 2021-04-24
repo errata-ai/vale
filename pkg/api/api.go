@@ -28,9 +28,9 @@ type CompiledRule struct {
 }
 
 // TagSentence assigns part-of-speech tags to the given sentence.
-func TagSentence(text, lang string) ([]nlp.TaggedWord, error) {
-	meta := nlp.NLPInfo{}
-	return core.TextToContext(text, &meta), nil
+func TagSentence(text, lang, endpoint string) ([]nlp.TaggedWord, error) {
+	return core.TextToContext(
+		text, &nlp.NLPInfo{Lang: lang, Endpoint: endpoint}), nil
 }
 
 // TestRule returns the linting results for a single rule
