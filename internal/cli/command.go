@@ -23,11 +23,13 @@ func printConfig(args []string, cfg *core.Config) error {
 	cfg, err := core.NewConfig(&Flags)
 	if err != nil {
 		ShowError(err, Flags.Output, os.Stderr)
+		return nil
 	}
 
 	err = core.From("ini", cfg)
 	if err != nil {
 		ShowError(err, Flags.Output, os.Stderr)
+		return nil
 	}
 
 	fmt.Println(cfg.String())
