@@ -115,16 +115,8 @@ func (a dictConfig) expand(wordAffix string, out []string) ([]string, error) {
 		// then iterate over that
 		af, ok := a.AffixMap[key]
 		if !ok {
-			// is it compound flag?
-			if _, ok := a.compoundMap[key]; ok {
-				continue
-			}
-			// is it a NoSuggest?
-			if key == a.NoSuggestFlag {
-				continue
-			}
-			// no idea
-			return nil, fmt.Errorf("unable to find affix key %v", key)
+			// TODO: How should we handle this?
+			continue
 		}
 		if !af.CrossProduct {
 			out = af.expand(word, out)
@@ -318,7 +310,7 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 				return nil, fmt.Errorf("%s stanza had %d fields, expected 4 or 5", parts[0], len(parts))
 			}
 		default:
-			// nothing
+			// TODO: Should this happen?
 		}
 	}
 

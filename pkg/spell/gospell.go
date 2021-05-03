@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"strings"
 
@@ -159,21 +158,8 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 		return nil, scanner.Err()
 	}
 
-	/* TODO:
-
-	line := scanner.Text()
-	i, err := strconv.ParseInt(line, 10, 64)
-	if err != nil {
-		return nil, err
-	}
-
-	gs := GoSpell{
-		Dict:      make(map[string]struct{}, i*5),
-		compounds: make([]*regexp.Regexp, 0, len(affix.CompoundRule)),
-		splitter:  NewSplitter(affix.WordChars),
-	}*/
-
 	gs := goSpell{
+		// TODO: Use fixed size from first list?
 		dict:      make(map[string]struct{}),
 		compounds: make([]*regexp.Regexp, 0, len(affix.CompoundRule)),
 		splitter:  newSplitter(affix.WordChars),
@@ -181,10 +167,11 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 
 	words := []string{}
 	for scanner.Scan() {
+		line := scanner.Text()
 		// NOTE: We do this for entries like
 		//
 		// abandonware/M	Noun: uncountable
-		line := strings.Split(scanner.Text(), "\t")[0]
+		line = strings.Split(line, "\t")[0]
 
 		words, err = affix.expand(line, words)
 		if err != nil {
@@ -218,11 +205,9 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 		pattern = pattern + "$"
 		pat, err := regexp.Compile(pattern)
 		if err != nil {
-			log.Printf("REGEXP FAIL= %q %s", pattern, err)
-		} else {
-			gs.compounds = append(gs.compounds, pat)
+			return nil, err
 		}
-
+		gs.compounds = append(gs.compounds, pat)
 	}
 
 	if len(affix.IconvReplacements) > 0 {
