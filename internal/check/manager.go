@@ -189,11 +189,7 @@ func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
 func (mgr *Manager) loadDefaultRules() error {
 	for _, style := range defaultStyles {
 		if core.StringInSlice(style, mgr.styles) {
-			// The user has a style on their `StylesPath` with the same
-			// name as a built-in style.
-			//
-			// TODO: Should this be considered an error?
-			continue
+			return fmt.Errorf("'%v' collides with built-in style", style)
 		}
 
 		rules, err := rule.AssetDir(filepath.Join("rule", style))
