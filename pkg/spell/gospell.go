@@ -181,7 +181,11 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 
 	words := []string{}
 	for scanner.Scan() {
-		line := scanner.Text()
+		// NOTE: We do this for entries like
+		//
+		// abandonware/M	Noun: uncountable
+		line := strings.Split(scanner.Text(), "\t")[0]
+
 		words, err = affix.expand(line, words)
 		if err != nil {
 			return nil, fmt.Errorf("Unable to process %q: %s", line, err)
