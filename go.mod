@@ -3,7 +3,6 @@ module github.com/errata-ai/vale/v2
 go 1.16
 
 require (
-	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/dlclark/regexp2 v1.4.0
 	github.com/errata-ai/ini v1.63.0
 	github.com/gobwas/glob v0.2.3

@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/denisbrodbeck/machineid"
 )
 
 // Response is returned after an action.
@@ -56,8 +54,4 @@ func sendResponse(msg string, err error) error {
 		resp.Error = err.Error()
 	}
 	return printJSON(resp)
-}
-
-func uuid(app string) (string, error) {
-	return machineid.ProtectedID(app)
 }
