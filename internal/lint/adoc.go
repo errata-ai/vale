@@ -156,10 +156,12 @@ func (l *Linter) startAdocServer(exe string) error {
 		return err
 	}
 
-	ping(adocDomain)
-
 	l.pids = append(l.pids, cmd.Process.Pid)
 	l.temps = append(l.temps, tmpfile)
+
+	if err := ping(adocDomain); err != nil {
+		return err
+	}
 
 	adocRunning = true
 	return nil

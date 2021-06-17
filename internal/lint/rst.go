@@ -232,10 +232,12 @@ func (l *Linter) startRstServer(lib, exe string) error {
 		return err
 	}
 
-	ping(rstDomain)
-
 	l.pids = append(l.pids, cmd.Process.Pid)
 	l.temps = append(l.temps, tmpfile)
+
+	if err := ping(rstDomain); err != nil {
+		return err
+	}
 
 	rstRunning = true
 	return nil
