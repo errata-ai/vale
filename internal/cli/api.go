@@ -157,7 +157,16 @@ func install(args []string, cfg *core.Config) error {
 	if core.IsDir(style) {
 		os.RemoveAll(style) // Remove existing version
 	}
-	return fetch(args[1], cfg.StylesPath)
+
+	err := fetch(args[1], cfg.StylesPath)
+	if err != nil {
+		return sendResponse(
+			fmt.Sprintf("Failed to install '%s'", args[1]),
+			err)
+	}
+
+	return sendResponse(fmt.Sprintf(
+		"Successfully installed '%s'", args[1]), nil)
 }
 
 func newVocab(args []string, cfg *core.Config) error {
