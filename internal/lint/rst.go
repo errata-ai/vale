@@ -161,7 +161,9 @@ func (l *Linter) lintRST(f *core.File) error {
 	s = reSphinx.ReplaceAllString(s, ".. code::")
 	s = reCodeBlock.ReplaceAllString(s, "::")
 
-	if err := l.startRstServer(rst2html, python); err != nil {
+	if !l.HasDir {
+		html, err = callRst(f, s, rst2html, python)
+	} else if err := l.startRstServer(rst2html, python); err != nil {
 		html, err = callRst(f, s, rst2html, python)
 	} else {
 		html, err = l.post(f, s, rstURL)

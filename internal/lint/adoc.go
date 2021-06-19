@@ -97,7 +97,9 @@ func (l *Linter) lintADoc(f *core.File) error {
 	}
 
 	s = adocSanitizer.Replace(s)
-	if err := l.startAdocServer(exe); err != nil {
+	if !l.HasDir {
+		html, err = callAdoc(f, s, exe)
+	} else if err := l.startAdocServer(exe); err != nil {
 		html, err = callAdoc(f, s, exe)
 	} else {
 		html, err = l.post(f, s, adocURL)

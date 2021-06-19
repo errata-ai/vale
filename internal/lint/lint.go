@@ -19,6 +19,7 @@ import (
 // A Linter lints a File.
 type Linter struct {
 	Manager *check.Manager
+	HasDir  bool
 
 	seen map[string]bool
 	glob *glob.Glob
