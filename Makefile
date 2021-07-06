@@ -19,6 +19,9 @@ release:
 build:
 	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin/$(exe) ./cmd/vale
 
+arm:
+	GOOS=darwin GOARCH=arm64 go build ${LDFLAGS} -o bin/$(exe) ./cmd/vale
+
 closed:
 	GOOS=$(os) GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/$(exe) ./cmd/vale
 
