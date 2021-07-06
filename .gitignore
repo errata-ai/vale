@@ -28,8 +28,3 @@ fixtures/formats/Sphinx/_build/
 *~
 .bundle
 .vagrant
-
-internal/cli/flag_closed.go
-
-
-
