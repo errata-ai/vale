@@ -16,5 +16,5 @@ RUN apk add --no-cache --update \
 
 COPY bin/vale /bin
 
-ENV PATH="/bin:/dita-ot-3.6/bin:$PATH"
+# ENV PATH="/bin:/dita-ot-3.6/bin:$PATH"
 ENTRYPOINT ["/bin/vale"]
