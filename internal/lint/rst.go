@@ -21,8 +21,8 @@ var rstURL = "http://" + rstDomain
 // reStructuredText configuration.
 //
 // reCodeBlock is used to convert Sphinx-style code directives to the regular
-// `::` for rst2html.
-var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (\w+)`)
+// `::` for rst2html, including the use of runtime options (e.g., :caption:).
+var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (?:\w+)(?:\s+:\w+: .+)*`)
 
 // HACK: We replace custom Sphinx directives with `.. code::`.
 //

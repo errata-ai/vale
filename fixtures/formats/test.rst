@@ -79,3 +79,15 @@ The |biohazard| symbol must be used on TODO containers used to dispose of medica
 
 .. image:: /images/logo.png
    :alt: TODO
+
+
+.. code-block:: text
+      :caption: /etc/salt/autosign_grains/uuid
+
+      def foo():
+        """
+        NOTE: this is a very important function.
+        """
+        obviously = False
+        very = True
+        return very and obviously
