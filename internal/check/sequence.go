@@ -121,6 +121,7 @@ func sequenceMatches(idx int, chk Sequence, target string, words []tag.Token) ([
 	text := []string{}
 
 	sizeT := len(toks)
+	sizeW := len(words)
 	index := 0
 
 	for jdx, tok := range words {
@@ -147,6 +148,8 @@ func sequenceMatches(idx int, chk Sequence, target string, words []tag.Token) ([
 				for i := 1; idx+i < sizeT; i++ {
 					if i == 1 {
 						text = append(text, words[index].Text)
+					} else if jdx+i >= sizeW {
+						return []string{}, index
 					}
 					word := words[jdx+i]
 					text = append(text, word.Text)
