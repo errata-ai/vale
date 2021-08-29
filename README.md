@@ -11,9 +11,10 @@
 <p align="center">
   <a href="https://docs.errata.ai/vale/about">Documentation</a> •
   <a href="https://docs.errata.ai/community#examples">Example Configurations</a> •
-  <a href="https://github.com/errata-ai/styles">Styles</a> •
+  <a href="https://github.com/errata-ai/styles">Styles Library</a> •
   <a href="https://errata.ai/vale-server/">Vale Server (desktop app)</a> •
-  <a href="https://vale-studio.errata.ai/">Vale Studio (rule editor)</a>
+  <a href="https://vale-studio.errata.ai/">Vale Studio (rule editor)</a> •
+  <a href="https://github.com/errata-ai/vale-action">GitHub Action</a>
 </p>
 
 ## :heart: Sponsors
