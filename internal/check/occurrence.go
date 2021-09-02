@@ -58,7 +58,7 @@ func (o Occurrence) Run(blk nlp.Block, f *core.File) []core.Alert {
 	locs := o.pattern.FindAllStringIndex(txt, -1)
 
 	occurrences := len(locs)
-	if occurrences > o.Max || occurrences < o.Min {
+	if (o.Max > 0 && occurrences > o.Max) || (o.Min > 0 && occurrences < o.Min) {
 		// NOTE: We take only the first match (`locs[0]`) instead of the whole
 		// scope (`txt`) to avoid having to fall back to string matching.
 		//

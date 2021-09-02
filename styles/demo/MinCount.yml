@@ -1,0 +1,6 @@
+message: "Content too short."
+extends: occurrence
+scope: raw
+level: error
+min: 10
+token: \b(\w+)\b

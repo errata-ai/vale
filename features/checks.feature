@@ -1,5 +1,12 @@
 Feature: Checks
 
+  Scenario: Occurrence
+    When I test "checks/Occurrence"
+    Then the output should contain exactly:
+      """
+      test.md:1:3:demo.MinCount:Content too short.
+      """
+
   Scenario: SentenceCase
     When I test "checks/SentenceCase"
     Then the output should contain exactly:
