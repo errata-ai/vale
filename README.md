@@ -120,7 +120,7 @@ The corpus IDs in the above plots&mdash;`gitlab` and `ydkjs`&mdash;correspond to
 - A [snapshot](https://gitlab.com/gitlab-org/gitlab/-/tree/7d6a4025a0346f1f50d2825c85742e5a27b39a8b/doc
 ) of GitLab's open-source documentation (1,500 Markdown files).
 
-- A [chapter](https://raw.githubusercontent.com/getify/You-Dont-Know-JS/1st-ed/es6%20%26%20beyond/ch2.md) from the open-soure book *You Don't Know JS*.
+- A [chapter](https://raw.githubusercontent.com/getify/You-Dont-Know-JS/1st-ed/es6%20%26%20beyond/ch2.md) from the open-source book *You Don't Know JS*.
 
 ## :page_facing_up: License
 
