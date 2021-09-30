@@ -52,23 +52,32 @@ func NewOccurrence(cfg *core.Config, generic baseCheck) (Occurrence, error) {
 // Run checks the number of occurrences of a user-defined regex against a
 // certain threshold.
 func (o Occurrence) Run(blk nlp.Block, f *core.File) []core.Alert {
-	alerts := []core.Alert{}
+	var a core.Alert
 
+	alerts := []core.Alert{}
 	txt := blk.Text
 	locs := o.pattern.FindAllStringIndex(txt, -1)
 
 	occurrences := len(locs)
 	if (o.Max > 0 && occurrences > o.Max) || (o.Min > 0 && occurrences < o.Min) {
-		// NOTE: We might not have a location to report -- i.e., by definition,
-		// having zero instances of a token may break a rule.
 		if occurrences == 0 {
-			locs = [][]int{{1, 1}}
+			// NOTE: We might not have a location to report -- i.e., by
+			// definition, having zero instances of a token may break a rule.
+			//
+			// In a case like this, the check essentially becomes
+			// document-scoped (like `readability`), so we mark the issue at
+			// the first line.
+			a = core.Alert{
+				Check: o.Name, Severity: o.Level, Span: []int{1, 1},
+				Link: o.Link}
+		} else {
+			// NOTE: We take only the first match (`locs[0]`) instead of the
+			// whole scope (`txt`) to avoid having to fall back to string
+			// matching.
+			//
+			// See (core/location.go#initialPosition).
+			a = makeAlert(o.Definition, locs[0], txt)
 		}
-		// NOTE: We take only the first match (`locs[0]`) instead of the whole
-		// scope (`txt`) to avoid having to fall back to string matching.
-		//
-		// See (core/util.go#initialPosition).
-		a := makeAlert(o.Definition, locs[0], txt)
 
 		a.Message = o.Message
 		a.Description = o.Description
