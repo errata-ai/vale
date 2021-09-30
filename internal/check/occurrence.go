@@ -59,11 +59,17 @@ func (o Occurrence) Run(blk nlp.Block, f *core.File) []core.Alert {
 
 	occurrences := len(locs)
 	if (o.Max > 0 && occurrences > o.Max) || (o.Min > 0 && occurrences < o.Min) {
+		// NOTE: We might not have a location to report -- i.e., by definition,
+		// having zero instances of a token may break a rule.
+		if occurrences == 0 {
+			locs = [][]int{{1, 1}}
+		}
 		// NOTE: We take only the first match (`locs[0]`) instead of the whole
 		// scope (`txt`) to avoid having to fall back to string matching.
 		//
 		// See (core/util.go#initialPosition).
 		a := makeAlert(o.Definition, locs[0], txt)
+
 		a.Message = o.Message
 		a.Description = o.Description
 		alerts = append(alerts, a)

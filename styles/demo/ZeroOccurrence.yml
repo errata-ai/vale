@@ -1,0 +1,6 @@
+message: "No intro"
+extends: occurrence
+scope: heading
+level: error
+min: 1
+token: Introduction

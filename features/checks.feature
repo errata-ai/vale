@@ -4,6 +4,7 @@ Feature: Checks
     When I test "checks/Occurrence"
     Then the output should contain exactly:
       """
+      test.md:1:3:demo.ZeroOccurrence:No intro
       test.md:1:3:demo.MinCount:Content too short.
       """
 
