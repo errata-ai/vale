@@ -111,7 +111,7 @@ Extensibility means that there's a built-in means of creating your own rules wit
 
 All benchmarking was performed using the open-source [hyperfine](https://github.com/sharkdp/hyperfine) tool on a MacBook Pro (2.9 GHz Intel Core i7):
 
-```console
+```
 hyperfine --warmup 3 '<command>'
 ```
 
