@@ -5,24 +5,24 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/errata-ai/vale/v2/pkg/spell"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 
-var defaultFilters = []*regexp.Regexp{
-	regexp.MustCompile(`(?:\w+)?\.\w{1,4}\b`),
-	regexp.MustCompile(`\b(?:[a-zA-Z]\.){2,}`),
-	regexp.MustCompile(`0[xX][0-9a-fA-F]+`),
-	regexp.MustCompile(`\w+-\w+`),
-	regexp.MustCompile(`[A-Z]{1}[a-z]+[A-Z]+\w+`),
-	regexp.MustCompile(`[0-9]`),
-	regexp.MustCompile(`[A-Z]+$`),
-	regexp.MustCompile(`\W`),
-	regexp.MustCompile(`\w{3,}\.\w{3,}`),
-	regexp.MustCompile(`@.*\b`),
+var defaultFilters = []*regexp2.Regexp{
+	regexp2.MustCompileStd(`(?:\w+)?\.\w{1,4}\b`),
+	regexp2.MustCompileStd(`\b(?:[a-zA-Z]\.){2,}`),
+	regexp2.MustCompileStd(`0[xX][0-9a-fA-F]+`),
+	regexp2.MustCompileStd(`\w+-\w+`),
+	regexp2.MustCompileStd(`[A-Z]{1}[a-z]+[A-Z]+\w+`),
+	regexp2.MustCompileStd(`[0-9]`),
+	regexp2.MustCompileStd(`[A-Z]+$`),
+	regexp2.MustCompileStd(`\W`),
+	regexp2.MustCompileStd(`\w{3,}\.\w{3,}`),
+	regexp2.MustCompileStd(`@.*\b`),
 }
 
 // Spelling checks text against a Hunspell dictionary.
@@ -39,7 +39,7 @@ type Spelling struct {
 	Dic string
 	// `filters` (`array`): An array of patterns to ignore during spell
 	// checking.
-	Filters []*regexp.Regexp
+	Filters []*regexp2.Regexp
 	// `ignore` (`array`): An array of relative paths (from `StylesPath`) to
 	// files consisting of one word per line to ignore.
 	Ignore     []string
@@ -55,7 +55,7 @@ type Spelling struct {
 	// A slice of Hunspell-compatible dictionaries to load.
 	Dictionaries []string
 
-	exceptRe *regexp.Regexp
+	exceptRe *regexp2.Regexp
 	gs       *spell.Checker
 }
 
@@ -65,7 +65,7 @@ func addFilters(s *Spelling, generic baseCheck, cfg *core.Config) error {
 		//
 		// NOTE: This makes a big difference: ~50s -> ~13s.
 		for _, filter := range generic["filters"].([]interface{}) {
-			if pat, e := regexp.Compile(filter.(string)); e == nil {
+			if pat, e := regexp2.CompileStd(filter.(string)); e == nil {
 				// TODO: Should we report malformed patterns?
 				s.Filters = append(s.Filters, pat)
 			}
@@ -91,7 +91,7 @@ func addExceptions(s *Spelling, generic baseCheck, cfg *core.Config) error {
 
 	for term := range cfg.AcceptedTokens {
 		s.Exceptions = append(s.Exceptions, term)
-		s.exceptRe = regexp.MustCompile(
+		s.exceptRe = regexp2.MustCompileStd(
 			ignoreCase + strings.Join(s.Exceptions, "|"))
 	}
 
@@ -159,7 +159,7 @@ func (s Spelling) Run(blk nlp.Block, f *core.File) []core.Alert {
 OUTER:
 	for _, word := range nlp.WordTokenizer.Tokenize(txt) {
 		for _, filter := range s.Filters {
-			if filter.MatchString(word) {
+			if m, err := filter.MatchString(word); m && err == nil {
 				continue OUTER
 			}
 		}

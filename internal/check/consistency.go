@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 
 type step struct {
-	pattern *regexp.Regexp
+	pattern *regexp2.Regexp
 	subs    []string
 }
 
@@ -52,13 +52,15 @@ func NewConsistency(cfg *core.Config, generic baseCheck) (Consistency, error) {
 	count := 0
 	for v1, v2 := range rule.Either {
 		count += 2
+
 		subs := []string{
-			fmt.Sprintf("%s%d", chkKey, count), fmt.Sprintf("%s%d", chkKey, count+1)}
+			fmt.Sprintf("%s%d", chkKey, count),
+			fmt.Sprintf("%s%d", chkKey, count+1)}
 
 		chkRE = fmt.Sprintf("(?P<%s>%s)|(?P<%s>%s)", subs[0], v1, subs[1], v2)
 		chkRE = fmt.Sprintf(regex, chkRE)
 
-		re, err := regexp.Compile(chkRE)
+		re, err := regexp2.CompileStd(chkRE)
 		if err != nil {
 			return rule, core.NewE201FromPosition(err.Error(), path, 1)
 		}
@@ -84,7 +86,9 @@ func (o Consistency) Run(blk nlp.Block, f *core.File) []core.Alert {
 			for idx, mat := range submat {
 				if mat != -1 && idx > 0 && idx%2 == 0 {
 					loc = []int{mat, submat[idx+1]}
-					f.Sequences = append(f.Sequences, s.pattern.SubexpNames()[idx/2])
+					f.Sequences = append(
+						f.Sequences,
+						s.pattern.SubexpNames()[idx/2])
 				}
 			}
 		}

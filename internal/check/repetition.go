@@ -3,9 +3,9 @@ package check
 import (
 	"strings"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -21,7 +21,7 @@ type Repetition struct {
 	// non-capturing group.
 	Tokens []string
 
-	pattern *regexp.Regexp
+	pattern *regexp2.Regexp
 }
 
 // NewRepetition creates a new `repetition`-based rule.
@@ -40,7 +40,7 @@ func NewRepetition(cfg *core.Config, generic baseCheck) (Repetition, error) {
 	}
 
 	regex += `(` + strings.Join(rule.Tokens, "|") + `)`
-	re, err := regexp.Compile(regex)
+	re, err := regexp2.CompileStd(regex)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
@@ -64,7 +64,7 @@ func (o Repetition) Run(blk nlp.Block, f *core.File) []core.Alert {
 	for _, loc := range o.pattern.FindAllStringIndex(txt, -1) {
 		curr = strings.TrimSpace(txt[loc[0]:loc[1]])
 		if o.Ignorecase {
-			hit = strings.ToLower(curr) == strings.ToLower(prev) && curr != ""
+			hit = strings.EqualFold(curr, prev) && curr != ""
 		} else {
 			hit = curr == prev && curr != ""
 		}

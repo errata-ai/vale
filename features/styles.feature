@@ -26,10 +26,7 @@ Feature: Styles
       test.md:22:47:demo.Spellcheck:Did you really mean 'preceeded'?
       test.md:24:27:demo.Code:Consider using 'for-loop' instead of '`for` loops'
       test.md:24:42:demo.Code:Consider using 'for-loop' instead of 'for loops'
-      test.md:26:3:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
       test.md:26:88:demo.Abbreviations:Use 'a.m. or p.m.'
-      test.md:26:110:demo.Meetup:Use 'meetup(s)' instead of 'meet-ups'
-      test.md:26:381:demo.Meetup:Use 'meetup(s)' instead of 'meet up'
       test.md:28:1:demo.Filters:Did you really mean 'FOOOOOO'?
       test.md:30:38:demo.Ending-Preposition:Don't end a sentence with 'of.'
       test.md:32:61:demo.Ending-Preposition:Don't end a sentence with 'by.'

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/prose/tag"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -18,7 +18,7 @@ type NLPToken struct {
 	Tag     string
 	Skip    int
 
-	re       *regexp.Regexp
+	re       *regexp2.Regexp
 	optional bool
 }
 
@@ -58,7 +58,7 @@ func NewSequence(cfg *core.Config, generic baseCheck) (Sequence, error) {
 				false)
 			regex = fmt.Sprintf(regex, token.Pattern)
 
-			re, err := regexp.Compile(regex)
+			re, err := regexp2.CompileStd(regex)
 			if err != nil {
 				return rule, core.NewE201FromPosition(err.Error(), path, 1)
 			}
@@ -97,15 +97,14 @@ func makeTokens(s *Sequence, generic baseCheck, cfg *core.Config) error {
 }
 
 func tokensMatch(token NLPToken, word tag.Token) bool {
-	failedTag, err := regexp.MatchString(token.Tag, word.Tag)
+	failedTag, err := regexp2.MatchString(token.Tag, word.Tag)
 	if err != nil {
 		// FIXME: return the error instead ...
 		panic(err)
 	}
 
 	failedTag = !failedTag
-
-	failedTok := (token.re != nil && token.re.MatchString(word.Text) == token.Negate)
+	failedTok := (token.re != nil && token.re.MatchStringStd(word.Text) == token.Negate)
 
 	if (token.Pattern == "" && failedTag) ||
 		(token.Tag == "" && failedTok) ||
@@ -195,7 +194,7 @@ func (s Sequence) Run(blk nlp.Block, f *core.File) []core.Alert {
 	for idx, tok := range s.Tokens {
 		if !tok.Negate && tok.Pattern != "" {
 			for _, loc := range tok.re.FindAllStringIndex(txt, -1) {
-				target := txt[loc[0]:loc[1]]
+				target := re2Loc(txt, loc)
 				// These are all possible violations in `txt`:
 				steps, index := sequenceMatches(idx, s, target, words)
 				s.history = append(s.history, index)

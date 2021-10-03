@@ -3,8 +3,8 @@ module github.com/errata-ai/vale/v2
 go 1.17
 
 require (
-	github.com/dlclark/regexp2 v1.4.0
 	github.com/errata-ai/ini v1.63.0
+	github.com/errata-ai/regexp2 v1.7.0
 	github.com/gobwas/glob v0.2.3
 	github.com/jdkato/prose v1.2.1
 	github.com/jdkato/regexp v0.1.0

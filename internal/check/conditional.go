@@ -3,9 +3,9 @@ package check
 import (
 	"strings"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -21,14 +21,14 @@ type Conditional struct {
 	// `exceptions` (`array`): An array of strings to be ignored.
 	Exceptions []string
 
-	exceptRe *regexp.Regexp
-	patterns []*regexp.Regexp
+	exceptRe *regexp2.Regexp
+	patterns []*regexp2.Regexp
 }
 
 // NewConditional creates a new `conditional`-based rule.
 func NewConditional(cfg *core.Config, generic baseCheck) (Conditional, error) {
-	var re *regexp.Regexp
-	var expression []*regexp.Regexp
+	var re *regexp2.Regexp
+	var expression []*regexp2.Regexp
 
 	rule := Conditional{}
 	path := generic["path"].(string)
@@ -39,15 +39,20 @@ func NewConditional(cfg *core.Config, generic baseCheck) (Conditional, error) {
 	}
 
 	rule.Exceptions = updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
-	rule.exceptRe = regexp.MustCompile(strings.Join(rule.Exceptions, "|"))
 
-	re, err = regexp.Compile(rule.Second)
+	re, err = regexp2.CompileStd(strings.Join(rule.Exceptions, "|"))
+	if err != nil {
+		return rule, core.NewE201FromPosition(err.Error(), path, 1)
+	}
+	rule.exceptRe = re
+
+	re, err = regexp2.CompileStd(rule.Second)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
 	expression = append(expression, re)
 
-	re, err = regexp.Compile(rule.First)
+	re, err = regexp2.CompileStd(rule.First)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}

@@ -3,35 +3,39 @@ package check
 import (
 	"strings"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/jdkato/prose/transform"
-	"github.com/jdkato/regexp"
 )
 
-func isMatch(r *regexp.Regexp, s string) bool {
+func isMatch(r *regexp2.Regexp, s string) bool {
 	// TODO: `r.String() != ""`?
 	//
 	// Should we ensure that empty regexes == `nil`?
-	return r != nil && r.String() != "" && r.MatchString(s)
+	if r == nil {
+		return false
+	}
+	match, _ := r.MatchString(s)
+	return r.String() != "" && match
 }
 
-func makeExceptions(ignore []string) *regexp.Regexp {
+func makeExceptions(ignore []string) *regexp2.Regexp {
 	s := ""
 	if len(ignore) > 0 {
 		s = `\b(?:` + strings.Join(ignore, "|") + `)\b|`
 	}
-	return regexp.MustCompile(s + `[\p{N}\p{L}*]+[^\s]*`)
+	return regexp2.MustCompileStd(s + `[\p{N}\p{L}*]+[^\s]*`)
 }
 
-func lower(s string, ignore []string, re *regexp.Regexp) bool {
+func lower(s string, ignore []string, re *regexp2.Regexp) bool {
 	return s == strings.ToLower(s) || core.StringInSlice(s, ignore)
 }
 
-func upper(s string, ignore []string, re *regexp.Regexp) bool {
+func upper(s string, ignore []string, re *regexp2.Regexp) bool {
 	return s == strings.ToUpper(s) || core.StringInSlice(s, ignore)
 }
 
-func title(s string, ignore []string, except *regexp.Regexp, tc *transform.TitleConverter) bool {
+func title(s string, ignore []string, except *regexp2.Regexp, tc *transform.TitleConverter) bool {
 	count := 0.0
 	words := 0.0
 
@@ -72,7 +76,7 @@ func hasAnySuffix(s string, suffixes []string) bool {
 	return false
 }
 
-func sentence(s string, ignore []string, indicators []string, except *regexp.Regexp) bool {
+func sentence(s string, ignore []string, indicators []string, except *regexp2.Regexp) bool {
 	count := 0.0
 	words := 0.0
 
@@ -109,7 +113,7 @@ func sentence(s string, ignore []string, indicators []string, except *regexp.Reg
 	return (count / words) > 0.8
 }
 
-var varToFunc = map[string]func(string, []string, *regexp.Regexp) bool{
+var varToFunc = map[string]func(string, []string, *regexp2.Regexp) bool{
 	"$lower": lower,
 	"$upper": upper,
 }

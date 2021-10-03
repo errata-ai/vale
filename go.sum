@@ -7,10 +7,10 @@ github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d/go.mod h1:ma
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/dlclark/regexp2 v1.4.0 h1:F1rxgk7p4uKjwIQxBs9oAXe5CqrXlCduYEJvrF4u93E=
-github.com/dlclark/regexp2 v1.4.0/go.mod h1:2pZnwuY/m+8K6iRw6wQdMtk+rH5tNGR1i55kozfMjCc=
 github.com/errata-ai/ini v1.63.0 h1:XRFKXTn7FvF8mnC9RPOlYaL4Ud7dP0i35LnLcbIhWYU=
 github.com/errata-ai/ini v1.63.0/go.mod h1:PhjYff6ijif0unCnaJtXxnVsmlY95CSiNJDLXQYXdX8=
+github.com/errata-ai/regexp2 v1.7.0 h1:N+weOlhwTd5iyDTcTCAMljXnfzkftcOZrdXno6G+QPM=
+github.com/errata-ai/regexp2 v1.7.0/go.mod h1:59rO+jaxayJPF1WKI5m9R5F3Y3zR2Wn0DHnQbxtPm4A=
 github.com/gobwas/glob v0.2.3 h1:A4xDbljILXROh+kObIiy5kIaPYD8e96x1tgBhUI5J+Y=
 github.com/gobwas/glob v0.2.3/go.mod h1:d3Ez4x06l9bZtSvzIay5+Yzi0fmZzPgnTbPcKjJAkT8=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=

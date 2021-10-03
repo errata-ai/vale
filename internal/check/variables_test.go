@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jdkato/regexp"
+	"github.com/errata-ai/regexp2"
 )
 
 type changeCase struct {
@@ -44,7 +44,7 @@ func TestSentence(t *testing.T) {
 	}
 
 	for _, h := range headings {
-		var r *regexp.Regexp
+		var r *regexp2.Regexp
 		if len(h.exceptions) > 0 {
 			regex := makeRegexp(
 				"",
@@ -53,7 +53,7 @@ func TestSentence(t *testing.T) {
 				func() string { return "" },
 				true)
 			regex = fmt.Sprintf(regex, strings.Join(h.exceptions, "|"))
-			r = regexp.MustCompile(regex)
+			r = regexp2.MustCompileStd(regex)
 		}
 
 		s := sentence(h.heading, h.exceptions, h.indicators, r)

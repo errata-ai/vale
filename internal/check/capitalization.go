@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/prose/transform"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -16,7 +16,7 @@ type Capitalization struct {
 	Definition `mapstructure:",squash"`
 	// `match` (`string`): $title, $sentence, $lower, $upper, or a pattern.
 	Match string
-	Check func(s string, ignore []string, re *regexp.Regexp) bool
+	Check func(s string, ignore []string, re *regexp2.Regexp) bool
 	// `style` (`string`): AP or Chicago; only applies when match is set to
 	// $title.
 	Style string
@@ -26,7 +26,7 @@ type Capitalization struct {
 	// token should be ignored.
 	Indicators []string
 
-	exceptRe *regexp.Regexp
+	exceptRe *regexp2.Regexp
 }
 
 // NewCapitalization creates a new `capitalization`-based rule.
@@ -50,7 +50,11 @@ func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, err
 
 	regex = fmt.Sprintf(regex, strings.Join(rule.Exceptions, "|"))
 	if len(rule.Exceptions) > 0 {
-		rule.exceptRe = regexp.MustCompile(regex)
+		re, err := regexp2.CompileStd(regex)
+		if err != nil {
+			return rule, core.NewE201FromPosition(err.Error(), path, 1)
+		}
+		rule.exceptRe = re
 	}
 
 	if rule.Match == "$title" {
@@ -60,22 +64,22 @@ func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, err
 		} else {
 			tc = transform.NewTitleConverter(transform.APStyle)
 		}
-		rule.Check = func(s string, ignore []string, re *regexp.Regexp) bool {
+		rule.Check = func(s string, ignore []string, re *regexp2.Regexp) bool {
 			return title(s, ignore, re, tc)
 		}
 	} else if rule.Match == "$sentence" {
-		rule.Check = func(s string, ignore []string, re *regexp.Regexp) bool {
+		rule.Check = func(s string, ignore []string, re *regexp2.Regexp) bool {
 			return sentence(s, ignore, rule.Indicators, re)
 		}
 	} else if f, ok := varToFunc[rule.Match]; ok {
 		rule.Check = f
 	} else {
-		re, err := regexp.Compile(rule.Match)
+		re, err := regexp2.CompileStd(rule.Match)
 		if err != nil {
 			return rule, core.NewE201FromPosition(err.Error(), path, 1)
 		}
-		rule.Check = func(s string, ignore []string, r *regexp.Regexp) bool {
-			return re.MatchString(s) || core.StringInSlice(s, ignore)
+		rule.Check = func(s string, ignore []string, r *regexp2.Regexp) bool {
+			return re.MatchStringStd(s) || core.StringInSlice(s, ignore)
 		}
 	}
 

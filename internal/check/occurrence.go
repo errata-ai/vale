@@ -1,9 +1,9 @@
 package check
 
 import (
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -21,7 +21,7 @@ type Occurrence struct {
 	// `token` (`string`): The token of interest.
 	Token string
 
-	pattern *regexp.Regexp
+	pattern *regexp2.Regexp
 }
 
 // NewOccurrence creates a new `occurrence`-based rule.
@@ -40,7 +40,7 @@ func NewOccurrence(cfg *core.Config, generic baseCheck) (Occurrence, error) {
 	}
 
 	regex += `(?:` + rule.Token + `)`
-	re, err := regexp.Compile(regex)
+	re, err := regexp2.CompileStd(regex)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}

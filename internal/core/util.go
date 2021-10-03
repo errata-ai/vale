@@ -304,29 +304,6 @@ func loadVocab(root string, cfg *Config) error {
 	return err
 }
 
-// CheckPOS determines if a match (as found by an extension point) also matches
-// the expected part-of-speech in text.
-//
-// TODO: Deprecate. This isn't offically documented and should be removed ...
-func CheckPOS(loc []int, expected, text string) bool {
-	pos := 1
-
-	observed := []string{}
-	for _, tok := range nlp.TextToTokens(text, nil) {
-		if InRange(pos, loc) {
-			observed = append(observed, (tok.Text + "/" + tok.Tag))
-		}
-		pos += len(tok.Text)
-		if !StringInSlice(tok.Tag, []string{"POS", ".", ",", ":", ";", "?"}) {
-			// Space-bounded ...
-			pos++
-		}
-	}
-
-	match, _ := regexp.MatchString(expected, strings.Join(observed, " "))
-	return !match
-}
-
 func TextToContext(text string, meta *nlp.NLPInfo) []nlp.TaggedWord {
 	context := []nlp.TaggedWord{}
 

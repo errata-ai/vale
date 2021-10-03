@@ -6,9 +6,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -124,8 +126,14 @@ func formatMessages(msg string, desc string, subs ...string) (string, string) {
 	return core.FormatMessage(msg, subs...), core.FormatMessage(desc, subs...)
 }
 
+// NOTE: We need to do this because regexp2, the library we use for extended
+// syntax, returns its locatons in *rune* offsets.
+func re2Loc(s string, loc []int) string {
+	return string([]rune(s)[loc[0]:loc[1]])
+}
+
 func makeAlert(chk Definition, loc []int, txt string) core.Alert {
-	match := txt[loc[0]:loc[1]]
+	match := re2Loc(txt, loc)
 	a := core.Alert{
 		Check: chk.Name, Severity: chk.Level, Span: loc, Link: chk.Link,
 		Match: match, Action: chk.Action}
@@ -243,11 +251,11 @@ func matchToken(expected, observed string, ignorecase bool) bool {
 		p = ignoreCase + p
 	}
 
-	r, err := regexp.Compile(fmt.Sprintf(tokenTemplate, expected))
+	r, err := regexp2.CompileStd(fmt.Sprintf(tokenTemplate, expected))
 	if core.IsPhrase(expected) || err != nil {
 		return expected == observed
 	}
-	return r.MatchString(observed)
+	return r.MatchStringStd(observed)
 }
 
 func updateExceptions(previous []string, current map[string]struct{}) []string {

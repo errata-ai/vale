@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -23,7 +23,7 @@ type Substitution struct {
 	// speech.
 	POS string
 
-	pattern *regexp.Regexp
+	pattern *regexp2.Regexp
 	repl    []string
 }
 
@@ -69,7 +69,7 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 	}
 	regex = fmt.Sprintf(regex, strings.TrimRight(tokens, "|"))
 
-	re, err := regexp.Compile(regex)
+	re, err := regexp2.CompileStd(regex)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
@@ -85,12 +85,10 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 func (s Substitution) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
-	pos := false
 	txt := blk.Text
-
 	// Leave early if we can to avoid calling `FindAllStringSubmatchIndex`
 	// unnecessarily.
-	if !s.pattern.MatchString(txt) {
+	if !s.pattern.MatchStringStd(txt) {
 		return alerts
 	}
 
@@ -101,15 +99,8 @@ func (s Substitution) Run(blk nlp.Block, f *core.File) []core.Alert {
 				// Based on the current capture group (`idx`), we can determine
 				// the associated replacement string by using the `repl` slice:
 				expected := s.repl[(idx/2)-1]
-				observed := strings.TrimSpace(txt[loc[0]:loc[1]])
+				observed := strings.TrimSpace(re2Loc(txt, loc))
 				if !matchToken(expected, observed, s.Ignorecase) {
-					if s.POS != "" {
-						// If we're given a POS pattern, check that it matches.
-						//
-						// If it doesn't match, the alert doesn't get added to
-						// a File (i.e., `hide` == true).
-						pos = core.CheckPOS(loc, s.POS, txt)
-					}
 					action := s.Fields().Action
 					if action.Name == "replace" && len(action.Params) == 0 {
 						action.Params = strings.Split(expected, "|")
@@ -119,11 +110,7 @@ func (s Substitution) Run(blk nlp.Block, f *core.File) []core.Alert {
 						// that we don't double quote.
 						s.Message = convertMessage(s.Message)
 					}
-					a := core.Alert{
-						Check: s.Name, Severity: s.Level, Span: loc,
-						Link: s.Link, Hide: pos, Match: observed,
-						Action: s.Action}
-
+					a := makeAlert(s.Definition, loc, txt)
 					a.Message, a.Description = formatMessages(s.Message,
 						s.Description, expected, observed)
 

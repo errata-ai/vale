@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dlclark/regexp2"
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/mitchellh/mapstructure"
@@ -51,7 +51,7 @@ func NewExistence(cfg *core.Config, generic baseCheck) (Existence, error) {
 		rule.Append)
 	regex = fmt.Sprintf(regex, strings.Join(rule.Tokens, "|"))
 
-	re, err := core.Compile(regex)
+	re, err := regexp2.CompileStd(regex)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
@@ -68,16 +68,8 @@ func NewExistence(cfg *core.Config, generic baseCheck) (Existence, error) {
 func (e Existence) Run(blk nlp.Block, file *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
-	for _, m := range core.FindAllString(e.pattern, blk.Text) {
-		loc := []int{m.Index, m.Index + m.Length}
-
-		a := core.Alert{Check: e.Name, Severity: e.Level, Span: loc,
-			Link: e.Link, Match: m.String(), Action: e.Action}
-
-		a.Message, a.Description = formatMessages(e.Message,
-			e.Description, m.String())
-
-		alerts = append(alerts, a)
+	for _, loc := range e.pattern.FindAllStringIndex(blk.Text, -1) {
+		alerts = append(alerts, makeAlert(e.Definition, loc, blk.Text))
 	}
 
 	return alerts
