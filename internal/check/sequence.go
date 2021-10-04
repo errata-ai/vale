@@ -53,7 +53,7 @@ func NewSequence(cfg *core.Config, generic baseCheck) (Sequence, error) {
 			regex := makeRegexp(
 				cfg.WordTemplate,
 				rule.Ignorecase,
-				func() bool { return true },
+				func() bool { return false },
 				func() string { return "" },
 				false)
 			regex = fmt.Sprintf(regex, token.Pattern)
@@ -71,7 +71,7 @@ func NewSequence(cfg *core.Config, generic baseCheck) (Sequence, error) {
 	return rule, nil
 }
 
-// Fields provides access to the rule defintion.
+// Fields provides access to the rule definition.
 func (s Sequence) Fields() Definition {
 	return s.Definition
 }
@@ -127,8 +127,15 @@ func sequenceMatches(idx int, chk Sequence, target string, words []tag.Token) ([
 		if tok.Text == target && !core.IntInSlice(jdx, chk.history) {
 			index = jdx
 			// We've found our context.
+			//
+			// The *first* token with a `pattern` becomes the anchor of our
+			// search. From there, we must check both its left- and right-hand
+			// sides to ensure the sequence matches.
 			if idx > 0 {
 				// Check the left-end of the sequence:
+				//
+				// If the anchor is the first token, then there's no left-hand
+				// side to check -- hence, `idx > 0`.
 				for i := 1; idx-i >= 0; i++ {
 					word := words[jdx-i]
 					text = append([]string{word.Text}, text...)
@@ -144,10 +151,11 @@ func sequenceMatches(idx int, chk Sequence, target string, words []tag.Token) ([
 			}
 			if idx < sizeT {
 				// Check the right-end of the sequence
-				for i := 1; idx+i < sizeT; i++ {
-					if i == 1 {
-						text = append(text, words[index].Text)
-					} else if jdx+i >= sizeW {
+				//
+				// If the anchor is the last token, then there's no right-hand
+				// side to check.
+				for i := 0; idx+i < sizeT; i++ {
+					if jdx+i >= sizeW {
 						return []string{}, index
 					}
 					word := words[jdx+i]
@@ -184,6 +192,7 @@ func stepsToString(steps []string) string {
 // Run looks for the user-defined sequence of tokens.
 func (s Sequence) Run(blk nlp.Block, f *core.File) []core.Alert {
 	var alerts []core.Alert
+	var offset []string
 
 	// NOTE: This *requires* that ALL sequence rules be summary-scoped --
 	// otherwise, we would be calculating POS tags for *every* rule
@@ -210,8 +219,12 @@ func (s Sequence) Run(blk nlp.Block, f *core.File) []core.Alert {
 
 					a.Message, a.Description = formatMessages(s.Message,
 						s.Description, steps...)
+					a.Offset = offset
 
 					alerts = append(alerts, a)
+					offset = []string{}
+				} else {
+					offset = append(offset, target)
 				}
 			}
 			break

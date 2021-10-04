@@ -16,9 +16,6 @@ demo.TitleCase = NO
 demo.Cap = NO
 demo.ZeroOccurrence = NO
 
-# TODO: Port to sequence ...
-demo.Meetup = NO
-
 Limit.Rule = YES
 
 [*.md]

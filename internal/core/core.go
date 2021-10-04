@@ -69,8 +69,9 @@ type Alert struct {
 	Span        []int  // the [begin, end] location within a line
 	Match       string // the actual matched text
 
-	Hide  bool `json:"-"` // should we hide this alert?
-	Limit int  `json:"-"` // the max times to report
+	Hide   bool     `json:"-"` // should we hide this alert?
+	Limit  int      `json:"-"` // the max times to report
+	Offset []string `json:"-"` // tokens to ignore before this match
 }
 
 // A Plugin provides a means of extending Vale.
@@ -153,7 +154,7 @@ func (a ByName) Less(i, j int) bool {
 	return ai.Path < aj.Path
 }
 
-// NewFile initilizes a File.
+// NewFile initializes a File.
 func NewFile(src string, config *Config) (*File, error) {
 	var format, ext string
 	var fbytes []byte
@@ -239,6 +240,10 @@ func (f *File) SortedAlerts() []Alert {
 func (f *File) FindLoc(ctx, s string, pad, count int, a Alert) (int, []int) {
 	var length int
 	var lines []string
+
+	for _, s := range a.Offset {
+		ctx, _ = Substitute(ctx, s, '@')
+	}
 
 	pos, substring := initialPosition(ctx, s, a)
 	if pos < 0 {
