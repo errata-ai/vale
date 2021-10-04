@@ -47,7 +47,7 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 	replacements := []string{}
 	for regexstr, replacement := range rule.Swap {
 		opens := strings.Count(regexstr, "(")
-		if opens != strings.Count(regexstr, "?:") &&
+		if opens != strings.Count(regexstr, "(?") &&
 			opens != strings.Count(regexstr, `\(`) {
 			// We rely on manually-added capture groups to associate a match
 			// with its replacement -- e.g.,
