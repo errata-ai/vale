@@ -2,6 +2,7 @@ image: golang:1.15
 
 stages:
   - test
+  - release
 
 test:
   stage: test
@@ -28,5 +29,3 @@ test:
     - make setup
     - make build os=linux exe=vale
     - make test
-
-# TODO: Add deploy stage ...
