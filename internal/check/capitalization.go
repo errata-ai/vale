@@ -3,6 +3,7 @@ package check
 import (
 	"fmt"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
@@ -92,7 +93,8 @@ func (o Capitalization) Run(blk nlp.Block, f *core.File) []core.Alert {
 
 	txt := blk.Text
 	if !o.Check(txt, o.Exceptions, o.exceptRe) {
-		alerts = append(alerts, makeAlert(o.Definition, []int{0, len(txt)}, txt))
+		pos := []int{0, utf8.RuneCountInString(txt)}
+		alerts = append(alerts, makeAlert(o.Definition, pos, txt))
 	}
 
 	return alerts

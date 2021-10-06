@@ -12,6 +12,7 @@ Feature: Checks
     When I test "checks/SentenceCase"
     Then the output should contain exactly:
       """
+      test.html:6:1:demo.SentenceCase:'Something Weird is happening With Vale With Entities' should be sentence-cased
       test.md:5:3:demo.SentenceCase:'this isn't in sentence case' should be sentence-cased
       test.md:11:3:demo.SentenceCase:'This Does Not Comply' should be sentence-cased
       """
