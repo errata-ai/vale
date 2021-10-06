@@ -52,6 +52,6 @@ test:
 docker:
 	GOOS=linux GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/vale ./cmd/vale
 	docker login -u jdkato -p ${DOCKER_PASS}
-	docker build -f Dockerfile -t jdkato/vale:latest .
-	docker tag jdkato/vale:latest jdkato/vale:${LAST_TAG}
-	docker push jdkato/vale
+	docker build -f Dockerfile -t jdkato/vale:${LAST_TAG} .
+	docker tag jdkato/vale:${LAST_TAG} jdkato/vale:latest
+	docker push jdkato/vale:${LAST_TAG}
