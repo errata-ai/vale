@@ -62,7 +62,7 @@ func (o Repetition) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
 	for _, loc := range o.pattern.FindAllStringIndex(txt, -1) {
-		curr = strings.TrimSpace(txt[loc[0]:loc[1]])
+		curr = strings.TrimSpace(re2Loc(txt, loc))
 		if o.Ignorecase {
 			hit = strings.EqualFold(curr, prev) && curr != ""
 		} else {
@@ -75,7 +75,8 @@ func (o Repetition) Run(blk nlp.Block, f *core.File) []core.Alert {
 		}
 
 		if hit && count > o.Max {
-			if !strings.Contains(txt[ploc[0]:loc[1]], "\n") {
+			pos := []int{ploc[0], loc[1]}
+			if !strings.Contains(re2Loc(txt, pos), "\n") {
 				floc := []int{ploc[0], loc[1]}
 				a := makeAlert(o.Definition, floc, txt)
 				a.Message, a.Description = formatMessages(o.Message,
