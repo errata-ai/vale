@@ -2,7 +2,6 @@ LAST_TAG=$(shell git describe --abbrev=0 --tags)
 CURR_SHA=$(shell git rev-parse --verify HEAD)
 
 LDFLAGS=-ldflags "-s -w -X main.version=$(LAST_TAG)"
-BUILD_DIR=./builds
 
 .PHONY: data test lint install rules setup bench compare release
 
