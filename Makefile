@@ -55,3 +55,4 @@ docker:
 	docker build -f Dockerfile -t jdkato/vale:${LAST_TAG} .
 	docker tag jdkato/vale:${LAST_TAG} jdkato/vale:latest
 	docker push jdkato/vale:${LAST_TAG}
+	docker push jdkato/vale:latest
