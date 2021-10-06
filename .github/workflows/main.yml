@@ -1,4 +1,4 @@
-name: goreleaser
+name: Build + Lint
 
 on:
   pull_request:
@@ -32,17 +32,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: Vale
         uses: errata-ai/vale-action@master
         with:
-          styles: |
-            https://github.com/errata-ai/Microsoft/releases/latest/download/Microsoft.zip
-            https://github.com/errata-ai/write-good/releases/latest/download/write-good.zip
-
           files: README.md
           debug: true
-
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
