@@ -27,3 +27,23 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Vale
+        uses: errata-ai/vale-action@master
+        with:
+          styles: |
+            https://github.com/errata-ai/Microsoft/releases/latest/download/Microsoft.zip
+            https://github.com/errata-ai/write-good/releases/latest/download/write-good.zip
+          config: https://gist.githubusercontent.com/jdkato/9eff65084a3fa5f835a0aff328ec80ce/raw/b6d40e4e19325b253ed55bf8dd6879ee7822c61a/.vale.ini
+
+          files: README.md
+          debug: true
+
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
