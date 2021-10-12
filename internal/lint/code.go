@@ -11,7 +11,7 @@ import (
 	"github.com/jdkato/regexp"
 )
 
-// lintCode lints source code -- whether it be a markup codeblock, a complete
+// lintCode lints source code -- whether it be a markup code block, a complete
 // file, or some other portion of text.
 func (l *Linter) lintCode(f *core.File) int {
 	var line, match, txt string

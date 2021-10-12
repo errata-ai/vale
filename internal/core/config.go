@@ -11,7 +11,7 @@ import (
 	"github.com/gobwas/glob"
 )
 
-// CLIFlags holds the values that are defined at rumtime by the user.
+// CLIFlags holds the values that are defined at runtime by the user.
 //
 // For example, `vale --minAlertLevel=error`.
 type CLIFlags struct {

@@ -123,11 +123,16 @@ func (l Linter) lintScope(f *core.File, state walker, txt string) {
 	for _, tag := range state.tagHistory {
 		scope, match := tagToScope[tag]
 		if (match && !core.StringInSlice(tag, inlineTags)) || heading.MatchString(tag) {
+			if scope == "text.blockquote" || scope == "text.list" {
+				f.Summary.WriteString(txt + " ")
+			}
+
 			if match {
 				scope = scope + f.RealExt
 			} else {
 				scope = "text.heading." + tag + f.RealExt
 			}
+
 			txt = strings.TrimLeft(txt, " ")
 			b := state.block(txt, scope)
 			l.lintBlock(f, b, state.lines, 0, false)
@@ -135,8 +140,6 @@ func (l Linter) lintScope(f *core.File, state walker, txt string) {
 		}
 	}
 
-	// NOTE: We don't include headings, list items, or table cells (which are
-	// processed above) in our Summary content.
 	f.Summary.WriteString(txt + " ")
 
 	b := state.block(txt, "txt")
