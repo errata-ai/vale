@@ -40,6 +40,7 @@ type File struct {
 	RealExt    string            // actual file extension
 	Sequences  []string          // tracks various info (e.g., defined abbreviations)
 	Summary    bytes.Buffer      // holds content to be included in summarization checks
+	Metrics    map[string]int    // count-based metrics
 
 	history  map[string]int
 	limits   map[string]int
@@ -223,7 +224,7 @@ func NewFile(src string, config *Config) (*File, error) {
 		BaseStyles: baseStyles, Checks: checks, Lines: lines, Content: content,
 		Comments: make(map[string]bool), history: make(map[string]int),
 		simple: config.Flags.Simple, Transform: transform,
-		limits: make(map[string]int), Path: src,
+		limits: make(map[string]int), Path: src, Metrics: make(map[string]int),
 		NLP: nlp.NLPInfo{Endpoint: config.NLPEndpoint, Lang: lang},
 	}
 

@@ -47,6 +47,7 @@ func (o Readability) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
 	doc := summarize.NewDocument(blk.Text)
+
 	if core.StringInSlice("SMOG", o.Metrics) {
 		grade += doc.SMOG()
 	}

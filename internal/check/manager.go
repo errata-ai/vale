@@ -106,7 +106,7 @@ func (mgr *Manager) AssignNLP(f *core.File) nlp.NLPInfo {
 	return nlp.NLPInfo{
 		Scope:        f.RealExt,
 		Segmentation: mgr.HasScope("sentence"),
-		Splitting:    mgr.HasScope("paragraph"),
+		Splitting:    true, // FIXME: check metric variables ...
 		Tagging:      mgr.NeedsTagging(),
 		Endpoint:     f.NLP.Endpoint,
 		Lang:         f.NLP.Lang,

@@ -3,6 +3,7 @@ module github.com/errata-ai/vale/v2
 go 1.17
 
 require (
+	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/errata-ai/ini v1.63.0
 	github.com/errata-ai/regexp2 v1.7.0
 	github.com/gobwas/glob v0.2.3

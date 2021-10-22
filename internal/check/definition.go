@@ -47,6 +47,7 @@ var extensionPoints = []string{
 	"readability",
 	"spelling",
 	"sequence",
+	"metric",
 }
 var defaultRules = map[string]map[string]interface{}{
 	"Avoid": {
@@ -111,6 +112,8 @@ func buildRule(cfg *core.Config, generic baseCheck) (Rule, error) {
 		return NewConsistency(cfg, generic)
 	case "sequence":
 		return NewSequence(cfg, generic)
+	case "metric":
+		return NewMetric(cfg, generic)
 	case "lt":
 		return NewLanguageTool(cfg, generic)
 	default:

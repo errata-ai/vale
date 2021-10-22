@@ -131,6 +131,7 @@ func (l Linter) lintScope(f *core.File, state walker, txt string) {
 				scope = scope + f.RealExt
 			} else {
 				scope = "text.heading." + tag + f.RealExt
+				f.Metrics["$headings"] += 1
 			}
 
 			txt = strings.TrimLeft(txt, " ")
