@@ -41,6 +41,18 @@ Feature: Checks
       test.md:16:1:Vale.Spelling:Did you really mean 'gitlab'?
       """
 
+  Scenario: Existence
+    When I test "checks/existence"
+    Then the output should contain exactly:
+      """
+      """
+
+  Scenario: Substitution
+    When I test "checks/substitution"
+    Then the output should contain exactly:
+      """
+      """
+
   Scenario: Sequence
     When I test "checks/Sequence"
     Then the output should contain exactly:

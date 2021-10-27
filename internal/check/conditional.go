@@ -1,8 +1,6 @@
 package check
 
 import (
-	"strings"
-
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
@@ -27,7 +25,6 @@ type Conditional struct {
 
 // NewConditional creates a new `conditional`-based rule.
 func NewConditional(cfg *core.Config, generic baseCheck) (Conditional, error) {
-	var re *regexp2.Regexp
 	var expression []*regexp2.Regexp
 
 	rule := Conditional{}
@@ -38,9 +35,7 @@ func NewConditional(cfg *core.Config, generic baseCheck) (Conditional, error) {
 		return rule, readStructureError(err, path)
 	}
 
-	rule.Exceptions = updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
-
-	re, err = regexp2.CompileStd(strings.Join(rule.Exceptions, "|"))
+	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}

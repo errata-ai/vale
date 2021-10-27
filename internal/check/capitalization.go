@@ -1,8 +1,6 @@
 package check
 
 import (
-	"fmt"
-	"strings"
 	"unicode/utf8"
 
 	"github.com/errata-ai/regexp2"
@@ -40,23 +38,11 @@ func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, err
 		return rule, readStructureError(err, path)
 	}
 
-	regex := makeRegexp(
-		"",
-		false,
-		func() bool { return true },
-		func() string { return "" },
-		true)
-
-	rule.Exceptions = updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
-
-	regex = fmt.Sprintf(regex, strings.Join(rule.Exceptions, "|"))
-	if len(rule.Exceptions) > 0 {
-		re, err := regexp2.CompileStd(regex)
-		if err != nil {
-			return rule, core.NewE201FromPosition(err.Error(), path, 1)
-		}
-		rule.exceptRe = re
+	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
+	if err != nil {
+		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
+	rule.exceptRe = re
 
 	if rule.Match == "$title" {
 		var tc *transform.TitleConverter

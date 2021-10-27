@@ -261,7 +261,7 @@ func matchToken(expected, observed string, ignorecase bool) bool {
 	return r.MatchStringStd(observed)
 }
 
-func updateExceptions(previous []string, current map[string]struct{}) []string {
+func updateExceptions(previous []string, current map[string]struct{}) (*regexp2.Regexp, error) {
 	for term := range current {
 		previous = append(previous, term)
 	}
@@ -271,5 +271,17 @@ func updateExceptions(previous []string, current map[string]struct{}) []string {
 		return len(previous[p]) > len(previous[q])
 	})
 
-	return previous
+	regex := makeRegexp(
+		"",
+		false,
+		func() bool { return true },
+		func() string { return "" },
+		true)
+
+	regex = fmt.Sprintf(regex, strings.Join(previous, "|"))
+	if len(previous) > 0 {
+		return regexp2.CompileStd(regex)
+	}
+
+	return nil, nil
 }

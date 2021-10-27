@@ -25,8 +25,11 @@ type Existence struct {
 	// `tokens` (`array`): A list of tokens to be transformed into a
 	// non-capturing group.
 	Tokens []string
+	// `exceptions` (`array`): An array of strings to be ignored.
+	Exceptions []string
 
-	pattern *regexp2.Regexp
+	exceptRe *regexp2.Regexp
+	pattern  *regexp2.Regexp
 }
 
 // NewExistence creates a new `Rule` that extends `Existence`.
@@ -43,6 +46,12 @@ func NewExistence(cfg *core.Config, generic baseCheck) (Existence, error) {
 		return rule, readStructureError(err, path)
 	}
 
+	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
+	if err != nil {
+		return rule, core.NewE201FromPosition(err.Error(), path, 1)
+	}
+	rule.exceptRe = re
+
 	regex := makeRegexp(
 		cfg.WordTemplate,
 		rule.IgnoreCase,
@@ -51,7 +60,7 @@ func NewExistence(cfg *core.Config, generic baseCheck) (Existence, error) {
 		rule.Append)
 	regex = fmt.Sprintf(regex, strings.Join(rule.Tokens, "|"))
 
-	re, err := regexp2.CompileStd(regex)
+	re, err = regexp2.CompileStd(regex)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
@@ -69,7 +78,10 @@ func (e Existence) Run(blk nlp.Block, file *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
 	for _, loc := range e.pattern.FindAllStringIndex(blk.Text, -1) {
-		alerts = append(alerts, makeAlert(e.Definition, loc, blk.Text))
+		observed := strings.TrimSpace(re2Loc(blk.Text, loc))
+		if !isMatch(e.exceptRe, observed) {
+			alerts = append(alerts, makeAlert(e.Definition, loc, blk.Text))
+		}
 	}
 
 	return alerts

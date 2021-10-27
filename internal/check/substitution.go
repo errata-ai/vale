@@ -22,9 +22,12 @@ type Substitution struct {
 	// `pos` (`string`): A regular expression matching tokens to parts of
 	// speech.
 	POS string
+	// `exceptions` (`array`): An array of strings to be ignored.
+	Exceptions []string
 
-	pattern *regexp2.Regexp
-	repl    []string
+	exceptRe *regexp2.Regexp
+	pattern  *regexp2.Regexp
+	repl     []string
 }
 
 // NewSubstitution creates a new `substitution`-based rule.
@@ -37,6 +40,12 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 		return rule, readStructureError(err, path)
 	}
 	tokens := ""
+
+	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
+	if err != nil {
+		return rule, core.NewE201FromPosition(err.Error(), path, 1)
+	}
+	rule.exceptRe = re
 
 	regex := makeRegexp(
 		cfg.WordTemplate,
@@ -69,7 +78,7 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 	}
 	regex = fmt.Sprintf(regex, strings.TrimRight(tokens, "|"))
 
-	re, err := regexp2.CompileStd(regex)
+	re, err = regexp2.CompileStd(regex)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
@@ -100,7 +109,9 @@ func (s Substitution) Run(blk nlp.Block, f *core.File) []core.Alert {
 				// the associated replacement string by using the `repl` slice:
 				expected := s.repl[(idx/2)-1]
 				observed := strings.TrimSpace(re2Loc(txt, loc))
-				if !matchToken(expected, observed, s.Ignorecase) {
+
+				same := matchToken(expected, observed, s.Ignorecase)
+				if !same && !isMatch(s.exceptRe, observed) {
 					action := s.Fields().Action
 					if action.Name == "replace" && len(action.Params) == 0 {
 						action.Params = strings.Split(expected, "|")
