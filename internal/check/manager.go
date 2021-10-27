@@ -263,6 +263,9 @@ func (mgr *Manager) loadVocabRules() {
 				vocab["swap"].(map[string]string)[strings.ToLower(term)] = term
 			}
 		}
+		if level, ok := mgr.Config.RuleToLevel["Vale.Terms"]; ok {
+			vocab["level"] = level
+		}
 		rule, _ := buildRule(mgr.Config, vocab)
 		mgr.rules["Vale.Terms"] = rule
 	}
@@ -271,6 +274,9 @@ func (mgr *Manager) loadVocabRules() {
 		avoid := defaultRules["Avoid"]
 		for term := range mgr.Config.RejectedTokens {
 			avoid["tokens"] = append(avoid["tokens"].([]string), term)
+		}
+		if level, ok := mgr.Config.RuleToLevel["Vale.Avoid"]; ok {
+			avoid["level"] = level
 		}
 		rule, _ := buildRule(mgr.Config, avoid)
 		mgr.rules["Vale.Avoid"] = rule
