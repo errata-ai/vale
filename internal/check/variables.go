@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/errata-ai/regexp2"
-	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/jdkato/prose/transform"
 )
 
@@ -19,27 +18,24 @@ func isMatch(r *regexp2.Regexp, s string) bool {
 	return r.String() != "" && match
 }
 
-func makeExceptions(ignore []string) *regexp2.Regexp {
-	s := ""
-	if len(ignore) > 0 {
-		s = `\b(?:` + strings.Join(ignore, "|") + `)\b|`
-	}
-	return regexp2.MustCompileStd(s + `[\p{N}\p{L}*]+[^\s]*`)
+func lower(s string, re *regexp2.Regexp) bool {
+	return s == strings.ToLower(s) || isMatch(re, s)
 }
 
-func lower(s string, ignore []string, re *regexp2.Regexp) bool {
-	return s == strings.ToLower(s) || core.StringInSlice(s, ignore)
+func upper(s string, re *regexp2.Regexp) bool {
+	return s == strings.ToUpper(s) || isMatch(re, s)
 }
 
-func upper(s string, ignore []string, re *regexp2.Regexp) bool {
-	return s == strings.ToUpper(s) || core.StringInSlice(s, ignore)
-}
-
-func title(s string, ignore []string, except *regexp2.Regexp, tc *transform.TitleConverter) bool {
+func title(s string, except *regexp2.Regexp, tc *transform.TitleConverter) bool {
 	count := 0.0
 	words := 0.0
 
-	re := makeExceptions(ignore)
+	ps := `[\p{N}\p{L}*]+[^\s]*`
+	if except != nil {
+		ps = except.String() + "|" + ps
+	}
+	re := regexp2.MustCompileStd(ps)
+
 	expected := re.FindAllString(tc.Title(s), -1)
 
 	extent := len(expected)
@@ -76,11 +72,15 @@ func hasAnySuffix(s string, suffixes []string) bool {
 	return false
 }
 
-func sentence(s string, ignore []string, indicators []string, except *regexp2.Regexp) bool {
+func sentence(s string, indicators []string, except *regexp2.Regexp) bool {
 	count := 0.0
 	words := 0.0
 
-	re := makeExceptions(ignore)
+	ps := `[\p{N}\p{L}*]+[^\s]*`
+	if except != nil {
+		ps = except.String() + "|" + ps
+	}
+	re := regexp2.MustCompileStd(ps)
 
 	tokens := re.FindAllString(strings.TrimRight(s, "?!.:"), -1)
 	for i, w := range tokens {
@@ -113,7 +113,7 @@ func sentence(s string, ignore []string, indicators []string, except *regexp2.Re
 	return (count / words) > 0.8
 }
 
-var varToFunc = map[string]func(string, []string, *regexp2.Regexp) bool{
+var varToFunc = map[string]func(string, *regexp2.Regexp) bool{
 	"$lower": lower,
 	"$upper": upper,
 }

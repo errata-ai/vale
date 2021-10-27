@@ -17,7 +17,7 @@ type Capitalization struct {
 	Definition `mapstructure:",squash"`
 	// `match` (`string`): $title, $sentence, $lower, $upper, or a pattern.
 	Match string
-	Check func(s string, ignore []string, re *regexp2.Regexp) bool
+	Check func(s string, re *regexp2.Regexp) bool
 	// `style` (`string`): AP or Chicago; only applies when match is set to
 	// $title.
 	Style string
@@ -65,12 +65,12 @@ func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, err
 		} else {
 			tc = transform.NewTitleConverter(transform.APStyle)
 		}
-		rule.Check = func(s string, ignore []string, re *regexp2.Regexp) bool {
-			return title(s, ignore, re, tc)
+		rule.Check = func(s string, re *regexp2.Regexp) bool {
+			return title(s, re, tc)
 		}
 	} else if rule.Match == "$sentence" {
-		rule.Check = func(s string, ignore []string, re *regexp2.Regexp) bool {
-			return sentence(s, ignore, rule.Indicators, re)
+		rule.Check = func(s string, re *regexp2.Regexp) bool {
+			return sentence(s, rule.Indicators, re)
 		}
 	} else if f, ok := varToFunc[rule.Match]; ok {
 		rule.Check = f
@@ -79,8 +79,8 @@ func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, err
 		if err != nil {
 			return rule, core.NewE201FromPosition(err.Error(), path, 1)
 		}
-		rule.Check = func(s string, ignore []string, r *regexp2.Regexp) bool {
-			return re.MatchStringStd(s) || core.StringInSlice(s, ignore)
+		rule.Check = func(s string, r *regexp2.Regexp) bool {
+			return re.MatchStringStd(s) || isMatch(r, s)
 		}
 	}
 
@@ -92,7 +92,7 @@ func (o Capitalization) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
 	txt := blk.Text
-	if !o.Check(txt, o.Exceptions, o.exceptRe) {
+	if !o.Check(txt, o.exceptRe) {
 		pos := []int{0, utf8.RuneCountInString(txt)}
 		alerts = append(alerts, makeAlert(o.Definition, pos, txt))
 	}

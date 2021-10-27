@@ -56,7 +56,7 @@ func TestSentence(t *testing.T) {
 			r = regexp2.MustCompileStd(regex)
 		}
 
-		s := sentence(h.heading, h.exceptions, h.indicators, r)
+		s := sentence(h.heading, h.indicators, r)
 		if s != h.match {
 			t.Errorf("expected = %v, got = %v (%s)", h.match, s, h.heading)
 		}
