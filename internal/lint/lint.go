@@ -205,10 +205,6 @@ func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) {
 	// See fixtures/i18n for an example.
 	needsLookup := strings.Count(blk.Text, "\n") > 0
 	for _, b := range blks {
-		switch strings.Split(b.Scope, ".")[0] {
-		case "paragraph":
-			f.Metrics["$paragraphs"]++
-		}
 		l.lintBlock(f, b, lines, 0, needsLookup)
 	}
 }

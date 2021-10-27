@@ -64,6 +64,7 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 			break
 		} else if tokt == html.StartTagToken && core.StringInSlice(txt, skipTags) {
 			inBlock = true
+			f.Metrics[txt]++
 		} else if inBlock && core.StringInSlice(txt, skipTags) {
 			inBlock = false
 		} else if tokt == html.StartTagToken {
@@ -124,24 +125,22 @@ func (l Linter) lintScope(f *core.File, state walker, txt string) {
 		scope, match := tagToScope[tag]
 		if (match && !core.StringInSlice(tag, inlineTags)) || heading.MatchString(tag) {
 			if scope == "text.blockquote" || scope == "text.list" {
-				f.Summary.WriteString(txt + " ")
+				f.Summary.WriteString(txt + "\n\n")
 			}
 
-			if match {
-				scope = scope + f.RealExt
-			} else {
-				scope = "text.heading." + tag + f.RealExt
-				f.Metrics["$headings"] += 1
+			if !match {
+				scope = "text.heading." + tag
 			}
+			f.Metrics[strings.TrimPrefix(scope, "text.")] += 1
 
 			txt = strings.TrimLeft(txt, " ")
-			b := state.block(txt, scope)
+			b := state.block(txt, scope+f.RealExt)
 			l.lintBlock(f, b, state.lines, 0, false)
 			return
 		}
 	}
 
-	f.Summary.WriteString(txt + " ")
+	f.Summary.WriteString(txt + "\n\n")
 
 	b := state.block(txt, "txt")
 	l.lintProse(f, b, state.lines)

@@ -42,11 +42,9 @@ func NewMetric(cfg *core.Config, generic baseCheck) (Metric, error) {
 func (o Metric) Run(blk nlp.Block, f *core.File) []core.Alert {
 	alerts := []core.Alert{}
 
-	parameters := map[string]interface{}{}
-	parameters["heading_count"] = f.Metrics["$headings"]
-	parameters["paragraph_count"] = f.Metrics["$paragraphs"]
-
+	parameters := f.ComputeMetrics()
 	result, _ := o.exp.Evaluate(parameters)
+
 	if result != nil && result.(bool) {
 		a := core.Alert{Check: o.Name, Severity: o.Level, Span: []int{1, 1},
 			Link: o.Link}

@@ -11,6 +11,7 @@ import (
 
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/gobwas/glob"
+	"github.com/jdkato/prose/summarize"
 	"github.com/jdkato/regexp"
 )
 
@@ -235,6 +236,26 @@ func NewFile(src string, config *Config) (*File, error) {
 func (f *File) SortedAlerts() []Alert {
 	sort.Sort(ByPosition(f.Alerts))
 	return f.Alerts
+}
+
+// ComputeMetrics returns all of f's metrics.
+func (f *File) ComputeMetrics() map[string]interface{} {
+	params := map[string]interface{}{}
+	for k, v := range f.Metrics {
+		params[k] = v
+	}
+	doc := summarize.NewDocument(f.Summary.String())
+
+	params["complex_words"] = doc.NumComplexWords
+	params["long_words"] = doc.NumLongWords
+	params["paragraphs"] = doc.NumParagraphs - 1
+	params["sentences"] = doc.NumSentences
+	params["characters"] = doc.NumCharacters
+	params["words"] = doc.NumWords
+	params["polysyllabic_words"] = doc.NumPolysylWords
+	params["syllables"] = doc.NumSyllables
+
+	return params
 }
 
 // FindLoc calculates the line and span of an Alert.

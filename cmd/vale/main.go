@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/errata-ai/vale/v2/internal/cli"
@@ -120,7 +119,7 @@ func main() {
 		cmd, exists := cli.Actions[args[0]]
 		if exists {
 			if err = cmd(args[1:], config); err != nil {
-				log.Fatal(err)
+				handleError(err)
 			}
 			os.Exit(0)
 		}
