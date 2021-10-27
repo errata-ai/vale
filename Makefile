@@ -46,7 +46,7 @@ data:
 
 test:
 	go test ./internal/core ./internal/lint ./internal/check ./pkg/glob
-	cucumber --format progress
+	cucumber --format progress --publish-quiet
 
 docker:
 	GOOS=linux GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/vale ./cmd/vale
