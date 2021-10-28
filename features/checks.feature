@@ -42,13 +42,13 @@ Feature: Checks
       """
 
   Scenario: Existence
-    When I test "checks/existence"
+    When I test "checks/Existence"
     Then the output should contain exactly:
       """
       """
 
   Scenario: Substitution
-    When I test "checks/substitution"
+    When I test "checks/Substitution"
     Then the output should contain exactly:
       """
       """
