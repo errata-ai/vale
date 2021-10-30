@@ -168,13 +168,18 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
+		if strings.HasPrefix(line, "#") {
+			// comment
+			continue
+		}
+		line = strings.Split(line, "#")[0]
+
 		parts := strings.Fields(line)
 		if len(parts) == 0 {
 			continue
 		}
+
 		switch parts[0] {
-		case "#":
-			continue
 		case "TRY":
 			if len(parts) != 2 {
 				return nil, fmt.Errorf("TRY stanza had %d fields, expected 2", len(parts))
