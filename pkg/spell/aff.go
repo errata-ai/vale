@@ -168,11 +168,6 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		if strings.HasPrefix(line, "#") {
-			// comment
-			continue
-		}
-		line = strings.Split(line, "#")[0]
 
 		parts := strings.Fields(line)
 		if len(parts) == 0 {
@@ -181,7 +176,7 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 
 		switch parts[0] {
 		case "TRY":
-			if len(parts) != 2 {
+			if len(parts) < 2 {
 				return nil, fmt.Errorf("TRY stanza had %d fields, expected 2", len(parts))
 			}
 			aff.TryChars = parts[1]
@@ -190,25 +185,19 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 			//  we don't care, as we dynamically allocate
 			if len(parts) == 2 {
 				continue
-			}
-			if len(parts) != 3 {
+			} else if len(parts) < 3 {
 				return nil, fmt.Errorf("ICONV stanza had %d fields, expected 2", len(parts))
 			}
-			// we have 3
 			aff.IconvReplacements = append(aff.IconvReplacements, parts[1], parts[2])
 		case "REP":
-			// if only 2 fields, then its the first stanza that just provides a count
-			//  we don't care, as we dynamically allocate
 			if len(parts) == 2 {
 				continue
-			}
-			if len(parts) != 3 {
+			} else if len(parts) < 3 {
 				return nil, fmt.Errorf("REP stanza had %d fields, expected 2", len(parts))
 			}
-			// we have 3
 			aff.Replacements = append(aff.Replacements, [2]string{parts[1], parts[2]})
 		case "COMPOUNDMIN":
-			if len(parts) != 2 {
+			if len(parts) < 2 {
 				return nil, fmt.Errorf("COMPOUNDMIN stanza had %d fields, expected 2", len(parts))
 			}
 			val, err := strconv.ParseInt(parts[1], 10, 64)
@@ -217,12 +206,12 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 			}
 			aff.CompoundMin = int(val)
 		case "ONLYINCOMPOUND":
-			if len(parts) != 2 {
+			if len(parts) < 2 {
 				return nil, fmt.Errorf("ONLYINCOMPOUND stanza had %d fields, expected 2", len(parts))
 			}
 			aff.CompoundOnly = parts[1]
 		case "COMPOUNDRULE":
-			if len(parts) != 2 {
+			if len(parts) < 2 {
 				return nil, fmt.Errorf("COMPOUNDRULE stanza had %d fields, expected 2", len(parts))
 			}
 			val, err := strconv.ParseInt(parts[1], 10, 64)
@@ -237,7 +226,7 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 				}
 			}
 		case "NOSUGGEST":
-			if len(parts) != 2 {
+			if len(parts) < 2 {
 				return nil, fmt.Errorf("NOSUGGEST stanza had %d fields, expected 2", len(parts))
 			}
 			// should use runes or parse correctly
@@ -247,12 +236,12 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 			}
 			aff.NoSuggestFlag = chars[0]
 		case "WORDCHARS":
-			if len(parts) != 2 {
+			if len(parts) < 2 {
 				return nil, fmt.Errorf("WORDCHAR stanza had %d fields, expected 2", len(parts))
 			}
 			aff.WordChars = parts[1]
 		case "FLAG":
-			if len(parts) != 2 {
+			if len(parts) < 2 {
 				return nil, fmt.Errorf("FLAG stanza had %d, expected 1", len(parts))
 			}
 			aff.Flag = parts[1]
@@ -262,20 +251,8 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 				atype = Suffix
 			}
 
-			switch len(parts) {
-			case 4:
-				cross, err := isCrossProduct(parts[2])
-				if err != nil {
-					return nil, err
-				}
-				// this is a new Affix!
-				a := affix{
-					Type:         atype,
-					CrossProduct: cross,
-				}
-				flag := rune(parts[1][0])
-				aff.AffixMap[flag] = a
-			case 5:
+			sections := len(parts)
+			if sections > 4 {
 				// does this need to be split out into suffix and prefix?
 				flag := rune(parts[1][0])
 				a, ok := aff.AffixMap[flag]
@@ -310,11 +287,23 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 					matcher:   matcher,
 				})
 				aff.AffixMap[flag] = a
-			default:
-				return nil, fmt.Errorf("%s stanza had %d fields, expected 4 or 5", parts[0], len(parts))
+			} else if sections > 3 {
+				cross, err := isCrossProduct(parts[2])
+				if err != nil {
+					return nil, err
+				}
+				// this is a new Affix!
+				a := affix{
+					Type:         atype,
+					CrossProduct: cross,
+				}
+				flag := rune(parts[1][0])
+				aff.AffixMap[flag] = a
 			}
 		default:
-			// TODO: Should this happen?
+			// Do nothing.
+			//
+			// Hunspell ignores lines that don't start with a known directive.
 		}
 	}
 
