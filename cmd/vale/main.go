@@ -77,6 +77,9 @@ func doLint(args []string, l *lint.Linter, glob string) ([]*core.File, error) {
 			return linted, core.NewE100("doLint", err)
 		}
 		linted, err = l.LintString(string(stdin))
+		if err != nil {
+			return linted, core.NewE100("doLint", err)
+		}
 	}
 
 	return linted, err

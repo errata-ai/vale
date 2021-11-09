@@ -163,10 +163,19 @@ func (l *Linter) lintRST(f *core.File) error {
 
 	if !l.HasDir {
 		html, err = callRst(f, s, rst2html, python)
+		if err != nil {
+			return core.NewE100(f.Path, err)
+		}
 	} else if err := l.startRstServer(rst2html, python); err != nil {
 		html, err = callRst(f, s, rst2html, python)
+		if err != nil {
+			return core.NewE100(f.Path, err)
+		}
 	} else {
 		html, err = l.post(f, s, rstURL)
+		if err != nil {
+			return core.NewE100(f.Path, err)
+		}
 	}
 
 	return l.lintHTMLTokens(f, []byte(html), 0)

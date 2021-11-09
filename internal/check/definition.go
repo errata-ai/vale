@@ -254,7 +254,7 @@ func matchToken(expected, observed string, ignorecase bool) bool {
 		p = ignoreCase + p
 	}
 
-	r, err := regexp2.CompileStd(fmt.Sprintf(tokenTemplate, expected))
+	r, err := regexp2.CompileStd(fmt.Sprintf(tokenTemplate, p))
 	if core.IsPhrase(expected) || err != nil {
 		return expected == observed
 	}

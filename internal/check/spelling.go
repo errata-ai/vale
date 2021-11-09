@@ -134,7 +134,7 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 		exists := model.AddWordListFile(vocab)
 		if exists != nil {
 			vocab, _ = filepath.Abs(ignore)
-			exists = model.AddWordListFile(vocab)
+			_ = model.AddWordListFile(vocab)
 			// TODO: check error?
 		}
 	}

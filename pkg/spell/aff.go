@@ -64,7 +64,7 @@ type dictConfig struct {
 	Replacements      [][2]string
 	AffixMap          map[rune]affix
 	CamelCase         int
-	CompoundMin       int
+	CompoundMin       int64
 	CompoundOnly      string
 	CompoundRule      []string
 	compoundMap       map[rune][]string
@@ -204,7 +204,7 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 			if err != nil {
 				return nil, fmt.Errorf("COMPOUNDMIN stanza had %q expected number", parts[1])
 			}
-			aff.CompoundMin = int(val)
+			aff.CompoundMin = val
 		case "ONLYINCOMPOUND":
 			if len(parts) < 2 {
 				return nil, fmt.Errorf("ONLYINCOMPOUND stanza had %d fields, expected 2", len(parts))
