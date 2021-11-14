@@ -58,7 +58,7 @@ func (o Metric) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 
 	match, err := tengo.Eval(ctx, eqb, parameters)
 	if err != nil {
-		return alerts, core.NewE201FromTarget(err.Error(), "formula", o.path)
+		return alerts, core.NewE201FromTarget(err.Error(), "condition", o.path)
 	}
 
 	if match.(bool) {

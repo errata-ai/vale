@@ -1,4 +1,10 @@
 Feature: Styles
+    Scenario: Lint against Readability
+        When I apply style "Readability"
+        Then the output should contain exactly:
+            """
+            """
+
     Scenario: Lint against demo
         When I apply style "demo"
         Then the output should contain exactly:
