@@ -51,7 +51,7 @@ func NewOccurrence(cfg *core.Config, generic baseCheck) (Occurrence, error) {
 
 // Run checks the number of occurrences of a user-defined regex against a
 // certain threshold.
-func (o Occurrence) Run(blk nlp.Block, f *core.File) []core.Alert {
+func (o Occurrence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var a core.Alert
 
 	alerts := []core.Alert{}
@@ -84,7 +84,7 @@ func (o Occurrence) Run(blk nlp.Block, f *core.File) []core.Alert {
 		alerts = append(alerts, a)
 	}
 
-	return alerts
+	return alerts, nil
 }
 
 // Fields provides access to the internal rule definition.

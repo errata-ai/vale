@@ -59,7 +59,7 @@ func NewConditional(cfg *core.Config, generic baseCheck) (Conditional, error) {
 }
 
 // Run evalutes the given conditional statement.
-func (c Conditional) Run(blk nlp.Block, f *core.File) []core.Alert {
+func (c Conditional) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
 	txt := blk.Text
@@ -91,7 +91,7 @@ func (c Conditional) Run(blk nlp.Block, f *core.File) []core.Alert {
 		}
 	}
 
-	return alerts
+	return alerts, nil
 }
 
 // Fields provides access to the internal rule definition.

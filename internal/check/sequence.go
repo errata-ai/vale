@@ -190,7 +190,7 @@ func stepsToString(steps []string) string {
 }
 
 // Run looks for the user-defined sequence of tokens.
-func (s Sequence) Run(blk nlp.Block, f *core.File) []core.Alert {
+func (s Sequence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var alerts []core.Alert
 	var offset []string
 
@@ -231,5 +231,5 @@ func (s Sequence) Run(blk nlp.Block, f *core.File) []core.Alert {
 		}
 	}
 
-	return alerts
+	return alerts, nil
 }

@@ -148,7 +148,7 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 }
 
 // Run performs spell-checking on the provided text.
-func (s Spelling) Run(blk nlp.Block, f *core.File) []core.Alert {
+func (s Spelling) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
 	txt := blk.Text
@@ -180,7 +180,7 @@ OUTER:
 		}
 	}
 
-	return alerts
+	return alerts, nil
 }
 
 // Fields provides access to the internal rule definition.

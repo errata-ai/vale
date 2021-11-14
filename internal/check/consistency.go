@@ -74,7 +74,7 @@ func NewConsistency(cfg *core.Config, generic baseCheck) (Consistency, error) {
 }
 
 // Run looks for inconsistent use of a user-defined regex.
-func (o Consistency) Run(blk nlp.Block, f *core.File) []core.Alert {
+func (o Consistency) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
 	loc := []int{}
@@ -99,7 +99,7 @@ func (o Consistency) Run(blk nlp.Block, f *core.File) []core.Alert {
 		}
 	}
 
-	return alerts
+	return alerts, nil
 }
 
 // Fields provides access to the internal rule definition.

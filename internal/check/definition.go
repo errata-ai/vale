@@ -16,7 +16,7 @@ import (
 
 // Rule represents in individual writing construct to enforce.
 type Rule interface {
-	Run(blk nlp.Block, file *core.File) []core.Alert
+	Run(blk nlp.Block, file *core.File) ([]core.Alert, error)
 	Fields() Definition
 	Pattern() string
 }

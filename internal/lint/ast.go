@@ -103,7 +103,10 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 		if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
 			content := buf.String()
 			if strings.TrimSpace(content) != "" {
-				l.lintScope(f, walker, content)
+				err := l.lintScope(f, walker, content)
+				if err != nil {
+					return err
+				}
 			}
 			walker.reset()
 			buf.Reset()
@@ -116,11 +119,10 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 		l.lintTags(f, walker, tok)
 	}
 
-	l.lintSizedScopes(f)
-	return nil
+	return l.lintSizedScopes(f)
 }
 
-func (l Linter) lintScope(f *core.File, state walker, txt string) {
+func (l Linter) lintScope(f *core.File, state walker, txt string) error {
 	for _, tag := range state.tagHistory {
 		scope, match := tagToScope[tag]
 		if (match && !core.StringInSlice(tag, inlineTags)) || heading.MatchString(tag) {
@@ -135,18 +137,17 @@ func (l Linter) lintScope(f *core.File, state walker, txt string) {
 
 			txt = strings.TrimLeft(txt, " ")
 			b := state.block(txt, scope+f.RealExt)
-			l.lintBlock(f, b, state.lines, 0, false)
-			return
+			return l.lintBlock(f, b, state.lines, 0, false)
 		}
 	}
 
 	f.Summary.WriteString(txt + "\n\n")
 
 	b := state.block(txt, "txt")
-	l.lintProse(f, b, state.lines)
+	return l.lintProse(f, b, state.lines)
 }
 
-func (l Linter) lintSizedScopes(f *core.File) {
+func (l Linter) lintSizedScopes(f *core.File) error {
 	f.ResetComments()
 
 	// Run all rules with `scope: summary`
@@ -164,8 +165,13 @@ func (l Linter) lintSizedScopes(f *core.File) {
 	raw := nlp.NewBlock("", strings.Join(f.Lines, ""), "raw."+f.RealExt)
 
 	for _, blk := range []nlp.Block{summary, raw} {
-		l.lintBlock(f, blk, len(f.Lines), 0, true)
+		err := l.lintBlock(f, blk, len(f.Lines), 0, true)
+		if err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
 func (l Linter) lintTags(f *core.File, state walker, tok html.Token) {

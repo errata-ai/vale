@@ -74,7 +74,7 @@ func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, err
 }
 
 // Run checks the capitalization style of the provided text.
-func (o Capitalization) Run(blk nlp.Block, f *core.File) []core.Alert {
+func (o Capitalization) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
 	txt := blk.Text
@@ -83,7 +83,7 @@ func (o Capitalization) Run(blk nlp.Block, f *core.File) []core.Alert {
 		alerts = append(alerts, makeAlert(o.Definition, pos, txt))
 	}
 
-	return alerts
+	return alerts, nil
 }
 
 // Fields provides access to the internal rule definition.

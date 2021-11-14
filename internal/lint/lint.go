@@ -190,11 +190,10 @@ func (l *Linter) lintFile(src string) lintResult {
 	return lintResult{file, err}
 }
 
-func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) {
+func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) error {
 	blks, err := f.NLP.Compute(&blk)
 	if err != nil {
-		// FIXME: propagate this error instead.
-		panic(err)
+		return core.NewE100("NLP.Compute", err)
 	}
 
 	// FIXME: This is required for paragraphs that lack a newline delimiter:
@@ -205,16 +204,21 @@ func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) {
 	// See fixtures/i18n for an example.
 	needsLookup := strings.Count(blk.Text, "\n") > 0
 	for _, b := range blks {
-		l.lintBlock(f, b, lines, 0, needsLookup)
+		err := l.lintBlock(f, b, lines, 0, needsLookup)
+		if err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
-func (l *Linter) lintLines(f *core.File) {
+func (l *Linter) lintLines(f *core.File) error {
 	block := nlp.NewBlock("", f.Content, "text"+f.RealExt)
-	l.lintBlock(f, block, len(f.Lines), 0, true)
+	return l.lintBlock(f, block, len(f.Lines), 0, true)
 }
 
-func (l *Linter) lintBlock(f *core.File, blk nlp.Block, lines, pad int, lookup bool) {
+func (l *Linter) lintBlock(f *core.File, blk nlp.Block, lines, pad int, lookup bool) error {
 	f.ChkToCtx = make(map[string]string)
 	for name, chk := range l.Manager.Rules() {
 		if !l.shouldRun(name, f, chk, blk) {
@@ -222,11 +226,19 @@ func (l *Linter) lintBlock(f *core.File, blk nlp.Block, lines, pad int, lookup b
 		}
 
 		info := chk.Fields()
-		for _, a := range chk.Run(blk, f) {
+
+		alerts, err := chk.Run(blk, f)
+		if err != nil {
+			return err
+
+		}
+		for _, a := range alerts {
 			core.FormatAlert(&a, info.Limit, info.Level, name)
 			f.AddAlert(a, blk, lines, pad, lookup)
 		}
 	}
+
+	return nil
 }
 
 func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk nlp.Block) bool {

@@ -25,7 +25,7 @@ func TestExistence(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	alerts := rule.Run(nlp.NewBlock("", "This is a test.", ""), file)
+	alerts, _ := rule.Run(nlp.NewBlock("", "This is a test.", ""), file)
 	if len(alerts) != 1 {
 		t.Errorf("expected one alert, not %v", alerts)
 	}

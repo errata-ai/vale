@@ -42,7 +42,7 @@ func NewReadability(cfg *core.Config, generic baseCheck) (Readability, error) {
 }
 
 // Run calculates the readability level of the given text.
-func (o Readability) Run(blk nlp.Block, f *core.File) []core.Alert {
+func (o Readability) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var grade float64
 	alerts := []core.Alert{}
 
@@ -73,7 +73,7 @@ func (o Readability) Run(blk nlp.Block, f *core.File) []core.Alert {
 		alerts = append(alerts, a)
 	}
 
-	return alerts
+	return alerts, nil
 }
 
 // Fields provides access to the internal rule definition.

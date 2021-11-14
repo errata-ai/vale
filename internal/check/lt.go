@@ -29,13 +29,8 @@ func NewLanguageTool(cfg *core.Config, generic baseCheck) (LanguageTool, error) 
 }
 
 // Run sends the given text to an instance of LanguageTool.
-func (l LanguageTool) Run(blk nlp.Block, file *core.File) []core.Alert {
-	alerts, err := rule.CheckWithLT(blk.Text, file, l.config)
-	if err != nil {
-		// FIXME: don't panic here
-		panic(err)
-	}
-	return alerts
+func (l LanguageTool) Run(blk nlp.Block, file *core.File) ([]core.Alert, error) {
+	return rule.CheckWithLT(blk.Text, file, l.config)
 }
 
 // Fields provides access to the internal rule definition.

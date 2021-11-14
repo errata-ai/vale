@@ -91,14 +91,14 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 // Run executes the the `substitution`-based rule.
 //
 // The rule looks for one pattern and then suggests a replacement.
-func (s Substitution) Run(blk nlp.Block, f *core.File) []core.Alert {
+func (s Substitution) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
 	txt := blk.Text
 	// Leave early if we can to avoid calling `FindAllStringSubmatchIndex`
 	// unnecessarily.
 	if !s.pattern.MatchStringStd(txt) {
-		return alerts
+		return alerts, nil
 	}
 
 	for _, submat := range s.pattern.FindAllStringSubmatchIndex(txt, -1) {
@@ -131,7 +131,7 @@ func (s Substitution) Run(blk nlp.Block, f *core.File) []core.Alert {
 		}
 	}
 
-	return alerts
+	return alerts, nil
 }
 
 // Fields provides access to the internal rule definition.
