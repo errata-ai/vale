@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -25,7 +24,7 @@ type Data struct {
 func PrintCustomAlerts(linted []*core.File, path string) (bool, error) {
 	var alertCount int
 
-	b, err := ioutil.ReadFile(path)
+	b, err := os.ReadFile(path)
 	if err != nil {
 		return false, core.NewE100("template", err)
 	}

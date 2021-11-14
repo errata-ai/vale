@@ -3,7 +3,7 @@ package lint
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
@@ -131,7 +131,7 @@ func (l *Linter) lintSphinx(f *core.File) error {
 	built := strings.Replace(file, filepath.Ext(file), ".html", 1)
 	built = filepath.Join(l.Manager.Config.SphinxBuild, "html", built)
 
-	html, err := ioutil.ReadFile(built)
+	html, err := os.ReadFile(built)
 	if err != nil {
 		return core.NewE100(f.Path, err)
 	}
@@ -229,7 +229,7 @@ func (l *Linter) startRstServer(lib, exe string) error {
 		return errors.New("shebang parsing failed")
 	}
 
-	tmpfile, _ := ioutil.TempFile("", "server.*.py")
+	tmpfile, _ := os.CreateTemp("", "server.*.py")
 	if _, err := tmpfile.WriteString(rstServer); err != nil {
 		return err
 	}
@@ -255,7 +255,7 @@ func (l *Linter) startRstServer(lib, exe string) error {
 }
 
 func findPython(exe string) (string, error) {
-	bin, err := ioutil.ReadFile(exe)
+	bin, err := os.ReadFile(exe)
 	if err != nil {
 		return "", err
 	}

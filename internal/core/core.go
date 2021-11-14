@@ -2,7 +2,7 @@ package core
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -162,7 +162,7 @@ func NewFile(src string, config *Config) (*File, error) {
 	var fbytes []byte
 
 	if FileExists(src) {
-		fbytes, _ = ioutil.ReadFile(src)
+		fbytes, _ = os.ReadFile(src)
 		if config.Flags.InExt != ".txt" {
 			ext, format = FormatFromExt(config.Flags.InExt, config.Formats)
 		} else {

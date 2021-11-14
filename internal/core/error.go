@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -114,7 +114,7 @@ func NewE100(context string, err error) error {
 //
 // <path>:<line>:<start>:<end>
 func NewE201(msg, value, path string, finder errorCondition) error {
-	f, err := ioutil.ReadFile(path)
+	f, err := os.ReadFile(path)
 	if err != nil {
 		return NewE100("NewE201", errors.New(msg))
 	}

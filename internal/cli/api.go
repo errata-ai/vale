@@ -7,7 +7,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -109,7 +108,7 @@ func fetch(src, dst string) error {
 	}
 
 	// Create a temp file to represent the archive locally:
-	tmpfile, err := ioutil.TempFile("", "temp.*.zip")
+	tmpfile, err := os.CreateTemp("", "temp.*.zip")
 	if err != nil {
 		return err
 	}
@@ -321,7 +320,7 @@ func edit(alert core.Alert) ([]string, error) {
 func ListDir(path, entry string) ([]string, error) {
 	var styles []string
 
-	files, err := ioutil.ReadDir(filepath.Join(path, entry))
+	files, err := os.ReadDir(filepath.Join(path, entry))
 	if err != nil {
 		return styles, err
 	}
@@ -344,7 +343,7 @@ func AddProject(path, name string) error {
 	}
 
 	for _, f := range []string{"accept.txt", "reject.txt"} {
-		ferr = ioutil.WriteFile(filepath.Join(root, f), []byte{}, 0644)
+		ferr = os.WriteFile(filepath.Join(root, f), []byte{}, 0644)
 	}
 
 	return ferr
@@ -366,7 +365,7 @@ func EditProject(args []string) error {
 func UpdateVocab(args []string) error {
 	parts := strings.Split(args[1], ".")
 	dest := filepath.Join(args[0], "Vocab", parts[0], parts[1]+".txt")
-	return ioutil.WriteFile(dest, []byte(args[2]), 0644)
+	return os.WriteFile(dest, []byte(args[2]), 0644)
 }
 
 // GetVocab extracts a vocab file for a project.
@@ -418,7 +417,7 @@ func GetLibrary(path string) ([]Style, error) {
 			name := filepath.Base(filepath.Dir(osPathname))
 			meta := Meta{}
 
-			f, _ := ioutil.ReadFile(osPathname)
+			f, _ := os.ReadFile(osPathname)
 			if err := json.Unmarshal(f, &meta); err != nil {
 				return err
 			}
