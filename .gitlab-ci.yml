@@ -1,4 +1,4 @@
-image: golang:1.15
+image: golang:1.17
 
 stages:
   - test
@@ -12,7 +12,7 @@ test:
 
     - apt-get -qq update
     - apt-get install -y curl gnupg build-essential default-jre
-    - apt-get install -y xsltproc zip unzip python-pip ruby-full
+    - apt-get install -y xsltproc zip unzip python3-pip ruby-full
 
     - pip install sphinx
     - gem install asciidoctor bundler
