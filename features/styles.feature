@@ -1,8 +1,9 @@
 Feature: Styles
     Scenario: Lint against Readability
         When I apply style "Readability"
-        Then the output should contain exactly:
+        Then the output should contain:
             """
+            test.md:1:1:Readability.LIX:Try to keep the LIX score (38.27) below 35.
             """
 
     Scenario: Lint against demo
