@@ -3,7 +3,6 @@ package lint
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -22,7 +21,7 @@ func (l Linter) lintDITA(file *core.File) error {
 		return core.NewE100("lintDITA", errors.New("dita not found"))
 	}
 
-	tempDir, err := ioutil.TempDir("", "dita-")
+	tempDir, err := os.MkdirTemp("", "dita-")
 	defer os.RemoveAll(tempDir)
 
 	if err != nil {
@@ -62,7 +61,7 @@ func (l Linter) lintDITA(file *core.File) error {
 		FollowSymbolicLinks: true,
 	})
 
-	data, err := ioutil.ReadFile(htmlFile)
+	data, err := os.ReadFile(htmlFile)
 	if err != nil {
 		return core.NewE100(htmlFile, err)
 	}

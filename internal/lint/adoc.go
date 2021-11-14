@@ -3,7 +3,6 @@ package lint
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -145,7 +144,7 @@ func (l *Linter) startAdocServer(exe string) error {
 		return errors.New("GEM_HOME parsing failed")
 	}
 
-	tmpfile, _ := ioutil.TempFile("", "server.*.rb")
+	tmpfile, _ := os.CreateTemp("", "server.*.rb")
 	if _, err := tmpfile.WriteString(adocServer); err != nil {
 		return err
 	}
@@ -198,7 +197,7 @@ func findGems(exe string) (string, error) {
 		}
 	}
 
-	bin, err := ioutil.ReadFile(exe)
+	bin, err := os.ReadFile(exe)
 	if err != nil {
 		return home, err
 	}

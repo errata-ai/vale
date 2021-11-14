@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/errata-ai/vale/v2/internal/cli"
@@ -72,7 +72,7 @@ func doLint(args []string, l *lint.Linter, glob string) ([]*core.File, error) {
 		// Case 3:
 		//
 		// $ cat file.md | vale
-		stdin, err := ioutil.ReadAll(os.Stdin)
+		stdin, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			return linted, core.NewE100("doLint", err)
 		}

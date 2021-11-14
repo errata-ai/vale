@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -92,7 +93,7 @@ func (l *Linter) post(f *core.File, text, url string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode == 200 {
 		return string(body), nil
 	}
@@ -101,7 +102,7 @@ func (l *Linter) post(f *core.File, text, url string) (string, error) {
 }
 
 func (l *Linter) lintTxtToHTML(f *core.File) error {
-	html, err := ioutil.ReadFile(l.Manager.Config.Flags.Built)
+	html, err := os.ReadFile(l.Manager.Config.Flags.Built)
 	if err != nil {
 		return core.NewE100(f.Path, err)
 	}

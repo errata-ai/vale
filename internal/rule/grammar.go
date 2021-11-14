@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -150,7 +150,7 @@ func checkWithURL(text, lang, apiURL string, timeout int) (LTResult, error) {
 	}
 	defer resp.Body.Close()
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 	result := LTResult{}
 	err = json.Unmarshal(body, &result)
 	if err != nil {

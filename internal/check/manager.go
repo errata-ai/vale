@@ -3,7 +3,7 @@ package check
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -78,7 +78,7 @@ func (mgr *Manager) AddRule(name string, rule Rule) error {
 
 // AddRuleFromFile adds the given rule to the manager.
 func (mgr *Manager) AddRuleFromFile(name, path string) error {
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return core.NewE100("ReadFile", err)
 	}
@@ -129,7 +129,7 @@ func (mgr *Manager) addStyle(path string) error {
 
 func (mgr *Manager) addRuleFromSource(name, path string) error {
 	if strings.HasSuffix(name, ".yml") {
-		f, err := ioutil.ReadFile(path)
+		f, err := os.ReadFile(path)
 		if err != nil {
 			return core.NewE201FromPosition(err.Error(), path, 1)
 		}
