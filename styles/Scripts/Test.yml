@@ -1,0 +1,13 @@
+extends: script
+message: "Don't use '%s' in a sentence."
+link: https://tengolang.com/
+scope: text
+script: |
+  text := import("text")
+  fmt := import("fmt")
+
+  matches := []
+
+  for m in text.re_find(`\d+ years`, scope, -1) {
+      matches = append(matches, m[0])
+  }
