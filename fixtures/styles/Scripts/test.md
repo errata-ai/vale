@@ -13,3 +13,15 @@ Now, over 70 years later, the Flesch Reading Ease is used by marketers,
 research communicators and policy writers, amongst many others. All use it to
 help them assess the ease by which a piece of text will be understood and
 engaged with.
+
+foo bar baz
+
+## Section
+
+Here's another.
+
+Yep, here too.
+
+And again.
+
+Yis is bad.

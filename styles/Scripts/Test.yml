@@ -1,13 +1,25 @@
 extends: script
-message: "Don't use '%s' in a sentence."
+message: "Consider inserting a new section heading at this point."
 link: https://tengolang.com/
-scope: text
+# The unprocessed file contents.
+#
+# We need this to access heading markup.
+scope: raw
 script: |
   text := import("text")
-  fmt := import("fmt")
 
   matches := []
+  p_limit := 3 // at most 3 paragraphs per section
 
-  for m in text.re_find(`\d+ years`, scope, -1) {
-      matches = append(matches, m[0])
+  count := 0
+  for line in text.split(scope, "\n") {
+    if text.has_prefix(line, "#") {
+      count = 0 // New section; reset count
+    } else if count > p_limit {
+      start := text.index(scope, line)
+      matches = append(matches, {begin: start, end: start + len(line)})
+      count = 0
+    } else if text.trim_space(line) == "" {
+      count += 1
+    }
   }
