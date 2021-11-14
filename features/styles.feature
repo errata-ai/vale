@@ -1,4 +1,12 @@
 Feature: Styles
+    Scenario: Lint against Scripts
+        When I apply style "Scripts"
+        Then the output should contain:
+            """
+            test.md:17:1:Scripts.Test:Consider inserting a new section heading at this point.
+            test.md:27:1:Scripts.Test:Consider inserting a new section heading at this point.
+            """
+
     Scenario: Lint against Readability
         When I apply style "Readability"
         Then the output should contain:
