@@ -3,12 +3,16 @@ package check
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/d5/tengo/v2"
+	"github.com/d5/tengo/v2/stdlib"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/mitchellh/mapstructure"
 )
+
+var boilerplate = `math := import("math"); __res__ := (%s)`
 
 // Metric implements arbitrary, readability-like formulas.
 type Metric struct {
@@ -48,7 +52,7 @@ func (o Metric) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	// The actual result of our formula.
 	//
 	// We need this to allow showing the result in a rule's message.
-	res, err := tengo.Eval(ctx, o.Formula, parameters)
+	res, err := evalMath(ctx, o.Formula, parameters)
 	if err != nil {
 		return alerts, core.NewE201FromTarget(err.Error(), "formula", o.path)
 	}
@@ -56,7 +60,7 @@ func (o Metric) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	// The binary result of our formula:
 	eqb := fmt.Sprintf("%f %s", res, o.Condition)
 
-	match, err := tengo.Eval(ctx, eqb, parameters)
+	match, err := evalMath(ctx, eqb, parameters)
 	if err != nil {
 		return alerts, core.NewE201FromTarget(err.Error(), "condition", o.path)
 	}
@@ -80,4 +84,32 @@ func (o Metric) Fields() Definition {
 // Pattern is the internal regex pattern used by this rule.
 func (o Metric) Pattern() string {
 	return o.Formula
+}
+
+func evalMath(
+	ctx context.Context,
+	expr string,
+	params map[string]interface{},
+) (interface{}, error) {
+	expr = strings.TrimSpace(expr)
+	if expr == "" {
+		return nil, fmt.Errorf("empty expression")
+	}
+
+	script := tengo.NewScript([]byte(fmt.Sprintf(boilerplate, expr)))
+	script.SetImports(stdlib.GetModuleMap("math"))
+
+	for pk, pv := range params {
+		err := script.Add(pk, pv)
+		if err != nil {
+			return nil, fmt.Errorf("script add: %w", err)
+		}
+	}
+
+	compiled, err := script.RunContext(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("script run: %w", err)
+	}
+
+	return compiled.Get("__res__").Value(), nil
 }
