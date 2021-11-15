@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/logrusorgru/aurora/v3"
 	"github.com/olekukonko/tablewriter"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cast"
 )
 
@@ -18,16 +18,16 @@ var funcs = TxtFuncMap()
 
 func init() {
 	funcs["red"] = func(s string) string {
-		return fmt.Sprintf("%s", aurora.Red(s))
+		return fmt.Sprintf("%s", pterm.Red(s))
 	}
 	funcs["blue"] = func(s string) string {
-		return fmt.Sprintf("%s", aurora.Blue(s))
+		return fmt.Sprintf("%s", pterm.Blue(s))
 	}
 	funcs["yellow"] = func(s string) string {
-		return fmt.Sprintf("%s", aurora.Yellow(s))
+		return fmt.Sprintf("%s", pterm.Yellow(s))
 	}
 	funcs["underline"] = func(s string) string {
-		return fmt.Sprintf("%s", aurora.Underline(s))
+		return fmt.Sprintf("%s", pterm.Underscore.Sprintf(s))
 	}
 	funcs["newTable"] = func(wrap bool) *tablewriter.Table {
 		table := tablewriter.NewWriter(os.Stdout)

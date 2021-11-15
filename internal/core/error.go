@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/logrusorgru/aurora/v3"
+	"github.com/pterm/pterm"
 )
 
 type lineError struct {
@@ -91,10 +91,10 @@ func annotate(file []byte, target string, finder errorCondition) (lineError, err
 func NewError(code, title, msg string) error {
 	return fmt.Errorf(
 		"%s %s\n\n%s\n\n%s",
-		aurora.BgRed(code),
+		pterm.BgRed.Sprintf(code),
 		title,
 		msg,
-		aurora.Faint(aurora.Italic("Execution stopped with code 1.")),
+		pterm.Gray(pterm.Italic.Sprintf("Execution stopped with code 1.")),
 	)
 }
 

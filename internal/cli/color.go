@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/logrusorgru/aurora/v3"
 	"github.com/olekukonko/tablewriter"
+	"github.com/pterm/pterm"
 )
 
 // PrintVerboseAlerts prints Alerts in verbose format.
@@ -36,12 +36,12 @@ func PrintVerboseAlerts(linted []*core.File, wrap bool) bool {
 	n := len(linted)
 	if n == 1 && strings.HasPrefix(linted[0].Path, "stdin") {
 		fmt.Printf("%s %s, %s and %s in %s.\n", symbol,
-			aurora.Green(etotal), aurora.Yellow(wtotal),
-			aurora.Blue(stotal), "stdin")
+			pterm.Green(etotal), pterm.Yellow(wtotal),
+			pterm.Blue(stotal), "stdin")
 	} else {
 		fmt.Printf("%s %s, %s and %s in %d %s.\n", symbol,
-			aurora.Red(etotal), aurora.Yellow(wtotal),
-			aurora.Blue(stotal), n, pluralize("file", n))
+			pterm.Red(etotal), pterm.Yellow(wtotal),
+			pterm.Blue(stotal), n, pluralize("file", n))
 	}
 
 	return errors != 0
@@ -63,16 +63,16 @@ func printVerboseAlert(f *core.File, wrap bool) (int, int, int) {
 	table.SetRowSeparator("")
 	table.SetAutoWrapText(!wrap)
 
-	fmt.Printf("\n %s", aurora.Underline(f.Path))
+	fmt.Printf("\n %s", pterm.Underscore.Sprintf(f.Path))
 	for _, a := range alerts {
 		if a.Severity == "suggestion" {
-			level = aurora.Blue(a.Severity).String()
+			level = pterm.Blue(a.Severity)
 			notifications++
 		} else if a.Severity == "warning" {
-			level = aurora.Yellow(a.Severity).String()
+			level = pterm.Yellow(a.Severity)
 			warnings++
 		} else {
-			level = aurora.Red(a.Severity).String()
+			level = pterm.Red(a.Severity)
 			errors++
 		}
 		loc = fmt.Sprintf("%d:%d", a.Line, a.Span[0])

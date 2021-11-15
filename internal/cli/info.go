@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/logrusorgru/aurora/v3"
 	"github.com/olekukonko/tablewriter"
+	"github.com/pterm/pterm"
 )
 
 var exampleConfig = `StylesPath = a/path/to/your/styles
@@ -35,25 +35,25 @@ To get started, you'll need a configuration file (%s):
 	%s
 
 See %s for more setup information.`,
-	aurora.Bold("Usage"),
+	pterm.Bold.Sprintf("Usage"),
 
-	aurora.Faint("vale [options] [input...]"),
-	aurora.Faint("vale myfile.md myfile1.md mydir1"),
-	aurora.Faint("vale --output=JSON [input...]"),
+	pterm.Gray("vale [options] [input...]"),
+	pterm.Gray("vale myfile.md myfile1.md mydir1"),
+	pterm.Gray("vale --output=JSON [input...]"),
 
-	aurora.Underline("https://github.com/errata-ai/styles"),
+	pterm.Underscore.Sprintf("https://github.com/errata-ai/styles"),
 
-	aurora.Faint(".vale.ini"),
-	aurora.Bold("Example"),
-	aurora.Faint(exampleConfig),
+	pterm.Gray(".vale.ini"),
+	pterm.Bold.Sprintf("Example"),
+	pterm.Gray(exampleConfig),
 
-	aurora.Underline("https://docs.errata.ai/vale/about"))
+	pterm.Underscore.Sprintf("https://docs.errata.ai/vale/about"))
 
 var info = fmt.Sprintf(`%s
 
 (Or use %s for a listing of all CLI options.)`,
 	intro,
-	aurora.Faint("vale --help"))
+	pterm.Gray("vale --help"))
 
 var hidden = []string{
 	"mode-compat",
@@ -80,7 +80,7 @@ func init() {
 		table.SetRowSeparator("")
 		table.SetAutoWrapText(false)
 
-		fmt.Println(aurora.Bold("\nFlags:"))
+		fmt.Println(pterm.Bold.Sprintf("\nFlags:"))
 		flag.VisitAll(func(f *flag.Flag) {
 			if !core.StringInSlice(f.Name, hidden) {
 				table.Append([]string{"--" + f.Name, f.Usage})
@@ -90,7 +90,7 @@ func init() {
 		table.Render()
 		table.ClearRows()
 
-		fmt.Println(aurora.Bold("Commands:"))
+		fmt.Println(pterm.Bold.Sprintf("Commands:"))
 		for cmd, use := range commandInfo {
 			table.Append([]string{cmd, use})
 		}
