@@ -3,8 +3,6 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 )
 
 // Response is returned after an action.
@@ -27,14 +25,6 @@ func getJSON(data interface{}) string {
 		return err.Error()
 	}
 	return string(b)
-}
-
-func readJSON(url string) ([]byte, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return []byte{}, err
-	}
-	return io.ReadAll(resp.Body)
 }
 
 func printJSON(t interface{}) error {
