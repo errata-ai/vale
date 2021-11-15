@@ -12,39 +12,30 @@ import (
 var Flags core.CLIFlags
 
 var shortcodes = map[string]string{
-	"sources":       "s",
-	"glob":          "g",
-	"config":        "c",
-	"minAlertLevel": "m",
-	"output":        "o",
-	"ext":           "e",
-	"no-wrap":       "w",
-	"no-exit":       "x",
-	"ignore-syntax": "n",
-	"version":       "v",
-	"help":          "h",
+	"version": "v",
+	"help":    "h",
 }
 
 func init() {
-	pflag.StringVarP(&Flags.Sources, "sources", "s", "", "A config files to load")
+	pflag.StringVar(&Flags.Sources, "sources", "", "A config files to load")
 
-	pflag.StringVarP(&Flags.Glob, "glob", "g", "*",
+	pflag.StringVar(&Flags.Glob, "glob", "*",
 		fmt.Sprintf(`A glob pattern (%s)`, pterm.Gray(`--glob='*.{md,txt}.'`)))
 
-	pflag.StringVarP(&Flags.Path, "config", "c", "",
+	pflag.StringVar(&Flags.Path, "config", "",
 		fmt.Sprintf(`A file path (%s).`, pterm.Gray(`--config='some/file/path/.vale.ini'`)))
 
-	pflag.StringVarP(&Flags.AlertLevel, "minAlertLevel", "m", "",
+	pflag.StringVar(&Flags.AlertLevel, "minAlertLevel", "",
 		fmt.Sprintf(`The minimum level to display (%s).`, pterm.Gray(`--minAlertLevel=error`)))
 
-	pflag.StringVarP(&Flags.Output, "output", "o", "CLI", `An output style ("line", "JSON", or a template file).`)
+	pflag.StringVar(&Flags.Output, "output", "CLI", `An output style ("line", "JSON", or a template file).`)
 
-	pflag.StringVarP(&Flags.InExt, "ext", "e", ".txt",
+	pflag.StringVar(&Flags.InExt, "ext", ".txt",
 		fmt.Sprintf(`An extension to associate with stdin (%s).`, pterm.Gray(`--ext=.md`)))
 
-	pflag.BoolVarP(&Flags.Wrap, "no-wrap", "w", false, "Don't wrap CLI output.")
-	pflag.BoolVarP(&Flags.NoExit, "no-exit", "x", false, "Don't return a nonzero exit code on errors.")
-	pflag.BoolVarP(&Flags.Simple, "ignore-syntax", "n", false, "Lint all files line-by-line.")
+	pflag.BoolVar(&Flags.Wrap, "no-wrap", false, "Don't wrap CLI output.")
+	pflag.BoolVar(&Flags.NoExit, "no-exit", false, "Don't return a nonzero exit code on errors.")
+	pflag.BoolVar(&Flags.Simple, "ignore-syntax", false, "Lint all files line-by-line.")
 	pflag.BoolVarP(&Flags.Version, "version", "v", false, "Print the current version.")
 	pflag.BoolVarP(&Flags.Help, "help", "h", false, "Print this help message.")
 

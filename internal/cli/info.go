@@ -71,8 +71,10 @@ func PrintIntro() {
 }
 
 func toFlag(name string) string {
-	code := shortcodes[name]
-	return fmt.Sprintf("%s, %s", pterm.Gray("-"+code), pterm.Gray("--"+name))
+	if code, ok := shortcodes[name]; ok {
+		return fmt.Sprintf("%s, %s", pterm.Gray("-"+code), pterm.Gray("--"+name))
+	}
+	return fmt.Sprintf("%s", pterm.Gray("--"+name))
 }
 
 func init() {
