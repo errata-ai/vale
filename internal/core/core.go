@@ -76,13 +76,6 @@ type Alert struct {
 	Offset []string `json:"-"` // tokens to ignore before this match
 }
 
-// A Plugin provides a means of extending Vale.
-type Plugin struct {
-	Scope string
-	Level string
-	Rule  func(string, *File) []Alert
-}
-
 // A Selector represents a named section of text.
 type Selector struct {
 	Value []string // e.g., text.comment.line.py

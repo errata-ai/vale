@@ -30,6 +30,8 @@ type CLIFlags struct {
 	Sorted     bool
 	Sources    string
 	Wrap       bool
+	Version    bool
+	Help       bool
 }
 
 // Config holds the the configuration values from both the CLI and `.vale.ini`.

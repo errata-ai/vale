@@ -1,13 +1,13 @@
 package cli
 
 import (
-	"flag"
 	"fmt"
 	"os"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/olekukonko/tablewriter"
 	"github.com/pterm/pterm"
+	"github.com/spf13/pflag"
 )
 
 var exampleConfig = `StylesPath = a/path/to/your/styles
@@ -70,8 +70,13 @@ func PrintIntro() {
 	os.Exit(0)
 }
 
+func toFlag(name string) string {
+	code := shortcodes[name]
+	return fmt.Sprintf("%s, %s", pterm.Gray("-"+code), pterm.Gray("--"+name))
+}
+
 func init() {
-	flag.Usage = func() {
+	pflag.Usage = func() {
 		fmt.Println(intro)
 
 		table := tablewriter.NewWriter(os.Stdout)
@@ -81,9 +86,9 @@ func init() {
 		table.SetAutoWrapText(false)
 
 		fmt.Println(pterm.Bold.Sprintf("\nFlags:"))
-		flag.VisitAll(func(f *flag.Flag) {
+		pflag.VisitAll(func(f *pflag.Flag) {
 			if !core.StringInSlice(f.Name, hidden) {
-				table.Append([]string{"--" + f.Name, f.Usage})
+				table.Append([]string{toFlag(f.Name), f.Usage})
 			}
 		})
 
@@ -92,7 +97,7 @@ func init() {
 
 		fmt.Println(pterm.Bold.Sprintf("Commands:"))
 		for cmd, use := range commandInfo {
-			table.Append([]string{cmd, use})
+			table.Append([]string{pterm.Gray(cmd), use})
 		}
 		table.Render()
 

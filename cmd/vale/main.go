@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -9,6 +8,7 @@ import (
 	"github.com/errata-ai/vale/v2/internal/cli"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/lint"
+	"github.com/spf13/pflag"
 )
 
 // version is set during the release build process.
@@ -91,27 +91,24 @@ func handleError(err error) {
 }
 
 func main() {
-	v := flag.Bool("v", false, "prints current version")
-	flag.Parse()
+	pflag.Parse()
 
-	config, err := core.NewConfig(&cli.Flags)
-	if err != nil {
-		cli.ShowError(err, cli.Flags.Output, os.Stderr)
-	}
-
-	if *v {
-		fmt.Println("vale version " + version)
-		os.Exit(0)
-	}
-
-	args := flag.Args()
+	args := pflag.Args()
 	argc := len(args)
 
-	if argc == 0 && !stat() {
+	if cli.Flags.Version {
+		fmt.Println("vale version " + version)
+		os.Exit(0)
+	} else if cli.Flags.Help {
+		pflag.Usage()
+	} else if argc == 0 && !stat() {
 		cli.PrintIntro()
 	}
 
-	if err := validateFlags(config); err != nil {
+	config, err := core.NewConfig(&cli.Flags)
+	if err != nil {
+		handleError(err)
+	} else if err := validateFlags(config); err != nil {
 		handleError(err)
 	}
 
