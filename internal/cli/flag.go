@@ -29,18 +29,18 @@ func init() {
 	pflag.StringVarP(&Flags.Sources, "sources", "s", "", "A config files to load")
 
 	pflag.StringVarP(&Flags.Glob, "glob", "g", "*",
-		fmt.Sprintf(`A glob pattern (e.g., %s)`, pterm.Gray(`--glob='*.{md,txt}.'`)))
+		fmt.Sprintf(`A glob pattern (%s)`, pterm.Gray(`--glob='*.{md,txt}.'`)))
 
 	pflag.StringVarP(&Flags.Path, "config", "c", "",
-		fmt.Sprintf(`A file path (e.g., %s).`, pterm.Gray(`--config='some/file/path/.vale.ini'`)))
+		fmt.Sprintf(`A file path (%s).`, pterm.Gray(`--config='some/file/path/.vale.ini'`)))
 
 	pflag.StringVarP(&Flags.AlertLevel, "minAlertLevel", "m", "",
-		fmt.Sprintf(`The lowest alert level to display (e.g., %s).`, pterm.Gray(`--minAlertLevel=error`)))
+		fmt.Sprintf(`The minimum level to display (%s).`, pterm.Gray(`--minAlertLevel=error`)))
 
 	pflag.StringVarP(&Flags.Output, "output", "o", "CLI", `An output style ("line", "JSON", or a template file).`)
 
 	pflag.StringVarP(&Flags.InExt, "ext", "e", ".txt",
-		fmt.Sprintf(`An extension to associate with stdin (e.g., %s).`, pterm.Gray(`--ext=.md`)))
+		fmt.Sprintf(`An extension to associate with stdin (%s).`, pterm.Gray(`--ext=.md`)))
 
 	pflag.BoolVarP(&Flags.Wrap, "no-wrap", "w", false, "Don't wrap CLI output.")
 	pflag.BoolVarP(&Flags.NoExit, "no-exit", "x", false, "Don't return a nonzero exit code on errors.")
