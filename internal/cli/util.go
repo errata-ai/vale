@@ -36,12 +36,3 @@ func printJSON(t interface{}) error {
 	fmt.Println(string(b))
 	return nil
 }
-
-// Send a JSON response after a local action.
-func sendResponse(msg string, err error) error {
-	resp := Response{Msg: msg, Success: err == nil}
-	if !resp.Success {
-		resp.Error = err.Error()
-	}
-	return printJSON(resp)
-}

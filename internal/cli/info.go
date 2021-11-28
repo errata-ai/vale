@@ -62,6 +62,11 @@ var hidden = []string{
 	"relative",
 	"sort",
 	"sources",
+
+	// API stuff
+	"tag",
+	"compile",
+	"run",
 }
 
 // PrintIntro shows basic usage / gettting started info.
@@ -74,7 +79,7 @@ func toFlag(name string) string {
 	if code, ok := shortcodes[name]; ok {
 		return fmt.Sprintf("%s, %s", pterm.Gray("-"+code), pterm.Gray("--"+name))
 	}
-	return fmt.Sprintf("%s", pterm.Gray("--"+name))
+	return pterm.Gray("--" + name)
 }
 
 func init() {
@@ -99,7 +104,9 @@ func init() {
 
 		fmt.Println(pterm.Bold.Sprintf("Commands:"))
 		for cmd, use := range commandInfo {
-			table.Append([]string{pterm.Gray(cmd), use})
+			if !core.StringInSlice(cmd, hidden) {
+				table.Append([]string{pterm.Gray(cmd), use})
+			}
 		}
 		table.Render()
 
