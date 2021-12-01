@@ -46,7 +46,7 @@ type Config struct {
 	IgnoredClasses []string                   // A list of HTML classes to ignore
 	IgnoredScopes  []string                   // A list of HTML tags to ignore
 	MinAlertLevel  int                        // Lowest alert level to display
-	Project        string                     // The active project
+	Vocab          []string                   // The active project
 	RuleToLevel    map[string]string          // Single-rule level changes
 	SBaseStyles    map[string][]string        // Syntax-specific base styles
 	SChecks        map[string]map[string]bool // Syntax-specific checks

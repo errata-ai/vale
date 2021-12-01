@@ -122,20 +122,23 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 	}
 
 	for _, ignore := range rule.Ignore {
-		vocab := filepath.Join(cfg.StylesPath, ignore)
-		if name == "Vale.Spelling" && cfg.Project != "" {
-			// Special case: Project support
-			vocab = filepath.Join(
-				cfg.StylesPath,
-				"Vocab",
-				cfg.Project,
-				ignore)
-		}
-		exists := model.AddWordListFile(vocab)
-		if exists != nil {
-			vocab, _ = filepath.Abs(ignore)
-			_ = model.AddWordListFile(vocab)
-			// TODO: check error?
+		if name == "Vale.Spelling" {
+			for _, v := range cfg.Vocab {
+				vocab := filepath.Join(
+					cfg.StylesPath,
+					"Vocab",
+					v,
+					ignore)
+				_ = model.AddWordListFile(vocab)
+			}
+		} else {
+			vocab := filepath.Join(cfg.StylesPath, ignore)
+			if err = model.AddWordListFile(vocab); err != nil {
+				vocab, _ = filepath.Abs(ignore)
+				if err = model.AddWordListFile(vocab); err != nil {
+					return rule, err
+				}
+			}
 		}
 	}
 

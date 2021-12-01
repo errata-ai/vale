@@ -137,13 +137,14 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		cfg.IgnoredClasses = mergeValues(sec.Key("IgnoredClasses").StringsWithShadows(","))
 		return nil
 	},
-	"Project": func(sec *ini.Section, cfg *Config, args []string) error {
-		cfg.Project = sec.Key("Project").String()
-		return loadVocab(cfg.Project, cfg)
-	},
 	"Vocab": func(sec *ini.Section, cfg *Config, args []string) error {
-		cfg.Project = sec.Key("Vocab").String()
-		return loadVocab(cfg.Project, cfg)
+		cfg.Vocab = mergeValues(sec.Key("Vocab").StringsWithShadows(","))
+		for _, v := range cfg.Vocab {
+			if err := loadVocab(v, cfg); err != nil {
+				return err
+			}
+		}
+		return nil
 	},
 	"LTPath": func(sec *ini.Section, cfg *Config, args []string) error {
 		cfg.LTPath = sec.Key("LTPath").String()
