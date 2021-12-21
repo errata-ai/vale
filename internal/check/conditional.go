@@ -76,7 +76,11 @@ func (c Conditional) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 		if len(mat) > 1 {
 			// If we find one, we store it in a slice associated with this
 			// particular file.
-			f.Sequences = append(f.Sequences, mat[1])
+			for _, m := range mat[1:] {
+				if len(m) > 0 {
+					f.Sequences = append(f.Sequences, m)
+				}
+			}
 		}
 	}
 
