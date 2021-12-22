@@ -3,7 +3,7 @@ Feature: Checks
         When I test "checks/Conditional"
         Then the output should contain exactly:
             """
-            test.md:9:5:checks.MultiCapture:'NFL' has no definition
+            test.md:9:5:Checks.MultiCapture:'NFL' has no definition
             """
 
     Scenario: Occurrence
