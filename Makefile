@@ -36,7 +36,6 @@ compare:
 
 setup:
 	bundle install
-	gem specific_install -l https://github.com/jdkato/aruba.git -b d-win-fix
 
 rules:
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/**/*.yml
