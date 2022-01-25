@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/regexp2"
-	"github.com/jdkato/prose/transform"
+	"github.com/jdkato/titlecase"
 )
 
 func isMatch(r *regexp2.Regexp, s string) bool {
@@ -26,7 +26,7 @@ func upper(s string, re *regexp2.Regexp) bool {
 	return s == strings.ToUpper(s) || isMatch(re, s)
 }
 
-func title(s string, except *regexp2.Regexp, tc *transform.TitleConverter) bool {
+func title(s string, except *regexp2.Regexp, tc *titlecase.TitleConverter) bool {
 	count := 0.0
 	words := 0.0
 

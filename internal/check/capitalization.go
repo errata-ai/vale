@@ -6,7 +6,7 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/prose/transform"
+	"github.com/jdkato/titlecase"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -45,11 +45,11 @@ func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, err
 	rule.exceptRe = re
 
 	if rule.Match == "$title" {
-		var tc *transform.TitleConverter
+		var tc *titlecase.TitleConverter
 		if rule.Style == "Chicago" {
-			tc = transform.NewTitleConverter(transform.ChicagoStyle)
+			tc = titlecase.NewTitleConverter(titlecase.ChicagoStyle)
 		} else {
-			tc = transform.NewTitleConverter(transform.APStyle)
+			tc = titlecase.NewTitleConverter(titlecase.APStyle)
 		}
 		rule.Check = func(s string, re *regexp2.Regexp) bool {
 			return title(s, re, tc)

@@ -9,6 +9,7 @@ require (
 	github.com/gobwas/glob v0.2.3
 	github.com/jdkato/prose v1.2.1
 	github.com/jdkato/regexp v0.1.0
+	github.com/jdkato/titlecase v0.0.0-20220120021253-0158ddd948b8
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/pterm/pterm v0.12.33
