@@ -316,6 +316,8 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string) error {
 			continue
 		}
 
+		cfg.Keys = append(cfg.Keys, sec)
+
 		pat, err := glob.Compile(sec)
 		if err != nil {
 			return err
