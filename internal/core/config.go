@@ -77,7 +77,8 @@ type Config struct {
 	// Command-line configuration
 	Flags *CLIFlags `json:"-"`
 
-	Keys []string `json:"-"`
+	StyleKeys []string `json:"-"`
+	RuleKeys  []string `json:"-"`
 }
 
 // NewConfig initializes a Config with its default values.

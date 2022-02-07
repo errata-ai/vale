@@ -26,6 +26,7 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 		sStyles := mergeValues(sec.Key("BasedOnStyles").StringsWithShadows(","))
 
 		cfg.Styles = append(cfg.Styles, sStyles...)
+		cfg.StyleKeys = append(cfg.StyleKeys, lbl)
 		cfg.SBaseStyles[lbl] = sStyles
 
 		return nil
@@ -316,8 +317,6 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string) error {
 			continue
 		}
 
-		cfg.Keys = append(cfg.Keys, sec)
-
 		pat, err := glob.Compile(sec)
 		if err != nil {
 			return err
@@ -335,6 +334,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string) error {
 				cfg.Checks = append(cfg.Checks, k)
 			}
 		}
+		cfg.RuleKeys = append(cfg.RuleKeys, sec)
 		cfg.SChecks[sec] = syntaxMap
 	}
 

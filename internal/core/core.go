@@ -174,18 +174,16 @@ func NewFile(src string, config *Config) (*File, error) {
 	}
 
 	baseStyles := config.GBaseStyles
-	for _, sec := range config.Keys {
+	for _, sec := range config.StyleKeys {
 		if pat, found := config.SecToPat[sec]; found && pat.Match(fp) {
 			baseStyles = config.SBaseStyles[sec]
-			break
 		}
 	}
 
 	checks := make(map[string]bool)
-	for _, sec := range config.Keys {
+	for _, sec := range config.RuleKeys {
 		if pat, found := config.SecToPat[sec]; found && pat.Match(fp) {
 			checks = config.SChecks[sec]
-			break
 		}
 	}
 
