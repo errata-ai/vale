@@ -12,6 +12,7 @@
   <a href="https://docs.errata.ai/vale/about">Documentation</a> •
   <a href="https://docs.errata.ai/community#examples">Example Configurations</a> •
   <a href="https://github.com/errata-ai/styles">Styles Library</a> •
+  <a href="https://share.streamlit.io/jdkato/rules/main/app/main.py">Rule Explorer</a> •
   <a href="https://github.com/errata-ai/vale-action">GitHub Action</a>
 </p>
 
