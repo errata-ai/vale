@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -10,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/spf13/pflag"
 )
 
 // Style represents an externally-hosted style.
@@ -47,9 +47,9 @@ type Meta struct {
 }
 
 func init() {
-	flag.BoolVar(&Flags.Remote, "mode-rev-compat", false,
+	pflag.BoolVar(&Flags.Remote, "mode-rev-compat", false,
 		"prioritize local Vale configurations")
-	flag.StringVar(&Flags.Built, "built", "", "post-processed file path")
+	pflag.StringVar(&Flags.Built, "built", "", "post-processed file path")
 
 	Actions["install"] = install
 }
