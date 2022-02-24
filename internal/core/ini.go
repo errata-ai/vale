@@ -285,7 +285,9 @@ func processSources(cfg *Config, sources []string) (*ini.File, error) {
 func processConfig(uCfg *ini.File, cfg *Config, paths []string) error {
 	core := uCfg.Section("")
 	global := uCfg.Section("*")
+
 	formats := uCfg.Section("formats")
+	packages := uCfg.Section("packages")
 
 	// Default settings
 	for _, k := range core.KeyStrings() {
@@ -299,6 +301,11 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string) error {
 	// Format mappings
 	for _, k := range formats.KeyStrings() {
 		cfg.Formats[k] = formats.Key(k).String()
+	}
+
+	// Package URLs
+	for _, k := range packages.KeyStrings() {
+		cfg.Packages[k] = packages.Key(k).String()
 	}
 
 	// Global settings
