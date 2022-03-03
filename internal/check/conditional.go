@@ -87,7 +87,7 @@ func (c Conditional) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	// Now we look for the antecedent.
 	locs := c.patterns[1].FindAllStringIndex(txt, -1)
 	for _, loc := range locs {
-		s := txt[loc[0]:loc[1]]
+		s := re2Loc(txt, loc)
 		if !core.StringInSlice(s, f.Sequences) && !isMatch(c.exceptRe, s) {
 			// If we've found one (e.g., "WHO") and we haven't marked it as
 			// being defined previously, send an Alert.
