@@ -77,7 +77,7 @@ func (mgr *Manager) AddRule(name string, rule Rule) error {
 
 // AddRuleFromFile adds the given rule to the manager.
 func (mgr *Manager) AddRuleFromFile(name, path string) error {
-	content, err := os.ReadFile(path)
+	content, err := mgr.Config.FsWrapper.ReadFile(path)
 	if err != nil {
 		return core.NewE100("ReadFile", err)
 	}
@@ -113,17 +113,18 @@ func (mgr *Manager) AssignNLP(f *core.File) nlp.NLPInfo {
 }
 
 func (mgr *Manager) addStyle(path string) error {
-	return filepath.WalkDir(path, func(fp string, de os.DirEntry, err error) error {
-		if de.IsDir() {
-			return nil
-		}
-		return mgr.addRuleFromSource(de.Name(), fp)
-	})
+	return mgr.Config.FsWrapper.Walk(path,
+		func(fp string, fi os.FileInfo, err error) error {
+			if err != nil || fi.IsDir() {
+				return err
+			}
+			return mgr.addRuleFromSource(fi.Name(), fp)
+		})
 }
 
 func (mgr *Manager) addRuleFromSource(name, path string) error {
 	if strings.HasSuffix(name, ".yml") {
-		f, err := os.ReadFile(path)
+		f, err := mgr.Config.FsWrapper.ReadFile(path)
 		if err != nil {
 			return core.NewE201FromPosition(err.Error(), path, 1)
 		}
@@ -226,7 +227,7 @@ func (mgr *Manager) loadStyles(styles []string) error {
 			if mgr.hasStyle(style) {
 				// We've already loaded this style.
 				continue
-			} else if has := core.IsDir(p); !has {
+			} else if has, _ := mgr.Config.FsWrapper.DirExists(p); !has {
 				need = append(need, style)
 				continue
 			}
