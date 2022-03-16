@@ -5,7 +5,6 @@ import (
 	"errors"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -125,20 +124,6 @@ def run(server_class=HTTPServer, handler_class=S, addr="localhost", port=8000):
 if __name__ == "__main__":
     run(addr="127.0.0.1", port=7069)`
 
-func (l *Linter) lintSphinx(f *core.File) error {
-	file := filepath.Base(f.Path)
-
-	built := strings.Replace(file, filepath.Ext(file), ".html", 1)
-	built = filepath.Join(l.Manager.Config.SphinxBuild, "html", built)
-
-	html, err := os.ReadFile(built)
-	if err != nil {
-		return core.NewE100(f.Path, err)
-	}
-
-	return l.lintHTMLTokens(f, html, 0)
-}
-
 func (l *Linter) lintRST(f *core.File) error {
 	var html string
 
@@ -149,8 +134,6 @@ func (l *Linter) lintRST(f *core.File) error {
 
 	if rst2html == "" || python == "" {
 		return core.NewE100("lintRST", errors.New("rst2html not found"))
-	} else if l.Manager.Config.SphinxBuild != "" {
-		return l.lintSphinx(f)
 	}
 
 	s, err := l.prep(f.Content, "\n::\n\n%s\n", "``$1``", ".rst")

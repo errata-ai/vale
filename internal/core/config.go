@@ -40,7 +40,6 @@ type Config struct {
 	BlockIgnores   map[string][]string        // A list of blocks to ignore
 	Checks         []string                   // All checks to load
 	Formats        map[string]string          // A map of unknown -> known formats
-	Packages       map[string]string          // package -> URL
 	FormatToLang   map[string]string          // A map of format to lang ID
 	GBaseStyles    []string                   // Global base style
 	GChecks        map[string]bool            // Global checks
@@ -62,16 +61,10 @@ type Config struct {
 
 	DictionaryPath string // Location to search for dictionaries.
 
-	// TODO: Remove these.
-	SphinxBuild string `json:"-"` // The location of Sphinx's `_build` path
-	SphinxAuto  string `json:"-"` // Should we call `sphinx-build`?
-
 	FallbackPath string               `json:"-"`
 	FsWrapper    *afero.Afero         `json:"-"`
-	LTPath       string               `json:"-"`
 	SecToPat     map[string]glob.Glob `json:"-"`
 	Styles       []string             `json:"-"`
-	Timeout      int                  `json:"-"`
 	Paths        []string             `json:"-"`
 
 	NLPEndpoint string // An external API to call for NLP-related work.
@@ -91,9 +84,7 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.BlockIgnores = make(map[string][]string)
 	cfg.Flags = flags
 	cfg.Formats = make(map[string]string)
-	cfg.Packages = make(map[string]string)
 	cfg.GChecks = make(map[string]bool)
-	cfg.LTPath = "http://localhost:8081/v2/check"
 	cfg.MinAlertLevel = 1
 	cfg.RejectedTokens = make(map[string]struct{})
 	cfg.RuleToLevel = make(map[string]string)
@@ -101,7 +92,6 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.SChecks = make(map[string]map[string]bool)
 	cfg.SecToPat = make(map[string]glob.Glob)
 	cfg.Stylesheets = make(map[string]string)
-	cfg.Timeout = 2
 	cfg.TokenIgnores = make(map[string][]string)
 	cfg.Paths = []string{""}
 	cfg.FormatToLang = make(map[string]string)

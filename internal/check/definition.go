@@ -71,13 +71,6 @@ var defaultRules = map[string]map[string]interface{}{
 		"swap":       map[string]string{},
 		"path":       "",
 	},
-	"Grammar": {
-		"extends": "lt",
-		"name":    "LanguageTool.Grammar",
-		"level":   "warning",
-		"scope":   "summary",
-		"path":    "",
-	},
 }
 
 const (
@@ -117,8 +110,6 @@ func buildRule(cfg *core.Config, generic baseCheck) (Rule, error) {
 		return NewMetric(cfg, generic)
 	case "script":
 		return NewScript(cfg, generic)
-	case "lt":
-		return NewLanguageTool(cfg, generic)
 	default:
 		path := generic["path"].(string)
 		return Existence{}, core.NewE201FromTarget(

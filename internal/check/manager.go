@@ -219,10 +219,6 @@ func (mgr *Manager) loadStyles(styles []string) error {
 
 	for _, baseDir := range mgr.Config.Paths {
 		for _, style := range styles {
-			if style == "LanguageTool" {
-				// Special case
-				continue
-			}
 			p := filepath.Join(baseDir, style)
 			if mgr.hasStyle(style) {
 				// We've already loaded this style.
@@ -275,11 +271,6 @@ func (mgr *Manager) loadVocabRules() {
 		}
 		rule, _ := buildRule(mgr.Config, avoid)
 		mgr.rules["Vale.Avoid"] = rule
-	}
-
-	if mgr.Config.LTPath != "" {
-		rule, _ := buildRule(mgr.Config, defaultRules["Grammar"])
-		mgr.rules["LanguageTool.Grammar"] = rule
 	}
 }
 

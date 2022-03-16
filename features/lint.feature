@@ -7,16 +7,6 @@ Feature: Lint
       """
     And the exit status should be 0
 
-  Scenario: Lint a Sphinx file
-    When I lint Sphinx "index.rst"
-    Then the output should contain exactly:
-      """
-      index.rst:14:13:Vale.Repetition:'to' is repeated!
-      index.rst:19:1:Vale.Spelling:Did you really mean 'documentarians'?
-      index.rst:20:22:Vale.Repetition:'and' is repeated!
-      """
-    And the exit status should be 1
-
   Scenario: Lint a AsciiDoc file
     When I lint AsciiDoc "test.adoc"
     Then the output should contain exactly:

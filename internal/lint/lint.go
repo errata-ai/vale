@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -284,10 +283,6 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk nlp.Bl
 
 // setup handles any necessary building, compiling, or pre-processing.
 func (l *Linter) setup() error {
-	if l.Manager.Config.SphinxAuto != "" {
-		parts := strings.Split(l.Manager.Config.SphinxAuto, " ")
-		return exec.Command(parts[0], parts[1:]...).Run()
-	}
 	return nil
 }
 
