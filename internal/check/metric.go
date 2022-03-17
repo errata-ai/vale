@@ -3,6 +3,7 @@ package check
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/d5/tengo/v2"
@@ -13,6 +14,10 @@ import (
 )
 
 var boilerplate = `math := import("math"); __res__ := (%s)`
+var variables = []string{
+	"pre", "list", "blockquote", "heading_h1", "heading_h2", "heading_h3",
+	"heading_h4", "heading_h5", "heading_h6"}
+var headings = regexp.MustCompile(`heading\.(h[1-6])`)
 
 // Metric implements arbitrary, readability-like formulas.
 type Metric struct {
@@ -38,6 +43,7 @@ func NewMetric(cfg *core.Config, generic baseCheck) (Metric, error) {
 
 	rule.path = path
 	rule.Definition.Scope = []string{"summary"}
+	rule.Formula = headings.ReplaceAllString(rule.Formula, "heading_$1")
 
 	return rule, nil
 }
@@ -45,9 +51,16 @@ func NewMetric(cfg *core.Config, generic baseCheck) (Metric, error) {
 // Run calculates the readability level of the given text.
 func (o Metric) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
+	ctx := context.Background()
 
 	parameters := f.ComputeMetrics()
-	ctx := context.Background()
+	for _, k := range variables {
+		if _, ok := parameters[k]; !ok {
+			// If a variable wasn't found in the given file, we set its value
+			// to 0.0.
+			parameters[k] = 0.0
+		}
+	}
 
 	// The actual result of our formula.
 	//

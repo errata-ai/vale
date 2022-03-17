@@ -1,4 +1,11 @@
 Feature: Checks
+    Scenario: Metric
+        When I test "checks/Metric"
+        Then the output should contain exactly:
+            """
+            test.md:1:1:Checks.MetricValue:This topic has 1.00 H2s in it.
+            """
+
     Scenario: Conditional
         When I test "checks/Conditional"
         Then the output should contain exactly:

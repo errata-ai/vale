@@ -1,0 +1,6 @@
+extends: metric
+message: "This topic has %s H2s in it."
+
+formula: heading.h1 + list
+
+condition: "> 0"

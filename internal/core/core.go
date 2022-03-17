@@ -233,7 +233,11 @@ func (f *File) SortedAlerts() []Alert {
 func (f *File) ComputeMetrics() map[string]interface{} {
 	params := map[string]interface{}{}
 	for k, v := range f.Metrics {
-		params[k] = v
+		if strings.HasPrefix(k, "table") {
+			continue
+		}
+		k = strings.Replace(k, ".", "_", -1)
+		params[k] = float64(v)
 	}
 	doc := summarize.NewDocument(f.Summary.String())
 
