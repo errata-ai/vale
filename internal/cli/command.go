@@ -54,6 +54,8 @@ func printConfig(args []string, cfg *core.Config) error {
 func printMetrics(args []string, cfg *core.Config) error {
 	if len(args) != 1 {
 		return core.NewE100("ls-metrics", errors.New("one argument expected"))
+	} else if !core.FileExists(args[0]) {
+		return errors.New("file not found")
 	}
 
 	linter, err := lint.NewLinter(cfg)
