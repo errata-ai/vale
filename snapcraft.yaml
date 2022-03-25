@@ -1,15 +1,14 @@
 name: vale
 version: 2.15.4
-
 summary: A syntax-aware linter for prose built with speed and extensibility in mind.
-
 description: |
   Vale is a command-line tool that brings code-like linting to prose.
   It's fast, cross-platform, and highly customizable.
 
-confinement: devmode
-base: core18
+confinement: strict
+grade: stable
 
+base: core18
 parts:
   rst2html:
     plugin: python
