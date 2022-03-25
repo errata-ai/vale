@@ -18,16 +18,16 @@ var funcs = TxtFuncMap()
 
 func init() {
 	funcs["red"] = func(s string) string {
-		return fmt.Sprintf("%s", pterm.Red(s))
+		return pterm.Red(s)
 	}
 	funcs["blue"] = func(s string) string {
-		return fmt.Sprintf("%s", pterm.Blue(s))
+		return pterm.Blue(s)
 	}
 	funcs["yellow"] = func(s string) string {
-		return fmt.Sprintf("%s", pterm.Yellow(s))
+		return pterm.Yellow(s)
 	}
 	funcs["underline"] = func(s string) string {
-		return fmt.Sprintf("%s", pterm.Underscore.Sprintf(s))
+		return pterm.Underscore.Sprintf(s)
 	}
 	funcs["newTable"] = func(wrap bool) *tablewriter.Table {
 		table := tablewriter.NewWriter(os.Stdout)
@@ -289,10 +289,6 @@ func toDecimal(v interface{}) int64 {
 	return result
 }
 
-func intArrayToString(slice []int, delimeter string) string {
-	return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(slice)), delimeter), "[]")
-}
-
 func list(v ...interface{}) []interface{} {
 	return v
 }
@@ -321,7 +317,7 @@ func mustPush(list interface{}, v interface{}) ([]interface{}, error) {
 		return append(nl, v), nil
 
 	default:
-		return nil, fmt.Errorf("Cannot push on type %s", tp)
+		return nil, fmt.Errorf("cannot push on type %s", tp)
 	}
 }
 
@@ -351,7 +347,7 @@ func mustPrepend(list interface{}, v interface{}) ([]interface{}, error) {
 		return append([]interface{}{v}, nl...), nil
 
 	default:
-		return nil, fmt.Errorf("Cannot prepend on type %s", tp)
+		return nil, fmt.Errorf("cannot prepend on type %s", tp)
 	}
 }
 
@@ -377,7 +373,7 @@ func mustLast(list interface{}) (interface{}, error) {
 
 		return l2.Index(l - 1).Interface(), nil
 	default:
-		return nil, fmt.Errorf("Cannot find last on type %s", tp)
+		return nil, fmt.Errorf("cannot find last on type %s", tp)
 	}
 }
 
@@ -403,7 +399,7 @@ func mustFirst(list interface{}) (interface{}, error) {
 
 		return l2.Index(0).Interface(), nil
 	default:
-		return nil, fmt.Errorf("Cannot find first on type %s", tp)
+		return nil, fmt.Errorf("cannot find first on type %s", tp)
 	}
 }
 
@@ -446,7 +442,7 @@ func mustUniq(list interface{}) ([]interface{}, error) {
 
 		return dest, nil
 	default:
-		return nil, fmt.Errorf("Cannot find uniq on type %s", tp)
+		return nil, fmt.Errorf("cannot find uniq on type %s", tp)
 	}
 }
 
@@ -487,7 +483,7 @@ func mustHas(needle interface{}, haystack interface{}) (bool, error) {
 
 		return false, nil
 	default:
-		return false, fmt.Errorf("Cannot find has on type %s", tp)
+		return false, fmt.Errorf("cannot find has on type %s", tp)
 	}
 }
 
