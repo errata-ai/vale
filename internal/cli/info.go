@@ -62,6 +62,7 @@ var hidden = []string{
 	"relative",
 	"sort",
 	"sources",
+	"built",
 
 	// API stuff
 	"tag",
