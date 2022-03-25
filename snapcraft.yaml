@@ -24,3 +24,5 @@ parts:
 apps:
   vale:
     command: vale
+    plugs:
+      - home
