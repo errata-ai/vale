@@ -28,3 +28,4 @@ fixtures/formats/Sphinx/_build/
 *~
 .bundle
 .vagrant
+*.snap

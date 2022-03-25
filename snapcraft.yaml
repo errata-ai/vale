@@ -1,0 +1,27 @@
+name: vale
+version: 2.15.4
+
+summary: A syntax-aware linter for prose built with speed and extensibility in mind.
+
+description: |
+  Vale is a command-line tool that brings code-like linting to prose.
+  It's fast, cross-platform, and highly customizable.
+
+confinement: devmode
+base: core18
+
+parts:
+  rst2html:
+    plugin: python
+    python-packages:
+      - docutils
+
+  vale:
+    build-packages:
+      - asciidoctor
+    plugin: dump
+    source: https://github.com/errata-ai/vale/releases/download/v$SNAPCRAFT_PROJECT_VERSION/vale_$SNAPCRAFT_PROJECT_VERSION_Linux_64-bit.tar.gz
+
+apps:
+  vale:
+    command: vale
