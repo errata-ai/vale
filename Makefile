@@ -54,3 +54,9 @@ docker:
 	docker tag jdkato/vale:${LAST_TAG} jdkato/vale:latest
 	docker push jdkato/vale:${LAST_TAG}
 	docker push jdkato/vale:latest
+
+snap:
+	snapcraft login
+	snapcraft
+	snapcraft upload --release stable *.snap
+
