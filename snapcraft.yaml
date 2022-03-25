@@ -15,9 +15,17 @@ parts:
     python-packages:
       - docutils
 
-  vale:
+  asciidoctor:
+    plugin: nil
     stage-packages:
       - asciidoctor
+    organize:
+      usr/bin/: bin/
+      usr/lib/: lib/
+    prime:
+      - bin/asciidoctor
+
+  vale:
     plugin: dump
     source: https://github.com/errata-ai/vale/releases/download/v$SNAPCRAFT_PROJECT_VERSION/vale_$SNAPCRAFT_PROJECT_VERSION_Linux_64-bit.tar.gz
 
