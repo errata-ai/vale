@@ -2,7 +2,6 @@ package cli
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -37,7 +36,6 @@ var Actions = map[string]func(args []string, cfg *core.Config) error{
 	"ls-config":  printConfig,
 	"ls-metrics": printMetrics,
 	"dc":         printConfig,
-	"help":       printUsage,
 	"tag":        runTag,
 	"compile":    compileRule,
 	"run":        runRule,
@@ -51,11 +49,6 @@ func printConfig(args []string, cfg *core.Config) error {
 	}
 	fmt.Println(cfg.String())
 	return err
-}
-
-func printUsage(args []string, cfg *core.Config) error {
-	flag.Usage()
-	return nil
 }
 
 func printMetrics(args []string, cfg *core.Config) error {
