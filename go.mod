@@ -14,6 +14,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/pterm/pterm v0.12.33
 	github.com/remeh/sizedwaitgroup v1.0.0
+	github.com/spf13/afero v1.8.1
 	github.com/spf13/cast v1.3.1
 	github.com/spf13/pflag v1.0.5
 	github.com/yuin/goldmark v1.4.4
@@ -28,7 +29,6 @@ require (
 	github.com/montanaflynn/stats v0.6.3 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d // indirect
-	github.com/spf13/afero v1.8.1 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	golang.org/x/sys v0.0.0-20211013075003-97ac67df715c // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
