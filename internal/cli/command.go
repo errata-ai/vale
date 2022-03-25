@@ -73,7 +73,8 @@ func printMetrics(args []string, cfg *core.Config) error {
 		return err
 	}
 
-	return printJSON(linted[0].ComputeMetrics())
+	computed, _ := linted[0].ComputeMetrics()
+	return printJSON(computed)
 }
 
 func runTag(args []string, cfg *core.Config) error {

@@ -53,7 +53,11 @@ func (o Metric) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 	ctx := context.Background()
 
-	parameters := f.ComputeMetrics()
+	parameters, err := f.ComputeMetrics()
+	if err != nil {
+		return alerts, nil
+	}
+
 	for _, k := range variables {
 		if _, ok := parameters[k]; !ok {
 			// If a variable wasn't found in the given file, we set its value

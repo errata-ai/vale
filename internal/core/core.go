@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"errors"
 	"os"
 	"path/filepath"
 	"sort"
@@ -230,7 +231,7 @@ func (f *File) SortedAlerts() []Alert {
 }
 
 // ComputeMetrics returns all of f's metrics.
-func (f *File) ComputeMetrics() map[string]interface{} {
+func (f *File) ComputeMetrics() (map[string]interface{}, error) {
 	params := map[string]interface{}{}
 	for k, v := range f.Metrics {
 		if strings.HasPrefix(k, "table") {
@@ -239,7 +240,11 @@ func (f *File) ComputeMetrics() map[string]interface{} {
 		k = strings.Replace(k, ".", "_", -1)
 		params[k] = float64(v)
 	}
+
 	doc := summarize.NewDocument(f.Summary.String())
+	if doc.NumWords == 0 {
+		return params, errors.New("empty file")
+	}
 
 	params["complex_words"] = doc.NumComplexWords
 	params["long_words"] = doc.NumLongWords
@@ -250,7 +255,7 @@ func (f *File) ComputeMetrics() map[string]interface{} {
 	params["polysyllabic_words"] = doc.NumPolysylWords
 	params["syllables"] = doc.NumSyllables
 
-	return params
+	return params, nil
 }
 
 // FindLoc calculates the line and span of an Alert.

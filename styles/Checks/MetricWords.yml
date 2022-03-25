@@ -1,0 +1,6 @@
+extends: metric
+message: "This topic has %s words/sents."
+
+formula: words / sentences
+
+condition: "> 10"
