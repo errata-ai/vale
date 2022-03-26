@@ -8,25 +8,17 @@ description: |
 confinement: strict
 grade: stable
 
-base: core18
+base: core20
 parts:
-  rst2html:
+  deps:
     plugin: python
     python-packages:
       - docutils
 
-  asciidoctor:
-    plugin: nil
-    stage-packages:
-      - asciidoctor
-    organize:
-      usr/bin/: bin/
-      usr/lib/: lib/
-    prime:
-      - bin/asciidoctor
-
   vale:
     plugin: dump
+    stage-packages:
+      - asciidoctor
     source: https://github.com/errata-ai/vale/releases/download/v$SNAPCRAFT_PROJECT_VERSION/vale_$SNAPCRAFT_PROJECT_VERSION_Linux_64-bit.tar.gz
 
 apps:
