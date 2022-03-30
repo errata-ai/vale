@@ -338,6 +338,10 @@ func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 		ctx = old
 	}
 
+	if len(a.Offset) == 0 && strings.Count(ctx, a.Match) > 1 {
+		a.Offset = append(a.Offset, strings.Fields(ctx[0:a.Span[0]])...)
+	}
+
 	if !lookup {
 		a.Line, a.Span = f.assignLoc(ctx, blk, pad, a)
 	}

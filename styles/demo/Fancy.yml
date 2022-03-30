@@ -1,0 +1,5 @@
+extends: existence
+message: "Change"
+level: warning
+tokens:
+  - "(?<!automatic )entr[a-z]*"

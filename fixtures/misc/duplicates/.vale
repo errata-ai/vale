@@ -7,3 +7,4 @@ BasedOnStyles = vale
 Vale.Spelling = YES
 write-good.E-Prime = YES
 demo.CommasPerSentence = YES
+demo.Fancy = YES

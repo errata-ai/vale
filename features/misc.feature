@@ -59,6 +59,9 @@ Feature: Misc
             test.md:5:9:write-good.E-Prime:Avoid using "is"
             test.md:5:95:Vale.Spelling:Did you really mean 'multimicrophone'?
             test.md:5:193:demo.CommasPerSentence:More than 3 commas!
+            test2.md:1:6:write-good.E-Prime:Avoid using "is"
+            test2.md:2:24:demo.Fancy:Change
+            test2.md:2:40:write-good.E-Prime:Avoid using "there's"
             """
 
     Scenario: Nested markup
