@@ -3,6 +3,7 @@ module github.com/errata-ai/vale/v2
 go 1.17
 
 require (
+	github.com/AlecAivazis/survey/v2 v2.3.4
 	github.com/d5/tengo/v2 v2.10.0
 	github.com/errata-ai/ini v1.63.0
 	github.com/errata-ai/regexp2 v1.7.0
@@ -23,7 +24,6 @@ require (
 )
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.4 // indirect
 	github.com/atomicgo/cursor v0.0.1 // indirect
 	github.com/gookit/color v1.4.2 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
