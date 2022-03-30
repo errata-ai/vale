@@ -31,6 +31,7 @@ type CompiledRule struct {
 var commandInfo = map[string]string{
 	"ls-config":  "Print the current configuration to stdout and exit.",
 	"ls-metrics": "Print the given file's internal metrics.",
+	"setup":      "Launch an interactive config-creation wizard.",
 }
 
 // Actions are the available CLI commands.
