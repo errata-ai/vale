@@ -1,8 +1,9 @@
 StylesPath = ../../../styles
 MinAlertLevel = suggestion
 
-[*.{md}]
+[*.{md,adoc}]
 BasedOnStyles = vale
 
+Vale.Spelling = YES
 write-good.E-Prime = YES
 demo.CommasPerSentence = YES

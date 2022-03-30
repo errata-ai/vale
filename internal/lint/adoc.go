@@ -24,6 +24,7 @@ var adocSanitizer = strings.NewReplacer(
 
 // Convert listing blocks of the form `[source,.+]` to `[source]`
 var reSource = regexp.MustCompile(`\[source,.+\]`)
+var reComment = regexp.MustCompile(`// .+`)
 
 var adocArgs = []string{
 	"-s",
@@ -121,6 +122,15 @@ func (l *Linter) lintADoc(f *core.File) error {
 		parts := strings.Split(m, ",")
 		span := strings.Repeat("*", len(parts[len(parts)-1])-2)
 		return "[source, " + span + "]"
+	})
+
+	body = reComment.ReplaceAllStringFunc(body, func(m string) string {
+		// NOTE: This is required to avoid finding matches in line comments.
+		//
+		// See https://github.com/errata-ai/vale/issues/414.
+		parts := strings.Split(m, "//")
+		span := strings.Repeat("*", len(parts[1])-1)
+		return "// " + span
 	})
 
 	f.Content = body

@@ -1,0 +1,4 @@
+I hav an error, but that's ok.
+// I am a comment
+// I hav an error, and it is ignored.
+I hav an error, but that's ok.

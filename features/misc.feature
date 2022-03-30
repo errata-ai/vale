@@ -45,6 +45,10 @@ Feature: Misc
         When I test "misc/duplicates"
         Then the output should contain exactly:
             """
+            test.adoc:1:3:Vale.Spelling:Did you really mean 'hav'?
+            test.adoc:1:21:write-good.E-Prime:Avoid using "that's"
+            test.adoc:4:3:Vale.Spelling:Did you really mean 'hav'?
+            test.adoc:4:21:write-good.E-Prime:Avoid using "that's"
             test.md:1:6:write-good.E-Prime:Avoid using "is"
             test.md:1:9:vale.Editorializing:Consider removing 'very'
             test.md:1:15:vale.Editorializing:Consider removing 'very'
@@ -53,6 +57,7 @@ Feature: Misc
             test.md:3:14:write-good.E-Prime:Avoid using "are"
             test.md:3:28:write-good.E-Prime:Avoid using "be"
             test.md:5:9:write-good.E-Prime:Avoid using "is"
+            test.md:5:95:Vale.Spelling:Did you really mean 'multimicrophone'?
             test.md:5:193:demo.CommasPerSentence:More than 3 commas!
             """
 
