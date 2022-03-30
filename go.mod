@@ -23,9 +23,14 @@ require (
 )
 
 require (
+	github.com/AlecAivazis/survey/v2 v2.3.4 // indirect
 	github.com/atomicgo/cursor v0.0.1 // indirect
 	github.com/gookit/color v1.4.2 // indirect
+	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
+	github.com/mattn/go-colorable v0.1.2 // indirect
+	github.com/mattn/go-isatty v0.0.8 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
 	github.com/montanaflynn/stats v0.6.3 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d // indirect
