@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"encoding/json"
 	"io"
+	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/gobwas/glob"
-	"github.com/spf13/afero"
 )
 
 // CLIFlags holds the values that are defined at runtime by the user.
@@ -62,7 +62,6 @@ type Config struct {
 	DictionaryPath string // Location to search for dictionaries.
 
 	FallbackPath string               `json:"-"`
-	FsWrapper    *afero.Afero         `json:"-"`
 	SecToPat     map[string]glob.Glob `json:"-"`
 	Styles       []string             `json:"-"`
 	Paths        []string             `json:"-"`
@@ -95,18 +94,17 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.TokenIgnores = make(map[string][]string)
 	cfg.Paths = []string{""}
 	cfg.FormatToLang = make(map[string]string)
-	cfg.FsWrapper = &afero.Afero{Fs: afero.NewReadOnlyFs(afero.NewOsFs())}
 
 	return &cfg, nil
 }
 
 // AddWordListFile adds vocab terms from a provided file.
 func (c *Config) AddWordListFile(name string, accept bool) error {
-	fd, err := c.FsWrapper.Open(name)
-	defer fd.Close()
+	fd, err := os.Open(name)
 	if err != nil {
 		return err
 	}
+	defer fd.Close()
 	return c.addWordList(fd, accept)
 }
 

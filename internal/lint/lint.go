@@ -11,6 +11,7 @@ import (
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/errata-ai/vale/v2/pkg/glob"
+	"github.com/karrick/godirwalk"
 	"github.com/remeh/sizedwaitgroup"
 )
 
@@ -103,29 +104,34 @@ func (l *Linter) lintFiles(done <-chan core.File, root string) (<-chan lintResul
 	go func() {
 		wg := sizedwaitgroup.New(5)
 
-		err := filepath.WalkDir(root, func(fp string, de os.DirEntry, err error) error {
-			if de.IsDir() && core.ShouldIgnoreDirectory(fp) {
-				return filepath.SkipDir
-			} else if de.IsDir() || l.skip(fp) {
-				return nil
-			}
-
-			wg.Add()
-			go func(fp string) {
-				select {
-				case filesChan <- l.lintFile(fp):
-				case <-done:
+		err := godirwalk.Walk(root, &godirwalk.Options{
+			Callback: func(fp string, de *godirwalk.Dirent) error {
+				if de.IsDir() && core.ShouldIgnoreDirectory(fp) {
+					return godirwalk.SkipThis
+				} else if de.IsDir() || l.skip(fp) {
+					return nil
 				}
-				wg.Done()
-			}(fp)
 
-			// Abort the walk if done is closed.
-			select {
-			case <-done:
-				return errors.New("walk canceled")
-			default:
-				return nil
-			}
+				wg.Add()
+				go func(fp string) {
+					select {
+					case filesChan <- l.lintFile(fp):
+					case <-done:
+					}
+					wg.Done()
+				}(fp)
+
+				// Abort the walk if done is closed.
+				select {
+				case <-done:
+					return errors.New("walk canceled")
+				default:
+					return nil
+				}
+			},
+			Unsorted:            true,
+			AllowNonDirectory:   true,
+			FollowSymbolicLinks: true,
 		})
 
 		// Walk has returned, so all calls to wg.Add are done.  Start a

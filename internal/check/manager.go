@@ -10,6 +10,7 @@ import (
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/errata-ai/vale/v2/internal/rule"
+	"github.com/karrick/godirwalk"
 )
 
 // Manager controls the loading and validating of the check extension points.
@@ -77,7 +78,7 @@ func (mgr *Manager) AddRule(name string, rule Rule) error {
 
 // AddRuleFromFile adds the given rule to the manager.
 func (mgr *Manager) AddRuleFromFile(name, path string) error {
-	content, err := mgr.Config.FsWrapper.ReadFile(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return core.NewE100("ReadFile", err)
 	}
@@ -113,18 +114,22 @@ func (mgr *Manager) AssignNLP(f *core.File) nlp.NLPInfo {
 }
 
 func (mgr *Manager) addStyle(path string) error {
-	return mgr.Config.FsWrapper.Walk(path,
-		func(fp string, fi os.FileInfo, err error) error {
-			if err != nil || fi.IsDir() {
-				return err
+	return godirwalk.Walk(path, &godirwalk.Options{
+		Callback: func(fp string, de *godirwalk.Dirent) error {
+			if de.IsDir() {
+				return nil
 			}
-			return mgr.addRuleFromSource(fi.Name(), fp)
-		})
+			return mgr.addRuleFromSource(de.Name(), fp)
+		},
+		Unsorted:            true,
+		AllowNonDirectory:   true,
+		FollowSymbolicLinks: true,
+	})
 }
 
 func (mgr *Manager) addRuleFromSource(name, path string) error {
 	if strings.HasSuffix(name, ".yml") {
-		f, err := mgr.Config.FsWrapper.ReadFile(path)
+		f, err := os.ReadFile(path)
 		if err != nil {
 			return core.NewE201FromPosition(err.Error(), path, 1)
 		}
@@ -223,7 +228,7 @@ func (mgr *Manager) loadStyles(styles []string) error {
 			if mgr.hasStyle(style) {
 				// We've already loaded this style.
 				continue
-			} else if has, _ := mgr.Config.FsWrapper.DirExists(p); !has {
+			} else if has := core.IsDir(p); !has {
 				need = append(need, style)
 				continue
 			}

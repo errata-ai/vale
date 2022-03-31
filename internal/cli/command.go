@@ -6,9 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 
-	"github.com/AlecAivazis/survey/v2"
 	"github.com/errata-ai/vale/v2/internal/check"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/lint"
@@ -31,7 +29,6 @@ type CompiledRule struct {
 var commandInfo = map[string]string{
 	"ls-config":  "Print the current configuration to stdout and exit.",
 	"ls-metrics": "Print the given file's internal metrics.",
-	"setup":      "Launch an interactive config-creation wizard.",
 }
 
 // Actions are the available CLI commands.
@@ -42,46 +39,6 @@ var Actions = map[string]func(args []string, cfg *core.Config) error{
 	"tag":        runTag,
 	"compile":    compileRule,
 	"run":        runRule,
-	"setup":      setup,
-}
-
-func setup(args []string, cfg *core.Config) error {
-	answers := struct {
-		Name   string
-		Base   string
-		Format []string
-		Path   string
-	}{}
-
-	err := survey.Ask(questions, &answers)
-	if err != nil {
-		return err
-	}
-
-	root, err := filepath.Abs(answers.Path)
-	if err != nil {
-		return err
-	}
-
-	if base, ok := base2URL[answers.Base]; ok {
-		if fetch(base, root) != nil {
-			return err
-		}
-	}
-
-	err = os.Mkdir(filepath.Join(root, answers.Name), 0755)
-	if err != nil {
-		return err
-	}
-
-	styles := strings.Join([]string{answers.Name, answers.Base}, ", ")
-	config := fmt.Sprintf(
-		defaultConfig,
-		answers.Path,
-		toGlob(answers.Format),
-		strings.TrimRight(styles, ","))
-
-	return os.WriteFile(".vale.ini", []byte(config), 0644)
 }
 
 func printConfig(args []string, cfg *core.Config) error {
