@@ -68,6 +68,10 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 		} else if inBlock && core.StringInSlice(txt, skipTags) {
 			inBlock = false
 		} else if tokt == html.StartTagToken {
+			if (txt == "em" || txt == "b") && walker.lastTag() == "code" {
+				// FIXME: See https://github.com/errata-ai/vale/issues/421
+				txt = "code"
+			}
 			inline = core.StringInSlice(txt, inlineTags)
 			skip = core.StringInSlice(txt, skipped)
 			walker.addTag(txt)

@@ -12,7 +12,6 @@ import (
 
 type walker struct {
 	lines   int
-	section string
 	context string
 
 	activeTag string
@@ -107,4 +106,8 @@ func (w *walker) advance(text string) int {
 		}
 	}
 	return -1
+}
+
+func (w *walker) lastTag() string {
+	return w.tagHistory[len(w.tagHistory)-1]
 }
