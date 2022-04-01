@@ -9,11 +9,8 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/pterm/pterm"
 )
-
-type PackageManager struct {
-	Path string
-}
 
 var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library.json"
 
@@ -21,15 +18,24 @@ func readPkgs(pkgs []string, path string) error {
 	lookup, err := getLibrary(path)
 	if err != nil {
 		return err
+	} else if len(pkgs) == 0 {
+		return nil
 	}
 
-	mgr := PackageManager{Path: path}
+	p, err := pterm.DefaultProgressbar.WithTotal(
+		len(pkgs)).WithTitle("Downloading packages").Start()
+
+	if err != nil {
+		return err
+	}
+
 	for idx, pkg := range pkgs {
 		found := false
+
 		for _, entry := range lookup {
 			if pkg == entry.Name {
 				found = true
-				if err = mgr.download(pkg, entry.URL, idx); err != nil {
+				if err = download(pkg, entry.URL, path, idx); err != nil {
 					return err
 				}
 			}
@@ -37,16 +43,19 @@ func readPkgs(pkgs []string, path string) error {
 
 		if !found {
 			name := fileNameWithoutExt(pkg)
-			if err = mgr.download(name, pkg, idx); err != nil {
+			if err = download(name, pkg, path, idx); err != nil {
 				return err
 			}
 		}
+
+		pterm.Success.Println("Downloaded '" + pkg + "'")
+		p.Increment()
 	}
 
 	return nil
 }
 
-func (mgr *PackageManager) download(name, url string, index int) error {
+func download(name, url, styles string, index int) error {
 	dir, err := ioutil.TempDir("", name)
 	if err != nil {
 		return err
@@ -58,20 +67,20 @@ func (mgr *PackageManager) download(name, url string, index int) error {
 
 	root := filepath.Join(dir, name)
 	path := filepath.Join(root, "styles")
-	pipe := filepath.Join(mgr.Path, "Pipeline")
+	pipe := filepath.Join(styles, ".config")
 
 	if !core.IsDir(path) {
-		return moveAsset(name, dir, mgr.Path) // style-only
+		return moveAsset(name, dir, styles) // style-only
 	}
 
 	// StylesPath
-	if err = moveDir(path, mgr.Path, false); err != nil {
+	if err = moveDir(path, styles, false); err != nil {
 		return err
 	}
 
 	// Vocab
 	loc1 := filepath.Join(path, "Vocab")
-	loc2 := filepath.Join(mgr.Path, "Vocab")
+	loc2 := filepath.Join(styles, "Vocab")
 	if err = moveDir(loc1, loc2, false); err != nil {
 		return err
 	}
@@ -82,7 +91,7 @@ func (mgr *PackageManager) download(name, url string, index int) error {
 		pkgs, err := core.GetPackages(cfg)
 		if err != nil {
 			return err
-		} else if err = readPkgs(pkgs, mgr.Path); err != nil {
+		} else if err = readPkgs(pkgs, styles); err != nil {
 			return err
 		}
 		entry := fmt.Sprintf("%d-%s.ini", index, name)
@@ -125,6 +134,7 @@ func moveAsset(name, old, new string) error {
 		}
 	}
 
+	os.MkdirAll(new, 0755)
 	if err := os.Rename(src, dst); err != nil {
 		return err
 	}
