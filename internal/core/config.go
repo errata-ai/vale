@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/errata-ai/ini"
 	"github.com/gobwas/glob"
 )
 
@@ -134,4 +135,17 @@ func (c *Config) String() string {
 	c.StylesPath = filepath.ToSlash(c.StylesPath)
 	b, _ := json.MarshalIndent(c, "", "  ")
 	return string(b)
+}
+
+// Get the user-defined packages from a `.vale.ini` file.
+func GetPackages(src string) ([]string, error) {
+	packages := []string{}
+
+	uCfg, err := ini.Load(src)
+	if err != nil {
+		return packages, err
+	}
+
+	core := uCfg.Section("")
+	return core.Key("Packages").Strings(","), nil
 }

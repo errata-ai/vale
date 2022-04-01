@@ -1,9 +1,0 @@
-extends: readability
-message: "Grade level (%s) too high!"
-level: warning
-grade: 14
-metrics:
-  # - Flesch-Kincaid
-  # - Gunning Fog
-  - Coleman-Liau
-  # - Automated Readability

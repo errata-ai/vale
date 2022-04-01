@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/mholt/archiver"
 	"github.com/spf13/pflag"
 )
 
@@ -75,7 +76,8 @@ func fetch(src, dst string) error {
 	} else if err = tmpfile.Close(); err != nil {
 		return err
 	}
-	return core.Unzip(tmpfile.Name(), dst)
+
+	return archiver.Unarchive(tmpfile.Name(), dst)
 }
 
 func install(args []string, cfg *core.Config) error {

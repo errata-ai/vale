@@ -29,6 +29,7 @@ type CompiledRule struct {
 var commandInfo = map[string]string{
 	"ls-config":  "Print the current configuration to stdout and exit.",
 	"ls-metrics": "Print the given file's internal metrics.",
+	"sync":       "Update external configuration sources.",
 }
 
 // Actions are the available CLI commands.
@@ -39,6 +40,15 @@ var Actions = map[string]func(args []string, cfg *core.Config) error{
 	"tag":        runTag,
 	"compile":    compileRule,
 	"run":        runRule,
+	"sync":       sync,
+}
+
+func sync(args []string, cfg *core.Config) error {
+	pkgs, err := core.GetPackages(cfg.Flags.Path)
+	if err != nil {
+		return err
+	}
+	return readPkgs(pkgs, cfg.StylesPath)
 }
 
 func printConfig(args []string, cfg *core.Config) error {

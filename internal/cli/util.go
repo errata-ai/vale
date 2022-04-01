@@ -3,6 +3,10 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"path/filepath"
+	"strings"
 )
 
 // Response is returned after an action.
@@ -27,6 +31,14 @@ func getJSON(data interface{}) string {
 	return string(b)
 }
 
+func fetchJSON(url string) ([]byte, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return []byte{}, err
+	}
+	return ioutil.ReadAll(resp.Body)
+}
+
 func printJSON(t interface{}) error {
 	b, err := json.MarshalIndent(t, "", "  ")
 	if err != nil {
@@ -44,4 +56,9 @@ func sendResponse(msg string, err error) error {
 		resp.Error = err.Error()
 	}
 	return printJSON(resp)
+}
+
+func fileNameWithoutExt(fileName string) string {
+	base := filepath.Base(fileName)
+	return strings.TrimSuffix(base, filepath.Ext(base))
 }
