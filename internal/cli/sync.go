@@ -46,9 +46,10 @@ func readPkgs(pkgs []string, path string) error {
 			if err = download(name, pkg, path, idx); err != nil {
 				return err
 			}
+			pkg = name
 		}
 
-		pterm.Success.Println("Downloaded '" + pkg + "'")
+		pterm.Success.Println("Downloaded package '" + pkg + "'")
 		p.Increment()
 	}
 
