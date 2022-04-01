@@ -12,6 +12,7 @@ import (
 	"github.com/errata-ai/vale/v2/internal/lint"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/prose/tag"
+	"github.com/pterm/pterm"
 )
 
 // TaggedWord is a word with an NLP context.
@@ -48,7 +49,25 @@ func sync(args []string, cfg *core.Config) error {
 	if err != nil {
 		return err
 	}
-	return readPkgs(pkgs, cfg.StylesPath)
+
+	p, err := pterm.DefaultProgressbar.WithTotal(
+		len(pkgs)).WithTitle("Downloading packages").Start()
+
+	if err != nil {
+		return err
+	}
+
+	for idx, pkg := range pkgs {
+		if err = readPkg(pkg, cfg.StylesPath, idx); err != nil {
+			return err
+		}
+		name := fileNameWithoutExt(pkg)
+
+		pterm.Success.Println("Downloaded package '" + name + "'")
+		p.Increment()
+	}
+
+	return nil
 }
 
 func printConfig(args []string, cfg *core.Config) error {

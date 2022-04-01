@@ -9,48 +9,31 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/pterm/pterm"
 )
 
 var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library.json"
 
-func readPkgs(pkgs []string, path string) error {
+func readPkg(pkg, path string, idx int) error {
 	lookup, err := getLibrary(path)
 	if err != nil {
 		return err
-	} else if len(pkgs) == 0 {
-		return nil
 	}
 
-	p, err := pterm.DefaultProgressbar.WithTotal(
-		len(pkgs)).WithTitle("Downloading packages").Start()
-
-	if err != nil {
-		return err
-	}
-
-	for idx, pkg := range pkgs {
-		found := false
-
-		for _, entry := range lookup {
-			if pkg == entry.Name {
-				found = true
-				if err = download(pkg, entry.URL, path, idx); err != nil {
-					return err
-				}
-			}
-		}
-
-		if !found {
-			name := fileNameWithoutExt(pkg)
-			if err = download(name, pkg, path, idx); err != nil {
+	found := false
+	for _, entry := range lookup {
+		if pkg == entry.Name {
+			found = true
+			if err = download(pkg, entry.URL, path, idx); err != nil {
 				return err
 			}
-			pkg = name
 		}
+	}
 
-		pterm.Success.Println("Downloaded package '" + pkg + "'")
-		p.Increment()
+	if !found {
+		name := fileNameWithoutExt(pkg)
+		if err = download(name, pkg, path, idx); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -92,8 +75,12 @@ func download(name, url, styles string, index int) error {
 		pkgs, err := core.GetPackages(cfg)
 		if err != nil {
 			return err
-		} else if err = readPkgs(pkgs, styles); err != nil {
-			return err
+		}
+
+		for idx, pkg := range pkgs {
+			if err = readPkg(pkg, styles, idx); err != nil {
+				return err
+			}
 		}
 		entry := fmt.Sprintf("%d-%s.ini", index, name)
 
