@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 
 	"github.com/errata-ai/vale/v2/internal/check"
@@ -71,13 +70,8 @@ func sync(args []string, cfg *core.Config) error {
 }
 
 func printConfig(args []string, cfg *core.Config) error {
-	err := core.From("ini", cfg)
-	if err != nil {
-		ShowError(err, Flags.Output, os.Stderr)
-		return nil
-	}
 	fmt.Println(cfg.String())
-	return err
+	return nil
 }
 
 func printMetrics(args []string, cfg *core.Config) error {

@@ -149,3 +149,45 @@ func GetPackages(src string) ([]string, error) {
 	core := uCfg.Section("")
 	return core.Key("Packages").Strings(","), nil
 }
+
+func pipeConfig(cfg *Config) ([]string, error) {
+	var sources []string
+
+	pipeline := filepath.Join(cfg.StylesPath, ".config")
+	if IsDir(pipeline) && len(cfg.Flags.Sources) == 0 {
+		configs, err := os.ReadDir(pipeline)
+		if err != nil {
+			return sources, err
+		}
+
+		for _, config := range configs {
+			sources = append(sources, filepath.Join(pipeline, config.Name()))
+		}
+		sources = append(sources, cfg.Flags.Path)
+	}
+
+	return sources, nil
+}
+
+func ReadPipeline(config *Config) (*Config, error) {
+	err := From("ini", config)
+	if err != nil {
+		return config, err
+	}
+
+	sources, err := pipeConfig(config)
+	if err != nil {
+		return config, err
+	}
+
+	if len(sources) > 0 {
+		config.Flags.Sources = strings.Join(sources, ",")
+
+		err = From("ini", config)
+		if err != nil {
+			return config, err
+		}
+	}
+
+	return config, nil
+}

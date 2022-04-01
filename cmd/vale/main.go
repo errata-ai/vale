@@ -112,7 +112,7 @@ func main() {
 		handleError(err)
 	}
 
-	err = core.From("ini", config)
+	config, err = core.ReadPipeline(config)
 	// NOTE: we need to delay checking the error because some command don't
 	// require a config file.
 	if argc > 0 {
