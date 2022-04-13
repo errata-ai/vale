@@ -52,25 +52,28 @@ func download(name, url, styles string, index int) error {
 	root := filepath.Join(dir, name)
 	path := filepath.Join(root, "styles")
 	pipe := filepath.Join(styles, ".config")
+	cfg := filepath.Join(root, ".vale.ini")
 
-	if !core.IsDir(path) {
+	if !core.IsDir(path) && !core.FileExists(cfg) {
 		return moveAsset(name, dir, styles) // style-only
 	}
 
 	// StylesPath
-	if err = moveDir(path, styles, false); err != nil {
-		return err
-	}
-
-	// Vocab
-	loc1 := filepath.Join(path, "Vocab")
-	loc2 := filepath.Join(styles, "Vocab")
-	if err = moveDir(loc1, loc2, false); err != nil {
-		return err
+	if core.IsDir(path) {
+		if err = moveDir(path, styles, false); err != nil {
+			return err
+		}
+		// Vocab
+		loc1 := filepath.Join(path, "Vocab")
+		if core.IsDir(loc1) {
+			loc2 := filepath.Join(styles, "Vocab")
+			if err = moveDir(loc1, loc2, false); err != nil {
+				return err
+			}
+		}
 	}
 
 	// .vale.ini
-	cfg := filepath.Join(root, ".vale.ini")
 	if core.FileExists(cfg) {
 		pkgs, err := core.GetPackages(cfg)
 		if err != nil {
