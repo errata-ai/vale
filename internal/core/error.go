@@ -129,7 +129,7 @@ func NewE201(msg, value, path string, finder errorCondition) error {
 	}
 
 	title := fmt.Sprintf(
-		"Invalid value provided [%s:%d:%d]:",
+		"Invalid value [%s:%d:%d]:",
 		filepath.ToSlash(path),
 		ctx.line,
 		ctx.span[0])
