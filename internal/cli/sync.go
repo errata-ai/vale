@@ -13,6 +13,35 @@ import (
 
 var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library.json"
 
+func newVocab(path, name string) error {
+	var ferr error
+
+	root := filepath.Join(path, "Vocab", name)
+	if _, err := os.Stat(root); os.IsNotExist(err) {
+		os.MkdirAll(root, os.ModePerm)
+	}
+
+	for _, f := range []string{"accept.txt", "reject.txt"} {
+		ferr = ioutil.WriteFile(filepath.Join(root, f), []byte{}, 0644)
+	}
+
+	return ferr
+}
+
+func initPath(cfg *core.Config) error {
+	if !core.IsDir(cfg.StylesPath) {
+		if err := os.Mkdir(cfg.StylesPath, os.ModePerm); err != nil {
+			return err
+		}
+		for _, vocab := range cfg.Vocab {
+			if err := newVocab(cfg.StylesPath, vocab); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func readPkg(pkg, path string, idx int) error {
 	lookup, err := getLibrary(path)
 	if err != nil {

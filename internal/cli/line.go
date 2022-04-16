@@ -33,8 +33,8 @@ func PrintLineAlerts(linted []*core.File, relative bool) bool {
 			if a.Severity == "error" {
 				alertCount++
 			}
-			fmt.Print(fmt.Sprintf("%s:%d:%d:%s:%s\n",
-				base, a.Line, a.Span[0], a.Check, a.Message))
+			fmt.Printf("%s:%d:%d:%s:%s\n",
+				base, a.Line, a.Span[0], a.Check, a.Message)
 		}
 	}
 	return alertCount != 0

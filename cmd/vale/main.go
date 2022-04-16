@@ -14,15 +14,6 @@ import (
 // version is set during the release build process.
 var version = "master"
 
-func validateFlags(cfg *core.Config) error {
-	if cfg.Flags.Path != "" && !core.FileExists(cfg.Flags.Path) {
-		return core.NewE100(
-			"--config",
-			fmt.Errorf("path '%s' does not exist", cfg.Flags.Path))
-	}
-	return nil
-}
-
 func stat() bool {
 	stat, err := os.Stdin.Stat()
 	if err != nil || (stat.Mode()&os.ModeCharDevice) != 0 {
@@ -105,26 +96,17 @@ func main() {
 		cli.PrintIntro()
 	}
 
-	config, err := core.NewConfig(&cli.Flags)
-	if err != nil {
-		handleError(err)
-	} else if err := validateFlags(config); err != nil {
-		handleError(err)
-	}
-
-	config, err = core.ReadPipeline(config)
-	// NOTE: we need to delay checking the error because some command don't
-	// require a config file.
 	if argc > 0 {
 		cmd, exists := cli.Actions[args[0]]
 		if exists {
-			if err = cmd(args[1:], config); err != nil {
+			if err := cmd(args[1:], &cli.Flags); err != nil {
 				handleError(err)
 			}
 			os.Exit(0)
 		}
 	}
 
+	config, err := core.ReadPipeline("ini", &cli.Flags, false)
 	if err != nil {
 		handleError(err)
 	}

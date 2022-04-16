@@ -71,7 +71,7 @@ func guessLocation(ctx, sub, match string) (int, string) {
 
 func allStringsInString(subs []string, s string) bool {
 	for _, sub := range subs {
-		if strings.Index(s, sub) < 0 {
+		if !strings.Contains(s, sub) {
 			return false
 		}
 	}

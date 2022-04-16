@@ -80,13 +80,18 @@ func fetch(src, dst string) error {
 	return archiver.Unarchive(tmpfile.Name(), dst)
 }
 
-func install(args []string, cfg *core.Config) error {
+func install(args []string, flags *core.CLIFlags) error {
+	cfg, err := core.ReadPipeline("ini", flags, false)
+	if err != nil {
+		return err
+	}
+
 	style := filepath.Join(cfg.StylesPath, args[0])
 	if core.IsDir(style) {
 		os.RemoveAll(style) // Remove existing version
 	}
 
-	err := fetch(args[1], cfg.StylesPath)
+	err = fetch(args[1], cfg.StylesPath)
 	if err != nil {
 		return sendResponse(
 			fmt.Sprintf("Failed to install '%s'", args[1]),

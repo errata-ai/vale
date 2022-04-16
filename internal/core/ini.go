@@ -159,7 +159,7 @@ func shadowLoad(source interface{}, others ...interface{}) (*ini.File, error) {
 		SpaceBeforeInlineComment: true}, source, others...)
 }
 
-func loadINI(cfg *Config) error {
+func loadINI(cfg *Config, dry bool) error {
 	var base string
 	var uCfg *ini.File
 	var err error
@@ -203,7 +203,7 @@ func loadINI(cfg *Config) error {
 	}
 
 	uCfg.BlockMode = false
-	return processConfig(uCfg, cfg, sources)
+	return processConfig(uCfg, cfg, sources, dry)
 }
 
 // loadConfig loads the .vale file. It checks the current directory up to the
@@ -265,7 +265,7 @@ func processSources(cfg *Config, sources []string) (*ini.File, error) {
 	return uCfg, err
 }
 
-func processConfig(uCfg *ini.File, cfg *Config, paths []string) error {
+func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error {
 	core := uCfg.Section("")
 	global := uCfg.Section("*")
 
@@ -274,7 +274,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string) error {
 	// Default settings
 	for _, k := range core.KeyStrings() {
 		if f, found := coreOpts[k]; found {
-			if err := f(core, cfg, paths); err != nil {
+			if err := f(core, cfg, paths); err != nil && !dry {
 				return err
 			}
 		}
@@ -310,7 +310,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string) error {
 		syntaxMap := make(map[string]bool)
 		for _, k := range uCfg.Section(sec).KeyStrings() {
 			if f, found := syntaxOpts[k]; found {
-				if err = f(sec, uCfg.Section(sec), cfg); err != nil {
+				if err = f(sec, uCfg.Section(sec), cfg); err != nil && !dry {
 					return err
 				}
 			} else {

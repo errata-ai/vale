@@ -168,26 +168,3 @@ func pipeConfig(cfg *Config) ([]string, error) {
 
 	return sources, nil
 }
-
-func ReadPipeline(config *Config) (*Config, error) {
-	err := From("ini", config)
-	if err != nil {
-		return config, err
-	}
-
-	sources, err := pipeConfig(config)
-	if err != nil {
-		return config, err
-	}
-
-	if len(sources) > 0 {
-		config.Flags.Sources = strings.Join(sources, ",")
-
-		err = From("ini", config)
-		if err != nil {
-			return config, err
-		}
-	}
-
-	return config, nil
-}

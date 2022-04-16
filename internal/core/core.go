@@ -44,10 +44,9 @@ type File struct {
 	Summary    bytes.Buffer      // holds content to be included in summarization checks
 	Metrics    map[string]int    // count-based metrics
 
-	history  map[string]int
-	limits   map[string]int
-	isGlobal bool
-	simple   bool
+	history map[string]int
+	limits  map[string]int
+	simple  bool
 
 	NLP nlp.NLPInfo
 }

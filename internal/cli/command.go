@@ -33,7 +33,7 @@ var commandInfo = map[string]string{
 }
 
 // Actions are the available CLI commands.
-var Actions = map[string]func(args []string, cfg *core.Config) error{
+var Actions = map[string]func(args []string, flags *core.CLIFlags) error{
 	"ls-config":  printConfig,
 	"ls-metrics": printMetrics,
 	"dc":         printConfig,
@@ -43,7 +43,14 @@ var Actions = map[string]func(args []string, cfg *core.Config) error{
 	"sync":       sync,
 }
 
-func sync(args []string, cfg *core.Config) error {
+func sync(args []string, flags *core.CLIFlags) error {
+	cfg, err := core.ReadPipeline("ini", flags, true)
+	if err != nil {
+		return err
+	} else if err := initPath(cfg); err != nil {
+		return err
+	}
+
 	pkgs, err := core.GetPackages(cfg.Flags.Path)
 	if err != nil {
 		return err
@@ -69,16 +76,25 @@ func sync(args []string, cfg *core.Config) error {
 	return nil
 }
 
-func printConfig(args []string, cfg *core.Config) error {
+func printConfig(args []string, flags *core.CLIFlags) error {
+	cfg, err := core.ReadPipeline("ini", flags, false)
+	if err != nil {
+		return err
+	}
 	fmt.Println(cfg.String())
 	return nil
 }
 
-func printMetrics(args []string, cfg *core.Config) error {
+func printMetrics(args []string, flags *core.CLIFlags) error {
 	if len(args) != 1 {
 		return core.NewE100("ls-metrics", errors.New("one argument expected"))
 	} else if !core.FileExists(args[0]) {
 		return errors.New("file not found")
+	}
+
+	cfg, err := core.ReadPipeline("ini", flags, false)
+	if err != nil {
+		return err
 	}
 
 	linter, err := lint.NewLinter(cfg)
@@ -95,7 +111,7 @@ func printMetrics(args []string, cfg *core.Config) error {
 	return printJSON(computed)
 }
 
-func runTag(args []string, cfg *core.Config) error {
+func runTag(args []string, flags *core.CLIFlags) error {
 	if len(args) != 3 {
 		return core.NewE100("tag", errors.New("three arguments expected"))
 	}
@@ -111,9 +127,14 @@ func runTag(args []string, cfg *core.Config) error {
 	return printJSON(out)
 }
 
-func compileRule(args []string, cfg *core.Config) error {
+func compileRule(args []string, flags *core.CLIFlags) error {
 	if len(args) != 1 {
 		return core.NewE100("compile", errors.New("one argument expected"))
+	}
+
+	cfg, err := core.ReadPipeline("ini", flags, false)
+	if err != nil {
+		return err
 	}
 
 	path := args[0]
@@ -133,9 +154,14 @@ func compileRule(args []string, cfg *core.Config) error {
 	return printJSON(rule)
 }
 
-func runRule(args []string, cfg *core.Config) error {
+func runRule(args []string, flags *core.CLIFlags) error {
 	if len(args) != 2 {
 		return core.NewE100("run", errors.New("two arguments expected"))
+	}
+
+	cfg, err := core.ReadPipeline("ini", flags, false)
+	if err != nil {
+		return err
 	}
 
 	cfg.MinAlertLevel = 0
