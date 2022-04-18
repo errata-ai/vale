@@ -27,9 +27,9 @@ type CompiledRule struct {
 }
 
 var commandInfo = map[string]string{
-	"ls-config":  "Print the current configuration to stdout and exit.",
-	"ls-metrics": "Print the given file's internal metrics.",
-	"sync":       "Update external configuration sources.",
+	"ls-config":  "Print the current configuration to stdout.",
+	"ls-metrics": "Print the given file's internal metrics to stdout.",
+	"sync":       "Download and install external configuration sources.",
 }
 
 // Actions are the available CLI commands.
