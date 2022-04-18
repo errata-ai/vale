@@ -12,8 +12,8 @@
   <a href="https://vale.sh/docs/vale-cli/installation/">Documentation</a> •
   <a href="https://vale.sh/community/configs/">Case Studies</a> •
   <a href="https://vale.sh/hub/">Package Hub</a> •
-  <a href="https://vale.sh/community/explorer/">Rule Explorer</a> •
-  <a href="https://vale.sh/community/generator/">Config Generator</a>
+  <a href="https://vale.sh/explorer/">Rule Explorer</a> •
+  <a href="https://vale.sh/generator/">Config Generator</a>
 </p>
 
 ## :heart: Sponsors
