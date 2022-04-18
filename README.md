@@ -5,15 +5,15 @@
 </p>
 
 <p align="center">
-  <b>Vale</b> is a command-line tool that brings code-like linting to prose. It's <b><a href="#mag-at-a-glance-vale-vs-">fast</a></b>, <b><a href="https://docs.errata.ai/vale/install">cross-platform</a></b> (Windows, macOS, and Linux), and <b><a href="https://docs.errata.ai/vale/styles">highly customizable</a></b>.
+  <b>Vale</b> is a command-line tool that brings code-like linting to prose. It's <b><a href="#mag-at-a-glance-vale-vs-">fast</a></b>, <b>cross-platform</b> (Windows, macOS, and Linux), and <b>highly customizable</b>.
 </p>
 
 <p align="center">
-  <a href="https://docs.errata.ai/vale/about">Documentation</a> •
-  <a href="https://docs.errata.ai/community#examples">Example Configurations</a> •
-  <a href="https://github.com/errata-ai/styles">Styles Library</a> •
-  <a href="https://share.streamlit.io/jdkato/rules/main/app/main.py">Rule Explorer</a> •
-  <a href="https://github.com/errata-ai/vale-action">GitHub Action</a>
+  <a href="https://vale.sh/docs/vale-cli/installation/">Documentation</a> •
+  <a href="https://vale.sh/community/configs/">Case Studies</a> •
+  <a href="https://vale.sh/hub/">Package Hub</a> •
+  <a href="https://vale.sh/community/explorer/">Rule Explorer</a> •
+  <a href="https://vale.sh/community/generator/">Config Generator</a>
 </p>
 
 ## :heart: Sponsors
@@ -41,11 +41,11 @@
 
 - [x] **Support for markup**: Vale has a rich understanding of many [markup formats](https://docs.errata.ai/vale/scoping#formats), allowing it to avoid syntax-related false positives and intelligently exclude code snippets from prose-related rules.
 
-- [x] A **highly customizable** [extension system](https://docs.errata.ai/vale/styles): Vale is capable of enforcing *your style*&mdash;be it a standard [editorial style guide](https://github.com/errata-ai/styles#available-styles) or a custom in-house set of rules (such as those created by [GitLab](https://docs.gitlab.com/ee/development/documentation/testing.html#vale), [Homebrew](https://github.com/Homebrew/brew/tree/master/docs/vale-styles/Homebrew), [Linode](https://www.linode.com/blog/linode/docs-as-code-at-linode/), [CockroachDB](https://github.com/cockroachdb/docs/tree/master/ci/vale), and [Spotify](https://github.com/spotify/backstage)).
+- [x] A **highly customizable** [extension system](https://vale.sh/docs/topics/styles/): Vale is capable of enforcing *your style*&mdash;be it a standard [editorial style guide](https://github.com/errata-ai/styles#available-styles) or a custom in-house set of rules (such as those created by [GitLab](https://docs.gitlab.com/ee/development/documentation/testing.html#vale), [Homebrew](https://github.com/Homebrew/brew/tree/master/docs/vale-styles/Homebrew), [Linode](https://www.linode.com/blog/linode/docs-as-code-at-linode/), [CockroachDB](https://github.com/cockroachdb/docs/tree/master/ci/vale), and [Spotify](https://github.com/spotify/backstage)).
 
 - [x] **Easy-to-install**, stand-alone binaries: Unlike other tools, Vale doesn't require you to install and configure a particular programming language and its related tooling (such as Python/pip or Node.js/npm).
 
-See the [documentation](https://docs.errata.ai/vale/about) for more information.
+See the [documentation](https://vale.sh) for more information.
 
 ## :mag: At a Glance: Vale vs. `<...>`
 
