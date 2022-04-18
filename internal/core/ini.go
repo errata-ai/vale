@@ -36,11 +36,11 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 		return nil
 	},
 	"BlockIgnores": func(label string, sec *ini.Section, cfg *Config) error {
-		cfg.BlockIgnores[label] = sec.Key("BlockIgnores").Strings(",")
+		cfg.BlockIgnores[label] = mergeValues(sec.Key("BlockIgnores").StringsWithShadows(","))
 		return nil
 	},
 	"TokenIgnores": func(label string, sec *ini.Section, cfg *Config) error {
-		cfg.TokenIgnores[label] = sec.Key("TokenIgnores").Strings(",")
+		cfg.TokenIgnores[label] = mergeValues(sec.Key("TokenIgnores").StringsWithShadows(","))
 		return nil
 	},
 	"Transform": func(label string, sec *ini.Section, cfg *Config) error {
@@ -70,10 +70,10 @@ var globalOpts = map[string]func(*ini.Section, *Config, []string){
 		cfg.BlockIgnores["*"] = sec.Key("IgnorePatterns").Strings(",")
 	},
 	"BlockIgnores": func(sec *ini.Section, cfg *Config, args []string) {
-		cfg.BlockIgnores["*"] = sec.Key("BlockIgnores").Strings(",")
+		cfg.BlockIgnores["*"] = mergeValues(sec.Key("BlockIgnores").StringsWithShadows(","))
 	},
 	"TokenIgnores": func(sec *ini.Section, cfg *Config, args []string) {
-		cfg.TokenIgnores["*"] = sec.Key("TokenIgnores").Strings(",")
+		cfg.TokenIgnores["*"] = mergeValues(sec.Key("TokenIgnores").StringsWithShadows(","))
 	},
 	"Lang": func(sec *ini.Section, cfg *Config, args []string) {
 		cfg.FormatToLang["*"] = sec.Key("Lang").String()
@@ -250,7 +250,7 @@ func processSources(cfg *Config, sources []string) (*ini.File, error) {
 		return uCfg, errors.New("no sources provided")
 	} else if len(sources) == 1 {
 		cfg.Flags.Path = sources[0]
-		return ini.Load(cfg.Flags.Path)
+		return ini.ShadowLoad(cfg.Flags.Path)
 	}
 
 	t := sources[1:]
@@ -259,7 +259,7 @@ func processSources(cfg *Config, sources []string) (*ini.File, error) {
 		s[i] = v
 	}
 
-	uCfg, err = ini.Load(sources[0], s...)
+	uCfg, err = ini.ShadowLoad(sources[0], s...)
 	cfg.Flags.Path = sources[len(sources)-1]
 
 	return uCfg, err
