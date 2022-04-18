@@ -250,7 +250,7 @@ func processSources(cfg *Config, sources []string) (*ini.File, error) {
 		return uCfg, errors.New("no sources provided")
 	} else if len(sources) == 1 {
 		cfg.Flags.Path = sources[0]
-		return ini.ShadowLoad(cfg.Flags.Path)
+		return shadowLoad(cfg.Flags.Path)
 	}
 
 	t := sources[1:]
@@ -259,7 +259,7 @@ func processSources(cfg *Config, sources []string) (*ini.File, error) {
 		s[i] = v
 	}
 
-	uCfg, err = ini.ShadowLoad(sources[0], s...)
+	uCfg, err = shadowLoad(sources[0], s...)
 	cfg.Flags.Path = sources[len(sources)-1]
 
 	return uCfg, err
