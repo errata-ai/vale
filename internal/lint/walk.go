@@ -109,5 +109,8 @@ func (w *walker) advance(text string) int {
 }
 
 func (w *walker) lastTag() string {
-	return w.tagHistory[len(w.tagHistory)-1]
+	if len(w.tagHistory) > 0 {
+		return w.tagHistory[len(w.tagHistory)-1]
+	}
+	return w.activeTag
 }
