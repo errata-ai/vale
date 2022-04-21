@@ -24,15 +24,17 @@ var goldMd = goldmark.New(
 // Convert extended info strings -- e.g., ```callout{'title': 'NOTE'} -- that
 // might confuse Blackfriday into normal "```".
 var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
+var reLinks = regexp.MustCompile(`\[(.+?)\]\(([^<].+?)\)`)
 
 func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
 
-	s, err := l.prep(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
+	s, err := l.prep(f.Content, "\n```\n$1\n```\n", "<code>$1</code>", ".md")
 	if err != nil {
 		return err
 	}
 
+	s = reLinks.ReplaceAllString(s, "[${1}](<${2}>)")
 	if err := goldMd.Convert([]byte(s), &buf); err != nil {
 		return core.NewE100(f.Path, err)
 	}
@@ -56,5 +58,6 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	})
 
 	f.Content = body
+	//fmt.Println(buf.String())
 	return l.lintHTMLTokens(f, buf.Bytes(), 0)
 }

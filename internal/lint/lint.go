@@ -20,9 +20,7 @@ type Linter struct {
 	Manager *check.Manager
 	HasDir  bool
 
-	seen map[string]bool
-	glob *glob.Glob
-
+	glob   *glob.Glob
 	client *http.Client
 	pids   []int
 	temps  []*os.File

@@ -179,9 +179,10 @@ func (l Linter) lintSizedScopes(f *core.File) error {
 }
 
 func (l Linter) lintTags(f *core.File, state walker, tok html.Token) {
+	ignored := core.StringInSlice("alt", l.Manager.Config.SkippedScopes)
 	if tok.Data == "img" {
 		for _, a := range tok.Attr {
-			if a.Key == "alt" {
+			if a.Key == "alt" && !ignored {
 				l.lintBlock(
 					f,
 					state.block(a.Val, "text.attr."+a.Key), state.lines, 0, false)
