@@ -34,6 +34,8 @@ func (l Linter) lintMarkdown(f *core.File) error {
 		return err
 	}
 
+	// Convert all links to `[${1}](<${2}>)`, so that spaces (common in
+	// templating) are supported.
 	s = reLinks.ReplaceAllString(s, "[${1}](<${2}>)")
 	if err := goldMd.Convert([]byte(s), &buf); err != nil {
 		return core.NewE100(f.Path, err)
@@ -58,6 +60,5 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	})
 
 	f.Content = body
-	//fmt.Println(buf.String())
 	return l.lintHTMLTokens(f, buf.Bytes(), 0)
 }
