@@ -2,6 +2,7 @@ package lint
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
@@ -24,7 +25,8 @@ var goldMd = goldmark.New(
 // Convert extended info strings -- e.g., ```callout{'title': 'NOTE'} -- that
 // might confuse Blackfriday into normal "```".
 var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
-var reLinks = regexp.MustCompile(`\[(.+?)\]\(([^<].+?)\)`)
+var reLinks = regexp.MustCompile(`\[(.+?)\]\((.+?)\)`)
+var reCode = regexp.MustCompile(`<code>|</code>`)
 
 func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
@@ -34,9 +36,16 @@ func (l Linter) lintMarkdown(f *core.File) error {
 		return err
 	}
 
-	// Convert all links to `[${1}](<${2}>)`, so that spaces (common in
+	// Convert all links to `[${1}](<...>)`, so that spaces (common in
 	// templating) are supported.
-	s = reLinks.ReplaceAllString(s, "[${1}](<${2}>)")
+	//
+	// The key assumption here is that we don't care what the URL is -- we just
+	// want to ensure that we ignore its content while maintaining valid link
+	// syntax.
+	s = core.ReplaceAllStringSubmatchFunc(reLinks, s, func(g []string) string {
+		return fmt.Sprintf("[%s](<%s>)", g[1], reCode.ReplaceAllString(g[2], ""))
+	})
+
 	if err := goldMd.Convert([]byte(s), &buf); err != nil {
 		return core.NewE100(f.Path, err)
 	}
