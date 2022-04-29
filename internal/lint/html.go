@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/gobwas/glob"
 	"github.com/jdkato/regexp"
@@ -31,32 +32,13 @@ func (l *Linter) lintHTML(f *core.File) error {
 func (l *Linter) prep(content, block, inline, ext string) (string, error) {
 	s := reFrontMatter.ReplaceAllString(content, block)
 
-	for syntax, regexes := range l.Manager.Config.TokenIgnores {
-		sec, err := glob.Compile(syntax)
-		if err != nil {
-			return s, err
-		} else if sec.Match(ext) {
-			for _, r := range regexes {
-				pat, err := regexp.Compile(r)
-				if err != nil {
-					return s, core.NewE201FromTarget(
-						err.Error(),
-						r,
-						l.Manager.Config.Flags.Path,
-					)
-				}
-				s = pat.ReplaceAllString(s, inline)
-			}
-		}
-	}
-
 	for syntax, regexes := range l.Manager.Config.BlockIgnores {
 		sec, err := glob.Compile(syntax)
 		if err != nil {
 			return s, err
 		} else if sec.Match(ext) {
 			for _, r := range regexes {
-				pat, err := regexp.Compile(r)
+				pat, err := regexp2.CompileStd(r)
 				if err != nil {
 					return s, core.NewE201FromTarget(
 						err.Error(),
@@ -70,7 +52,40 @@ func (l *Linter) prep(content, block, inline, ext string) (string, error) {
 						s = strings.Replace(s, c[0], new, 1)
 					}
 				} else {
-					s = pat.ReplaceAllString(s, block)
+					s, err = pat.Replace(s, block, 0, -1)
+					if err != nil {
+						return s, core.NewE201FromTarget(
+							err.Error(),
+							r,
+							l.Manager.Config.Flags.Path,
+						)
+					}
+				}
+			}
+		}
+	}
+
+	for syntax, regexes := range l.Manager.Config.TokenIgnores {
+		sec, err := glob.Compile(syntax)
+		if err != nil {
+			return s, err
+		} else if sec.Match(ext) {
+			for _, r := range regexes {
+				pat, err := regexp2.CompileStd(r)
+				if err != nil {
+					return s, core.NewE201FromTarget(
+						err.Error(),
+						r,
+						l.Manager.Config.Flags.Path,
+					)
+				}
+				s, err = pat.Replace(s, inline, 0, -1)
+				if err != nil {
+					return s, core.NewE201FromTarget(
+						err.Error(),
+						r,
+						l.Manager.Config.Flags.Path,
+					)
 				}
 			}
 		}
