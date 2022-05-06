@@ -31,7 +31,7 @@ var reCode = regexp.MustCompile(`<code>|</code>`)
 func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
 
-	s, err := l.prep(f.Content, "\n```\n$1\n```\n", "<code>$1</code>", ".md")
+	s, err := l.prep(f.Content, "<pre><code>$1</code></pre>", "<code>$1</code>", ".md")
 	if err != nil {
 		return err
 	}
