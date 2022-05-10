@@ -29,3 +29,6 @@ fixtures/formats/Sphinx/_build/
 .bundle
 .vagrant
 *.snap
+
+.github/styles/*
+!.github/styles/Vocab/Vale
