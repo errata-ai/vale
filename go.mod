@@ -14,6 +14,7 @@ require (
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/olekukonko/tablewriter v0.0.4
+	github.com/otiai10/copy v1.7.0
 	github.com/pterm/pterm v0.12.33
 	github.com/remeh/sizedwaitgroup v1.0.0
 	github.com/spf13/cast v1.3.1
@@ -32,7 +33,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/montanaflynn/stats v0.6.3 // indirect
 	github.com/nwaples/rardecode v1.1.0 // indirect
-	github.com/otiai10/copy v1.7.0 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d // indirect
