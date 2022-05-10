@@ -25,16 +25,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  lint:
+  vale:
+    name: runner / vale
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Vale
-        uses: errata-ai/vale-action@master
+      - uses: actions/checkout@v2
+      - uses: errata-ai/vale-action@reviewdog
         with:
-          files: README.md
           debug: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
