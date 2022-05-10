@@ -32,6 +32,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/montanaflynn/stats v0.6.3 // indirect
 	github.com/nwaples/rardecode v1.1.0 // indirect
+	github.com/otiai10/copy v1.7.0 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/shogo82148/go-shuffle v0.0.0-20180218125048-27e6095f230d // indirect

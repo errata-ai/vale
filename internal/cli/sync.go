@@ -3,13 +3,13 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	cp "github.com/otiai10/copy"
 )
 
 var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library.json"
@@ -156,7 +156,7 @@ func moveAsset(name, old, new string) error {
 	}
 
 	os.MkdirAll(new, 0755)
-	if err := moveFile(src, dst); err != nil {
+	if err := cp.Copy(src, dst); err != nil {
 		return err
 	}
 
@@ -225,28 +225,4 @@ func getLibrary(path string) ([]Style, error) {
 	})
 
 	return styles, err
-}
-
-func moveFile(sourcePath, destPath string) error {
-	inputFile, err := os.Open(sourcePath)
-	if err != nil {
-		return fmt.Errorf("couldn't open source file: %s", err)
-	}
-	outputFile, err := os.Create(destPath)
-	if err != nil {
-		inputFile.Close()
-		return fmt.Errorf("couldn't open dest file: %s", err)
-	}
-	defer outputFile.Close()
-	_, err = io.Copy(outputFile, inputFile)
-	inputFile.Close()
-	if err != nil {
-		return fmt.Errorf("writing to output file failed: %s", err)
-	}
-	// The copy was successful, so now delete the original file
-	err = os.Remove(sourcePath)
-	if err != nil {
-		return fmt.Errorf("failed removing original file: %s", err)
-	}
-	return nil
 }
