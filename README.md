@@ -8,13 +8,19 @@
   <b>Vale</b> is a command-line tool that brings code-like linting to prose. It's <b><a href="#mag-at-a-glance-vale-vs-">fast</a></b>, <b>cross-platform</b> (Windows, macOS, and Linux), and <b>highly customizable</b>.
 </p>
 
-<p align="center">
-  <a href="https://vale.sh/docs/vale-cli/installation/">Documentation</a> •
-  <a href="https://vale.sh/community/configs/">Case Studies</a> •
-  <a href="https://vale.sh/hub/">Package Hub</a> •
-  <a href="https://vale.sh/explorer/">Rule Explorer</a> •
-  <a href="https://vale.sh/generator/">Config Generator</a>
-</p>
+<div align="center">
+<table>
+<thead>
+<tr>
+<th><a href="https://vale.sh/docs/vale-cli/installation/">Documentation</a></th>
+<th><a href="https://vale.sh/community/configs/">Case Studies</a></th>
+<th><a href="https://vale.sh/hub/">Package Hub</a></th>
+<th><a href="https://vale.sh/explorer/">Rule Explorer</a></th>
+<th><a href="https://vale.sh/generator/">Config Generator</a></th>
+</tr>
+</thead>
+</table>
+</div>
 
 ## :heart: Sponsors
 
