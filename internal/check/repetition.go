@@ -20,6 +20,7 @@ type Repetition struct {
 	// `tokens` (`array`): A list of tokens to be transformed into a
 	// non-capturing group.
 	Tokens []string
+	Trim   bool
 
 	pattern *regexp2.Regexp
 }
@@ -63,6 +64,11 @@ func (o Repetition) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 
 	for _, loc := range o.pattern.FindAllStringIndex(txt, -1) {
 		curr = strings.TrimSpace(re2Loc(txt, loc))
+		if o.Trim {
+			curr = strings.TrimRight(curr, "!?.,;")
+			prev = strings.TrimRight(prev, "!?.,;")
+		}
+
 		if o.Ignorecase {
 			hit = strings.EqualFold(curr, prev) && curr != ""
 		} else {
