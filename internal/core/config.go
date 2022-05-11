@@ -41,6 +41,7 @@ type Config struct {
 	BlockIgnores   map[string][]string        // A list of blocks to ignore
 	Checks         []string                   // All checks to load
 	Formats        map[string]string          // A map of unknown -> known formats
+	Asciidoctor    map[string]string          // A map of asciidoctor attributes
 	FormatToLang   map[string]string          // A map of format to lang ID
 	GBaseStyles    []string                   // Global base style
 	GChecks        map[string]bool            // Global checks
@@ -84,6 +85,7 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.BlockIgnores = make(map[string][]string)
 	cfg.Flags = flags
 	cfg.Formats = make(map[string]string)
+	cfg.Asciidoctor = make(map[string]string)
 	cfg.GChecks = make(map[string]bool)
 	cfg.MinAlertLevel = 1
 	cfg.RejectedTokens = make(map[string]struct{})

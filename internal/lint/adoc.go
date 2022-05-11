@@ -3,6 +3,7 @@ package lint
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -26,17 +27,6 @@ var adocSanitizer = strings.NewReplacer(
 var reSource = regexp.MustCompile(`\[source,.+\]`)
 var reComment = regexp.MustCompile(`// .+`)
 
-var adocArgs = []string{
-	"-s",
-	"-a",
-	"notitle!",
-	"-a",
-	"attribute-missing=drop",
-	"--quiet",
-	"--safe-mode",
-	"secure",
-	"-",
-}
 var homes = []*regexp.Regexp{
 	// Homebrew
 	regexp.MustCompile(`(?m)GEM_HOME="(.+?)"`),
@@ -68,7 +58,7 @@ loop do
 
   data = data.encode("utf-8", :invalid => :replace, :undef => :replace, :replace => '')
   response = Asciidoctor.convert(data, :header_footer => false, # -s
-                :attributes => %w(notitle! attribute-missing=drop),
+                :attributes => %w(ATTRS),
                 :safe => :secure)
 
   socket.print "HTTP/1.1 200 OK\r\n" +
@@ -95,15 +85,16 @@ func (l *Linter) lintADoc(f *core.File) error {
 	if err != nil {
 		return err
 	}
-
 	s = adocSanitizer.Replace(s)
+
+	attrs := l.Manager.Config.Asciidoctor
 	if !l.HasDir {
-		html, err = callAdoc(f, s, exe)
+		html, err = callAdoc(f, s, exe, attrs)
 		if err != nil {
 			return core.NewE100(f.Path, err)
 		}
-	} else if err := l.startAdocServer(exe); err != nil {
-		html, err = callAdoc(f, s, exe)
+	} else if err := l.startAdocServer(exe, attrs); err != nil {
+		html, err = callAdoc(f, s, exe, attrs)
 		if err != nil {
 			return core.NewE100(f.Path, err)
 		}
@@ -137,10 +128,16 @@ func (l *Linter) lintADoc(f *core.File) error {
 	return l.lintHTMLTokens(f, []byte(html), 0)
 }
 
-func (l *Linter) startAdocServer(exe string) error {
+func (l *Linter) startAdocServer(exe string, attrs map[string]string) error {
 	if adocRunning {
 		return nil
 	}
+
+	var adocArgs = []string{
+		"notitle!",
+		"attribute-missing=drop",
+	}
+	adocArgs = append(adocArgs, parseAttributes(attrs)...)
 
 	ruby := core.Which([]string{"ruby", "jruby"})
 	if ruby == "" {
@@ -153,6 +150,13 @@ func (l *Linter) startAdocServer(exe string) error {
 	} else if home == "" {
 		return errors.New("GEM_HOME parsing failed")
 	}
+
+	adocServer = strings.Replace(
+		adocServer,
+		"ATTRS",
+		strings.Join(adocArgs, " "),
+		1,
+	)
 
 	tmpfile, _ := os.CreateTemp("", "server.*.rb")
 	if _, err := tmpfile.WriteString(adocServer); err != nil {
@@ -183,8 +187,22 @@ func (l *Linter) startAdocServer(exe string) error {
 	return nil
 }
 
-func callAdoc(f *core.File, text, exe string) (string, error) {
+func callAdoc(f *core.File, text, exe string, attrs map[string]string) (string, error) {
 	var out bytes.Buffer
+
+	var adocArgs = []string{
+		"-s",
+		"-a",
+		"notitle!",
+		"-a",
+		"attribute-missing=drop",
+	}
+
+	adocArgs = append(adocArgs, parseAttributes(attrs)...)
+	adocArgs = append(adocArgs, []string{"--quiet",
+		"--safe-mode",
+		"secure",
+		"-"}...)
 
 	cmd := exec.Command(exe, adocArgs...)
 	cmd.Stdin = strings.NewReader(text)
@@ -221,4 +239,20 @@ func findGems(exe string) (string, error) {
 	}
 
 	return home, nil
+}
+
+func parseAttributes(attrs map[string]string) []string {
+	var adocArgs []string
+
+	for k, v := range attrs {
+		entry := fmt.Sprintf("%s=%s", k, v)
+		if v == "YES" {
+			entry = k
+		} else if v == "NO" {
+			entry = k + "!"
+		}
+		adocArgs = append(adocArgs, []string{"-a", entry}...)
+	}
+
+	return adocArgs
 }

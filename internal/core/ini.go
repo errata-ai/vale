@@ -270,6 +270,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 	global := uCfg.Section("*")
 
 	formats := uCfg.Section("formats")
+	adoc := uCfg.Section("asciidoctor")
 
 	// Default settings
 	for _, k := range core.KeyStrings() {
@@ -285,6 +286,11 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 		cfg.Formats[k] = formats.Key(k).String()
 	}
 
+	// Asciidoctor attributes
+	for _, k := range adoc.KeyStrings() {
+		cfg.Asciidoctor[k] = adoc.Key(k).String()
+	}
+
 	// Global settings
 	for _, k := range global.KeyStrings() {
 		if f, found := globalOpts[k]; found {
@@ -297,7 +303,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 
 	// Syntax-specific settings
 	for _, sec := range uCfg.SectionStrings() {
-		if sec == "*" || sec == "DEFAULT" || sec == "formats" {
+		if StringInSlice(sec, []string{"*", "DEFAULT", "formats", "asciidoctor"}) {
 			continue
 		}
 
