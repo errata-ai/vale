@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"os"
@@ -45,6 +46,13 @@ func init() {
 		t.Render()
 		t.ClearRows()
 		return t
+	}
+	funcs["jsonEscape"] = func(i string) string {
+		b, err := json.Marshal(i)
+		if err != nil {
+			panic(err)
+		}
+		return string(b[1 : len(b)-1])
 	}
 }
 
