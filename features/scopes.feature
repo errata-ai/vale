@@ -90,6 +90,7 @@ Feature: Scopes
       test.adoc:15:20:rules.Table:'XXX' left in text
       test.html:24:69:rules.Table:'TODO' left in text
       test.md:12:10:rules.Table:'TODO' left in text
+      test.md:20:12:rules.Table:'TODO' left in text
       test.rst:15:16:rules.Table:'TODO' left in text
       test.rst:17:3:rules.Table:'XXX' left in text
       """
