@@ -14,3 +14,16 @@ TODO
 XXX
 
 1. XXX
+
+
+<table>
+  <caption>TODO</caption>
+  <tr>
+    <th>Month</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>January</td>
+    <td>$100</td>
+  </tr>
+</table>

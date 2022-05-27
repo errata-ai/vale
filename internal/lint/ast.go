@@ -24,8 +24,10 @@ var inlineTags = []string{
 var tagToScope = map[string]string{
 	"th":         "text.table.header",
 	"td":         "text.table.cell",
+	"caption":    "text.table.caption",
 	"li":         "text.list",
 	"blockquote": "text.blockquote",
+	"figcaption": "text.figure.caption",
 
 	// NOTE: These shouldn't inherit from `text`
 	// (or else they'll be linted twice.)
@@ -88,18 +90,23 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 					// once as part of the overall paragraph. See issue #105
 					// for more info.
 					tempCtx := updateContext(walker.context, walker.queue)
-					l.lintBlock(
+
+					err := l.lintBlock(
 						f,
 						nlp.NewBlock(tempCtx, txt, scope),
 						walker.lines,
 						0,
 						true)
+
+					if err != nil {
+						return err
+					}
 					walker.activeTag = ""
 				}
 			}
 			walker.append(txt)
 			if !inBlock && txt != "" {
-				txt, skip = clean(txt, f.NormedExt, attr, skip || skipClass, inline)
+				txt, skip = clean(txt, attr, skip || skipClass, inline)
 				buf.WriteString(txt)
 			}
 		}
@@ -120,7 +127,9 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 		attr = getAttribute(tok, "href")
 
 		walker.replaceToks(tok)
-		l.lintTags(f, walker, tok)
+		if err := l.lintTags(f, walker, tok); err != nil {
+			return err
+		}
 	}
 
 	return l.lintSizedScopes(f)
@@ -178,17 +187,21 @@ func (l Linter) lintSizedScopes(f *core.File) error {
 	return nil
 }
 
-func (l Linter) lintTags(f *core.File, state walker, tok html.Token) {
+func (l Linter) lintTags(f *core.File, state walker, tok html.Token) error {
 	ignored := core.StringInSlice("alt", l.Manager.Config.SkippedScopes)
 	if tok.Data == "img" {
 		for _, a := range tok.Attr {
 			if a.Key == "alt" && !ignored {
-				l.lintBlock(
+				err := l.lintBlock(
 					f,
 					state.block(a.Val, "text.attr."+a.Key), state.lines, 0, false)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
+	return nil
 }
 
 func checkClasses(attr string, ignore []string) bool {
@@ -216,7 +229,7 @@ func shouldBeSkipped(tagHistory []string, ext string) bool {
 	return false
 }
 
-func clean(txt, ext, attr string, skip, inline bool) (string, bool) {
+func clean(txt, attr string, skip, inline bool) (string, bool) {
 	punct := []string{".", "?", "!", ",", ":", ";"}
 	first, _ := utf8.DecodeRuneInString(txt)
 	starter := core.StringInSlice(string(first), punct) && !skip

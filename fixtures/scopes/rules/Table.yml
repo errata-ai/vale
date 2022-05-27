@@ -1,7 +1,9 @@
 message: "'%s' left in text"
 extends: existence
 ignorecase: false
-scope: table.cell
+scope:
+  - table.cell
+  - table.caption
 level: error
 tokens:
   - XXX
