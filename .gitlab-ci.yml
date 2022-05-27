@@ -17,10 +17,6 @@ test:
     - pip install sphinx
     - gem install asciidoctor bundler
 
-    # NOTE: This is just for testing purposes -- we want to ensure that
-    # GoDownloader is working.
-    - curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s latest
-
     - wget https://github.com/dita-ot/dita-ot/releases/download/3.6/dita-ot-3.6.zip
     - unzip dita-ot-3.6.zip > /dev/null 2>&1
     - which dita
