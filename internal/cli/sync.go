@@ -19,7 +19,10 @@ func newVocab(path, name string) error {
 
 	root := filepath.Join(path, "Vocab", name)
 	if _, err := os.Stat(root); os.IsNotExist(err) {
-		os.MkdirAll(root, os.ModePerm)
+		ferr = os.MkdirAll(root, os.ModePerm)
+		if ferr != nil {
+			return ferr
+		}
 	}
 
 	for _, f := range []string{"accept.txt", "reject.txt"} {
