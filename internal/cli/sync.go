@@ -84,7 +84,7 @@ func download(name, url, styles string, index int) error {
 
 	root := filepath.Join(dir, name)
 	path := filepath.Join(root, "styles")
-	pipe := filepath.Join(styles, ".config")
+	pipe := filepath.Join(styles, ".vale-config")
 	cfg := filepath.Join(root, ".vale.ini")
 
 	if !core.IsDir(path) && !core.FileExists(cfg) {
@@ -158,7 +158,11 @@ func moveAsset(name, old, new string) error {
 		}
 	}
 
-	os.MkdirAll(new, 0755)
+	err := os.MkdirAll(new, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
 	if err := cp.Copy(src, dst); err != nil {
 		return err
 	}

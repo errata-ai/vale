@@ -155,7 +155,7 @@ func GetPackages(src string) ([]string, error) {
 func pipeConfig(cfg *Config) ([]string, error) {
 	var sources []string
 
-	pipeline := filepath.Join(cfg.StylesPath, ".config")
+	pipeline := filepath.Join(cfg.StylesPath, ".vale-config")
 	if IsDir(pipeline) && len(cfg.Flags.Sources) == 0 {
 		configs, err := os.ReadDir(pipeline)
 		if err != nil {
@@ -163,6 +163,9 @@ func pipeConfig(cfg *Config) ([]string, error) {
 		}
 
 		for _, config := range configs {
+			if config.IsDir() {
+				continue
+			}
 			sources = append(sources, filepath.Join(pipeline, config.Name()))
 		}
 		sources = append(sources, cfg.Flags.Path)
