@@ -14,16 +14,9 @@ import (
 )
 
 var defaultFilters = []*regexp.Regexp{
-	regexp.MustCompile(`(?:\w+)?\.\w{1,4}\b`),
-	regexp.MustCompile(`\b(?:[a-zA-Z]\.){2,}`),
-	regexp.MustCompile(`0[xX][0-9a-fA-F]+`),
-	regexp.MustCompile(`\w+-\w+`),
 	regexp.MustCompile(`[A-Z]{1}[a-z]+[A-Z]+\w+`),
-	regexp.MustCompile(`[0-9]`),
 	regexp.MustCompile(`[A-Z]+$`),
-	regexp.MustCompile(`\W`),
-	regexp.MustCompile(`\w{3,}\.\w{3,}`),
-	regexp.MustCompile(`@.*\b`),
+	regexp.MustCompile(`[^a-zA-Z_']`),
 }
 
 // Spelling checks text against a Hunspell dictionary.
@@ -152,7 +145,7 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 
 // Run performs spell-checking on the provided text.
 func (s Spelling) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
-	alerts := []core.Alert{}
+	var alerts []core.Alert
 
 	txt := blk.Text
 	// This ensures that we respect `.aff` entries like `ICONV ’ '`,

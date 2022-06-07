@@ -44,7 +44,7 @@ data:
 	go-bindata -ignore=\\.DS_Store -pkg="spell" -o pkg/spell/data.go pkg/spell/data/*.{dic,aff}
 
 test:
-	go test ./internal/core ./internal/lint ./internal/check ./pkg/glob
+	go test ./internal/core ./internal/lint ./internal/check ./internal/nlp ./pkg/glob
 	cucumber --format progress
 
 docker:
