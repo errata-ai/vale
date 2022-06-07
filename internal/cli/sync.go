@@ -31,7 +31,7 @@ func newVocab(path, name string) error {
 
 func initPath(cfg *core.Config) error {
 	if !core.IsDir(cfg.StylesPath) {
-		if err := os.Mkdir(cfg.StylesPath, os.ModePerm); err != nil {
+		if err := os.MkdirAll(cfg.StylesPath, os.ModePerm); err != nil {
 			return err
 		}
 		for _, vocab := range cfg.Vocab {
