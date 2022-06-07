@@ -13,7 +13,7 @@
 <thead>
 <tr>
 <th><a href="https://vale.sh/docs/vale-cli/installation/">Documentation</a></th>
-<th><a href="https://vale.sh/community/configs/">Case Studies</a></th>
+<th><a href="https://vale.sh/#users">Case Studies</a></th>
 <th><a href="https://vale.sh/hub/">Package Hub</a></th>
 <th><a href="https://vale.sh/explorer/">Rule Explorer</a></th>
 <th><a href="https://vale.sh/generator/">Config Generator</a></th>
