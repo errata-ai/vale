@@ -91,16 +91,34 @@ var FormatByExtension = map[string][]string{
 // FormatFromExt takes a file extension and returns its [normExt, format]
 // list, if supported.
 func FormatFromExt(path string, mapping map[string]string) (string, string) {
-	ext := strings.Trim(filepath.Ext(path), ".")
-	if format, found := mapping[ext]; found {
-		ext = format
+	base := strings.Trim(filepath.Ext(path), ".")
+	kind := getFormat("." + base)
+
+	if format, found := mapping[base]; found {
+		if kind == "code" {
+			// NOTE: This is a special case of embedded markup within code.
+			return format, "fragment"
+		}
+		base = format
 	}
-	ext = "." + ext
+
+	base = "." + base
 	for r, f := range FormatByExtension {
-		m, _ := regexp.MatchString(r, ext)
+		m, _ := regexp.MatchString(r, base)
 		if m {
 			return f[0], f[1]
 		}
 	}
+
 	return "unknown", "unknown"
+}
+
+func getFormat(ext string) string {
+	for r, f := range FormatByExtension {
+		m, _ := regexp.MatchString(r, ext)
+		if m {
+			return f[1]
+		}
+	}
+	return ""
 }

@@ -13,7 +13,7 @@ import (
 
 // lintCode lints source code -- whether it be a markup code block, a complete
 // file, or some other portion of text.
-func (l *Linter) lintCode(f *core.File) int {
+func (l *Linter) lintCode(f *core.File) error {
 	var line, match, txt string
 	var lnLength, padding int
 	var block bytes.Buffer
@@ -21,7 +21,7 @@ func (l *Linter) lintCode(f *core.File) int {
 	lines := 0
 	comments := core.CommentsByNormedExt[f.NormedExt]
 	if len(comments) == 0 {
-		return lines
+		return nil
 	}
 	scanner := bufio.NewScanner(strings.NewReader(f.Content))
 
@@ -45,7 +45,9 @@ func (l *Linter) lintCode(f *core.File) int {
 				txt = block.String()
 				b := nlp.NewBlock(
 					txt, txt, fmt.Sprintf(scope, "text.comment.block"))
-				l.lintBlock(f, b, lines+1, 0, true)
+				if err := l.lintBlock(f, b, lines+1, 0, true); err != nil {
+					return err
+				}
 				block.Reset()
 				inBlock = false
 			} else {
@@ -58,7 +60,9 @@ func (l *Linter) lintCode(f *core.File) int {
 			padding = lnLength - len(match)
 			b := nlp.NewBlock(
 				match, match, fmt.Sprintf(scope, "text.comment.line"))
-			l.lintBlock(f, b, lines, padding-1, true)
+			if err := l.lintBlock(f, b, lines, padding-1, true); err != nil {
+				return err
+			}
 		} else if match = blockStart.FindString(line); len(match) > 0 && !ignore {
 			// We've found the start of a block comment.
 			block.WriteString(line)
@@ -67,5 +71,5 @@ func (l *Linter) lintCode(f *core.File) int {
 			ignore = !ignore
 		}
 	}
-	return lines
+	return nil
 }

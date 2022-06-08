@@ -22,6 +22,10 @@ var cases = []Word2Tok{
 		Input:  "I matter-of-factly said no.",
 		Output: []string{"I", "matter-of-factly", "said", "no"},
 	},
+	{
+		Input:  "* `foof` - A string slice",
+		Output: []string{"`foof`", "A", "string", "slice"},
+	},
 }
 
 func TestToks(t *testing.T) {

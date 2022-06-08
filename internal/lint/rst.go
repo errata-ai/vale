@@ -168,7 +168,7 @@ func callRst(f *core.File, text, lib, exe string) (string, error) {
 	var out bytes.Buffer
 	var cmd *exec.Cmd
 
-	if runtime.GOOS == "windows" {
+	if strings.HasPrefix(runtime.GOOS, "windows") {
 		// rst2html is executable by default on Windows.
 		cmd = exec.Command(exe, append([]string{lib}, rstArgs...)...)
 	} else {

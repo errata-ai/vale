@@ -1,5 +1,5 @@
 =begin
-NOTE: this is a block/
+NOTE: this is a block
 
 
 

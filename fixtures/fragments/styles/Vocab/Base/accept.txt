@@ -1,0 +1,7 @@
+(?i)arg
+boolean
+docstring
+env
+pdoc(?:'s)?
+ripgrep(?:'s)?
+

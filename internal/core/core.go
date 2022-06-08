@@ -273,7 +273,7 @@ func (f *File) FindLoc(ctx, s string, pad, count int, a Alert) (int, []int) {
 	}
 
 	loc := a.Span
-	if f.Format == "markup" && !f.simple {
+	if f.Format == "markup" && !f.simple || f.Format == "fragment" {
 		lines = f.Lines
 	} else {
 		lines = strings.SplitAfter(ctx, "\n")

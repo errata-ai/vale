@@ -179,9 +179,11 @@ func (l *Linter) lintFile(src string) lintResult {
 			err = l.lintHTML(file)
 		}
 	} else if file.Format == "code" && !l.Manager.Config.Flags.Simple {
-		l.lintCode(file)
+		err = l.lintCode(file)
+	} else if file.Format == "fragment" && !l.Manager.Config.Flags.Simple {
+		err = l.lintFragments(file)
 	} else {
-		l.lintLines(file)
+		err = l.lintLines(file)
 	}
 
 	return lintResult{file, err}

@@ -15,7 +15,7 @@ Feature: Config
     Scenario: MinAlertLevel = warning
         Given a file named ".vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*]
@@ -126,7 +126,7 @@ Feature: Config
     Scenario: Ignore BasedOnStyle for formats it doesn't match
         Given a file named ".vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*.py]
@@ -165,7 +165,7 @@ Feature: Config
     Scenario: Specify BasedOnStyle on a per-syntax basis
         Given a file named ".vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*.md]
@@ -189,7 +189,7 @@ Feature: Config
     Scenario: Disable/enable checks on a per-syntax basis
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*.md]
@@ -213,7 +213,7 @@ Feature: Config
     Scenario: Overwrite BasedOnStyle on a per-syntax basis
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*]
@@ -236,7 +236,7 @@ Feature: Config
     Scenario: Overwrite disabled rules on a per-syntax basis
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*]
@@ -257,7 +257,7 @@ Feature: Config
     Scenario: Load two base styles
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*]
@@ -277,7 +277,7 @@ Feature: Config
     Scenario: Load individual rules
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*]
@@ -297,7 +297,7 @@ Feature: Config
     Scenario: Load section with glob as name
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*.{md,py}]
@@ -358,7 +358,7 @@ Feature: Config
     Scenario: Change a built-in rule's level
         Given a file named ".vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = error
 
             [*]
@@ -374,7 +374,7 @@ Feature: Config
     Scenario: Change an external rule's level
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = error
 
             [*.{md,py}]
@@ -390,7 +390,7 @@ Feature: Config
     Scenario: Overwrite MinAlertLevel (suggestion)
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*]
@@ -407,7 +407,7 @@ Feature: Config
     Scenario: Overwrite MinAlertLevel (error)
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*]
@@ -422,7 +422,7 @@ Feature: Config
     Scenario: Don't overwrite MinAlertLevel
         Given a file named "_vale" with:
             """
-            StylesPath = ../../styles/
+            StylesPath = ../../testdata/styles/
             MinAlertLevel = warning
 
             [*]
@@ -443,17 +443,6 @@ Feature: Config
             test.md:3:16:Joblint.Visionary:Avoid using 'paradigm'
             test.md:5:16:Joblint.LegacyTech:Avoid using 'Cobol'
             test.md:7:7:proselint.Jargon:'agendize' is jargon.
-            """
-        And the exit status should be 1
-
-    Scenario: Local overrides + projects
-        When I inherit from "../../fixtures/misc/filesystem/projects" "ini/.vale.ini"
-        Then the output should contain exactly:
-            """
-            test.md:3:16:proselint.Very:Remove 'very'.
-            test.md:5:6:Vale.Terms:Use 'Vale' instead of 'vale'.
-            test.md:5:11:Vale.Repetition:'is' is repeated!
-            test.md:5:26:Vale.Terms:Use 'JavaScript' instead of 'Javascript'.
             """
         And the exit status should be 1
 
