@@ -1,5 +1,6 @@
 CRLF.md text eol=crlf
 CR.md text eol=cr
 
-*.xsl linguist-vendored=true
+fixtures/** linguist-vendored=true
+features/** linguist-vendored=true
 testdata/** linguist-vendored=true
