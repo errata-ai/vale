@@ -1,6 +1,0 @@
-path_classifiers:
-  test:
-    # Override LGTM's default classification of test files by excluding all files.
-    - exclude: /
-    - features
-    - fixtures

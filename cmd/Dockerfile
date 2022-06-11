@@ -14,7 +14,7 @@ RUN apk add --no-cache --update \
     py3-docutils \
     asciidoctor
 
-COPY bin/vale /bin
+COPY ../bin/vale /bin
 
 # ENV PATH="/bin:/dita-ot-3.6/bin:$PATH"
 ENTRYPOINT ["/bin/vale"]
