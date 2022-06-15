@@ -9,12 +9,6 @@ import (
 	"github.com/errata-ai/vale/v2/internal/core"
 )
 
-const (
-	Inline int = iota
-	BlockStart
-	BlockEnd
-)
-
 // Comment represents an in-code comment (line or block).
 type Comment struct {
 	Text   string
@@ -23,55 +17,50 @@ type Comment struct {
 	Scope  string
 }
 
-type Pattern struct {
-	Regex  *regexp.Regexp
-	Offset int
-}
-
-var patterns = map[string]map[string][]Pattern{
+var patterns = map[string]map[string][]*regexp.Regexp{
 	".c": {
-		"inline": []Pattern{
-			{Regex: regexp.MustCompile(`(?s)/\*(.+)\*/`), Offset: 2},
-			{Regex: regexp.MustCompile(`(?s)/{2}(.+)`), Offset: 2},
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)/\*(.+)\*/`),
+			regexp.MustCompile(`(?s)/{2}(.+)`),
 		},
-		"blockStart": []Pattern{
-			{Regex: regexp.MustCompile(`(?ms)/\*(.+)`), Offset: 0},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)/\*(.+)`),
 		},
-		"blockEnd": []Pattern{
-			{Regex: regexp.MustCompile(`(.*\*/)`), Offset: 0},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(.*\*/)`),
 		},
 	},
 	".rs": {
-		"inline": []Pattern{
-			{Regex: regexp.MustCompile(`(?s)/{3}!(.+)`), Offset: 4},
-			{Regex: regexp.MustCompile(`(?s)/{3}(.+)`), Offset: 3},
-			{Regex: regexp.MustCompile(`(?s)/{2}(.+)`), Offset: 2},
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)/{3}!(.+)`),
+			regexp.MustCompile(`(?s)/{3}(.+)`),
+			regexp.MustCompile(`(?s)/{2}(.+)`),
 		},
-		"blockStart": []Pattern{},
-		"blockEnd":   []Pattern{},
+		"blockStart": []*regexp.Regexp{},
+		"blockEnd":   []*regexp.Regexp{},
 	},
 	".py": {
-		"inline": []Pattern{
-			{Regex: regexp.MustCompile(`(?s)#(.+)`), Offset: 1},
-			{Regex: regexp.MustCompile(`"""(.+)"""`), Offset: 3},
-			{Regex: regexp.MustCompile(`'''(.+)'''`), Offset: 2},
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)#(.+)`),
+			regexp.MustCompile(`"""(.+)"""`),
+			regexp.MustCompile(`'''(.+)'''`),
 		},
-		"blockStart": []Pattern{
-			{Regex: regexp.MustCompile(`(?ms)^(?:\s{4,})?r?["']{3}(.+)$`), Offset: 0},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)^(?:\s{4,})?r?["']{3}(.+)$`),
 		},
-		"blockEnd": []Pattern{
-			{Regex: regexp.MustCompile(`(.*["']{3})`), Offset: 0},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(.*["']{3})`),
 		},
 	},
 	".rb": {
-		"inline": []Pattern{
-			{Regex: regexp.MustCompile(`(?s)#(.+)`), Offset: 0},
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)#(.+)`),
 		},
-		"blockStart": []Pattern{
-			{Regex: regexp.MustCompile(`(?ms)^=begin(.+)`), Offset: 0},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)^=begin(.+)`),
 		},
-		"blockEnd": []Pattern{
-			{Regex: regexp.MustCompile(`(^=end)`), Offset: 0},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(^=end)`),
 		},
 	},
 }
@@ -100,23 +89,23 @@ func padding(line string) int {
 	return len(line) - len(strings.TrimLeft(line, " "))
 }
 
-func doMatch(p []Pattern, line string) (string, int) {
+func doMatch(p []*regexp.Regexp, line string) string {
 	for _, r := range p {
-		if m := getSubMatch(r.Regex, line); m != "" {
-			return m, r.Offset
+		if m := getSubMatch(r, line); m != "" {
+			return m
 		}
 	}
-	return "", 0
+	return ""
 }
 
-func getPatterns(ext string) map[string][]Pattern {
+func getPatterns(ext string) map[string][]*regexp.Regexp {
 	for r, f := range core.FormatByExtension {
 		m, _ := regexp.MatchString(r, ext)
 		if m {
 			return patterns[f[0]]
 		}
 	}
-	return map[string][]Pattern{}
+	return map[string][]*regexp.Regexp{}
 }
 
 func getComments(content, ext string) []Comment {
@@ -139,7 +128,7 @@ func getComments(content, ext string) []Comment {
 		lines++
 		if inBlock {
 			// We're in a block comment.
-			if match, _ := doMatch(byLang["blockEnd"], line); len(match) > 0 {
+			if match := doMatch(byLang["blockEnd"], line); len(match) > 0 {
 				// We've found the end of the block.
 
 				comments = append(comments, Comment{
@@ -154,7 +143,7 @@ func getComments(content, ext string) []Comment {
 			} else {
 				block.WriteString(strings.TrimLeft(line, " "))
 			}
-		} else if match, _ := doMatch(byLang["inline"], line); len(match) > 0 {
+		} else if match := doMatch(byLang["inline"], line); len(match) > 0 {
 			// We've found an inline comment.
 			//
 			// We need padding here in order to calculate the column
@@ -166,12 +155,12 @@ func getComments(content, ext string) []Comment {
 				Offset: strings.Index(line, match),
 				Scope:  "text.comment.line",
 			})
-		} else if match, _ := doMatch(byLang["blockStart"], line); len(match) > 0 && !ignore {
+		} else if match := doMatch(byLang["blockStart"], line); len(match) > 0 && !ignore {
 			// We've found the start of a block comment.
 			block.WriteString(match)
 			start = lines
 			inBlock = true
-		} else if match, _ := doMatch(byLang["blockEnd"], line); len(match) > 0 {
+		} else if match := doMatch(byLang["blockEnd"], line); len(match) > 0 {
 			ignore = !ignore
 		}
 	}
