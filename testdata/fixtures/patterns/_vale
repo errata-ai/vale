@@ -1,0 +1,13 @@
+StylesPath = ../../styles
+MinAlertLevel = suggestion
+IgnoredScopes = code, tt, strong
+
+[*]
+TokenIgnores = (\$+?[^\d][^\n$]+\$+?), (<http[^\n]+>+?)
+
+[*.{md,rst,adoc}]
+BasedOnStyles = vale, demo
+IgnorePatterns = (?s) *({{< ?file(?:-excerpt)? [^>]* ?>}}.*?{{< ?/file(?:-excerpt)? ?>}})
+
+vale.Redundancy = warning
+demo.CheckLinks = NO

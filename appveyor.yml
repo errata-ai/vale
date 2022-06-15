@@ -4,7 +4,7 @@ clone_folder: c:\GOPATH\src\github.com\errata-ai\vale
 environment:
   GOPATH: c:\GOPATH
 init:
-  - cmd: set PATH=C:\MinGW\bin;%PATH%
+  - cmd: set PATH=C:\MinGW\bin;%cd%/bin;%PATH%
   - cmd: copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
 install:
   - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby24\bin;%cd%;%PATH%

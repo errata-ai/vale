@@ -1,5 +1,0 @@
-StylesPath = ../../../testdata/styles
-MinAlertLevel = suggestion
-
-[*.{rst,txt,py}]
-BasedOnStyles = vale

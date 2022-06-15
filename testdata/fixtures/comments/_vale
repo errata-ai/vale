@@ -1,0 +1,9 @@
+StylesPath = ../../styles
+MinAlertLevel = suggestion
+
+[*.{md,rst}]
+BasedOnStyles = vale, demo
+
+vale.Spelling = NO
+demo.CheckLinks = NO
+demo.Spellcheck = NO

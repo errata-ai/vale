@@ -35,7 +35,7 @@ compare:
 	benchstat old.txt new.txt
 
 setup:
-	bundle install
+	cd testdata && bundle install && cd -
 
 rules:
 	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/**/*.yml
@@ -45,18 +45,5 @@ data:
 
 test:
 	go test ./internal/core ./internal/lint ./internal/check ./internal/nlp ./pkg/glob
-	cucumber --format progress
-
-docker:
-	GOOS=linux GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/vale ./cmd/vale
-	docker login -u jdkato -p ${DOCKER_PASS}
-	docker build -f Dockerfile -t jdkato/vale:${LAST_TAG} .
-	docker tag jdkato/vale:${LAST_TAG} jdkato/vale:latest
-	docker push jdkato/vale:${LAST_TAG}
-	docker push jdkato/vale:latest
-
-snap:
-	snapcraft login
-	snapcraft
-	snapcraft upload --release stable *.snap
+	cd testdata && cucumber --format progress && cd -
 
