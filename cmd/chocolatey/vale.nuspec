@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+	<!-- Press Esc key before Tab key pressing, if you see autocomplete variants. -->
+	<metadata>
+		<!-- id — lowercase name of package, title — real name of program -->
+		<id>vale</id>
+		<version>2.18.0</version>
+		<title>Vale</title>
+		<authors>Joseph Kato</authors>
+		<owners>Joseph Kato</owners>
+		<licenseUrl>https://github.com/errata-ai/vale/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/errata-ai/vale</projectUrl>
+		<!-- It would be nice, if you don't use whitespaces in path to image. -->
+		<iconUrl>https://github.com/errata-ai.png</iconUrl>
+		<packageSourceUrl>https://github.com/errata-ai/vale/tree/v2/cmd/chocolatey</packageSourceUrl>
+		<docsUrl>https://vale.sh/</docsUrl>
+		<!-- Points to the forum or email list group for the software. -->
+		<mailingListUrl>https://github.com/errata-ai/vale/issues</mailingListUrl>
+		<bugTrackerUrl>https://github.com/errata-ai/vale/issues</bugTrackerUrl>
+		<!-- If you select «false», please, press Esc key after Tab key pressing, because otherwise will run frameworkAssemblies snippet. -->
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<summary>Vale — the customizable linter for prose.</summary>
+		<description>Vale is a free, open-source linter for prose built with speed and extensibility in mind.</description>
+		<releaseNotes></releaseNotes>
+		<copyright>© 2022</copyright>
+		<!-- Write tags through spaces -->
+		<!-- Add «admin» (without «qoutes») tag, if your package are .exe or .msi -->
+		<tags>vale linter prose admin</tags>
+	</metadata>
+	<files>
+		<file src="tools\**" target="tools" />
+	</files>
+</package>
