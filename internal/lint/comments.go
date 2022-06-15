@@ -29,6 +29,18 @@ type Pattern struct {
 }
 
 var patterns = map[string]map[string][]Pattern{
+	".c": {
+		"inline": []Pattern{
+			{Regex: regexp.MustCompile(`(?s)/\*(.+)\*/`), Offset: 2},
+			{Regex: regexp.MustCompile(`(?s)/{2}(.+)`), Offset: 2},
+		},
+		"blockStart": []Pattern{
+			{Regex: regexp.MustCompile(`(?ms)/\*(.+)`), Offset: 0},
+		},
+		"blockEnd": []Pattern{
+			{Regex: regexp.MustCompile(`(.*\*/)`), Offset: 0},
+		},
+	},
 	".rs": {
 		"inline": []Pattern{
 			{Regex: regexp.MustCompile(`(?s)/{3}!(.+)`), Offset: 4},
@@ -45,10 +57,21 @@ var patterns = map[string]map[string][]Pattern{
 			{Regex: regexp.MustCompile(`'''(.+)'''`), Offset: 2},
 		},
 		"blockStart": []Pattern{
-			{Regex: regexp.MustCompile(`(?ms)^(?:\s{4,})?[r]?["']{3}(.+)$`), Offset: 0},
+			{Regex: regexp.MustCompile(`(?ms)^(?:\s{4,})?r?["']{3}(.+)$`), Offset: 0},
 		},
 		"blockEnd": []Pattern{
 			{Regex: regexp.MustCompile(`(.*["']{3})`), Offset: 0},
+		},
+	},
+	".rb": {
+		"inline": []Pattern{
+			{Regex: regexp.MustCompile(`(?s)#(.+)`), Offset: 0},
+		},
+		"blockStart": []Pattern{
+			{Regex: regexp.MustCompile(`(?ms)^=begin(.+)`), Offset: 0},
+		},
+		"blockEnd": []Pattern{
+			{Regex: regexp.MustCompile(`(^=end)`), Offset: 0},
 		},
 	},
 }
@@ -86,6 +109,16 @@ func doMatch(p []Pattern, line string) (string, int) {
 	return "", 0
 }
 
+func getPatterns(ext string) map[string][]Pattern {
+	for r, f := range core.FormatByExtension {
+		m, _ := regexp.MatchString(r, ext)
+		if m {
+			return patterns[f[0]]
+		}
+	}
+	return map[string][]Pattern{}
+}
+
 func getComments(content, ext string) []Comment {
 	var comments []Comment
 	var lines, start int
@@ -94,7 +127,7 @@ func getComments(content, ext string) []Comment {
 
 	scanner := bufio.NewScanner(strings.NewReader(content))
 
-	byLang := patterns[ext]
+	byLang := getPatterns(ext)
 	if len(byLang) == 0 {
 		return comments
 	}
@@ -121,7 +154,7 @@ func getComments(content, ext string) []Comment {
 			} else {
 				block.WriteString(strings.TrimLeft(line, " "))
 			}
-		} else if match, offset := doMatch(byLang["inline"], line); len(match) > 0 {
+		} else if match, _ := doMatch(byLang["inline"], line); len(match) > 0 {
 			// We've found an inline comment.
 			//
 			// We need padding here in order to calculate the column
@@ -130,7 +163,7 @@ func getComments(content, ext string) []Comment {
 			comments = append(comments, Comment{
 				Text:   match,
 				Line:   lines,
-				Offset: padding(line) + offset,
+				Offset: strings.Index(line, match),
 				Scope:  "text.comment.line",
 			})
 		} else if match, _ := doMatch(byLang["blockStart"], line); len(match) > 0 && !ignore {

@@ -2,7 +2,6 @@ package lint
 
 import (
 	"bytes"
-	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 )
@@ -57,8 +56,7 @@ func (l *Linter) lintFragments(f *core.File) error {
 
 	last := 0
 	for _, comment := range coalesce(getComments(f.Content, f.RealExt)) {
-		f.Content = comment.Text
-		f.Lines = strings.SplitAfter(comment.Text, "\n")
+		f.SetText(comment.Text)
 
 		switch f.NormedExt {
 		case "md":
@@ -70,7 +68,7 @@ func (l *Linter) lintFragments(f *core.File) error {
 		}
 
 		size := len(f.Alerts)
-		if last != size {
+		if size != last {
 			f.Alerts = adjustAlerts(last, comment, f.Alerts)
 		}
 		last = size

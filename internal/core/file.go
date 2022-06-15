@@ -16,15 +16,7 @@ import (
 	"github.com/jdkato/regexp"
 )
 
-// AlertLevels holds the possible values for "level" in an external rule.
-var AlertLevels = []string{"suggestion", "warning", "error"}
-
-// LevelToInt allows us to easily compare levels in lint.go.
-var LevelToInt = map[string]int{
-	"suggestion": 0,
-	"warning":    1,
-	"error":      2,
-}
+var commentControlRE = regexp.MustCompile(`^vale (.+\..+) = (YES|NO)$`)
 
 // A File represents a linted text file.
 type File struct {
@@ -49,104 +41,6 @@ type File struct {
 	simple  bool
 
 	NLP nlp.NLPInfo
-}
-
-// An Action represents a possible solution to an Alert.
-//
-// The possible
-type Action struct {
-	Name   string   // the name of the action -- e.g, 'replace'
-	Params []string // a slice of parameters for the given action
-}
-
-// An Alert represents a potential error in prose.
-type Alert struct {
-	Action      Action // a possible solution
-	Check       string // the name of the check
-	Description string // why `Message` is meaningful
-	Line        int    // the source line
-	Link        string // reference material
-	Message     string // the output message
-	Severity    string // 'suggestion', 'warning', or 'error'
-	Span        []int  // the [begin, end] location within a line
-	Match       string // the actual matched text
-
-	Hide   bool     `json:"-"` // should we hide this alert?
-	Limit  int      `json:"-"` // the max times to report
-	Offset []string `json:"-"` // tokens to ignore before this match
-}
-
-// A Selector represents a named section of text.
-type Selector struct {
-	Value []string // e.g., text.comment.line.py
-}
-
-// Sections splits a Selector into its parts -- e.g., text.comment.line.py ->
-// []string{"text", "comment", "line", "py"}.
-func (s Selector) Sections() []string {
-	parts := []string{}
-	for _, m := range s.Value {
-		parts = append(parts, strings.Split(m, ".")...)
-	}
-	return parts
-}
-
-// Contains determines if all if sel's sections are in s.
-func (s Selector) Contains(sel Selector) bool {
-	return AllStringsInSlice(sel.Sections(), s.Sections())
-}
-
-// ContainsString determines if all if sel's sections are in s.
-func (s Selector) ContainsString(scope []string) bool {
-	for _, option := range scope {
-		sel := Selector{Value: []string{option}}
-		if s.Contains(sel) {
-			return true
-		}
-	}
-	return false
-}
-
-// Equal determines if sel == s.
-func (s Selector) Equal(sel Selector) bool {
-	if len(s.Value) == len(sel.Value) {
-		for i, v := range s.Value {
-			if sel.Value[i] != v {
-				return false
-			}
-		}
-		return true
-	}
-	return false
-}
-
-// Has determines if s has a part equal to scope.
-func (s Selector) Has(scope string) bool {
-	return StringInSlice(scope, s.Sections())
-}
-
-// ByPosition sorts Alerts by line and column.
-type ByPosition []Alert
-
-func (a ByPosition) Len() int      { return len(a) }
-func (a ByPosition) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-func (a ByPosition) Less(i, j int) bool {
-	ai, aj := a[i], a[j]
-
-	if ai.Line != aj.Line {
-		return ai.Line < aj.Line
-	}
-	return ai.Span[0] < aj.Span[0]
-}
-
-// ByName sorts Files by their path.
-type ByName []*File
-
-func (a ByName) Len() int      { return len(a) }
-func (a ByName) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-func (a ByName) Less(i, j int) bool {
-	ai, aj := a[i], a[j]
-	return ai.Path < aj.Path
 }
 
 // NewFile initializes a File.
@@ -297,18 +191,6 @@ func (f *File) FindLoc(ctx, s string, pad, count int, a Alert) (int, []int) {
 	return count, loc
 }
 
-// FormatAlert ensures that all required fields have data.
-func FormatAlert(a *Alert, limit int, level, name string) {
-	if a.Severity == "" {
-		a.Severity = level
-	}
-	if a.Check == "" {
-		a.Check = name
-	}
-	a.Limit = limit
-	a.Message = WhitespaceToSpace(a.Message)
-}
-
 func (f *File) assignLoc(ctx string, blk nlp.Block, pad int, a Alert) (int, []int) {
 	loc := a.Span
 	for idx, l := range strings.SplitAfter(ctx, "\n") {
@@ -328,6 +210,13 @@ func (f *File) assignLoc(ctx string, blk nlp.Block, pad int, a Alert) (int, []in
 		}
 	}
 	return blk.Line + 1, a.Span
+}
+
+// SetText updates the file's content, lines, and history.
+func (f *File) SetText(s string) {
+	f.Content = s
+	f.Lines = strings.SplitAfter(s, "\n")
+	f.history = map[string]int{}
 }
 
 // AddAlert calculates the in-text location of an Alert and adds it to a File.
@@ -372,8 +261,6 @@ func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 		}
 	}
 }
-
-var commentControlRE = regexp.MustCompile(`^vale (.+\..+) = (YES|NO)$`)
 
 // UpdateComments sets a new status based on comment.
 func (f *File) UpdateComments(comment string) {

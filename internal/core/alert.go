@@ -1,0 +1,64 @@
+package core
+
+// AlertLevels holds the possible values for "level" in an external rule.
+var AlertLevels = []string{"suggestion", "warning", "error"}
+
+// LevelToInt allows us to easily compare levels in lint.go.
+var LevelToInt = map[string]int{
+	"suggestion": 0,
+	"warning":    1,
+	"error":      2,
+}
+
+// An Alert represents a potential error in prose.
+type Alert struct {
+	Action      Action // a possible solution
+	Check       string // the name of the check
+	Description string // why `Message` is meaningful
+	Line        int    // the source line
+	Link        string // reference material
+	Message     string // the output message
+	Severity    string // 'suggestion', 'warning', or 'error'
+	Span        []int  // the [begin, end] location within a line
+	Match       string // the actual matched text
+
+	Hide   bool     `json:"-"` // should we hide this alert?
+	Limit  int      `json:"-"` // the max times to report
+	Offset []string `json:"-"` // tokens to ignore before this match
+}
+
+// FormatAlert ensures that all required fields have data.
+func FormatAlert(a *Alert, limit int, level, name string) {
+	if a.Severity == "" {
+		a.Severity = level
+	}
+	if a.Check == "" {
+		a.Check = name
+	}
+	a.Limit = limit
+	a.Message = WhitespaceToSpace(a.Message)
+}
+
+// ByPosition sorts Alerts by line and column.
+type ByPosition []Alert
+
+func (a ByPosition) Len() int      { return len(a) }
+func (a ByPosition) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByPosition) Less(i, j int) bool {
+	ai, aj := a[i], a[j]
+
+	if ai.Line != aj.Line {
+		return ai.Line < aj.Line
+	}
+	return ai.Span[0] < aj.Span[0]
+}
+
+// ByName sorts Files by their path.
+type ByName []*File
+
+func (a ByName) Len() int      { return len(a) }
+func (a ByName) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByName) Less(i, j int) bool {
+	ai, aj := a[i], a[j]
+	return ai.Path < aj.Path
+}
