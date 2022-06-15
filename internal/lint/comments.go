@@ -30,6 +30,17 @@ var patterns = map[string]map[string][]*regexp.Regexp{
 			regexp.MustCompile(`(.*\*/)`),
 		},
 	},
+	".css": {
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)/\*(.+)\*/`),
+		},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)/\*(.+)`),
+		},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(.*\*/)`),
+		},
+	},
 	".rs": {
 		"inline": []*regexp.Regexp{
 			regexp.MustCompile(`(?s)/{3}!(.+)`),
@@ -38,6 +49,26 @@ var patterns = map[string]map[string][]*regexp.Regexp{
 		},
 		"blockStart": []*regexp.Regexp{},
 		"blockEnd":   []*regexp.Regexp{},
+	},
+	".r": {
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)#(.+)`),
+		},
+		"blockStart": []*regexp.Regexp{},
+		"blockEnd":   []*regexp.Regexp{},
+	},
+	".php": {
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)/\*(.+)\*/`),
+			regexp.MustCompile(`(?s)#(.+)`),
+			regexp.MustCompile(`(?s)/{2}(.+)`),
+		},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)/\*(.+)`),
+		},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(.*\*/)`),
+		},
 	},
 	".py": {
 		"inline": []*regexp.Regexp{
@@ -61,6 +92,28 @@ var patterns = map[string]map[string][]*regexp.Regexp{
 		},
 		"blockEnd": []*regexp.Regexp{
 			regexp.MustCompile(`(^=end)`),
+		},
+	},
+	".lua": {
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)-- (.+)`),
+		},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)^-{2,3}\[\[(.*)`),
+		},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(.*\]\])`),
+		},
+	},
+	".hs": {
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)-- (.+)`),
+		},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)^\{-.(.*)`),
+		},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(.*-\})`),
 		},
 	},
 }
