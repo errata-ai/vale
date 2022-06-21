@@ -12,11 +12,16 @@ release:
 	git tag $(tag)
 	git push origin $(tag)
 
+# If os and/or arch are not set, default values are used which are set by the system used for building
 # make build os=darwin
 # make build os=windows
 # make build os=linux
+# make build os=darwin arch=arm64
+# make build os=windows arch=amd64
+# make build os=linux arch=amd64
+# make build os=linux arch=arm64
 build:
-	GOOS=$(os) GOARCH=amd64 go build ${LDFLAGS} -o bin/$(exe) ./cmd/vale
+	GOOS=$(os) GOARCH=$(arch) go build ${LDFLAGS} -o bin/$(exe) ./cmd/vale
 
 arm:
 	GOOS=darwin GOARCH=arm64 go build ${LDFLAGS} -o bin/$(exe) ./cmd/vale
