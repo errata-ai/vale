@@ -37,7 +37,7 @@ func NewSequence(cfg *core.Config, generic baseCheck) (Sequence, error) {
 	rule := Sequence{}
 	path := generic["path"].(string)
 
-	err := makeTokens(&rule, generic, cfg)
+	err := makeTokens(&rule, generic)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}
@@ -84,7 +84,7 @@ func (s Sequence) Pattern() string {
 	return ""
 }
 
-func makeTokens(s *Sequence, generic baseCheck, cfg *core.Config) error {
+func makeTokens(s *Sequence, generic baseCheck) error {
 	for _, token := range generic["tokens"].([]interface{}) {
 		tok := NLPToken{}
 		if err := mapstructure.WeakDecode(token, &tok); err != nil {
