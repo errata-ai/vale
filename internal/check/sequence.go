@@ -37,9 +37,12 @@ func NewSequence(cfg *core.Config, generic baseCheck) (Sequence, error) {
 	rule := Sequence{}
 	path := generic["path"].(string)
 
-	makeTokens(&rule, generic, cfg)
+	err := makeTokens(&rule, generic, cfg)
+	if err != nil {
+		return rule, readStructureError(err, path)
+	}
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err = mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}
@@ -67,7 +70,7 @@ func NewSequence(cfg *core.Config, generic baseCheck) (Sequence, error) {
 
 	}
 
-	rule.Definition.Scope = []string{"summary"}
+	rule.Definition.Scope = []string{"sentence"}
 	return rule, nil
 }
 
@@ -84,7 +87,9 @@ func (s Sequence) Pattern() string {
 func makeTokens(s *Sequence, generic baseCheck, cfg *core.Config) error {
 	for _, token := range generic["tokens"].([]interface{}) {
 		tok := NLPToken{}
-		mapstructure.WeakDecode(token, &tok)
+		if err := mapstructure.WeakDecode(token, &tok); err != nil {
+			return err
+		}
 		s.Tokens = append(s.Tokens, tok)
 
 		tok.optional = true
@@ -104,7 +109,7 @@ func tokensMatch(token NLPToken, word tag.Token) bool {
 	}
 
 	failedTag = !failedTag
-	failedTok := (token.re != nil && token.re.MatchStringStd(word.Text) == token.Negate)
+	failedTok := token.re != nil && token.re.MatchStringStd(word.Text) == token.Negate
 
 	if (token.Pattern == "" && failedTag) ||
 		(token.Tag == "" && failedTok) ||
@@ -115,16 +120,17 @@ func tokensMatch(token NLPToken, word tag.Token) bool {
 	return true
 }
 
-func sequenceMatches(idx int, chk Sequence, target string, words []tag.Token) ([]string, int) {
+func sequenceMatches(idx int, chk Sequence, target NLPToken, words []tag.Token) ([]string, int) {
+	var text []string
+
 	toks := chk.Tokens
-	text := []string{}
 
 	sizeT := len(toks)
 	sizeW := len(words)
 	index := 0
 
 	for jdx, tok := range words {
-		if tok.Text == target && !core.IntInSlice(jdx, chk.history) {
+		if tokensMatch(target, tok) && !core.IntInSlice(jdx, chk.history) {
 			index = jdx
 			// We've found our context.
 			//
@@ -194,18 +200,16 @@ func (s Sequence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var alerts []core.Alert
 	var offset []string
 
-	// NOTE: This *requires* that ALL sequence rules be summary-scoped --
-	// otherwise, we would be calculating POS tags for *every* rule
-	// invocation.
+	// This is *always* sentence-scoped.
 	words := nlp.TextToTokens(blk.Text, &f.NLP)
 
 	txt := blk.Text
 	for idx, tok := range s.Tokens {
 		if !tok.Negate && tok.Pattern != "" {
+			// We're looking for our "anchor" ...
 			for _, loc := range tok.re.FindAllStringIndex(txt, -1) {
-				target := re2Loc(txt, loc)
 				// These are all possible violations in `txt`:
-				steps, index := sequenceMatches(idx, s, target, words)
+				steps, index := sequenceMatches(idx, s, tok, words)
 				s.history = append(s.history, index)
 
 				if len(steps) > 0 {
@@ -224,7 +228,7 @@ func (s Sequence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 					alerts = append(alerts, a)
 					offset = []string{}
 				} else {
-					offset = append(offset, target)
+					offset = append(offset, re2Loc(txt, loc))
 				}
 			}
 			break
