@@ -177,6 +177,8 @@ func (l *Linter) lintFile(src string) lintResult {
 			err = l.lintDITA(file)
 		case ".html":
 			err = l.lintHTML(file)
+		case ".org":
+			err = l.lintOrg(file)
 		}
 	} else if file.Format == "code" && !l.Manager.Config.Flags.Simple {
 		err = l.lintCode(file)
