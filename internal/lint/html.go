@@ -48,8 +48,8 @@ func (l *Linter) prep(content, block, inline, ext string) (string, error) {
 				} else if ext == ".rst" {
 					// HACK: We need to add padding for the literal block.
 					for _, c := range pat.FindAllStringSubmatch(s, -1) {
-						new := fmt.Sprintf(block, core.Indent(c[0], "    "))
-						s = strings.Replace(s, c[0], new, 1)
+						sec := fmt.Sprintf(block, core.Indent(c[0], "    "))
+						s = strings.Replace(s, c[0], sec, 1)
 					}
 				} else {
 					s, err = pat.Replace(s, block, 0, -1)
