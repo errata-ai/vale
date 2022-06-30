@@ -65,6 +65,9 @@ func (l Linter) lintDITA(file *core.File) error {
 	head1 := bytes.Index(data, []byte("<head>"))
 	head2 := bytes.Index(data, []byte("</head>"))
 
-	return l.lintHTMLTokens(
-		file, append(data[:head1], data[head2:]...), 0)
+	if head1 >= 0 && head2 >= 0 {
+		data = append(data[:head1], data[head2:]...)
+	}
+
+	return l.lintHTMLTokens(file, data, 0)
 }
