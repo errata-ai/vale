@@ -53,8 +53,8 @@ func NewOccurrence(cfg *core.Config, generic baseCheck) (Occurrence, error) {
 // certain threshold.
 func (o Occurrence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var a core.Alert
+	var alerts []core.Alert
 
-	alerts := []core.Alert{}
 	txt := blk.Text
 	locs := o.pattern.FindAllStringIndex(txt, -1)
 

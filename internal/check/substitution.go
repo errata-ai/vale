@@ -92,7 +92,7 @@ func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) 
 //
 // The rule looks for one pattern and then suggests a replacement.
 func (s Substitution) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
-	alerts := []core.Alert{}
+	var alerts []core.Alert
 
 	txt := blk.Text
 	// Leave early if we can to avoid calling `FindAllStringSubmatchIndex`

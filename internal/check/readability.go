@@ -44,7 +44,7 @@ func NewReadability(cfg *core.Config, generic baseCheck) (Readability, error) {
 // Run calculates the readability level of the given text.
 func (o Readability) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var grade float64
-	alerts := []core.Alert{}
+	var alerts []core.Alert
 
 	doc := summarize.NewDocument(blk.Text)
 

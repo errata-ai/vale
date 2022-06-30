@@ -34,7 +34,7 @@ func NewScript(cfg *core.Config, generic baseCheck) (Script, error) {
 
 // Run calculates the readability level of the given text.
 func (s Script) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
-	alerts := []core.Alert{}
+	var alerts []core.Alert
 
 	script := tengo.NewScript([]byte(s.Script))
 	script.SetImports(stdlib.GetModuleMap("text", "fmt", "math"))

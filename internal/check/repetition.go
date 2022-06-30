@@ -57,10 +57,9 @@ func (o Repetition) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var hit bool
 	var ploc []int
 	var count int
+	var alerts []core.Alert
 
 	txt := blk.Text
-	alerts := []core.Alert{}
-
 	for _, loc := range o.pattern.FindAllStringIndex(txt, -1) {
 		curr = strings.TrimSpace(re2Loc(txt, loc))
 
