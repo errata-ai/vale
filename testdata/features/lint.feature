@@ -7,6 +7,14 @@ Feature: Lint
             """
         And the exit status should be 0
 
+    Scenario: Lint an Org file
+        When I lint "test.org"
+        Then the output should contain exactly:
+            """
+            test.org:17:4:vale.Annotations:'TODO' left in text
+            test.org:50:18:vale.Annotations:'TODO' left in text
+            """
+
     Scenario: Lint a AsciiDoc file
         When I lint AsciiDoc "test.adoc"
         Then the output should contain exactly:
