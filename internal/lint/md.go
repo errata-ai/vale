@@ -45,7 +45,7 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	body := reExInfo.ReplaceAllStringFunc(f.Content, func(m string) string {
 		parts := strings.Split(m, "`")
 
-		// This ensures that we respect the number of openning backticks, which
+		// This ensures that we respect the number of opening backticks, which
 		// could be more than 3.
 		//
 		// See https://github.com/errata-ai/vale/v2/issues/271.
