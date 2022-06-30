@@ -28,3 +28,12 @@ Feature: IgnorePatterns
             test.rst:19:1:vale.Redundancy:'ACT test' is redundant
             """
         And the exit status should be 0
+
+    Scenario: Org
+        When I test patterns for "test.org"
+        Then the output should contain exactly:
+            """
+            test.org:9:19:vale.Redundancy:'ACT test' is redundant
+            test.org:15:19:vale.Redundancy:'ACT test' is redundant
+            """
+        And the exit status should be 0

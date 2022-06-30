@@ -29,7 +29,7 @@ func (l *Linter) lintHTML(f *core.File) error {
 	return l.lintHTMLTokens(f, []byte(f.Content), 0)
 }
 
-func (l *Linter) prep(content, block, inline, ext string) (string, error) {
+func (l *Linter) applyPatterns(content, block, inline, ext string) (string, error) {
 	s := reFrontMatter.ReplaceAllString(content, block)
 
 	for syntax, regexes := range l.Manager.Config.BlockIgnores {

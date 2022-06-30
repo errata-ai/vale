@@ -28,7 +28,7 @@ var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
 func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
 
-	s, err := l.prep(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
+	s, err := l.applyPatterns(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
 	if err != nil {
 		return err
 	}
