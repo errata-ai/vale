@@ -1,0 +1,50 @@
+#+title:  Example Org File
+#+author: TEC
+#+date:   2020-10-27
+
+* Revamp orgmode.org website
+
+The /beauty/ of org *must* be shared.
+[[https://upload.wikimedia.org/wikipedia/commons/b/bd/Share_Icon.svg]]
+
+** DONE Make screenshots
+   CLOSED: [2020-09-03 Thu 18:24]
+
+** DONE Restyle Site CSS
+
+Go through [[file:style.scss][stylesheet]]
+
+** TODO Check CSS on main pages
+
+* Learn Org
+
+Org makes easy things trivial and =TODO= complex things practical.
+
+You don't need to learn Org before using Org: read the quickstart
+page and you should be good to go.  If you need more, Org will be
+here for you as well: dive into the manual and join the community!
+
+** Feedback
+
+#+include: "other/feedback.org*manual" :only-contents t
+
+#+begin_src python
+from pathlib import Path
+cssRatios = []
+for css_min in Path("resources/style").glob("*.min.css"):
+    css = css_min.with_suffix('').with_suffix('.css')
+    cssRatios.append([css.name,
+    "{:.0f}% minified ({:4.1f} KiB)".format( 100 *
+                      css_min.stat().st_size / css.stat().st_size,
+                      css_min.stat().st_size / 1000)])
+return cssRatios
+
+TODO
+#+end_src
+
+#+RESULTS:
+| index.css    | 76% minified ( 1.4 KiB) |
+| org-demo.css | 77% minified ( 2.8 KiB) |
+| errors.css   | 74% minified ( 4.9 KiB) |
+| org.css      | 75% minified (10.7 KiB) |
+| org.css      | TODO                    |
