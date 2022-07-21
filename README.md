@@ -61,7 +61,7 @@ See the [documentation](https://vale.sh) for more information.
 
 | Tool       | Extensible           | Checks          | Supports Markup                                                         | Built With | License      |
 |------------|----------------------|-----------------|-------------------------------------------------------------------------|------------|--------------|
-| Vale       | Yes (via YAML)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, XML)                   | Go         | MIT          |
+| Vale       | Yes (via YAML)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, XML, Org)              | Go         | MIT          |
 | textlint   | Yes (via JavaScript) | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, Re:VIEW)               | JavaScript | MIT          |
 | RedPen     | Yes (via Java)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, Textile, Re:VIEW, and LaTeX) | Java       | Apache-2.0   |
 | write-good | Yes (via JavaScript) | style           | No                                                                      | JavaScript | MIT          |
