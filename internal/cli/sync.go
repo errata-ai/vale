@@ -2,6 +2,7 @@ package cli
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -35,7 +36,8 @@ func newVocab(path, name string) error {
 func initPath(cfg *core.Config) error {
 	if !core.IsDir(cfg.StylesPath) {
 		if err := os.MkdirAll(cfg.StylesPath, os.ModePerm); err != nil {
-			return err
+			e := errors.New(fmt.Sprintf("Unable to initialize StylesPath (value = '%s')", cfg.StylesPath))
+			return core.NewE100("initPath", e)
 		}
 		for _, vocab := range cfg.Vocab {
 			if err := newVocab(cfg.StylesPath, vocab); err != nil {
