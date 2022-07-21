@@ -128,19 +128,6 @@ func (s *goSpell) spell(word string) bool {
 		}
 	}
 
-	// if camelCase and each word e.g. "camel" "Case" is know
-	// then the word is considered known
-	if chunks := splitCamelCase(word); len(chunks) > 0 {
-		if false {
-			for _, chunk := range chunks {
-				if _, ok = s.dict[chunk]; !ok {
-					return false
-				}
-			}
-		}
-		return true
-	}
-
 	return false
 }
 

@@ -101,10 +101,17 @@ func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
 	path := generic["path"].(string)
 	name := generic["name"].(string)
 
-	addFilters(&rule, generic, cfg)
-	addExceptions(&rule, generic, cfg)
+	err := addFilters(&rule, generic, cfg)
+	if err != nil {
+		return rule, readStructureError(err, path)
+	}
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err = addExceptions(&rule, generic, cfg)
+	if err != nil {
+		return rule, readStructureError(err, path)
+	}
+
+	err = mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}
