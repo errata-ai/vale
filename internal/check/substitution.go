@@ -124,6 +124,7 @@ func (s Substitution) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 					a := makeAlert(s.Definition, loc, txt)
 					a.Message, a.Description = formatMessages(s.Message,
 						s.Description, expected, observed)
+					a.Action = action
 
 					alerts = append(alerts, a)
 				}
