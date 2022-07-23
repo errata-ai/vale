@@ -39,9 +39,10 @@ func TestPhrase(t *testing.T) {
 		"test suite":    true,
 		"test[ ]?suite": false,
 	}
-	for input, ouput := range rawToPrepped {
-		if IsPhrase(input) != ouput {
-			t.Errorf("expected = %v, got = %v", ouput, IsPhrase(input))
+	for input, output := range rawToPrepped {
+		result := IsPhrase(input)
+		if result != output {
+			t.Errorf("expected = %v, got = %v", output, result)
 		}
 	}
 }
