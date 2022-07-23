@@ -33,3 +33,15 @@ func TestPrepText(t *testing.T) {
 		}
 	}
 }
+
+func TestPhrase(t *testing.T) {
+	rawToPrepped := map[string]bool{
+		"test suite":    true,
+		"test[ ]?suite": false,
+	}
+	for input, ouput := range rawToPrepped {
+		if IsPhrase(input) != ouput {
+			t.Errorf("expected = %v, got = %v", ouput, IsPhrase(input))
+		}
+	}
+}
