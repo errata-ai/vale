@@ -7,6 +7,7 @@ Feature: Misc
             test.md:3:5:Vale.Avoid:Avoid using 'Mac OS X'.
             test.md:7:1:Vale.Terms:Use 'definately' instead of 'Definately'.
             test.md:13:1:Vale.Terms:Use 'Documentarians' instead of 'documentarians'.
+            test.md:17:11:Vale.Terms:Use 'Log4j' instead of 'log4j'.
             """
 
     Scenario: Multiple Vocabs
