@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"text/template"
 
+	"github.com/Masterminds/sprig/v3"
 	"github.com/errata-ai/vale/v2/internal/core"
 )
 
@@ -30,7 +31,7 @@ func PrintCustomAlerts(linted []*core.File, path string) (bool, error) {
 	}
 	text := string(b)
 
-	t, err := template.New(filepath.Base(path)).Funcs(funcs).Parse(text)
+	t, err := template.New(filepath.Base(path)).Funcs(sprig.TxtFuncMap()).Funcs(funcs).Parse(text)
 	if err != nil {
 		return false, core.NewE100("template", err)
 	}
