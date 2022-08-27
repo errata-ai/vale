@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 
-	"github.com/errata-ai/vale/v2/internal/cli"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/lint"
 	"github.com/spf13/pflag"
@@ -77,7 +76,7 @@ func doLint(args []string, l *lint.Linter, glob string) ([]*core.File, error) {
 }
 
 func handleError(err error) {
-	cli.ShowError(err, cli.Flags.Output, os.Stderr)
+	ShowError(err, Flags.Output, os.Stderr)
 	os.Exit(2)
 }
 
@@ -87,26 +86,26 @@ func main() {
 	args := pflag.Args()
 	argc := len(args)
 
-	if cli.Flags.Version {
+	if Flags.Version {
 		fmt.Println("vale version " + version)
 		os.Exit(0)
-	} else if cli.Flags.Help {
+	} else if Flags.Help {
 		pflag.Usage()
 	} else if argc == 0 && !stat() {
-		cli.PrintIntro()
+		PrintIntro()
 	}
 
 	if argc > 0 {
-		cmd, exists := cli.Actions[args[0]]
+		cmd, exists := Actions[args[0]]
 		if exists {
-			if err := cmd(args[1:], &cli.Flags); err != nil {
+			if err := cmd(args[1:], &Flags); err != nil {
 				handleError(err)
 			}
 			os.Exit(0)
 		}
 	}
 
-	config, err := core.ReadPipeline("ini", &cli.Flags, false)
+	config, err := core.ReadPipeline("ini", &Flags, false)
 	if err != nil {
 		handleError(err)
 	}
@@ -116,15 +115,15 @@ func main() {
 		handleError(err)
 	}
 
-	linted, err := doLint(args, linter, cli.Flags.Glob)
+	linted, err := doLint(args, linter, Flags.Glob)
 	if err != nil {
 		handleError(err)
 	}
 
-	hasErrors, err := cli.PrintAlerts(linted, config)
+	hasErrors, err := PrintAlerts(linted, config)
 	if err != nil {
 		handleError(err)
-	} else if hasErrors && !cli.Flags.NoExit {
+	} else if hasErrors && !Flags.NoExit {
 		os.Exit(1)
 	}
 
