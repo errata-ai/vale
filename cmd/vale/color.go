@@ -36,7 +36,7 @@ func PrintVerboseAlerts(linted []*core.File, wrap bool) bool {
 	n := len(linted)
 	if n == 1 && strings.HasPrefix(linted[0].Path, "stdin") {
 		fmt.Printf("%s %s, %s and %s in %s.\n", symbol,
-			pterm.Green(etotal), pterm.Yellow(wtotal),
+			pterm.Red(etotal), pterm.Yellow(wtotal),
 			pterm.Blue(stotal), "stdin")
 	} else {
 		fmt.Printf("%s %s, %s and %s in %d %s.\n", symbol,
