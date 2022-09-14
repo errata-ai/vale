@@ -1,7 +1,7 @@
 builds:
   - env:
       - CGO_ENABLED=0
-    main: ./cmd/vale/main.go
+    main: ./cmd/vale
     binary: vale
     targets:
       - darwin_amd64
