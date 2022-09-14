@@ -1,6 +1,6 @@
 module github.com/errata-ai/vale/v2
 
-go 1.17
+go 1.18
 
 require (
 	github.com/d5/tengo/v2 v2.10.0
