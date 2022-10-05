@@ -1,7 +1,7 @@
 LAST_TAG=$(shell git describe --abbrev=0 --tags)
 CURR_SHA=$(shell git rev-parse --verify HEAD)
 
-LDFLAGS=-ldflags "-buildmode=pie -s -w -X main.version=$(LAST_TAG)"
+LDFLAGS=-ldflags "-s -w -X main.version=$(LAST_TAG)"
 
 .PHONY: data test lint install rules setup bench compare release
 
