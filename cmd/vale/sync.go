@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/mholt/archiver"
 	cp "github.com/otiai10/copy"
 )
 
@@ -66,12 +67,32 @@ func readPkg(pkg, path string, idx int) error {
 
 	if !found {
 		name := fileNameWithoutExt(pkg)
-		if err = download(name, pkg, path, idx); err != nil {
+		if err = loadPkg(name, pkg, path, idx); err != nil {
 			return err
 		}
 	}
 
 	return nil
+}
+
+func loadPkg(name, urlOrPath, styles string, index int) error {
+	if _, err := os.Stat(urlOrPath); !os.IsNotExist(err) {
+		return loadLocalPkg(name, urlOrPath, styles, index)
+	}
+	return download(name, urlOrPath, styles, index)
+}
+
+func loadLocalPkg(name, pkgPath, styles string, index int) error {
+	dir, err := ioutil.TempDir("", name)
+	if err != nil {
+		return err
+	}
+
+	if err = archiver.Unarchive(pkgPath, dir); err != nil {
+		return err
+	}
+
+	return installPkg(dir, name, styles, index)
 }
 
 func download(name, url, styles string, index int) error {
@@ -84,6 +105,10 @@ func download(name, url, styles string, index int) error {
 		return err
 	}
 
+	return installPkg(dir, name, styles, index)
+}
+
+func installPkg(dir, name, styles string, index int) error {
 	root := filepath.Join(dir, name)
 	path := filepath.Join(root, "styles")
 	pipe := filepath.Join(styles, ".vale-config")
@@ -95,14 +120,14 @@ func download(name, url, styles string, index int) error {
 
 	// StylesPath
 	if core.IsDir(path) {
-		if err = moveDir(path, styles, false); err != nil {
+		if err := moveDir(path, styles, false); err != nil {
 			return err
 		}
 		// Vocab
 		loc1 := filepath.Join(path, "Vocab")
 		if core.IsDir(loc1) {
 			loc2 := filepath.Join(styles, "Vocab")
-			if err = moveDir(loc1, loc2, false); err != nil {
+			if err := moveDir(loc1, loc2, false); err != nil {
 				return err
 			}
 		}
