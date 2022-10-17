@@ -90,13 +90,18 @@ func makeTokens(s *Sequence, generic baseCheck) error {
 		if err := mapstructure.WeakDecode(token, &tok); err != nil {
 			return err
 		}
-		s.Tokens = append(s.Tokens, tok)
 
 		tok.optional = true
 		for i := tok.Skip; i > 0; i-- {
 			s.Tokens = append(s.Tokens, tok)
 		}
+
+		if tok.Pattern != "" || tok.Tag != "" {
+			tok.optional = false
+			s.Tokens = append(s.Tokens, tok)
+		}
 	}
+
 	delete(generic, "tokens")
 	return nil
 }
@@ -146,14 +151,15 @@ func sequenceMatches(idx int, chk Sequence, target NLPToken, words []tag.Token) 
 					if jdx-i < 0 {
 						return []string{}, index
 					}
+					tok := toks[idx-i]
+
 					word := words[jdx-i]
 					text = append([]string{word.Text}, text...)
 
-					mat := tokensMatch(toks[idx-i], word)
-					opt := toks[idx-i].optional
-					if !mat && !opt {
+					mat := tokensMatch(tok, word)
+					if !mat && !tok.optional {
 						return []string{}, index
-					} else if mat && opt {
+					} else if mat && tok.optional {
 						break
 					}
 				}
@@ -167,14 +173,15 @@ func sequenceMatches(idx int, chk Sequence, target NLPToken, words []tag.Token) 
 					if jdx+i >= sizeW {
 						return []string{}, index
 					}
+					tok := toks[idx+i]
+
 					word := words[jdx+i]
 					text = append(text, word.Text)
 
-					mat := tokensMatch(toks[idx+i], word)
-					opt := toks[idx+i].optional
-					if !mat && !opt {
+					mat := tokensMatch(tok, word)
+					if !mat && !tok.optional {
 						return []string{}, index
-					} else if mat && opt {
+					} else if mat && tok.optional {
 						break
 					}
 				}
