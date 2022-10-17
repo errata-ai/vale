@@ -143,6 +143,9 @@ func sequenceMatches(idx int, chk Sequence, target NLPToken, words []tag.Token) 
 				// If the anchor is the first token, then there's no left-hand
 				// side to check -- hence, `idx > 0`.
 				for i := 1; idx-i >= 0; i++ {
+					if jdx-i < 0 {
+						return []string{}, index
+					}
 					word := words[jdx-i]
 					text = append([]string{word.Text}, text...)
 
