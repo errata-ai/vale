@@ -1,0 +1,9 @@
+extends: sequence
+message: "Use data and metadata as plural nouns."
+level: error
+ignorecase: true
+tokens:
+  - tag: NN
+    pattern: '(?:data|metadata)'
+  - tag: VBZ
+    skip: 4

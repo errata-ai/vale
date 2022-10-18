@@ -20,6 +20,8 @@ type NLPToken struct {
 
 	re       *regexp2.Regexp
 	optional bool
+	start    bool
+	end      bool
 }
 
 // Sequence looks for a user-defined sequence of tokens.
@@ -93,11 +95,16 @@ func makeTokens(s *Sequence, generic baseCheck) error {
 
 		tok.optional = true
 		for i := tok.Skip; i > 0; i-- {
+			tok.start = false
+			if i == tok.Skip {
+				tok.start = true
+			}
 			s.Tokens = append(s.Tokens, tok)
 		}
 
 		if tok.Pattern != "" || tok.Tag != "" {
 			tok.optional = false
+			tok.end = true
 			s.Tokens = append(s.Tokens, tok)
 		}
 	}
@@ -157,6 +164,13 @@ func sequenceMatches(idx int, chk Sequence, target NLPToken, words []tag.Token) 
 					text = append([]string{word.Text}, text...)
 
 					mat := tokensMatch(tok, word)
+					// NOTE: We have to perform this conversion because the token slice is made
+					// with the right-hand orientation in mind. For example,
+					//
+					// optional (start), optional, required (end) -> required, optional, optional
+					//
+					// (from right to left).
+					tok.optional = (tok.optional || tok.end) && !tok.start
 					if !mat && !tok.optional {
 						return []string{}, index
 					} else if mat && tok.optional {

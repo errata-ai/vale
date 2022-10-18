@@ -84,4 +84,6 @@ Feature: Checks
             test.md:15:24:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
             test.md:17:42:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
             test.md:21:5:LanguageTool.APOS_ARE:Did you mean "endpoints" instead of "endpoint's"?
+            test.md:25:1:LanguageTool.Metadata:Use data and metadata as plural nouns.
+            test.md:29:1:LanguageTool.Metadata:Use data and metadata as plural nouns.
             """
