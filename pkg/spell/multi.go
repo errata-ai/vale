@@ -113,6 +113,11 @@ func (m *Checker) Spell(word string) bool {
 	return false
 }
 
+// Dict returns the underlying dictionary for the provided index.
+func (m *Checker) Dict(i int) map[string]struct{} {
+	return m.checkers[i].dict
+}
+
 // Convert performs character substitutions (ICONV).
 func (m *Checker) Convert(s string) string {
 	for _, checker := range m.checkers {

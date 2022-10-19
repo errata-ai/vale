@@ -280,6 +280,13 @@ func newDictConfig(file io.Reader) (*dictConfig, error) {
 					}
 				}
 
+				// See #499.
+				//
+				// TODO: Is this safe to do in all cases?
+				if parts[3] == "0" {
+					parts[3] = ""
+				}
+
 				a.Rules = append(a.Rules, rule{
 					Strip:     strip,
 					AffixText: parts[3],
