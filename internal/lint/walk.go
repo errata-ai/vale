@@ -15,6 +15,7 @@ type walker struct {
 	context string
 
 	activeTag string
+	activeCls string
 
 	idx int
 	z   *html.Tokenizer
@@ -27,6 +28,9 @@ type walker struct {
 	// if we see <ul>, <li>, <p>, we'd get tagHistory = [ul li p]. It's reset
 	// on every non-inline end tag.
 	tagHistory []string
+
+	begin int
+	end   int
 }
 
 func newWalker(f *core.File, raw []byte, offset int) walker {
@@ -57,6 +61,34 @@ func (w *walker) append(text string) {
 func (w *walker) addTag(tag string) {
 	w.tagHistory = append(w.tagHistory, tag)
 	w.activeTag = tag
+}
+
+func (w *walker) setCls(tag string, cls bool) {
+	if cls {
+		w.activeCls = tag
+		w.begin = 1
+		w.end = 0
+	}
+}
+
+func (w *walker) addCls(tag string, start bool) {
+	if tag == w.activeCls {
+		if start {
+			w.begin += 1
+		} else {
+			w.end += 1
+		}
+	}
+}
+
+func (w *walker) canClose() bool {
+	return w.activeCls != "" && w.begin == w.end && w.begin > 0
+}
+
+func (w *walker) close() {
+	w.activeCls = ""
+	w.begin = 0
+	w.end = 0
 }
 
 func (w *walker) block(text, scope string) nlp.Block {

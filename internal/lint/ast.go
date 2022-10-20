@@ -61,14 +61,24 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 	walker := newWalker(f, raw, offset)
 	for {
 		tokt, tok, txt := walker.walk()
+
+		class = getAttribute(tok, "class")
 		skipClass = checkClasses(class, skipClasses)
+
+		walker.addCls(txt, tokt == html.StartTagToken)
+		closed := walker.canClose()
+
 		if tokt == html.ErrorToken {
 			break
-		} else if tokt == html.StartTagToken && core.StringInSlice(txt, skipTags) {
+		} else if tokt == html.StartTagToken && (core.StringInSlice(txt, skipTags) || skipClass) {
+			walker.setCls(txt, skipClass && !core.StringInSlice(txt, inlineTags))
 			inBlock = true
 			f.Metrics[txt]++
-		} else if inBlock && core.StringInSlice(txt, skipTags) {
+		} else if inBlock && (core.StringInSlice(txt, skipTags) || closed) {
 			inBlock = false
+			if closed {
+				walker.close()
+			}
 		} else if tokt == html.StartTagToken {
 			if (txt == "em" || txt == "b") && walker.lastTag() == "code" {
 				// FIXME: See https://github.com/errata-ai/vale/issues/421
@@ -122,8 +132,6 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 			walker.reset()
 			buf.Reset()
 		}
-
-		class = getAttribute(tok, "class")
 		attr = getAttribute(tok, "href")
 
 		walker.replaceToks(tok)

@@ -37,3 +37,12 @@ Feature: IgnorePatterns
             test.org:15:19:vale.Redundancy:'ACT test' is redundant
             """
         And the exit status should be 0
+
+
+    Scenario: HTML
+        When I test patterns for "test.html"
+        Then the output should contain exactly:
+            """
+            test.html:22:11:Vale.Repetition:'bye' is repeated!
+            """
+        And the exit status should be 1
