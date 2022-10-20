@@ -1,4 +1,5 @@
 [pP]y.*\b
 definately
+# This is a comment
 Documentarians
 Log4j

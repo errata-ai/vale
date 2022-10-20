@@ -115,7 +115,7 @@ func (c *Config) addWordList(r io.Reader, accept bool) error {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		word := strings.TrimSpace(scanner.Text())
-		if len(word) == 0 || word == "#" {
+		if len(word) == 0 || strings.HasPrefix(word, "# ") {
 			continue
 		} else if accept {
 			if _, ok := c.AcceptedTokens[word]; !ok {
