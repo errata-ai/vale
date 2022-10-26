@@ -21,6 +21,7 @@ var xsltArgs = []string{
 
 func (l Linter) lintXML(file *core.File) error {
 	var out bytes.Buffer
+	var eut bytes.Buffer
 
 	xsltproc := core.Which([]string{"xsltproc", "xsltproc.exe"})
 	if xsltproc == "" {
@@ -36,9 +37,10 @@ func (l Linter) lintXML(file *core.File) error {
 	cmd := exec.Command(xsltproc, xsltArgs...)
 	cmd.Stdin = strings.NewReader(file.Content)
 	cmd.Stdout = &out
+	cmd.Stderr = &eut
 
 	if err := cmd.Run(); err != nil {
-		return core.NewE100(file.Path, err)
+		return core.NewE100(file.Path, errors.New(eut.String()))
 	}
 
 	return l.lintHTMLTokens(file, out.Bytes(), 0)
