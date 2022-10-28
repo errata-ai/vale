@@ -2,7 +2,7 @@ StylesPath = ../../styles
 MinAlertLevel = suggestion
 
 IgnoredScopes = code, tt, strong
-IgnoredClasses = metrics, blurb
+IgnoredClasses = metrics, blurb, alignedsummary
 
 [*]
 BasedOnStyles = Vale

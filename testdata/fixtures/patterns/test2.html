@@ -1,0 +1,124 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QFileInfo Class | Qt Core 6.4.0</title>
+  <link rel="stylesheet" type="text/css" href="/style/online2.css" />
+  <link rel="stylesheet" href="https://www.qt.io/hubfs/qt-design-system/qt-design-system-1.1.0.css" />
+  <link rel="stylesheet" type="text/css" href="/style/font-awesome.min.css" />
+  <link href="images/htmltabs.css" rel="stylesheet" type="text/css"/>
+  <link rel="shortcut icon" href="//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/images/favicon.ico.gzip" />
+  <link rel="icon" type="image/png" href="//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/images/favicon-32x32.png" />
+  <link rel="icon" type="image/png" href="//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/images/favicon-16x16.png" />
+  <script type="text/javascript" src="//d33sqmjvzgs8hq.cloudfront.net/wp-includes/js/jquery/jquery.js.gzip"></script>
+  <script type="text/javascript" src="//d33sqmjvzgs8hq.cloudfront.net/wp-includes/js/jquery/jquery-migrate.min.js.gzip"></script>
+  <script type="text/javascript" src="//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/js/combo.js.gzip"></script>
+  <script type="text/javascript" src="/scripts/qtds-extras.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      if (document.documentElement.getAttribute('data-theme') === 'dark')
+        $('input#th-toggle').prop('checked', true);
+      $('input#th-toggle').change(function() {
+        var theme = this.checked ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+        document.documentElement.setAttribute('data-theme', theme);
+      });
+    });
+  </script>
+  <script type="text/javascript">
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-54043535-2', 'qt.io');
+    ga('set', 'forceSSL', true);
+    ga('send', 'pageview');
+  </script>
+  <script type="text/javascript" src="/scripts/qt-design-system-1.1.0-doc.js"></script>
+  <script src="/scripts/prettify.js" type="text/javascript"></script>
+</head>
+<body class="qt-design-system" style="background:var(--content-bg-color)" onload="prettyPrint()">
+<h2 id="public-functions">Public Functions<a class="plink" href="#public-functions" title="Direct link to this headline"></a></h2>
+<div class="table"><table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#QFileInfo-7">QFileInfo</a></b>(const QDir &amp;<i>dir</i>, const std::filesystem::path &amp;<i>file</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#QFileInfo-6">QFileInfo</a></b>(const std::filesystem::path &amp;<i>file</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#QFileInfo-5">QFileInfo</a></b>(const QFileInfo &amp;<i>fileinfo</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#QFileInfo-4">QFileInfo</a></b>(const QDir &amp;<i>dir</i>, const QString &amp;<i>file</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#QFileInfo-3">QFileInfo</a></b>(const QFileDevice &amp;<i>file</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#QFileInfo-2">QFileInfo</a></b>(const QString &amp;<i>file</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#QFileInfo-1">QFileInfo</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QFileInfo &amp;</td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#operator-eq-1">operator=</a></b>(QFileInfo &amp;&amp;<i>other</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QFileInfo &amp;</td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#operator-eq">operator=</a></b>(const QFileInfo &amp;<i>fileinfo</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#dtor.QFileInfo">~QFileInfo</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDir </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#absoluteDir">absoluteDir</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#absoluteFilePath">absoluteFilePath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#absolutePath">absolutePath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#baseName">baseName</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#birthTime">birthTime</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#bundleName">bundleName</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#caching">caching</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#canonicalFilePath">canonicalFilePath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#canonicalPath">canonicalPath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#completeBaseName">completeBaseName</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#completeSuffix">completeSuffix</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDir </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#dir">dir</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#exists">exists</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#fileName">fileName</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#filePath">filePath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#fileTime">fileTime</a></b>(QFile::FileTime <i>time</i>) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::filesystem::path </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#filesystemAbsoluteFilePath">filesystemAbsoluteFilePath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::filesystem::path </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#filesystemAbsolutePath">filesystemAbsolutePath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::filesystem::path </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#filesystemCanonicalFilePath">filesystemCanonicalFilePath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::filesystem::path </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#filesystemCanonicalPath">filesystemCanonicalPath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::filesystem::path </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#filesystemFilePath">filesystemFilePath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::filesystem::path </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#filesystemJunctionTarget">filesystemJunctionTarget</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::filesystem::path </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#filesystemPath">filesystemPath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::filesystem::path </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#filesystemSymLinkTarget">filesystemSymLinkTarget</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#group">group</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> uint </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#groupId">groupId</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isAbsolute">isAbsolute</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isAlias">isAlias</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isBundle">isBundle</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isDir">isDir</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isExecutable">isExecutable</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isFile">isFile</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isHidden">isHidden</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isJunction">isJunction</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isNativePath">isNativePath</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isReadable">isReadable</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isRelative">isRelative</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isRoot">isRoot</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isShortcut">isShortcut</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isSymLink">isSymLink</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isSymbolicLink">isSymbolicLink</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#isWritable">isWritable</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#junctionTarget">junctionTarget</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#lastModified">lastModified</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#lastRead">lastRead</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#makeAbsolute">makeAbsolute</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#metadataChangeTime">metadataChangeTime</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#owner">owner</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> uint </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#ownerId">ownerId</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#path">path</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#permission">permission</a></b>(QFile::Permissions <i>permissions</i>) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QFile::Permissions </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#permissions">permissions</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#refresh">refresh</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#setCaching">setCaching</a></b>(bool <i>enable</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#setFile">setFile</a></b>(const QString &amp;<i>file</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#setFile-1">setFile</a></b>(const QFileDevice &amp;<i>file</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#setFile-2">setFile</a></b>(const QDir &amp;<i>dir</i>, const QString &amp;<i>file</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#setFile-3">setFile</a></b>(const std::filesystem::path &amp;<i>file</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> qint64 </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#size">size</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#stat">stat</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#suffix">suffix</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#swap">swap</a></b>(QFileInfo &amp;<i>other</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#symLinkTarget">symLinkTarget</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#operator-not-eq">operator!=</a></b>(const QFileInfo &amp;<i>fileinfo</i>) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qfileinfo.html#operator-eq-eq">operator==</a></b>(const QFileInfo &amp;<i>fileinfo</i>) const</td></tr>
+</table></div>
+</body></html>
