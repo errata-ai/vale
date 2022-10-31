@@ -189,6 +189,7 @@ func (l *Linter) startAdocServer(exe string, attrs map[string]string) error {
 
 func callAdoc(f *core.File, text, exe string, attrs map[string]string) (string, error) {
 	var out bytes.Buffer
+	var eut bytes.Buffer
 
 	var adocArgs = []string{
 		"-s",
@@ -207,9 +208,10 @@ func callAdoc(f *core.File, text, exe string, attrs map[string]string) (string, 
 	cmd := exec.Command(exe, adocArgs...)
 	cmd.Stdin = strings.NewReader(text)
 	cmd.Stdout = &out
+	cmd.Stderr = &eut
 
 	if err := cmd.Run(); err != nil {
-		return "", core.NewE100(f.Path, err)
+		return "", core.NewE100(f.Path, errors.New(eut.String()))
 	}
 
 	return out.String(), nil
