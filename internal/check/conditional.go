@@ -10,17 +10,12 @@ import (
 // Conditional ensures that the present of First ensures the present of Second.
 type Conditional struct {
 	Definition `mapstructure:",squash"`
-	// `ignorecase` (`bool`): Makes all matches case-insensitive.
-	Ignorecase bool
-	// `first` (`string`): The antecedent of the statement.
-	First string
-	// `second` (`string`): The consequent of the statement.
-	Second string
-	// `exceptions` (`array`): An array of strings to be ignored.
 	Exceptions []string
-
-	exceptRe *regexp2.Regexp
-	patterns []*regexp2.Regexp
+	patterns   []*regexp2.Regexp
+	First      string
+	Second     string
+	exceptRe   *regexp2.Regexp
+	Ignorecase bool
 }
 
 // NewConditional creates a new `conditional`-based rule.

@@ -9,8 +9,8 @@ import (
 
 // Glob represents a glob pattern passed via `--glob`.
 type Glob struct {
-	Negated bool
 	Pattern glob.Glob
+	Negated bool
 }
 
 // Match returns whether or not the Glob g matches the string query.

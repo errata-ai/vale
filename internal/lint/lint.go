@@ -17,14 +17,12 @@ import (
 
 // A Linter lints a File.
 type Linter struct {
-	Manager *check.Manager
-	HasDir  bool
-
-	glob   *glob.Glob
-	client *http.Client
-	pids   []int
-	temps  []*os.File
-
+	pids      []int
+	temps     []*os.File
+	Manager   *check.Manager
+	glob      *glob.Glob
+	client    *http.Client
+	HasDir    bool
 	nonGlobal bool
 }
 

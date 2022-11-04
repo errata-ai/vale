@@ -37,13 +37,12 @@ func NewLinedBlock(ctx, txt, sel string, line int, nlp *NLPInfo) Block {
 // Assigning this on a per-file basis allows us to handle multi-language
 // projects -- one file might be `en` while another is `ja`, for example.
 type NLPInfo struct {
-	Tagging      bool // Does the file need POS tagging?
-	Segmentation bool // Does the file need sentence segmentation?
-	Splitting    bool // Does the file need paragraph splitting?
-
-	Lang     string // Language of the file.
-	Endpoint string // API endpoint (optional); TODO: should this be per-file?
-	Scope    string // The file's ext scope.
+	Lang         string // Language of the file.
+	Endpoint     string // API endpoint (optional); TODO: should this be per-file?
+	Scope        string // The file's ext scope.
+	Tagging      bool   // Does the file need POS tagging?
+	Segmentation bool   // Does the file need sentence segmentation?
+	Splitting    bool   // Does the file need paragraph splitting?
 }
 
 // An NLP provider is a library to implements part-of-speech tagging, sentence

@@ -13,23 +13,15 @@ import (
 // Existence checks for the present of Tokens.
 type Existence struct {
 	Definition `mapstructure:",squash"`
-	// `append` (`bool`): Adds `raw` to the end of `tokens`, assuming both are
-	// defined.
-	Append bool
-	// `ignorecase` (`bool`): Makes all matches case-insensitive.
-	IgnoreCase bool
-	// `nonword` (`bool`): Removes the default word boundaries (`\b`).
-	Nonword bool
-	// `raw` (`array`): A list of tokens to be concatenated into a pattern.
-	Raw []string
-	// `tokens` (`array`): A list of tokens to be transformed into a
-	// non-capturing group.
-	Tokens []string
+	Raw        []string
+	Tokens     []string
 	// `exceptions` (`array`): An array of strings to be ignored.
 	Exceptions []string
-
-	exceptRe *regexp2.Regexp
-	pattern  *regexp2.Regexp
+	exceptRe   *regexp2.Regexp
+	pattern    *regexp2.Regexp
+	Append     bool
+	IgnoreCase bool
+	Nonword    bool
 }
 
 // NewExistence creates a new `Rule` that extends `Existence`.

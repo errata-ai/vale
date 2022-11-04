@@ -21,9 +21,9 @@ const (
 
 // affix is a rule for affix (adding prefixes or suffixes)
 type affix struct {
+	Rules        []rule    // -
 	Type         affixType // either PFX or SFX
-	CrossProduct bool
-	Rules        []rule
+	CrossProduct bool      // -
 }
 
 // expand provides all variations of a given word based on this affix rule
@@ -56,18 +56,18 @@ type rule struct {
 
 // dictConfig is a partial representation of a Hunspell AFF (Affix) file.
 type dictConfig struct {
+	IconvReplacements []string
+	Replacements      [][2]string
+	CompoundRule      []string
 	Flag              string
 	TryChars          string
 	WordChars         string
-	NoSuggestFlag     rune
-	IconvReplacements []string
-	Replacements      [][2]string
+	CompoundOnly      string
 	AffixMap          map[rune]affix
 	CamelCase         int
 	CompoundMin       int64
-	CompoundOnly      string
-	CompoundRule      []string
 	compoundMap       map[rune][]string
+	NoSuggestFlag     rune
 }
 
 // expand expands a word/affix using dictionary/affix rules

@@ -20,16 +20,16 @@ type CLIFlags struct {
 	Built      string
 	Glob       string
 	InExt      string
+	Output     string
+	Path       string
+	Sources    string
 	Local      bool
 	NoExit     bool
 	Normalize  bool
-	Output     string
-	Path       string
 	Relative   bool
 	Remote     bool
 	Simple     bool
 	Sorted     bool
-	Sources    string
 	Wrap       bool
 	Version    bool
 	Help       bool

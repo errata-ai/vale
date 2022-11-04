@@ -12,8 +12,8 @@ import (
 // Response is returned after an action.
 type Response struct {
 	Msg     string
-	Success bool
 	Error   string
+	Success bool
 }
 
 func pluralize(s string, n int) string {

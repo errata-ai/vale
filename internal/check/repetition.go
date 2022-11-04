@@ -12,16 +12,11 @@ import (
 // Repetition looks for repeated uses of Tokens.
 type Repetition struct {
 	Definition `mapstructure:",squash"`
+	Tokens     []string
 	Max        int
-	// `ignorecase` (`bool`): Makes all matches case-insensitive.
+	pattern    *regexp2.Regexp
 	Ignorecase bool
-	// `alpha` (`bool`): Limits all matches to alphanumeric tokens.
-	Alpha bool
-	// `tokens` (`array`): A list of tokens to be transformed into a
-	// non-capturing group.
-	Tokens []string
-
-	pattern *regexp2.Regexp
+	Alpha      bool
 }
 
 // NewRepetition creates a new `repetition`-based rule.

@@ -20,27 +20,25 @@ var commentControlRE = regexp.MustCompile(`^vale (.+\..+) = (YES|NO)$`)
 
 // A File represents a linted text file.
 type File struct {
+	NLP        nlp.NLPInfo       // -
+	Summary    bytes.Buffer      // holds content to be included in summarization checks
 	Alerts     []Alert           // all alerts associated with this file
 	BaseStyles []string          // base style assigned in .vale
-	Checks     map[string]bool   // syntax-specific checks assigned in .vale
-	ChkToCtx   map[string]string // maps a temporary context to a particular check
-	Comments   map[string]bool   // comment control statements
+	Lines      []string          // the File's Content split into lines
+	Sequences  []string          // tracks various info (e.g., defined abbreviations)
 	Content    string            // the raw file contents
 	Format     string            // 'code', 'markup' or 'prose'
-	Lines      []string          // the File's Content split into lines
 	NormedExt  string            // the normalized extension (see util/format.go)
 	Path       string            // the full path
 	Transform  string            // XLST transform
 	RealExt    string            // actual file extension
-	Sequences  []string          // tracks various info (e.g., defined abbreviations)
-	Summary    bytes.Buffer      // holds content to be included in summarization checks
+	Checks     map[string]bool   // syntax-specific checks assigned in .vale
+	ChkToCtx   map[string]string // maps a temporary context to a particular check
+	Comments   map[string]bool   // comment control statements
 	Metrics    map[string]int    // count-based metrics
-
-	history map[string]int
-	limits  map[string]int
-	simple  bool
-
-	NLP nlp.NLPInfo
+	history    map[string]int    // -
+	limits     map[string]int    // -
+	simple     bool              // -
 }
 
 // NewFile initializes a File.

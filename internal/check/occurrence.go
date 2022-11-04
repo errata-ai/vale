@@ -10,18 +10,11 @@ import (
 // Occurrence counts the number of times Token appears.
 type Occurrence struct {
 	Definition `mapstructure:",squash"`
-	// `ignorecase` (`bool`): Makes all matches case-insensitive.
+	Token      string
+	Max        int
+	Min        int
+	pattern    *regexp2.Regexp
 	Ignorecase bool
-	// `max` (`int`): The maximum amount of times `token` may appear in a given
-	// scope.
-	Max int
-	// `min` (`int`): The minimum amount of times `token` has to appear in a
-	// given scope.
-	Min int
-	// `token` (`string`): The token of interest.
-	Token string
-
-	pattern *regexp2.Regexp
 }
 
 // NewOccurrence creates a new `occurrence`-based rule.

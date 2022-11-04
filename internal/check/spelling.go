@@ -21,36 +21,19 @@ var defaultFilters = []*regexp.Regexp{
 
 // Spelling checks text against a Hunspell dictionary.
 type Spelling struct {
-	Definition `mapstructure:",squash"`
-	// `aff` (`string`): The fully-qualified path to a Hunspell-compatible
-	// `.aff` file.
-	Aff string
-	// `custom` (`bool`): Turn off the default filters for acronyms,
-	// abbreviations, and numbers.
-	Custom bool
-	// `dic` (`string`): The fully-qualified path to a Hunspell-compatible
-	// `.dic` file.
-	Dic string
-	// `filters` (`array`): An array of patterns to ignore during spell
-	// checking.
-	Filters []*regexp.Regexp
-	// `ignore` (`array`): An array of relative paths (from `StylesPath`) to
-	// files consisting of one word per line to ignore.
-	Ignore     []string
-	Exceptions []string
-	Threshold  int
-
-	// `dicpath` overrides the environments `DICPATH` setting.
-	Dicpath string
-
-	// Custom dictionaries will be loaded on top of the built-in one.
-	Append bool
-
-	// A slice of Hunspell-compatible dictionaries to load.
+	Definition   `mapstructure:",squash"`
+	Filters      []*regexp.Regexp
+	Ignore       []string
+	Exceptions   []string
 	Dictionaries []string
-
-	exceptRe *regexp2.Regexp
-	gs       *spell.Checker
+	Aff          string
+	Dic          string
+	Dicpath      string
+	Threshold    int
+	exceptRe     *regexp2.Regexp
+	gs           *spell.Checker
+	Custom       bool
+	Append       bool
 }
 
 func addFilters(s *Spelling, generic baseCheck, cfg *core.Config) error {

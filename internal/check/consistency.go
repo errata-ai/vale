@@ -18,15 +18,14 @@ type step struct {
 // Consistency ensures that the keys and values of Either don't both exist.
 type Consistency struct {
 	Definition `mapstructure:",squash"`
+	steps      []step
+	// `either` (`map`): A map of `option 1: option 2` pairs, of which only one
+	// may appear.
+	Either map[string]string
 	// `nonword` (`bool`): Removes the default word boundaries (`\b`).
 	Nonword bool
 	// `ignorecase` (`bool`): Makes all matches case-insensitive.
 	Ignorecase bool
-	// `either` (`map`): A map of `option 1: option 2` pairs, of which only one
-	// may appear.
-	Either map[string]string
-
-	steps []step
 }
 
 // NewConsistency creates a new `consistency`-based rule.

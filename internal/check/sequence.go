@@ -13,12 +13,11 @@ import (
 
 // NLPToken represents a token of text with NLP-related attributes.
 type NLPToken struct {
-	Pattern string
-	Negate  bool
-	Tag     string
-	Skip    int
-
+	Pattern  string
+	Tag      string
+	Skip     int
 	re       *regexp2.Regexp
+	Negate   bool
 	optional bool
 	start    bool
 	end      bool
@@ -26,12 +25,11 @@ type NLPToken struct {
 
 // Sequence looks for a user-defined sequence of tokens.
 type Sequence struct {
-	Definition `mapstructure:",squash"`
-	Ignorecase bool
-	Tokens     []NLPToken
-
-	needsTagging bool
+	Definition   `mapstructure:",squash"`
+	Tokens       []NLPToken
 	history      []int
+	Ignorecase   bool
+	needsTagging bool
 }
 
 // NewSequence creates a new rule from the provided `baseCheck`.

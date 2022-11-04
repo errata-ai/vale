@@ -13,21 +13,14 @@ import (
 // Substitution switches the values of Swap for its keys.
 type Substitution struct {
 	Definition `mapstructure:",squash"`
-	// `ignorecase` (`bool`): Makes all matches case-insensitive.
-	Ignorecase bool
-	// `nonword` (`bool`): Removes the default word boundaries (`\b`).
-	Nonword bool
-	// `swap` (`map`): A sequence of `observed: expected` pairs.
-	Swap map[string]string
-	// `pos` (`string`): A regular expression matching tokens to parts of
-	// speech.
-	POS string
-	// `exceptions` (`array`): An array of strings to be ignored.
 	Exceptions []string
-
-	exceptRe *regexp2.Regexp
-	pattern  *regexp2.Regexp
-	repl     []string
+	repl       []string
+	POS        string
+	Swap       map[string]string
+	exceptRe   *regexp2.Regexp
+	pattern    *regexp2.Regexp
+	Ignorecase bool
+	Nonword    bool
 }
 
 // NewSubstitution creates a new `substitution`-based rule.
