@@ -15,6 +15,7 @@ import (
 var goldMd = goldmark.New(
 	goldmark.WithExtensions(
 		extension.GFM,
+		extension.Footnote,
 	),
 	goldmark.WithRendererOptions(
 		grh.WithUnsafe(),
