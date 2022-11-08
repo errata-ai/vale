@@ -16,6 +16,7 @@ fixtures/formats/Sphinx/_build/
 
 .vscode
 .idea
+.fleet
 
 *.sublime-workspace
 *.sublime-project
