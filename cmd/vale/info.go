@@ -65,7 +65,7 @@ var hidden = []string{
 	"run",
 }
 
-// PrintIntro shows basic usage / gettting started info.
+// PrintIntro shows basic usage / getting started info.
 func PrintIntro() {
 	fmt.Println(info)
 	os.Exit(0)
