@@ -105,13 +105,13 @@ Feature: Config
             """
         And the exit status should be 0
 
-    Scenario: Non-Existent Config
-        When I test "/misc/one/two/three/four"
-        Then the output should contain:
-            """
-            E100 [.vale.ini] Runtime error
-            """
-        And the exit status should be 2
+    #  Scenario: Non-Existent Config
+    #    When I test "/misc/one/two/three/four"
+    #    Then the output should contain:
+    #      """
+    #      E100 [.vale.ini] Runtime error
+    #      """
+    #     And the exit status should be 2
 
 
     #  Scenario: Fall back to root config

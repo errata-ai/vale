@@ -183,6 +183,7 @@ func loadINI(cfg *Config, dry bool) error {
 		sources = []string{base, cfg.Flags.Path}
 	}
 
+	cfg.Root = filepath.Dir(base)
 	if cfg.Flags.Local && FileExists(base) && FileExists(cfg.Flags.Path) {
 		uCfg, err = shadowLoad(cfg.Flags.Path, base)
 	} else if cfg.Flags.Remote && FileExists(base) && FileExists(cfg.Flags.Path) {
@@ -215,13 +216,12 @@ func loadConfig(names, paths []string) string {
 
 	for _, start := range paths {
 		count := 0
-		for configPath == "" && count < 6 {
+		for configPath == "" {
 			recur = start == "" && count == 0
 			if recur {
 				dir, _ = os.Getwd()
 			} else if count == 0 {
 				dir = start
-				count = 6
 			} else {
 				dir = filepath.Dir(dir)
 			}

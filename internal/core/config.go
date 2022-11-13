@@ -67,6 +67,7 @@ type Config struct {
 	SecToPat     map[string]glob.Glob `json:"-"`
 	Styles       []string             `json:"-"`
 	Paths        []string             `json:"-"`
+	Root         string               `json:"-"`
 
 	NLPEndpoint string // An external API to call for NLP-related work.
 

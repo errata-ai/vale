@@ -1,6 +1,8 @@
 package check
 
 import (
+	"errors"
+	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -181,17 +183,38 @@ func (s Spelling) Pattern() string {
 
 func makeSpeller(s *Spelling, cfg *core.Config) (*spell.Checker, error) {
 	var options []spell.CheckerOption
+	var found bool
 
 	affloc := core.FindAsset(cfg, s.Aff)
 	dicloc := core.FindAsset(cfg, s.Dic)
 
 	options = append(options, spell.WithDefault(s.Append))
 	if s.Dicpath != "" {
-		p, err := filepath.Abs(s.Dicpath)
-		if err != nil {
-			return nil, err
+		cwd, _ := os.Getwd()
+
+		// There are a few cases we need to consider:
+		paths := []string{
+			// 1. An absolute path (similar to $DICPATH)
+			s.Dicpath,
+			// 2. Relative to StylesPath
+			filepath.Join(cfg.StylesPath, s.Dicpath),
+			// 3. Relative to config file
+			filepath.Join(cfg.Root, s.Dicpath),
+			// 4. Relative to cwd
+			filepath.Join(cwd, s.Dicpath),
 		}
-		options = append(options, spell.WithPath(p))
+
+		for _, p := range paths {
+			if core.IsDir(p) {
+				options = append(options, spell.WithPath(p))
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			return nil, errors.New("unable to resolve dicpath")
+		}
 	}
 
 	if core.FileExists(affloc) && core.FileExists(dicloc) {
