@@ -4,19 +4,24 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+
+	"github.com/errata-ai/vale/v2/internal/core"
 )
 
 var defaultOpts = Options{
 	path: os.Getenv("DICPATH"),
 	load: false,
+
+	system: os.Getenv("DICPATH"),
 }
 
 // Options controls the checker-creation process:
 type Options struct {
-	path  string
-	names []string
-	dics  []dictionary
-	load  bool
+	path   string
+	system string
+	names  []string
+	dics   []dictionary
+	load   bool
 }
 
 // A CheckerOption is a setting that changes the checker-creation process.
@@ -137,13 +142,29 @@ func (m *Checker) AddWordListFile(name string) error {
 	return nil
 }
 
+func (m *Checker) readAsset(name string) string {
+	roots := []string{
+		m.options.path,
+		m.options.system,
+	}
+
+	for _, p := range roots {
+		option := filepath.Join(p, name)
+		if core.FileExists(option) {
+			return option
+		}
+	}
+
+	return ""
+}
+
 func (m *Checker) loadDic(name string) error {
-	dic, err := os.Open(filepath.Join(m.options.path, name+".dic"))
+	dic, err := os.Open(m.readAsset(name + ".dic"))
 	if err != nil {
 		return err
 	}
 
-	aff, err := os.Open(filepath.Join(m.options.path, name+".aff"))
+	aff, err := os.Open(m.readAsset(name + ".aff"))
 	if err != nil {
 		return err
 	}
