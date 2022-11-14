@@ -10,8 +10,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var exampleConfig = `StylesPath = a/path/to/your/styles
-	MinAlertLevel = suggestion
+var exampleConfig = `MinAlertLevel = suggestion
 
 	[*]
 	BasedOnStyles = Vale`
