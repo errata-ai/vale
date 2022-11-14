@@ -91,7 +91,7 @@ Feature: Config
         And the exit status should be 0
 
     Scenario: External config
-        When I lint with config "../../fixtures/styles/demo"
+        When I lint with config "../../fixtures/styles/demo/_vale"
         Then the output should contain exactly:
             """
             test.md:15:60:demo.Spellcheck:Did you really mean 'codeblock'?
@@ -435,16 +435,18 @@ Feature: Config
             """
         And the exit status should be 0
 
-    Scenario: Local overrides
-        When I inherit from "../../fixtures/configs" "ini/.vale.ini"
-        Then the output should contain exactly:
-            """
-            test.md:3:11:proselint.Very:Remove 'very'.
-            test.md:3:16:Joblint.Visionary:Avoid using 'paradigm'
-            test.md:5:16:Joblint.LegacyTech:Avoid using 'Cobol'
-            test.md:7:7:proselint.Jargon:'agendize' is jargon.
-            """
-        And the exit status should be 1
+#    NOTE: This idea was used in the now-deprecated Vale Server application.
+#
+#    Scenario: Local overrides
+#        When I inherit from "../../fixtures/configs" "ini/.vale.ini"
+#        Then the output should contain exactly:
+#            """
+#            test.md:3:11:proselint.Very:Remove 'very'.
+#            test.md:3:16:Joblint.Visionary:Avoid using 'paradigm'
+#            test.md:5:16:Joblint.LegacyTech:Avoid using 'Cobol'
+#            test.md:7:7:proselint.Jargon:'agendize' is jargon.
+#            """
+#        And the exit status should be 1
 
 # NOTE: The expectation here is now different -- we now *merge* multi-value
 # keys, which means there's no notion of "overriding" the value.

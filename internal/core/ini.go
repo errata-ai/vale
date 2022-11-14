@@ -12,6 +12,14 @@ import (
 	"github.com/gobwas/glob"
 )
 
+var configNames = []string{
+	".vale",
+	"_vale",
+	"vale.ini",
+	".vale.ini",
+	"_vale.ini",
+}
+
 var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 	"BasedOnStyles": func(lbl string, sec *ini.Section, cfg *Config) error {
 		pat, err := glob.Compile(lbl)
@@ -160,46 +168,50 @@ func shadowLoad(source interface{}, others ...interface{}) (*ini.File, error) {
 }
 
 func loadINI(cfg *Config, dry bool) error {
-	var base string
 	var uCfg *ini.File
-	var err error
 	var sources []string
 
-	names := []string{
-		".vale", "_vale", "vale.ini", ".vale.ini", "_vale.ini", ""}
-
-	home, err := os.UserHomeDir()
+	base, err := loadConfig(configNames)
 	if err != nil {
 		return NewE100("loadINI/homedir", err)
 	}
 
-	base = loadConfig(names, []string{"", home})
 	if cfg.Flags.Sources != "" {
 		for _, source := range strings.Split(cfg.Flags.Sources, ",") {
 			abs, _ := filepath.Abs(source)
 			sources = append(sources, abs)
 		}
-	} else {
-		sources = []string{base, cfg.Flags.Path}
 	}
 
-	cfg.Root = filepath.Dir(base)
-	if cfg.Flags.Local && FileExists(base) && FileExists(cfg.Flags.Path) {
-		uCfg, err = shadowLoad(cfg.Flags.Path, base)
-	} else if cfg.Flags.Remote && FileExists(base) && FileExists(cfg.Flags.Path) {
-		uCfg, err = shadowLoad(base, cfg.Flags.Path)
-		cfg.Flags.Path = base
-	} else if cfg.Flags.Sources != "" {
+	if cfg.Flags.Sources != "" {
+		// We have multiple sources -- e.g., local config + remote package(s).
+		//
+		// See fixtures/config.feature#451 for an explanation of how this has
+		// changed since Vale Server was deprecated.
 		uCfg, err = processSources(cfg, sources)
+		if err != nil {
+			return NewE100("config pipeline failed", err)
+		}
+	} else if cfg.Flags.Path != "" {
+		// We've been given a value through `--config`.
+		uCfg, err = shadowLoad(cfg.Flags.Path)
+		if err != nil {
+			return NewE100("invalid --config", err)
+		}
+		cfg.Root = filepath.Dir(cfg.Flags.Path)
 	} else {
-		base = loadConfig(names, []string{cfg.Flags.Path, "", home})
+		// We're using a config file found using a local search process.
 		uCfg, err = shadowLoad(base)
+		if err != nil {
+			return NewE100(
+				".vale.ini not found",
+				errors.New("see `vale -h` for more information"))
+		}
+		cfg.Root = filepath.Dir(base)
 		cfg.Flags.Path = base
 	}
 
-	if err != nil {
-		return NewE100(".vale.ini", err)
-	} else if StringInSlice(cfg.Flags.AlertLevel, AlertLevels) {
+	if StringInSlice(cfg.Flags.AlertLevel, AlertLevels) {
 		cfg.MinAlertLevel = LevelToInt[cfg.Flags.AlertLevel]
 	}
 
@@ -210,36 +222,31 @@ func loadINI(cfg *Config, dry bool) error {
 // loadConfig loads the .vale file. It checks the current directory up to the
 // user's home directory, stopping on the first occurrence of a .vale or _vale
 // file.
-func loadConfig(names, paths []string) string {
-	var configPath, dir string
-	var recur bool
+func loadConfig(names []string) (string, error) {
+	var parent string
 
-	for _, start := range paths {
-		count := 0
-		for configPath == "" {
-			recur = start == "" && count == 0
-			if recur {
-				dir, _ = os.Getwd()
-			} else if count == 0 {
-				dir = start
-			} else {
-				dir = filepath.Dir(dir)
-			}
-			for _, name := range names {
-				loc := path.Join(dir, name)
-				if FileExists(loc) && !IsDir(loc) {
-					configPath = loc
-					if name == "" {
-						dir = filepath.Dir(configPath)
-					}
-					break
-				}
-			}
-			count++
-		}
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", err
 	}
 
-	return configPath
+	for {
+		parent = filepath.Dir(cwd)
+
+		for _, name := range names {
+			loc := path.Join(cwd, name)
+			if FileExists(loc) {
+				return loc, nil
+			}
+		}
+
+		if cwd == parent {
+			break
+		}
+		cwd = parent
+	}
+
+	return "", nil
 }
 
 func processSources(cfg *Config, sources []string) (*ini.File, error) {
