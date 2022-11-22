@@ -37,7 +37,7 @@ func (s Script) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var alerts []core.Alert
 
 	script := tengo.NewScript([]byte(s.Script))
-	script.SetImports(stdlib.GetModuleMap("text", "fmt", "math"))
+	script.SetImports(stdlib.GetModuleMap("text", "fmt", "math", "os"))
 
 	err := script.Add("scope", blk.Text)
 	if err != nil {
