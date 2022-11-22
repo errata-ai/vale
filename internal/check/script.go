@@ -32,12 +32,16 @@ func NewScript(cfg *core.Config, generic baseCheck) (Script, error) {
 	return rule, nil
 }
 
-// Run calculates the readability level of the given text.
+// Run executes the given script and returns its Alerts.
 func (s Script) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var alerts []core.Alert
 
 	script := tengo.NewScript([]byte(s.Script))
-	script.SetImports(stdlib.GetModuleMap("text", "fmt", "math", "os"))
+	// TODO: Should we enable the `os` module? Is it worth the security
+	// implications?
+	//
+	// See #495, for example.
+	script.SetImports(stdlib.GetModuleMap("text", "fmt", "math"))
 
 	err := script.Add("scope", blk.Text)
 	if err != nil {
