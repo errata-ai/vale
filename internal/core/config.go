@@ -35,7 +35,7 @@ type CLIFlags struct {
 	Help       bool
 }
 
-// Config holds the the configuration values from both the CLI and `.vale.ini`.
+// Config holds the configuration values from both the CLI and `.vale.ini`.
 type Config struct {
 	// General configuration
 	BlockIgnores   map[string][]string        // A list of blocks to ignore

@@ -13,8 +13,6 @@ import (
 )
 
 var configNames = []string{
-	".vale",
-	"_vale",
 	"vale.ini",
 	".vale.ini",
 	"_vale.ini",
@@ -203,9 +201,7 @@ func loadINI(cfg *Config, dry bool) error {
 		// We're using a config file found using a local search process.
 		uCfg, err = shadowLoad(base)
 		if err != nil {
-			return NewE100(
-				".vale.ini not found",
-				errors.New("see `vale -h` for more information"))
+			return NewE100(".vale.ini not found", err)
 		}
 		cfg.Root = filepath.Dir(base)
 		cfg.Flags.Path = base
