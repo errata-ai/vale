@@ -13,6 +13,8 @@ import (
 )
 
 var configNames = []string{
+	".vale",
+	"_vale",
 	"vale.ini",
 	".vale.ini",
 	"_vale.ini",
@@ -231,7 +233,7 @@ func loadConfig(names []string) (string, error) {
 
 		for _, name := range names {
 			loc := path.Join(cwd, name)
-			if FileExists(loc) {
+			if FileExists(loc) && !IsDir(loc) {
 				return loc, nil
 			}
 		}
