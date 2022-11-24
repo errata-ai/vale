@@ -14,6 +14,7 @@ import (
 	"github.com/gobwas/glob"
 	"github.com/jdkato/prose/summarize"
 	"github.com/jdkato/regexp"
+	"golang.org/x/exp/slices"
 )
 
 var commentControlRE = regexp.MustCompile(`^vale (.+\..+) = (YES|NO)$`)
@@ -38,6 +39,8 @@ type File struct {
 	Metrics    map[string]int    // count-based metrics
 	history    map[string]int    // -
 	limits     map[string]int    // -
+	offTokens  []string          // -
+	onTokens   []string          // -
 	simple     bool              // -
 }
 
@@ -109,6 +112,7 @@ func NewFile(src string, config *Config) (*File, error) {
 		Comments: make(map[string]bool), history: make(map[string]int),
 		simple: config.Flags.Simple, Transform: transform,
 		limits: make(map[string]int), Path: src, Metrics: make(map[string]int),
+		offTokens: config.OffTokens, onTokens: config.OnTokens,
 		NLP: nlp.NLPInfo{Endpoint: config.NLPEndpoint, Lang: lang},
 	}
 
@@ -262,9 +266,9 @@ func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 
 // UpdateComments sets a new status based on comment.
 func (f *File) UpdateComments(comment string) {
-	if comment == "vale off" {
+	if slices.Contains(f.offTokens, comment) {
 		f.Comments["off"] = true
-	} else if comment == "vale on" {
+	} else if slices.Contains(f.onTokens, comment) {
 		f.Comments["off"] = false
 	} else if commentControlRE.MatchString(comment) {
 		check := commentControlRE.FindStringSubmatch(comment)

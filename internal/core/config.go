@@ -48,6 +48,8 @@ type Config struct {
 	IgnoredClasses []string                   // A list of HTML classes to ignore
 	IgnoredScopes  []string                   // A list of HTML tags to ignore
 	MinAlertLevel  int                        // Lowest alert level to display
+	OffTokens      []string                   // Token to turn Vale off in a section
+	OnTokens       []string                   // Token to turn Vale on in a section
 	Vocab          []string                   // The active project
 	RuleToLevel    map[string]string          // Single-rule level changes
 	SBaseStyles    map[string][]string        // Syntax-specific base styles
@@ -89,6 +91,8 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.Asciidoctor = make(map[string]string)
 	cfg.GChecks = make(map[string]bool)
 	cfg.MinAlertLevel = 1
+	cfg.OffTokens = []string{"vale off"}
+	cfg.OnTokens = []string{"vale on"}
 	cfg.RejectedTokens = make(map[string]struct{})
 	cfg.RuleToLevel = make(map[string]string)
 	cfg.SBaseStyles = make(map[string][]string)

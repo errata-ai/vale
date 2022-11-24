@@ -142,6 +142,14 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		cfg.SkippedScopes = mergeValues(sec.Key("SkippedScopes").StringsWithShadows(","))
 		return nil
 	},
+	"OffTokens": func(sec *ini.Section, cfg *Config, args []string) error {
+		cfg.OffTokens = mergeValues(sec.Key("OffTokens").StringsWithShadows(","))
+		return nil
+	},
+	"OnTokens": func(sec *ini.Section, cfg *Config, args []string) error {
+		cfg.OnTokens = mergeValues(sec.Key("OnTokens").StringsWithShadows(","))
+		return nil
+	},
 	"IgnoredClasses": func(sec *ini.Section, cfg *Config, args []string) error {
 		cfg.IgnoredClasses = mergeValues(sec.Key("IgnoredClasses").StringsWithShadows(","))
 		return nil
