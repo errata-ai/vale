@@ -2,9 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -28,7 +26,7 @@ func newVocab(path, name string) error {
 	}
 
 	for _, f := range []string{"accept.txt", "reject.txt"} {
-		ferr = ioutil.WriteFile(filepath.Join(root, f), []byte{}, 0644)
+		ferr = os.WriteFile(filepath.Join(root, f), []byte{}, 0644)
 	}
 
 	return ferr
@@ -37,7 +35,7 @@ func newVocab(path, name string) error {
 func initPath(cfg *core.Config) error {
 	if !core.IsDir(cfg.StylesPath) {
 		if err := os.MkdirAll(cfg.StylesPath, os.ModePerm); err != nil {
-			e := errors.New(fmt.Sprintf("Unable to initialize StylesPath (value = '%s')", cfg.StylesPath))
+			e := fmt.Errorf("unable to initialize StylesPath (value = '%s')", cfg.StylesPath)
 			return core.NewE100("initPath", e)
 		}
 		for _, vocab := range cfg.Vocab {
@@ -83,7 +81,7 @@ func loadPkg(name, urlOrPath, styles string, index int) error {
 }
 
 func loadLocalPkg(name, pkgPath, styles string, index int) error {
-	dir, err := ioutil.TempDir("", name)
+	dir, err := os.MkdirTemp("", name)
 	if err != nil {
 		return err
 	}
@@ -96,7 +94,7 @@ func loadLocalPkg(name, pkgPath, styles string, index int) error {
 }
 
 func download(name, url, styles string, index int) error {
-	dir, err := ioutil.TempDir("", name)
+	dir, err := os.MkdirTemp("", name)
 	if err != nil {
 		return err
 	}
@@ -159,7 +157,7 @@ func installPkg(dir, name, styles string, index int) error {
 }
 
 func moveDir(old, new string, isVocab bool) error {
-	files, err := ioutil.ReadDir(old)
+	files, err := os.ReadDir(old)
 	if err != nil {
 		return err
 	}
@@ -224,7 +222,7 @@ func getLibrary(path string) ([]Style, error) {
 		name := filepath.Base(filepath.Dir(fp))
 		meta := Meta{}
 
-		f, _ := ioutil.ReadFile(fp)
+		f, _ := os.ReadFile(fp)
 		if err := json.Unmarshal(f, &meta); err != nil {
 			return err
 		}

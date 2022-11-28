@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/errata-ai/vale/v2/internal/check"
@@ -116,7 +116,7 @@ func runTag(args []string, flags *core.CLIFlags) error {
 		return core.NewE100("tag", errors.New("three arguments expected"))
 	}
 
-	text, err := ioutil.ReadFile(args[0])
+	text, err := os.ReadFile(args[0])
 	if err != nil {
 		return err
 	}

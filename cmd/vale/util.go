@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -36,7 +36,7 @@ func fetchJSON(url string) ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 func printJSON(t interface{}) error {

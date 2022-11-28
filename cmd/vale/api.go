@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -63,7 +62,7 @@ func fetch(src, dst string) error {
 	}
 
 	// Create a temp file to represent the archive locally:
-	tmpfile, err := ioutil.TempFile("", "temp.*.zip")
+	tmpfile, err := os.CreateTemp("", "temp.*.zip")
 	if err != nil {
 		return err
 	}
