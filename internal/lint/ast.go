@@ -14,9 +14,9 @@ import (
 var skipTags = []string{"script", "style", "pre", "figure", "noscript", "iframe"}
 
 // skipClasses are classes that we don't want to lint:
-// 	- `problematic` is added by rst2html to processing errors which, in our
-// 	  case, could be things like file-insertion URLs.
-// 	- `pre` is added by rst2html to code spans.
+//   - `problematic` is added by rst2html to processing errors which, in our
+//     case, could be things like file-insertion URLs.
+//   - `pre` is added by rst2html to code spans.
 var skipClasses = []string{"problematic", "pre", "code"}
 var inlineTags = []string{
 	"b", "big", "i", "small", "abbr", "acronym", "cite", "dfn", "em", "kbd",
@@ -40,7 +40,7 @@ var tagToScope = map[string]string{
 }
 
 func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
-	var class, attr string
+	var class, parentClass, attr string
 	var inBlock, inline, skip, skipClass bool
 
 	buf := bytes.NewBufferString("")
@@ -62,16 +62,17 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 	for {
 		tokt, tok, txt := walker.walk()
 
-		class = getAttribute(tok, "class")
-		skipClass = checkClasses(class, skipClasses)
-
 		walker.addCls(txt, tokt == html.StartTagToken)
 		closed := walker.canClose()
 
+		class = getAttribute(tok, "class")
+		skipClass = checkClasses(class, skipClasses)
+
+		blockSkip := skipClass && !core.StringInSlice(txt, inlineTags)
 		if tokt == html.ErrorToken {
 			break
-		} else if tokt == html.StartTagToken && (core.StringInSlice(txt, skipTags) || skipClass) {
-			walker.setCls(txt, skipClass && !core.StringInSlice(txt, inlineTags))
+		} else if tokt == html.StartTagToken && (core.StringInSlice(txt, skipTags) || blockSkip) {
+			walker.setCls(txt, blockSkip)
 			inBlock = true
 			f.Metrics[txt]++
 		} else if inBlock && (core.StringInSlice(txt, skipTags) || closed) {
@@ -116,6 +117,7 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 			}
 			walker.append(txt)
 			if !inBlock && txt != "" {
+				skipClass = checkClasses(parentClass, skipClasses)
 				txt, skip = clean(txt, attr, skip || skipClass, inline)
 				buf.WriteString(txt)
 			}
@@ -132,7 +134,9 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 			walker.reset()
 			buf.Reset()
 		}
+
 		attr = getAttribute(tok, "href")
+		parentClass = getAttribute(tok, "class")
 
 		walker.replaceToks(tok)
 		if err := l.lintTags(f, walker, tok); err != nil {
