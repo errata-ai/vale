@@ -98,7 +98,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 			cfg.StylesPath = basePath
 		} else {
 			entry := sec.Key("StylesPath").MustString("")
-			canidate := filepath.FromSlash(entry)
+			canidate := normalizePath(filepath.FromSlash(entry))
 
 			cfg.StylesPath = determinePath(cfg.Flags.Path, canidate)
 			if !FileExists(cfg.StylesPath) {
