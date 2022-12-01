@@ -1,7 +1,6 @@
 package core
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -62,9 +61,9 @@ func TestNormalizePath(t *testing.T) {
 	if result != expectedOutput {
 		t.Errorf("expected = %v, got = %v", expectedOutput, result)
 	}
-	stylesPathInput, err = ioutil.TempDir("", "vale_test")
+	stylesPathInput, err = os.MkdirTemp("", "vale_test")
 	if err != nil {
-		t.Log("ioutil.TempDir failed, will not proceed with tests")
+		t.Log("os.MkdirTemp failed, will not proceed with tests")
 		return
 	}
 	expectedOutput = stylesPathInput
@@ -72,9 +71,9 @@ func TestNormalizePath(t *testing.T) {
 	if result != expectedOutput {
 		t.Errorf("expected = %v, got = %v", expectedOutput, result)
 	}
-	stylesPathInput, err = ioutil.TempDir("", "vale~test")
+	stylesPathInput, err = os.MkdirTemp("", "vale~test")
 	if err != nil {
-		t.Log("ioutil.TempDir failed in second case, will not proceed with tests")
+		t.Log("os.MkdirTemp failed in second case, will not proceed with tests")
 		return
 	}
 	expectedOutput = stylesPathInput
