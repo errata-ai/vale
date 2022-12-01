@@ -1,6 +1,8 @@
 package core
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -44,5 +46,39 @@ func TestPhrase(t *testing.T) {
 		if result != output {
 			t.Errorf("expected = %v, got = %v", output, result)
 		}
+	}
+}
+
+func TestNormalizePath(t *testing.T) {
+	homedir, err := os.UserHomeDir()
+	if err != nil {
+		t.Log("os.UserHomeDir failed, will not proceed with tests")
+		return
+	}
+	stylesPathInput := "~/.vale"
+	expectedOutput := filepath.Join(homedir, ".vale")
+	result := normalizePath(stylesPathInput)
+	if result != expectedOutput {
+		t.Errorf("expected = %v, got = %v", expectedOutput, result)
+	}
+	stylesPathInput, err = os.MkdirTemp("", "vale_test")
+	if err != nil {
+		t.Log("os.MkdirTemp failed, will not proceed with tests")
+		return
+	}
+	expectedOutput = stylesPathInput
+	result = normalizePath(stylesPathInput)
+	if result != expectedOutput {
+		t.Errorf("expected = %v, got = %v", expectedOutput, result)
+	}
+	stylesPathInput, err = os.MkdirTemp("", "vale~test")
+	if err != nil {
+		t.Log("os.MkdirTemp failed in second case, will not proceed with tests")
+		return
+	}
+	expectedOutput = stylesPathInput
+	result = normalizePath(stylesPathInput)
+	if result != expectedOutput {
+		t.Errorf("expected = %v, got = %v", expectedOutput, result)
 	}
 }
