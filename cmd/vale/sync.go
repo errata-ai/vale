@@ -74,13 +74,18 @@ func readPkg(pkg, path string, idx int) error {
 }
 
 func loadPkg(name, urlOrPath, styles string, index int) error {
-	if _, err := os.Stat(urlOrPath); !os.IsNotExist(err) {
-		return loadLocalPkg(name, urlOrPath, styles, index)
+	if fileInfo, err := os.Stat(urlOrPath); !os.IsNotExist(err) {
+		if fileInfo.IsDir() {
+			parentDirectory := strings.TrimSuffix(urlOrPath, fmt.Sprintf("%c%s", os.PathSeparator, name))
+			return installPkg(parentDirectory, name, styles, index)
+		} else {
+			return loadLocalZipPkg(name, urlOrPath, styles, index)
+		}
 	}
 	return download(name, urlOrPath, styles, index)
 }
 
-func loadLocalPkg(name, pkgPath, styles string, index int) error {
+func loadLocalZipPkg(name, pkgPath, styles string, index int) error {
 	dir, err := os.MkdirTemp("", name)
 	if err != nil {
 		return err
