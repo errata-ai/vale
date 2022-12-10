@@ -281,7 +281,6 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 	for _, k := range core.KeyStrings() {
 		if f, found := coreOpts[k]; found {
 			if err := f(core, cfg, paths); err != nil && !dry {
-				fmt.Println("BAD", cfg.StylesPath, k)
 				return err
 			}
 		}
