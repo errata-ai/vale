@@ -97,7 +97,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 			cfg.Paths = []string{basePath, mockPath}
 			cfg.StylesPath = basePath
 		} else {
-			entry := sec.Key("StylesPath").MustString("")
+			entry := paths[len(paths)-1]
 			canidate := filepath.FromSlash(entry)
 
 			cfg.StylesPath = determinePath(cfg.Flags.Path, canidate)
@@ -281,6 +281,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 	for _, k := range core.KeyStrings() {
 		if f, found := coreOpts[k]; found {
 			if err := f(core, cfg, paths); err != nil && !dry {
+				fmt.Println("BAD", cfg.StylesPath, k)
 				return err
 			}
 		}
