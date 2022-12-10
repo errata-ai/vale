@@ -237,7 +237,23 @@ func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) {
 	return 0, nil, nil
 }
 
+func normalizePath(path string) string {
+	// expand tilde
+	homedir, err := os.UserHomeDir()
+	if err != nil {
+		return path
+	}
+	if path == "~" {
+		return homedir
+	} else if strings.HasPrefix(path, "~/") {
+		path = filepath.Join(homedir, path[2:])
+	}
+	return path
+}
+
 func determinePath(configPath string, keyPath string) string {
+	// expand tilde at this point as this is where user-provided paths are provided
+	keyPath = normalizePath(keyPath)
 	if !IsDir(configPath) {
 		configPath = filepath.Dir(configPath)
 	}
