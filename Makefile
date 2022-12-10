@@ -53,9 +53,11 @@ test:
 	cd testdata && cucumber --format progress && cd -
 
 docker:
-	GOOS=linux GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/vale ./cmd/vale
 	docker login -u jdkato -p ${DOCKER_PASS}
-	docker build -f Dockerfile -t jdkato/vale:${LAST_TAG} .
-	docker tag jdkato/vale:${LAST_TAG} jdkato/vale:latest
-	docker push jdkato/vale:${LAST_TAG}
-	docker push jdkato/vale:latest
+	docker buildx build \
+	--platform=linux/amd64,linux/arm64 \
+	--file Dockerfile \
+	--tag jdkato/vale:${LAST_TAG} \
+	--tag jdkato/vale:latest \
+	--push \
+	.
