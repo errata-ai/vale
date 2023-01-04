@@ -74,7 +74,7 @@ func readPkg(pkg, path string, idx int) error {
 }
 
 func loadPkg(name, urlOrPath, styles string, index int) error {
-	if fileInfo, err := os.Stat(urlOrPath); !os.IsNotExist(err) {
+	if fileInfo, err := os.Stat(urlOrPath); err == nil {
 		if fileInfo.IsDir() {
 			parentDirectory := strings.TrimSuffix(urlOrPath, fmt.Sprintf("%c%s", os.PathSeparator, name))
 			return installPkg(parentDirectory, name, styles, index)
