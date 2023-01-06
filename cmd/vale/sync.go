@@ -210,56 +210,5 @@ func getLibrary(path string) ([]Style, error) {
 		return styles, err
 	}
 
-	for i := 0; i < len(styles); i++ {
-		s := &styles[i]
-		s.InLibrary = true
-	}
-
-	err = filepath.WalkDir(path, func(fp string, de os.DirEntry, err error) error {
-		if strings.Contains(fp, "add-ons") {
-			return filepath.SkipDir
-		} else if de.Name() != "meta.json" {
-			return nil
-		} else if err != nil {
-			return err
-		}
-
-		name := filepath.Base(filepath.Dir(fp))
-		meta := Meta{}
-
-		f, _ := os.ReadFile(fp)
-		if err := json.Unmarshal(f, &meta); err != nil {
-			return err
-		}
-
-		style := &Style{}
-		for i := 0; i < len(styles); i++ {
-			s := &styles[i]
-			if s.Name == name {
-				s.Installed = true
-				style = s
-				break
-			}
-		}
-
-		feed, err := parseAtom(meta.Feed)
-		if err != nil {
-			return err
-		}
-
-		t, err := toTime(feed.Updated)
-		if err != nil {
-			return err
-		}
-
-		info, err := os.Stat(fp)
-		if err != nil {
-			return err
-		} else if info.ModTime().UTC().Before(t.UTC()) {
-			style.HasUpdate = true
-		}
-		return nil
-	})
-
 	return styles, err
 }
