@@ -20,3 +20,118 @@ archives:
       darwin: macOS
       linux: Linux
       windows: Windows
+
+chocolateys:
+  -
+    # Your app's package name.
+    # The value may not contain spaces or character that are not valid for a URL.
+    # If you want a good separator for words, use '-', not  '.'.
+    #
+    # Defaults to `ProjectName`.
+    name: Vale
+
+    # IDs of the archives to use.
+    # Defaults to empty, which includes all artifacts.
+    ids:
+      - vale
+
+    # Your app's owner.
+    # It basically means your.
+    # Defaults empty.
+    owners: Joseph Kato
+
+    # The app's title.
+    # A human-friendly title of the package.
+    # Defaults to `ProjectName`.
+    title: Vale
+
+    # Your app's authors (probably you).
+    # Defaults are shown below.
+    authors: Joseph Kato
+
+    # Your app's project url.
+    # It is a required field.
+    project_url: https://github.com/errata-ai/vale
+
+    # Template for the url which is determined by the given Token (github,
+    # gitlab or gitea)
+    # Default depends on the client.
+    #
+    # https://github.com/errata-ai/vale/releases/download/v2.21.0/vale_2.21.0_Windows_64-bit.zip
+    url_template: "https://github.com/errata-ai/vale/releases/download/{{ .Tag }}/vale_{{ .Version }}_Windows_64-bit.zip"
+
+    # App's icon.
+    # Default is empty.
+    icon_url: https://github.com/errata-ai.png
+
+    # Your app's copyright details.
+    # Default is empty.
+    copyright: © Joseph Kato
+
+    # App's license information url.
+    license_url: https://github.com/errata-ai/vale/blob/master/LICENSE
+
+    # Your apps's require license acceptance:
+    # Specify whether the client must prompt the consumer to accept the package
+    # license before installing.
+    # Default is false.
+    require_license_acceptance: false
+
+    # Your app's source url.
+    # Default is empty.
+    project_source_url: https://github.com/errata-ai/install/tree/main/pkg/chocolatey
+
+    # Your app's documentation url.
+    # Default is empty.
+    docs_url: https://vale.sh/
+
+    # App's bugtracker url.
+    # Default is empty.
+    bug_tracker_url: https://github.com/errata-ai/vale/issues
+
+    # Your app's tag list.
+    # Default is empty.
+    tags: "vale linter prose admin"
+
+    # Your app's summary:
+    summary: Vale — the customizable linter for prose.
+
+    # This the description of your chocolatey package.
+    # Supports markdown.
+    description: |
+      Vale is a free, open-source linter for prose built with speed and
+      extensibility in mind.
+
+    # Your app's release notes.
+    # A description of the changes made in this release of the package.
+    # Supports markdown. To prevent the need to continually update this field,
+    # providing a URL to an external list of Release Notes is perfectly
+    # acceptable.
+    # Default is empty.
+    release_notes: "https://github.com/errata-ai/vale/releases/tag/v{{ .Version }}"
+
+    # App's dependencies
+    # Default is empty. Version is not required.
+    # dependencies:
+    #  - id: nfpm
+    #    version: 2.20.0
+
+    # The api key that should be used to push to the chocolatey repository.
+    #
+    # WARNING: do not expose your api key in the configuration file!
+    api_key: '{{ .Env.CHOCOLATEY_API_KEY }}'
+
+    # The source repository that will push the package to.
+    #
+    # Defaults are shown below.
+    source_repo: "https://push.chocolatey.org/"
+
+    # Setting this will prevent goreleaser to actually try to push the package
+    # to chocolatey repository, leaving the responsability of publishing it to
+    # the user.
+    skip_publish: false
+
+    # GOAMD64 to specify which amd64 version to use if there are multiple
+    # versions from the build section.
+    # Default is v1.
+    goamd64: v1
