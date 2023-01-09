@@ -2,15 +2,23 @@ builds:
   - env:
       - CGO_ENABLED=0
     main: ./cmd/vale
+
     binary: vale
+
     goos:
       - darwin
       - linux
       - windows
+
     goarch:
       - 386
       - amd64
       - arm64
+
+    ldflags:
+      - '-s'
+      - '-w'
+      - '-X main.version={{ .Version }}'
 
     # targets:
     #   - darwin_amd64
