@@ -53,6 +53,7 @@ test:
 	cd testdata && cucumber --format progress && cd -
 
 docker:
+	LTAG=$(LAST_TAG) \
 	docker login -u jdkato -p ${DOCKER_PASS}
 	docker buildx build \
 	--platform=linux/amd64,linux/arm64 \
