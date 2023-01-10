@@ -13,7 +13,8 @@ FROM --platform=$BUILDPLATFORM golang:1.18-alpine AS build
 COPY . /app/
 WORKDIR /app
 
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-s -w -X main.version=${LTAG}' -o /app/vale ./cmd/vale
+ARG ltag
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w -X main.version=$ltag" -o /app/vale ./cmd/vale
 
 FROM alpine
 
