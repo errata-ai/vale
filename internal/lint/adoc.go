@@ -221,9 +221,9 @@ func findGems(exe string) (string, error) {
 	var home string
 
 	for _, v := range []string{"GEM_HOME"} {
-		canidate := os.Getenv(v)
-		if canidate != "" {
-			return canidate, nil
+		candidate := os.Getenv(v)
+		if candidate != "" {
+			return candidate, nil
 		}
 	}
 

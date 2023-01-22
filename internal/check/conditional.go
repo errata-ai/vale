@@ -53,7 +53,7 @@ func NewConditional(cfg *core.Config, generic baseCheck) (Conditional, error) {
 	return rule, nil
 }
 
-// Run evalutes the given conditional statement.
+// Run evaluates the given conditional statement.
 func (c Conditional) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
