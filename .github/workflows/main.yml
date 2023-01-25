@@ -49,17 +49,3 @@ jobs:
           reporter: github-check
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-  perf:
-    name: runner / vale
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: errata-ai/vale-action@reviewdog
-        with:
-          files: testdata/fixtures/benchmarks
-          debug: true
-          fail_on_error: true
-          reporter: github-check
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
