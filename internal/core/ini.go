@@ -52,9 +52,9 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 		return nil
 	},
 	"Transform": func(label string, sec *ini.Section, cfg *Config) error {
-		canidate := sec.Key("Transform").String()
+		candidate := sec.Key("Transform").String()
 
-		abs, err := filepath.Abs(canidate)
+		abs, err := filepath.Abs(candidate)
 		if err != nil {
 			return err
 		}
@@ -98,9 +98,9 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 			cfg.StylesPath = basePath
 		} else {
 			entry := paths[len(paths)-1]
-			canidate := filepath.FromSlash(entry)
+			candidate := filepath.FromSlash(entry)
 
-			cfg.StylesPath = determinePath(cfg.Flags.Path, canidate)
+			cfg.StylesPath = determinePath(cfg.Flags.Path, candidate)
 			if !FileExists(cfg.StylesPath) {
 				return NewE201FromTarget(
 					fmt.Sprintf("The path '%s' does not exist.", cfg.StylesPath),
