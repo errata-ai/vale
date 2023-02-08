@@ -11,8 +11,14 @@ import (
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
 
+	"github.com/antonmedv/expr"
 	"gopkg.in/yaml.v2"
 )
+
+// FilterEnv is the environment passed to the `--filter` flag.
+type FilterEnv struct {
+	Rules []Definition
+}
 
 // Rule represents in individual writing construct to enforce.
 type Rule interface {
@@ -278,4 +284,34 @@ func updateExceptions(previous []string, current map[string]struct{}) (*regexp2.
 	}
 
 	return nil, nil
+}
+
+func filter(mgr *Manager) (map[string]Rule, error) {
+	if mgr.Config.Flags.Filter == "" {
+		return mgr.rules, nil
+	}
+
+	env := FilterEnv{}
+	for _, rule := range mgr.rules {
+		env.Rules = append(env.Rules, rule.Fields())
+	}
+	code := fmt.Sprintf(`filter(Rules, {%s})`, mgr.Config.Flags.Filter)
+
+	program, err := expr.Compile(code, expr.Env(env))
+	if err != nil {
+		return mgr.rules, err
+	}
+
+	output, err := expr.Run(program, env)
+	if err != nil {
+		return mgr.rules, err
+	}
+
+	filtered := map[string]Rule{}
+	for _, entry := range output.([]interface{}) {
+		rule := entry.(Definition)
+		filtered[rule.Name] = mgr.rules[rule.Name]
+	}
+
+	return filtered, nil
 }

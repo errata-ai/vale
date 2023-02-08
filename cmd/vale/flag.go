@@ -18,6 +18,7 @@ var shortcodes = map[string]string{
 
 func init() {
 	pflag.StringVar(&Flags.Sources, "sources", "", "A config files to load")
+	pflag.StringVar(&Flags.Filter, "filter", "", "An expression to filter rules by.")
 
 	pflag.StringVar(&Flags.Glob, "glob", "*",
 		fmt.Sprintf(`A glob pattern (%s)`, pterm.Gray(`--glob='*.{md,txt}.'`)))
