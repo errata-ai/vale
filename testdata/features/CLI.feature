@@ -134,3 +134,29 @@ Feature: CLI
       stdin.py:37:5:vale.Annotations:'TODO' left in text
       """
     And the exit status should be 0
+
+  Scenario: Filter by style (none)
+    When I filter ".Name == \"Vale\""
+    Then the output should contain exactly:
+      """
+      """
+    And the exit status should be 0
+
+  Scenario: Filter by style
+    When I filter ".Name contains \"Vale\""
+    Then the output should contain exactly:
+      """
+      test.md:3:1:Vale.Spelling:Did you really mean 'Nginx'?
+      test.md:5:1:Vale.Spelling:Did you really mean 'HTTPie'?
+      test.md:5:8:Vale.Repetition:'is' is repeated!
+      test.md:13:1:Vale.Spelling:Did you really mean 'abdominocentesis'?
+      """
+    And the exit status should be 1
+
+  Scenario: Filter by scope
+    When I filter "\"heading\" in .Scope and .Name contains \"Cap\""
+    Then the output should contain exactly:
+      """
+      test.md:1:3:demo.Cap:'intro' should be in title case.
+      """
+    And the exit status should be 1

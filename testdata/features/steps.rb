@@ -15,6 +15,11 @@ When(/^I run command "(.*)"$/) do |c|
   step %(I run `#{cmd} #{c}`)
 end
 
+When(/^I filter "(.*)"$/) do |f|
+  step %(I cd to "../../fixtures/filters")
+  step %(I run `#{cmd} --filter='#{f}' .`)
+end
+
 When(/^I lint simple "(.*)"$/) do |flag|
   step %(I cd to "../../fixtures/formats")
   step %(I run `#{cmd} --ignore-syntax #{flag}`)
