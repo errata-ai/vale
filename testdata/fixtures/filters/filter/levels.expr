@@ -1,0 +1,1 @@
+.Level in ["error", "suggestion"] and .Name != "demo.Cap"

@@ -26,6 +26,7 @@ require (
 )
 
 require (
+	github.com/antonmedv/expr v1.12.0 // indirect
 	github.com/atomicgo/cursor v0.0.1 // indirect
 	github.com/dsnet/compress v0.0.2-0.20210315054119-f66993602bf5 // indirect
 	github.com/frankban/quicktest v1.14.3 // indirect

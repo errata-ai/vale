@@ -14,6 +14,11 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// FilterEnv is the environment passed to the `--filter` flag.
+type FilterEnv struct {
+	Rules []Definition
+}
+
 // Rule represents in individual writing construct to enforce.
 type Rule interface {
 	Run(blk nlp.Block, file *core.File) ([]core.Alert, error)

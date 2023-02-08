@@ -64,6 +64,7 @@ func NewManager(config *core.Config) (*Manager, error) {
 		}
 	}
 
+	mgr.rules, err = filter(&mgr)
 	return &mgr, err
 }
 

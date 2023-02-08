@@ -23,6 +23,7 @@ type CLIFlags struct {
 	Output     string
 	Path       string
 	Sources    string
+	Filter     string
 	Local      bool
 	NoExit     bool
 	Normalize  bool
