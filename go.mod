@@ -3,6 +3,7 @@ module github.com/errata-ai/vale/v2
 go 1.18
 
 require (
+	github.com/antonmedv/expr v1.12.0
 	github.com/d5/tengo/v2 v2.10.0
 	github.com/errata-ai/ini v1.63.0
 	github.com/errata-ai/regexp2 v1.7.0
@@ -26,7 +27,6 @@ require (
 )
 
 require (
-	github.com/antonmedv/expr v1.12.0 // indirect
 	github.com/atomicgo/cursor v0.0.1 // indirect
 	github.com/dsnet/compress v0.0.2-0.20210315054119-f66993602bf5 // indirect
 	github.com/frankban/quicktest v1.14.3 // indirect
