@@ -8,6 +8,7 @@ import (
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/prose/tag"
+
 	"github.com/mitchellh/mapstructure"
 )
 

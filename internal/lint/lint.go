@@ -160,8 +160,9 @@ func (l *Linter) lintFile(src string) lintResult {
 	// Determine what NLP tasks this particular file needs; the goal is to do
 	// the least amount of work possible.
 	file.NLP = l.Manager.AssignNLP(file)
+	simple := l.Manager.Config.Flags.Simple
 
-	if file.Format == "markup" && !l.Manager.Config.Flags.Simple {
+	if file.Format == "markup" && !simple {
 		switch file.NormedExt {
 		case ".adoc":
 			err = l.lintADoc(file)
@@ -178,10 +179,12 @@ func (l *Linter) lintFile(src string) lintResult {
 		case ".org":
 			err = l.lintOrg(file)
 		}
-	} else if file.Format == "code" && !l.Manager.Config.Flags.Simple {
+	} else if file.Format == "code" && !simple {
 		err = l.lintCode(file)
-	} else if file.Format == "fragment" && !l.Manager.Config.Flags.Simple {
+	} else if file.Format == "fragment" && !simple {
 		err = l.lintFragments(file)
+	} else if file.NormedExt == ".txt" && !simple {
+		err = l.lintTxt(file)
 	} else {
 		err = l.lintLines(file)
 	}
@@ -201,7 +204,7 @@ func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) error {
 	// p2
 	//
 	// See fixtures/i18n for an example.
-	needsLookup := strings.Count(blk.Text, "\n") > 0
+	needsLookup := strings.Count(blk.Text, "\n") > 0 || f.Lookup
 	for _, b := range blks {
 		err := l.lintBlock(f, b, lines, 0, needsLookup)
 		if err != nil {
@@ -210,6 +213,11 @@ func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) error {
 	}
 
 	return nil
+}
+
+func (l *Linter) lintTxt(f *core.File) error {
+	block := nlp.NewBlock("", f.Content, "text"+f.RealExt)
+	return l.lintProse(f, block, len(f.Lines))
 }
 
 func (l *Linter) lintLines(f *core.File) error {

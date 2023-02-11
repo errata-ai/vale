@@ -39,12 +39,14 @@ type File struct {
 	history    map[string]int    // -
 	limits     map[string]int    // -
 	simple     bool              // -
+	Lookup     bool              // -
 }
 
 // NewFile initializes a File.
 func NewFile(src string, config *Config) (*File, error) {
 	var format, ext string
 	var fbytes []byte
+	var lookup bool
 
 	if FileExists(src) {
 		fbytes, _ = os.ReadFile(src)
@@ -57,6 +59,7 @@ func NewFile(src string, config *Config) (*File, error) {
 		ext, format = FormatFromExt(config.Flags.InExt, config.Formats)
 		fbytes = []byte(src)
 		src = "stdin" + config.Flags.InExt
+		lookup = true
 	}
 
 	fp := src
@@ -109,7 +112,8 @@ func NewFile(src string, config *Config) (*File, error) {
 		Comments: make(map[string]bool), history: make(map[string]int),
 		simple: config.Flags.Simple, Transform: transform,
 		limits: make(map[string]int), Path: src, Metrics: make(map[string]int),
-		NLP: nlp.NLPInfo{Endpoint: config.NLPEndpoint, Lang: lang},
+		NLP:    nlp.NLPInfo{Endpoint: config.NLPEndpoint, Lang: lang},
+		Lookup: lookup,
 	}
 
 	return &file, nil
