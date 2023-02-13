@@ -17,6 +17,14 @@ Feature: Scopes
       test.rst:3:22:rules.Quote:Don't use 'here' in a blockquote.
       """
 
+  Scenario: Sentences
+    When I test scope "sentence"
+    Then the output should contain exactly:
+      """
+      test.md:3:1:rules.Sentence:'The controller requires a current of 2 A max.'
+      test.md:4:1:rules.Sentence:'The device’s current support for bluetooth is being deprecated.'
+      """
+
   Scenario: Skip
     When I test scope "skip"
     Then the output should contain exactly:

@@ -1,0 +1,4 @@
+extends: existence
+message: "'%s'"
+scope: sentence
+raw: ^.*$

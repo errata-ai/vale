@@ -83,8 +83,11 @@ func (n *NLPInfo) doNLP(blk *Block, seg segmenter) ([]Block, error) {
 
 	if n.Segmentation {
 		for _, s := range seg(blk.Text) {
-			blks = append(
-				blks, NewLinedBlock(ctx, s, "sentence"+ext, idx, nil))
+			s = strings.TrimSpace(s)
+			if s != "" {
+				blks = append(
+					blks, NewLinedBlock(ctx, s, "sentence"+ext, idx, nil))
+			}
 		}
 	}
 
