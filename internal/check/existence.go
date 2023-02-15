@@ -50,7 +50,14 @@ func NewExistence(cfg *core.Config, generic baseCheck) (Existence, error) {
 		func() bool { return !rule.Nonword && len(rule.Tokens) > 0 },
 		func() string { return strings.Join(rule.Raw, "") },
 		rule.Append)
-	regex = fmt.Sprintf(regex, strings.Join(rule.Tokens, "|"))
+
+	parsed := []string{}
+	for _, token := range rule.Tokens {
+		if strings.TrimSpace(token) != "" {
+			parsed = append(parsed, token)
+		}
+	}
+	regex = fmt.Sprintf(regex, strings.Join(parsed, "|"))
 
 	re, err = regexp2.CompileStd(regex)
 	if err != nil {
