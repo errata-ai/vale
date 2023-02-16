@@ -146,6 +146,17 @@ Feature: Lint
             """
         And the exit status should be 0
 
+    Scenario: Lint a JSX file
+        When I lint "test.jsx"
+        Then the output should contain exactly:
+            """
+            test.jsx:1:4:vale.Annotations:'XXX' left in text
+            test.jsx:4:6:vale.Annotations:'NOTE' left in text
+            test.jsx:14:3:vale.Annotations:'XXX' left in text
+            test.jsx:18:39:vale.Annotations:'TODO' left in text
+            """
+        And the exit status should be 0
+
     Scenario: Lint a Markdown file
         When I lint "test.md"
         Then the output should contain exactly:
