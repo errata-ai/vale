@@ -53,13 +53,7 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 	},
 	"Transform": func(label string, sec *ini.Section, cfg *Config) error {
 		candidate := sec.Key("Transform").String()
-
-		abs, err := filepath.Abs(candidate)
-		if err != nil {
-			return err
-		}
-
-		cfg.Stylesheets[label] = filepath.FromSlash(abs)
+		cfg.Stylesheets[label] = determinePath(cfg.Flags.Path, candidate)
 		return nil
 
 	},
