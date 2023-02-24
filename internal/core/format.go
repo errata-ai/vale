@@ -37,6 +37,11 @@ var CommentsByNormedExt = map[string]map[string]string{
 		"blockStart": `(?m)^((?:\s{4,})?[r]?["']{3}.*)$`,
 		"blockEnd":   `(.*["']{3})`,
 	},
+	".ps1": {
+		"inline":     `(#.+)`,
+		"blockStart": `(<#.*)`,
+		"blockEnd":   `(.*#>)`,
+	},
 	".php": {
 		"inline":     `(//.+)|(/\*.+\*/)|(#.+)`,
 		"blockStart": `(/\*.*)`,
@@ -76,6 +81,7 @@ var FormatByExtension = map[string][]string{
 	`\.(?:md|mdown|markdown|markdn)$`:             {".md", "markup"},
 	`\.(?:php)$`:                                  {".php", "code"},
 	`\.(?:pl|pm|pod)$`:                            {".r", "code"},
+	`\.(?:ps1|psm1|psd1)$`:                        {".ps1", "code"},
 	`\.(?:r|R)$`:                                  {".r", "code"},
 	`\.(?:rs)$`:                                   {".rs", "code"},
 	`\.(?:rst|rest)$`:                             {".rst", "markup"},
