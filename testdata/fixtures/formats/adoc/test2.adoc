@@ -2,7 +2,7 @@
 
 Here's a sample Asciidoc document:
 
-[source,asciidoc]
+[source,asciidoc,]
 ----
 some asciidoc
 ----
