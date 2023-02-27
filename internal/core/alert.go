@@ -10,6 +10,12 @@ var LevelToInt = map[string]int{
 	"error":      2,
 }
 
+// An Action represents a possible solution to an Alert.
+type Action struct {
+	Name   string   // the name of the action -- e.g, 'replace'
+	Params []string // a slice of parameters for the given action
+}
+
 // An Alert represents a potential error in prose.
 type Alert struct {
 	Action      Action   // a possible solution

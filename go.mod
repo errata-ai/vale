@@ -3,6 +3,7 @@ module github.com/errata-ai/vale/v2
 go 1.18
 
 require (
+	github.com/adrg/strutil v0.3.0
 	github.com/antonmedv/expr v1.12.0
 	github.com/d5/tengo/v2 v2.10.0
 	github.com/errata-ai/ini v1.63.0

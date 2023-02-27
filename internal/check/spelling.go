@@ -10,7 +10,7 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/errata-ai/vale/v2/pkg/spell"
+	"github.com/errata-ai/vale/v2/internal/spell"
 	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 )
@@ -179,6 +179,11 @@ func (s Spelling) Fields() Definition {
 // Pattern is the internal regex pattern used by this rule.
 func (s Spelling) Pattern() string {
 	return ""
+}
+
+// Pattern is the internal regex pattern used by this rule.
+func (s Spelling) Suggest(word string) []string {
+	return s.gs.Suggest(word)
 }
 
 func makeSpeller(s *Spelling, cfg *core.Config) (*spell.Checker, error) {

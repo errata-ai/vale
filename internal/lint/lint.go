@@ -9,8 +9,8 @@ import (
 
 	"github.com/errata-ai/vale/v2/internal/check"
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/glob"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/errata-ai/vale/v2/pkg/glob"
 	"github.com/karrick/godirwalk"
 	"github.com/remeh/sizedwaitgroup"
 )

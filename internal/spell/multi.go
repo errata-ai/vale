@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"sort"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 )
@@ -87,12 +88,12 @@ func NewChecker(options ...CheckerOption) (*Checker, error) {
 
 	if len(checker.checkers) == 0 || base.load {
 		// use default dictionary ...
-		aff, err := Asset("pkg/spell/data/en_US-web.aff")
+		aff, err := Asset("internal/spell/data/en_US-web.aff")
 		if err != nil {
 			return &checker, err
 		}
 
-		dic, err := Asset("pkg/spell/data/en_US-web.dic")
+		dic, err := Asset("internal/spell/data/en_US-web.dic")
 		if err != nil {
 			return &checker, err
 		}
@@ -116,6 +117,28 @@ func (m *Checker) Spell(word string) bool {
 		}
 	}
 	return false
+}
+
+// Suggest returns a list of suggestions for a given word.
+func (m *Checker) Suggest(word string) []string {
+	ranks := []wordMatch{}
+	for _, checker := range m.checkers {
+		ranks = append(ranks, checker.suggest(word)...)
+	}
+
+	sort.Slice(ranks, func(i, j int) bool {
+		return ranks[i].score > ranks[j].score
+	})
+
+	suggestions := []string{}
+	for i, r := range ranks {
+		if i > 5 {
+			break
+		}
+		suggestions = append(suggestions, r.word)
+	}
+
+	return suggestions
 }
 
 // Dict returns the underlying dictionary for the provided index.

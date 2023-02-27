@@ -5,10 +5,18 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 
+	"github.com/adrg/strutil"
+	"github.com/adrg/strutil/metrics"
 	"github.com/jdkato/regexp"
 )
+
+type wordMatch struct {
+	word  string
+	score float64
+}
 
 type goSpell struct {
 	config dictConfig
@@ -25,7 +33,8 @@ type dictionary struct {
 }
 
 // inputConversion does any character substitution before checking
-//  This is based on the ICONV stanza
+//
+//	This is based on the ICONV stanza
 func (s *goSpell) inputConversion(raw []byte) string {
 	sraw := string(raw)
 	if s.ireplacer == nil {
@@ -63,7 +72,9 @@ func (s *goSpell) addWordListFile(name string) ([]string, error) {
 }
 
 // addWordList adds basic word lists, just one word per line
-//  Assumed to be in UTF-8
+//
+//	Assumed to be in UTF-8
+//
 // TODO: hunspell compatible with "*" prefix for forbidden words
 // and affix support
 // returns list of duplicated words and/or error
@@ -83,6 +94,34 @@ func (s *goSpell) addWordList(r io.Reader) ([]string, error) {
 		return duplicates, err
 	}
 	return duplicates, nil
+}
+
+func (s *goSpell) keys() []string {
+	keys := make([]string, len(s.dict))
+
+	i := 0
+	for k := range s.dict {
+		keys[i] = k
+		i++
+	}
+
+	return keys
+}
+
+func (s *goSpell) suggest(word string) []wordMatch {
+	metric := metrics.NewLevenshtein()
+
+	matches := []wordMatch{}
+	for _, option := range s.keys() {
+		sim := strutil.Similarity(option, word, metric)
+		matches = append(matches, wordMatch{option, sim})
+	}
+
+	sort.Slice(matches, func(i, j int) bool {
+		return matches[i].score > matches[j].score
+	})
+
+	return matches[:5]
 }
 
 // spell checks to see if a given word is in the internal dictionaries

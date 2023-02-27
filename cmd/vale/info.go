@@ -63,6 +63,7 @@ var hidden = []string{
 	"tag",
 	"compile",
 	"run",
+	"fix",
 }
 
 // PrintIntro shows basic usage / getting started info.

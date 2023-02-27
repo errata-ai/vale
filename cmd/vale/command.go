@@ -30,6 +30,7 @@ var commandInfo = map[string]string{
 	"ls-config":  "Print the current configuration to stdout.",
 	"ls-metrics": "Print the given file's internal metrics to stdout.",
 	"sync":       "Download and install external configuration sources.",
+	"fix":        "Attempt to automatically fix the given alert.",
 }
 
 // Actions are the available CLI commands.
@@ -41,6 +42,25 @@ var Actions = map[string]func(args []string, flags *core.CLIFlags) error{
 	"compile":    compileRule,
 	"run":        runRule,
 	"sync":       sync,
+	"fix":        fix,
+}
+
+func fix(args []string, flags *core.CLIFlags) error {
+	if len(args) != 1 {
+		return core.NewE100("fix", errors.New("one argument expected"))
+	}
+
+	cfg, err := core.ReadPipeline("ini", flags, false)
+	if err != nil {
+		return err
+	}
+
+	resp, err := lint.ParseAlert(args[0], cfg)
+	if err != nil {
+		return err
+	}
+
+	return printJSON(resp)
 }
 
 func sync(args []string, flags *core.CLIFlags) error {
