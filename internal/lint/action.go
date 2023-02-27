@@ -98,15 +98,17 @@ func edit(alert core.Alert, cfg *core.Config) ([]string, error) {
 	match := alert.Match
 
 	switch name := alert.Action.Params[0]; name {
-	case "replace":
+	case "regex":
 		regex, err := regexp.Compile(alert.Action.Params[1])
 		if err != nil {
 			return []string{}, err
 		}
 		match = regex.ReplaceAllString(match, alert.Action.Params[2])
-	case "trim":
+	case "trim_right":
 		match = strings.TrimRight(match, alert.Action.Params[1])
-	case "remove":
+	case "trim_left":
+		match = strings.TrimLeft(match, alert.Action.Params[1])
+	case "trim":
 		match = strings.Trim(match, alert.Action.Params[1])
 	case "truncate":
 		match = strings.Split(match, alert.Action.Params[1])[0]

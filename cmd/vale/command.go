@@ -50,12 +50,21 @@ func fix(args []string, flags *core.CLIFlags) error {
 		return core.NewE100("fix", errors.New("one argument expected"))
 	}
 
+	alert := args[0]
+	if core.FileExists(args[0]) {
+		b, err := os.ReadFile(args[0])
+		if err != nil {
+			return err
+		}
+		alert = string(b)
+	}
+
 	cfg, err := core.ReadPipeline("ini", flags, false)
 	if err != nil {
 		return err
 	}
 
-	resp, err := lint.ParseAlert(args[0], cfg)
+	resp, err := lint.ParseAlert(alert, cfg)
 	if err != nil {
 		return err
 	}

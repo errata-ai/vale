@@ -1,0 +1,19 @@
+{
+    "Action": {
+        "Name": "suggest",
+        "Params": [
+            "spellings"
+        ]
+    },
+    "Span": [
+        1,
+        4
+    ],
+    "Check": "Vale.Spelling",
+    "Description": "",
+    "Link": "",
+    "Message": "Did you really mean 'priviledge'?",
+    "Severity": "error",
+    "Match": "priviledge",
+    "Line": 20
+}

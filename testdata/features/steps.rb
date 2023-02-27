@@ -15,6 +15,11 @@ When(/^I run command "(.*)"$/) do |c|
   step %(I run `#{cmd} #{c}`)
 end
 
+When(/^I fix "(.*)"$/) do |c|
+  step %(I cd to "../../fixtures/actions")
+  step %(I run `#{cmd} fix #{c}`)
+end
+
 When(/^I use filter "(.*)"$/) do |f|
   step %(I cd to "../../fixtures/filters")
   step %(I run `#{cmd} --filter="filter/#{f}.expr" .`)

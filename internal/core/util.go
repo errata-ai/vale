@@ -2,7 +2,6 @@ package core
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -52,17 +51,6 @@ func ShouldIgnoreDirectory(directoryName string) bool {
 		}
 	}
 	return false
-}
-
-// PrintJSON prints the data type `t` as JSON.
-func PrintJSON(t interface{}) error {
-	b, err := json.MarshalIndent(t, "", "  ")
-	if err != nil {
-		fmt.Println("{}")
-		return err
-	}
-	fmt.Println(string(b))
-	return nil
 }
 
 // ToSentence converts a slice of terms into sentence.

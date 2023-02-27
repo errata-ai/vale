@@ -40,7 +40,7 @@ func fetchJSON(url string) ([]byte, error) {
 }
 
 func printJSON(t interface{}) error {
-	b, err := json.MarshalIndent(t, "", "  ")
+	b, err := json.MarshalIndent(t, "", "    ")
 	if err != nil {
 		fmt.Println("{}")
 		return err
