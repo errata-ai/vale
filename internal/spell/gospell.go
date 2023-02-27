@@ -125,7 +125,6 @@ func (s *goSpell) suggest(word string) []wordMatch {
 }
 
 // spell checks to see if a given word is in the internal dictionaries
-// TODO: add multiple dictionaries
 func (s *goSpell) spell(word string) bool {
 	_, ok := s.dict[word]
 	if ok {
