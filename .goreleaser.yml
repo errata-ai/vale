@@ -17,13 +17,13 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
-    # name_template: >-
-    #   {{ .ProjectName }}_
-    #   {{- if eq .Os "darwin" }}macOS_
-    #   {{- else }}{{- title .Os }}_{{ end }}
-    #   {{- if eq .Arch "amd64" }}64-bit
-    #   {{- else if eq .Arch "386" }}i386
-    #   {{- else }}{{ .Arch }}{{ end }}
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- if eq .Os "darwin" }}macOS_
+      {{- else }}{{- title .Os }}_{{ end }}
+      {{- if eq .Arch "amd64" }}64-bit
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
 
 chocolateys:
   - # Your app's package name.
@@ -35,8 +35,8 @@ chocolateys:
 
     # IDs of the archives to use.
     # Defaults to empty, which includes all artifacts.
-    ids:
-      - vale
+    # ids:
+    #   - vale
 
     # Your app's owner.
     # It basically means your.
