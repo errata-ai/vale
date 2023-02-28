@@ -16,7 +16,7 @@ jobs:
         with:
           go-version: 1.18
 
-      - name: install chocolatey
+      - name: Install Chocolatey
         run: |
           mkdir -p /opt/chocolatey
           wget -q -O - "https://github.com/chocolatey/choco/releases/download/${CHOCOLATEY_VERSION}/chocolatey.v${CHOCOLATEY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
@@ -25,6 +25,10 @@ jobs:
           chmod +x /usr/local/bin/choco
         env:
           CHOCOLATEY_VERSION: 1.2.0
+
+      - name: Test Chocolatey
+        run: |
+          choco help
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
