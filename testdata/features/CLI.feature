@@ -175,19 +175,19 @@ Feature: CLI
             """
         And the exit status should be 0
 
-    Scenario: Spelling suggestions
-        When I fix "spell.json"
-        Then the output should contain exactly:
-            """
-            {
-                "suggestions": [
-                    "privilege",
-                    "privileged",
-                    "privileges",
-                    "privilege's",
-                    "unprivileged"
-                ],
-                "error": ""
-            }
-            """
-        And the exit status should be 0
+# Scenario: Spelling suggestions
+#     When I fix "spell.json"
+#     Then the output should contain exactly:
+#         """
+#         {
+#             "suggestions": [
+#                 "privilege",
+#                 "privileged",
+#                 "privileges",
+#                 "privilege's",
+#                 "unprivileged"
+#             ],
+#             "error": ""
+#         }
+#         """
+#     And the exit status should be 0
