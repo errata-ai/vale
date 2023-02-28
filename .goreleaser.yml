@@ -19,6 +19,7 @@ archives:
         format: zip
     name_template: >-
       {{ .ProjectName }}_
+      {{ .Version }}_
       {{- if eq .Os "darwin" }}macOS_
       {{- else }}{{- title .Os }}_{{ end }}
       {{- if eq .Arch "amd64" }}64-bit
