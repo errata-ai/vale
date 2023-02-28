@@ -3,12 +3,14 @@ builds:
       - CGO_ENABLED=0
     main: ./cmd/vale
     binary: vale
-    targets:
-      - darwin_amd64
-      - darwin_arm64
-      - linux_amd64
-      - linux_arm64
-      - windows_amd64
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - 386
+      - amd64
+      - arm64
 
 archives:
   - format: tar.gz
