@@ -169,6 +169,7 @@ func loadINI(cfg *Config, dry bool) error {
 	if err != nil {
 		return NewE100("loadINI/homedir", err)
 	}
+	cfg.RootINI = base
 
 	if cfg.Flags.Sources != "" {
 		for _, source := range strings.Split(cfg.Flags.Sources, ",") {
@@ -277,6 +278,9 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 			if err := f(core, cfg, paths); err != nil && !dry {
 				return err
 			}
+		} else if _, found := syntaxOpts[k]; found {
+			msg := fmt.Sprintf("'%s' is a syntax-specific option", k)
+			return NewE201FromTarget(msg, k, cfg.RootINI)
 		}
 	}
 
@@ -294,6 +298,9 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 	for _, k := range global.KeyStrings() {
 		if f, found := globalOpts[k]; found {
 			f(global, cfg, paths)
+		} else if _, found := syntaxOpts[k]; found {
+			msg := fmt.Sprintf("'%s' is a syntax-specific option", k)
+			return NewE201FromTarget(msg, k, cfg.RootINI)
 		} else {
 			cfg.GChecks[k] = validateLevel(k, global.Key(k).String(), cfg)
 			cfg.Checks = append(cfg.Checks, k)

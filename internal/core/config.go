@@ -58,6 +58,7 @@ type Config struct {
 	StylesPath     string                     // Directory with Rule.yml files
 	TokenIgnores   map[string][]string        // A list of tokens to ignore
 	WordTemplate   string                     // The template used in YAML -> regexp list conversions
+	RootINI        string                     // the path to the project's .vale.ini file
 
 	AcceptedTokens map[string]struct{} `json:"-"` // Project-specific vocabulary (okay)
 	RejectedTokens map[string]struct{} `json:"-"` // Project-specific vocabulary (avoid)
