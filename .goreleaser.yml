@@ -67,7 +67,7 @@ chocolateys:
     # Default depends on the client.
     #
     # https://github.com/errata-ai/vale/releases/download/v2.21.0/vale_2.21.0_Windows_64-bit.zip
-    url_template: "https://github.com/errata-ai/vale/releases/download/{{ .Tag }}/vale_{{ .Version }}_Windows_64-bit.zip"
+    url_template: "https://github.com/errata-ai/vale/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
 
     # App's icon.
     # Default is empty.
