@@ -37,7 +37,7 @@ type Definition struct {
 	Message     string
 	Name        string
 	Scope       []string
-	Selector    core.Selector
+	Selector    Selector
 }
 
 var defaultStyles = []string{"Vale"}

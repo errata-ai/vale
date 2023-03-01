@@ -261,13 +261,13 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk nlp.Bl
 		name = strings.Join([]string{list[0], list[1]}, ".")
 	}
 
-	sel := core.Selector{Value: []string{blk.Scope}}
+	chkScope := check.NewScope(details.Scope)
 	if f.QueryComments(name) {
 		// It has been disabled via an in-text comment.
 		return false
 	} else if core.LevelToInt[details.Level] < min {
 		return false
-	} else if !sel.ContainsString(details.Scope) {
+	} else if !chkScope.Matches(blk.Scope) {
 		return false
 	}
 

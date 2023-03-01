@@ -35,6 +35,7 @@ func NewManager(config *core.Config) (*Manager, error) {
 		scopes: make(map[string]struct{}),
 	}
 
+	// TODO: Should we only load these if we're using them?
 	err := mgr.loadDefaultRules()
 	if err != nil {
 		return &mgr, err

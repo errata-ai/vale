@@ -1,7 +1,9 @@
-package core
+package check
 
 import (
 	"testing"
+
+	"github.com/errata-ai/vale/v2/internal/core"
 )
 
 func TestSelectors(t *testing.T) {
@@ -10,7 +12,7 @@ func TestSelectors(t *testing.T) {
 	// s3 := Selector{Value: "text.comment.line.rb"}
 
 	sec := []string{"text", "comment", "line", "py"}
-	if !AllStringsInSlice(sec, s1.Sections()) {
+	if !core.AllStringsInSlice(sec, s1.Sections()) {
 		t.Errorf("expected = %v, got = %v", sec, s1.Sections())
 	}
 
