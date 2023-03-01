@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/mholt/archiver"
@@ -76,13 +75,25 @@ func readPkg(pkg, path string, idx int) error {
 func loadPkg(name, urlOrPath, styles string, index int) error {
 	if fileInfo, err := os.Stat(urlOrPath); err == nil {
 		if fileInfo.IsDir() {
-			parentDirectory := strings.TrimSuffix(urlOrPath, fmt.Sprintf("%c%s", os.PathSeparator, name))
-			return installPkg(parentDirectory, name, styles, index)
+			return loadLocalPkg(name, urlOrPath, styles, index)
 		} else {
 			return loadLocalZipPkg(name, urlOrPath, styles, index)
 		}
 	}
 	return download(name, urlOrPath, styles, index)
+}
+
+func loadLocalPkg(name, pkgPath, styles string, index int) error {
+	dir, err := os.MkdirTemp("", name)
+	if err != nil {
+		return err
+	}
+
+	if err := cp.Copy(pkgPath, dir); err != nil {
+		return err
+	}
+
+	return installPkg(dir, "", styles, index)
 }
 
 func loadLocalZipPkg(name, pkgPath, styles string, index int) error {
