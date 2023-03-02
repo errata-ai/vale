@@ -100,7 +100,7 @@ var defaultRules = map[string]map[string]interface{}{
 			Name:   "suggest",
 			Params: []string{"spellings"},
 		},
-		"ignore": []string{"vocab.txt"},
+		"ignore": []interface{}{"vocab.txt"},
 		"path":   "",
 	},
 }
