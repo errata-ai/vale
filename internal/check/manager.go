@@ -9,7 +9,6 @@ import (
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/errata-ai/vale/v2/internal/rule"
 	"github.com/karrick/godirwalk"
 )
 
@@ -193,26 +192,21 @@ func (mgr *Manager) loadDefaultRules() error {
 		if core.StringInSlice(style, mgr.styles) {
 			return fmt.Errorf("'%v' collides with built-in style", style)
 		}
-
-		rules, err := rule.AssetDir(filepath.Join("rule", style))
-		if err != nil {
-			return err
-		}
-
-		for _, name := range rules {
-			b, err := rule.Asset(filepath.Join("rule", style, name))
-			if err != nil {
-				return err
-			}
-
-			identifier := strings.Join([]string{
-				style, strings.Split(name, ".")[0]}, ".")
-
-			if err = mgr.addCheck(b, identifier, ""); err != nil {
-				return err
-			}
-		}
 	}
+
+	repetition := defaultRules["Repetition"]
+	if level, ok := mgr.Config.RuleToLevel["Vale.Repetition"]; ok {
+		repetition["level"] = level
+	}
+	rule, _ := buildRule(mgr.Config, repetition)
+	mgr.rules["Vale.Repetition"] = rule
+
+	spelling := defaultRules["Spelling"]
+	if level, ok := mgr.Config.RuleToLevel["Vale.Spelling"]; ok {
+		spelling["level"] = level
+	}
+	rule, _ = buildRule(mgr.Config, spelling)
+	mgr.rules["Vale.Spelling"] = rule
 
 	// TODO: where should this go?
 	mgr.loadVocabRules()

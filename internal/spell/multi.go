@@ -2,12 +2,19 @@ package spell
 
 import (
 	"bytes"
+	_ "embed"
 	"os"
 	"path/filepath"
 	"sort"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 )
+
+//go:embed data/en_US-web.aff
+var defaultAff []byte
+
+//go:embed data/en_US-web.dic
+var defaultDic []byte
 
 var defaultOpts = Options{
 	path: os.Getenv("DICPATH"),
@@ -88,17 +95,10 @@ func NewChecker(options ...CheckerOption) (*Checker, error) {
 
 	if len(checker.checkers) == 0 || base.load {
 		// use default dictionary ...
-		aff, err := Asset("internal/spell/data/en_US-web.aff")
-		if err != nil {
-			return &checker, err
-		}
+		aff := bytes.NewReader(defaultAff)
+		dic := bytes.NewReader(defaultDic)
 
-		dic, err := Asset("internal/spell/data/en_US-web.dic")
-		if err != nil {
-			return &checker, err
-		}
-
-		c, err := newGoSpellReader(bytes.NewReader(aff), bytes.NewReader(dic))
+		c, err := newGoSpellReader(aff, dic)
 		if err != nil {
 			return &checker, err
 		}

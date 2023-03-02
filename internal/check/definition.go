@@ -76,6 +76,33 @@ var defaultRules = map[string]map[string]interface{}{
 		"swap":       map[string]string{},
 		"path":       "",
 	},
+	"Repetition": {
+		"extends": "repetition",
+		"name":    "Vale.Repetition",
+		"level":   "error",
+		"message": "'%s' is repeated!",
+		"scope":   "text",
+		"alpha":   true,
+		"action": core.Action{
+			Name:   "edit",
+			Params: []string{"truncate", " "},
+		},
+		"tokens": []string{`[^\s]+`},
+		"path":   "",
+	},
+	"Spelling": {
+		"extends": "spelling",
+		"name":    "Vale.Spelling",
+		"message": "Did you really mean '%s'?",
+		"level":   "error",
+		"scope":   "text",
+		"action": core.Action{
+			Name:   "suggest",
+			Params: []string{"spellings"},
+		},
+		"ignore": []string{"vocab.txt"},
+		"path":   "",
+	},
 }
 
 const (

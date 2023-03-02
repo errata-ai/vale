@@ -42,12 +42,6 @@ compare:
 setup:
 	cd testdata && bundle install && cd -
 
-rules:
-	go-bindata -ignore=\\.DS_Store -pkg="rule" -o rule/rule.go rule/**/*.yml
-
-data:
-	go-bindata -ignore=\\.DS_Store -pkg="spell" -o internal/spell/data.go internal/spell/data/*.{dic,aff}
-
 test:
 	go test ./internal/core ./internal/lint ./internal/check ./internal/nlp ./internal/glob
 	cd testdata && cucumber --format progress && cd -
