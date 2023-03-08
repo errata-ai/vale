@@ -254,6 +254,17 @@ Feature: Lint
             """
         And the exit status should be 0
 
+    Scenario: Lint a PowerShell file
+        When I lint "test.ps1"
+        Then the output should contain exactly:
+            """
+            test.ps1:2:24:vale.Annotations:'XXX' left in text
+            test.ps1:4:9:vale.Annotations:'NOTE' left in text
+            test.ps1:5:9:vale.Annotations:'FIXME' left in text
+            test.ps1:8:26:vale.Annotations:'TODO' left in text
+            """
+        And the exit status should be 0
+
     Scenario: Lint a Lua file
         When I lint "test.lua"
         Then the output should contain exactly:
