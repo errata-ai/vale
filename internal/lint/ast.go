@@ -101,10 +101,11 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 					// once as part of the overall paragraph. See issue #105
 					// for more info.
 					tempCtx := updateContext(walker.context, walker.queue)
+					ctxScope := getScope(walker.tagHistory, scope, f.RealExt)
 
 					err := l.lintBlock(
 						f,
-						nlp.NewBlock(tempCtx, txt, scope),
+						nlp.NewBlockWithParent(tempCtx, txt, scope, ctxScope),
 						walker.lines,
 						0,
 						true)
@@ -284,4 +285,21 @@ func updateCtx(ctx, txt string, tokt html.TokenType) string {
 		}
 	}
 	return ctx
+}
+
+func getScope(tags []string, new, ext string) string {
+	root := tags[0]
+	if root == "ul" {
+		root = "li"
+	} else if root == "p" {
+		root = ""
+	}
+
+	scope, match := tagToScope[root]
+	if !match && heading.MatchString(root) {
+		scope = "text.heading." + root
+	}
+
+	ctx := strings.Join([]string{scope, new}, ".")
+	return strings.TrimPrefix(ctx, ".") + ext
 }

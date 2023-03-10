@@ -10,6 +10,7 @@ Feature: Scopes
             test.md:11:20:rules.Negated:'THREE' left in text
             test.md:11:26:rules.HN:'FOUR' left in text
             test.md:13:11:rules.Para:Don't use 'paragraph' in a blockquote.
+            test.md:19:1:rules.And:Don't use 'TODO' in a blockquote OR heading.
             """
 
     Scenario: Raw

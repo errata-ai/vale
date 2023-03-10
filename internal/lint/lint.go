@@ -267,7 +267,7 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk nlp.Bl
 		return false
 	} else if core.LevelToInt[details.Level] < min {
 		return false
-	} else if !chkScope.Matches(blk.Scope) {
+	} else if !chkScope.Matches(blk) {
 		return false
 	}
 

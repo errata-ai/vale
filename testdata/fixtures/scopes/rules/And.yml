@@ -1,0 +1,7 @@
+extends: existence
+message: "Don't use '%s' in a blockquote OR heading."
+scope:
+  - ~blockquote & ~heading
+level: error
+tokens:
+  - TODO

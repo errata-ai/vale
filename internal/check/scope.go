@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 )
 
 // A Selector represents a named section of text.
@@ -13,31 +14,7 @@ type Selector struct {
 }
 
 type Scope struct {
-	Selectors []Selector
-}
-
-func NewScope(value []string) Scope {
-	selectors := []Selector{}
-	for _, v := range value {
-		selectors = append(selectors, NewSelector(strings.Split(v, ".")))
-	}
-	return Scope{Selectors: selectors}
-}
-
-// Macthes the scope `s` matches `s2`.
-func (s Scope) Matches(blk string) bool {
-	candidate := NewSelector(strings.Split(blk, "."))
-	for _, sel := range s.Selectors {
-		matched := candidate.Contains(sel)
-		if sel.Negated && !matched {
-			if !(candidate.Has("raw") || candidate.Has("summary")) {
-				return true
-			}
-		} else if !sel.Negated && matched {
-			return true
-		}
-	}
-	return false
+	Selectors map[string][]Selector
 }
 
 func NewSelector(value []string) Selector {
@@ -45,6 +22,7 @@ func NewSelector(value []string) Selector {
 
 	parts := []string{}
 	for i, m := range value {
+		m = strings.TrimSpace(m)
 		if i == 0 && strings.HasPrefix(m, "~") {
 			m = strings.TrimPrefix(m, "~")
 			negated = true
@@ -53,6 +31,48 @@ func NewSelector(value []string) Selector {
 	}
 
 	return Selector{Value: parts, Negated: negated}
+}
+
+func NewScope(value []string) Scope {
+	scope := map[string][]Selector{}
+	for _, v := range value {
+		selectors := []Selector{}
+		for _, part := range strings.Split(v, "&") {
+			selectors = append(selectors, NewSelector(strings.Split(part, ".")))
+		}
+		scope[v] = selectors
+	}
+	return Scope{Selectors: scope}
+}
+
+// Macthes the scope `s` matches `s2`.
+func (s Scope) Matches(blk nlp.Block) bool {
+	candidate := NewSelector(strings.Split(blk.Scope, "."))
+	parent := NewSelector(strings.Split(blk.Parent, "."))
+
+	for _, sel := range s.Selectors {
+		if s.partMatches(candidate, parent, sel) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (s Scope) partMatches(target, parent Selector, options []Selector) bool {
+	for _, part := range options {
+		tm := target.Contains(part)
+		pm := parent.Contains(part)
+		if part.Negated && !pm {
+			if target.Has("raw") || target.Has("summary") {
+				// This can't apply to sized scopes.
+				return false
+			}
+		} else if (!part.Negated && !tm) || (part.Negated && pm) {
+			return false
+		}
+	}
+	return true
 }
 
 // Sections splits a Selector into its parts -- e.g., text.comment.line.py ->

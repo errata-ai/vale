@@ -11,12 +11,27 @@ type Block struct {
 	Context string // parent content - e.g., sentence -> paragraph
 	Line    int    // line of the block
 	Scope   string // section selector
+	Parent  string // parent (fully-qualfied) selector
 	Text    string // text content
 }
 
 // NewBlock makes a new Block with prepared text and a Selector.
 func NewBlock(ctx, txt, sel string) Block {
 	return NewLinedBlock(ctx, txt, sel, -1, nil)
+}
+
+// NewBlockWithParent makes a new Block with prepared text, a Selector, and a parent.
+func NewBlockWithParent(ctx, txt, sel, parent string) Block {
+	if ctx == "" {
+		ctx = txt
+	}
+
+	return Block{
+		Context: ctx,
+		Text:    txt,
+		Scope:   sel,
+		Parent:  parent,
+		Line:    -1}
 }
 
 // NewLinedBlock creates a Block with an already-known location.
@@ -29,6 +44,7 @@ func NewLinedBlock(ctx, txt, sel string, line int, nlp *NLPInfo) Block {
 		Context: ctx,
 		Text:    txt,
 		Scope:   sel,
+		Parent:  sel,
 		Line:    line}
 }
 
