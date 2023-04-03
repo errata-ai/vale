@@ -6,7 +6,6 @@ import (
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/prose/summarize"
-	"github.com/mitchellh/mapstructure"
 )
 
 // Readability checks the reading grade level of text.
@@ -20,11 +19,10 @@ type Readability struct {
 }
 
 // NewReadability creates a new `readability`-based rule.
-func NewReadability(cfg *core.Config, generic baseCheck) (Readability, error) {
+func NewReadability(cfg *core.Config, generic baseCheck, path string) (Readability, error) {
 	rule := Readability{}
-	path := generic["path"].(string)
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

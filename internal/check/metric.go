@@ -10,7 +10,6 @@ import (
 	"github.com/d5/tengo/v2/stdlib"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/mitchellh/mapstructure"
 )
 
 var boilerplate = `math := import("math"); __res__ := (%s)`
@@ -32,11 +31,10 @@ type Metric struct {
 }
 
 // NewMetric creates a new `metric`-based rule.
-func NewMetric(cfg *core.Config, generic baseCheck) (Metric, error) {
+func NewMetric(cfg *core.Config, generic baseCheck, path string) (Metric, error) {
 	rule := Metric{}
-	path := generic["path"].(string)
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

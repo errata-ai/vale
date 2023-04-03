@@ -7,7 +7,6 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/mitchellh/mapstructure"
 )
 
 // Substitution switches the values of Swap for its keys.
@@ -24,11 +23,10 @@ type Substitution struct {
 }
 
 // NewSubstitution creates a new `substitution`-based rule.
-func NewSubstitution(cfg *core.Config, generic baseCheck) (Substitution, error) {
+func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitution, error) {
 	rule := Substitution{}
-	path := generic["path"].(string)
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

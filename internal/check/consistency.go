@@ -29,11 +29,10 @@ type Consistency struct {
 }
 
 // NewConsistency creates a new `consistency`-based rule.
-func NewConsistency(cfg *core.Config, generic baseCheck) (Consistency, error) {
+func NewConsistency(cfg *core.Config, generic baseCheck, path string) (Consistency, error) {
 	var chkRE string
 
 	rule := Consistency{}
-	path := generic["path"].(string)
 	name := generic["name"].(string)
 
 	err := mapstructure.WeakDecode(generic, &rule)

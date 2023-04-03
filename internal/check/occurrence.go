@@ -4,7 +4,6 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/mitchellh/mapstructure"
 )
 
 // Occurrence counts the number of times Token appears.
@@ -18,11 +17,10 @@ type Occurrence struct {
 }
 
 // NewOccurrence creates a new `occurrence`-based rule.
-func NewOccurrence(cfg *core.Config, generic baseCheck) (Occurrence, error) {
+func NewOccurrence(cfg *core.Config, generic baseCheck, path string) (Occurrence, error) {
 	rule := Occurrence{}
-	path := generic["path"].(string)
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

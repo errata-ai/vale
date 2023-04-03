@@ -7,7 +7,6 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/mitchellh/mapstructure"
 )
 
 // Existence checks for the present of Tokens.
@@ -25,15 +24,10 @@ type Existence struct {
 }
 
 // NewExistence creates a new `Rule` that extends `Existence`.
-func NewExistence(cfg *core.Config, generic baseCheck) (Existence, error) {
+func NewExistence(cfg *core.Config, generic baseCheck, path string) (Existence, error) {
 	rule := Existence{}
 
-	path := ""
-	if p, ok := generic["path"].(string); !ok {
-		path = p
-	}
-
-	err := mapstructure.WeakDecode(generic, &rule)
+	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

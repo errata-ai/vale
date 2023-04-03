@@ -6,7 +6,6 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/mitchellh/mapstructure"
 )
 
 // Repetition looks for repeated uses of Tokens.
@@ -20,11 +19,10 @@ type Repetition struct {
 }
 
 // NewRepetition creates a new `repetition`-based rule.
-func NewRepetition(cfg *core.Config, generic baseCheck) (Repetition, error) {
+func NewRepetition(cfg *core.Config, generic baseCheck, path string) (Repetition, error) {
 	rule := Repetition{}
-	path := generic["path"].(string)
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

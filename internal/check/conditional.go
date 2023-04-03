@@ -4,7 +4,6 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/mitchellh/mapstructure"
 )
 
 // Conditional ensures that the present of First ensures the present of Second.
@@ -19,13 +18,11 @@ type Conditional struct {
 }
 
 // NewConditional creates a new `conditional`-based rule.
-func NewConditional(cfg *core.Config, generic baseCheck) (Conditional, error) {
+func NewConditional(cfg *core.Config, generic baseCheck, path string) (Conditional, error) {
 	var expression []*regexp2.Regexp
-
 	rule := Conditional{}
-	path := generic["path"].(string)
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

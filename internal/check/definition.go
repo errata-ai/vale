@@ -10,6 +10,7 @@ import (
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/regexp"
+	"github.com/mitchellh/mapstructure"
 
 	"gopkg.in/yaml.v2"
 )
@@ -116,34 +117,35 @@ type baseCheck map[string]interface{}
 
 func buildRule(cfg *core.Config, generic baseCheck) (Rule, error) {
 	name := generic["extends"].(string)
+	path := generic["path"].(string)
 
+	delete(generic, "path")
 	switch name {
 	case "existence":
-		return NewExistence(cfg, generic)
+		return NewExistence(cfg, generic, path)
 	case "substitution":
-		return NewSubstitution(cfg, generic)
+		return NewSubstitution(cfg, generic, path)
 	case "capitalization":
-		return NewCapitalization(cfg, generic)
+		return NewCapitalization(cfg, generic, path)
 	case "occurrence":
-		return NewOccurrence(cfg, generic)
+		return NewOccurrence(cfg, generic, path)
 	case "spelling":
-		return NewSpelling(cfg, generic)
+		return NewSpelling(cfg, generic, path)
 	case "repetition":
-		return NewRepetition(cfg, generic)
+		return NewRepetition(cfg, generic, path)
 	case "readability":
-		return NewReadability(cfg, generic)
+		return NewReadability(cfg, generic, path)
 	case "conditional":
-		return NewConditional(cfg, generic)
+		return NewConditional(cfg, generic, path)
 	case "consistency":
-		return NewConsistency(cfg, generic)
+		return NewConsistency(cfg, generic, path)
 	case "sequence":
-		return NewSequence(cfg, generic)
+		return NewSequence(cfg, generic, path)
 	case "metric":
-		return NewMetric(cfg, generic)
+		return NewMetric(cfg, generic, path)
 	case "script":
-		return NewScript(cfg, generic)
+		return NewScript(cfg, generic, path)
 	default:
-		path := generic["path"].(string)
 		return Existence{}, core.NewE201FromTarget(
 			fmt.Sprintf("'extends' key must be one of %v.", extensionPoints),
 			name,
@@ -239,7 +241,7 @@ func readStructureError(err error, path string) error {
 			strings.ToLower(groups[1]),
 			path)
 	}
-	return err
+	return core.NewE201FromPosition(err.Error(), path, 1)
 }
 
 func makeRegexp(
@@ -310,4 +312,20 @@ func updateExceptions(previous []string, current map[string]struct{}) (*regexp2.
 	}
 
 	return nil, nil
+}
+
+func decodeRule(input interface{}, output interface{}) error {
+	config := mapstructure.DecoderConfig{
+		ErrorUnused:      true,
+		Squash:           true,
+		WeaklyTypedInput: true,
+		Result:           output,
+	}
+
+	decoder, err := mapstructure.NewDecoder(&config)
+	if err != nil {
+		return err
+	}
+
+	return decoder.Decode(input)
 }

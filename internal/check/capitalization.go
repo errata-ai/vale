@@ -7,7 +7,6 @@ import (
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/jdkato/titlecase"
-	"github.com/mitchellh/mapstructure"
 )
 
 // Capitalization checks the case of a string.
@@ -29,11 +28,10 @@ type Capitalization struct {
 }
 
 // NewCapitalization creates a new `capitalization`-based rule.
-func NewCapitalization(cfg *core.Config, generic baseCheck) (Capitalization, error) {
+func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capitalization, error) {
 	rule := Capitalization{}
-	path := generic["path"].(string)
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

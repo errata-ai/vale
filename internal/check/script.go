@@ -5,7 +5,6 @@ import (
 	"github.com/d5/tengo/v2/stdlib"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/mitchellh/mapstructure"
 )
 
 // Script is Tango-based script.
@@ -19,11 +18,10 @@ type Script struct {
 }
 
 // NewScript creates a new `script`-based rule.
-func NewScript(cfg *core.Config, generic baseCheck) (Script, error) {
+func NewScript(cfg *core.Config, generic baseCheck, path string) (Script, error) {
 	rule := Script{}
-	path := generic["path"].(string)
 
-	err := mapstructure.WeakDecode(generic, &rule)
+	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}

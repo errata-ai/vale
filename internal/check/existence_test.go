@@ -15,7 +15,7 @@ func TestExistence(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	rule, err := NewExistence(cfg, def)
+	rule, err := NewExistence(cfg, def, "")
 	if err != nil {
 		t.Fatal(err)
 	}

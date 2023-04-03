@@ -79,11 +79,10 @@ func addExceptions(s *Spelling, generic baseCheck, cfg *core.Config) error {
 }
 
 // NewSpelling creates a new `spelling`-based rule.
-func NewSpelling(cfg *core.Config, generic baseCheck) (Spelling, error) {
+func NewSpelling(cfg *core.Config, generic baseCheck, path string) (Spelling, error) {
 	var model *spell.Checker
 
 	rule := Spelling{}
-	path := generic["path"].(string)
 	name := generic["name"].(string)
 
 	err := addFilters(&rule, generic, cfg)

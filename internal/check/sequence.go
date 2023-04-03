@@ -34,16 +34,15 @@ type Sequence struct {
 }
 
 // NewSequence creates a new rule from the provided `baseCheck`.
-func NewSequence(cfg *core.Config, generic baseCheck) (Sequence, error) {
+func NewSequence(cfg *core.Config, generic baseCheck, path string) (Sequence, error) {
 	rule := Sequence{}
-	path := generic["path"].(string)
 
 	err := makeTokens(&rule, generic)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}
 
-	err = mapstructure.WeakDecode(generic, &rule)
+	err = decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}
