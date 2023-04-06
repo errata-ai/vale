@@ -121,7 +121,15 @@ func (s *goSpell) suggest(word string) []wordMatch {
 		return matches[i].score > matches[j].score
 	})
 
-	return matches[:5]
+	hits := matches[:5]
+	if word == strings.Title(word) {
+		// Capitalized word, so capitalize the suggestions
+		for i := range hits {
+			hits[i].word = strings.Title(hits[i].word)
+		}
+	}
+
+	return hits
 }
 
 // spell checks to see if a given word is in the internal dictionaries
