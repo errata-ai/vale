@@ -161,7 +161,7 @@ func compileRule(args []string, flags *core.CLIFlags) error {
 		return core.NewE100("compile", errors.New("one argument expected"))
 	}
 
-	cfg, err := core.ReadPipeline("ini", flags, false)
+	cfg, err := core.NewConfig(&core.CLIFlags{})
 	if err != nil {
 		return err
 	}
