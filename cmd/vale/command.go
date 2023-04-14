@@ -188,7 +188,7 @@ func runRule(args []string, flags *core.CLIFlags) error {
 		return core.NewE100("run", errors.New("two arguments expected"))
 	}
 
-	cfg, err := core.ReadPipeline("ini", flags, false)
+	cfg, err := core.NewConfig(&core.CLIFlags{})
 	if err != nil {
 		return err
 	}
