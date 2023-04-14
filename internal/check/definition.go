@@ -233,12 +233,19 @@ func validateDefinition(generic map[string]interface{}, path string) error {
 }
 
 func readStructureError(err error, path string) error {
-	r := regexp.MustCompile(`\* '(.+)' (.+)`)
-	if r.MatchString(err.Error()) {
-		groups := r.FindStringSubmatch(err.Error())
+	r1 := regexp.MustCompile(`\* '(.+)' (.+)`)
+	r2 := regexp.MustCompile(`\* '(?:.*)' (.*): (\w+)`)
+	if r1.MatchString(err.Error()) {
+		groups := r1.FindStringSubmatch(err.Error())
 		return core.NewE201FromTarget(
 			groups[2],
 			strings.ToLower(groups[1]),
+			path)
+	} else if r2.MatchString(err.Error()) {
+		groups := r2.FindStringSubmatch(err.Error())
+		return core.NewE201FromTarget(
+			fmt.Sprintf("%s: '%s'", groups[1], groups[2]),
+			strings.ToLower(groups[2]),
 			path)
 	}
 	return core.NewE201FromPosition(err.Error(), path, 1)
