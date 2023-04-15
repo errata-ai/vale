@@ -121,7 +121,7 @@ func printMetrics(args []string, flags *core.CLIFlags) error {
 		return errors.New("file not found")
 	}
 
-	cfg, err := core.ReadPipeline("ini", flags, false)
+	cfg, err := core.NewConfig(&core.CLIFlags{})
 	if err != nil {
 		return err
 	}
