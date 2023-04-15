@@ -118,7 +118,7 @@ func tokensMatch(token NLPToken, word tag.Token) bool {
 		panic(err)
 	}
 
-	failedTag = !failedTag
+	failedTag = failedTag == token.Negate
 	failedTok := token.re != nil && token.re.MatchStringStd(word.Text) == token.Negate
 
 	if (token.Pattern == "" && failedTag) ||
