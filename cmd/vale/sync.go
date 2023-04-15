@@ -84,16 +84,7 @@ func loadPkg(name, urlOrPath, styles string, index int) error {
 }
 
 func loadLocalPkg(name, pkgPath, styles string, index int) error {
-	dir, err := os.MkdirTemp("", name)
-	if err != nil {
-		return err
-	}
-
-	if err := cp.Copy(pkgPath, dir); err != nil {
-		return err
-	}
-
-	return installPkg(dir, "", styles, index)
+	return installPkg(filepath.Dir(pkgPath), name, styles, index)
 }
 
 func loadLocalZipPkg(name, pkgPath, styles string, index int) error {
