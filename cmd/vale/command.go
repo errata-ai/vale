@@ -126,12 +126,16 @@ func printMetrics(args []string, flags *core.CLIFlags) error {
 		return err
 	}
 
+	cfg.MinAlertLevel = 0
+	cfg.GBaseStyles = []string{"Vale"}
+	cfg.Flags.InExt = ".txt" // default value
+
 	linter, err := lint.NewLinter(cfg)
 	if err != nil {
 		return err
 	}
 
-	linted, err := linter.Lint(args, "*")
+	linted, err := linter.Lint([]string{args[0]}, "*")
 	if err != nil {
 		return err
 	}
