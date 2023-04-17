@@ -116,8 +116,12 @@ const (
 type baseCheck map[string]interface{}
 
 func buildRule(cfg *core.Config, generic baseCheck) (Rule, error) {
-	name := generic["extends"].(string)
 	path := generic["path"].(string)
+
+	name, ok := generic["extends"].(string)
+	if !ok {
+		name = "unknown"
+	}
 
 	delete(generic, "path")
 	switch name {
