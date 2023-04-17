@@ -206,6 +206,8 @@ func (f *File) assignLoc(ctx string, blk nlp.Block, pad int, a Alert) (int, []in
 			extent := length + pad
 			if loc[1] > extent {
 				loc[1] = extent
+			} else if loc[1] <= 0 {
+				loc[1] = 1
 			}
 
 			return blk.Line + 1, loc

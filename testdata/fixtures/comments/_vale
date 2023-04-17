@@ -7,3 +7,4 @@ BasedOnStyles = vale, demo
 vale.Spelling = NO
 demo.CheckLinks = NO
 demo.Spellcheck = NO
+demo.ZeroOccurrence = NO

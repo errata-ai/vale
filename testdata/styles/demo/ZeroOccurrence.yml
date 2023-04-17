@@ -1,6 +1,6 @@
 message: "No intro"
 extends: occurrence
-scope: heading
+scope: raw
 level: error
 min: 1
-token: Introduction
+token: "# Introduction"
