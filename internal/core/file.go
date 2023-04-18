@@ -184,6 +184,8 @@ func (f *File) FindLoc(ctx, s string, pad, count int, a Alert) (int, []int) {
 			extent := length + pad
 			if loc[1] > extent {
 				loc[1] = extent
+			} else if loc[1] <= 0 {
+				loc[1] = 1
 			}
 			return count - (len(lines) - (idx + 1)), loc
 		}
