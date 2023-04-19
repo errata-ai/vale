@@ -43,7 +43,7 @@ setup:
 	cd testdata && bundle install && cd -
 
 test:
-	go test ./internal/core ./internal/lint ./internal/check ./internal/nlp ./internal/glob
+	go test ./internal/core ./internal/lint ./internal/check ./internal/nlp ./internal/glob ./cmd/vale
 	cd testdata && cucumber --format progress && cd -
 
 docker:
