@@ -46,6 +46,7 @@ Feature: Checks
         When I test "checks/Capitalization"
         Then the output should contain exactly:
             """
+            test2.md:1:3:demo.CustomCap:'Section about the MacBook pro ultimate edition' should be in title case
             """
 
     Scenario: Spelling

@@ -26,7 +26,7 @@ func upper(s string, re *regexp2.Regexp) bool {
 	return s == strings.ToUpper(s) || isMatch(re, s)
 }
 
-func title(s string, except *regexp2.Regexp, tc *titlecase.TitleConverter) bool {
+func title(s string, except *regexp2.Regexp, tc *titlecase.TitleConverter, threshold float64) bool {
 	count := 0.0
 	words := 0.0
 
@@ -60,7 +60,7 @@ func title(s string, except *regexp2.Regexp, tc *titlecase.TitleConverter) bool 
 		words++
 	}
 
-	return (count / words) > 0.8
+	return (count / words) > threshold
 }
 
 func hasAnySuffix(s string, suffixes []string) bool {
@@ -72,7 +72,7 @@ func hasAnySuffix(s string, suffixes []string) bool {
 	return false
 }
 
-func sentence(s string, indicators []string, except *regexp2.Regexp) bool {
+func sentence(s string, indicators []string, except *regexp2.Regexp, threshold float64) bool {
 	count := 0.0
 	words := 0.0
 
@@ -110,7 +110,7 @@ func sentence(s string, indicators []string, except *regexp2.Regexp) bool {
 		words++
 	}
 
-	return (count / words) > 0.8
+	return (count / words) > threshold
 }
 
 var varToFunc = map[string]func(string, *regexp2.Regexp) bool{

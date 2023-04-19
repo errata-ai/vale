@@ -15,6 +15,7 @@ demo.SentenceCase = NO
 demo.TitleCase = NO
 demo.Cap = NO
 demo.ZeroOccurrence = NO
+demo.CustomCap = NO
 
 Limit.Rule = YES
 

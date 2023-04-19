@@ -24,6 +24,10 @@ type Capitalization struct {
 	// token should be ignored.
 	Indicators []string
 
+	// `threshold` (`float`): The minimum proportion of words that must be
+	// (un)capitalized for a sentence to be considered correct.
+	Threshold float64
+
 	exceptRe *regexp2.Regexp
 }
 
@@ -42,6 +46,12 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 	}
 	rule.exceptRe = re
 
+	// NOTE: This is OK since setting `Threshold` to 0 would mean that the rule
+	// would never trigger.
+	if rule.Threshold == 0 {
+		rule.Threshold = 0.8
+	}
+
 	if rule.Match == "$title" {
 		var tc *titlecase.TitleConverter
 		if rule.Style == "Chicago" {
@@ -50,11 +60,11 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 			tc = titlecase.NewTitleConverter(titlecase.APStyle)
 		}
 		rule.Check = func(s string, re *regexp2.Regexp) bool {
-			return title(s, re, tc)
+			return title(s, re, tc, rule.Threshold)
 		}
 	} else if rule.Match == "$sentence" {
 		rule.Check = func(s string, re *regexp2.Regexp) bool {
-			return sentence(s, rule.Indicators, re)
+			return sentence(s, rule.Indicators, re, rule.Threshold)
 		}
 	} else if f, ok := varToFunc[rule.Match]; ok {
 		rule.Check = f
