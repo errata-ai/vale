@@ -288,6 +288,10 @@ func updateCtx(ctx, txt string, tokt html.TokenType) string {
 }
 
 func getScope(tags []string, new, ext string) string {
+	if len(tags) == 0 {
+		tags = []string{"p"}
+	}
+
 	root := tags[0]
 	if root == "ul" {
 		root = "li"
