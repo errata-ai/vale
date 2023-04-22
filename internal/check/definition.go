@@ -163,17 +163,30 @@ func formatMessages(msg string, desc string, subs ...string) (string, string) {
 
 // NOTE: We need to do this because regexp2, the library we use for extended
 // syntax, returns its locatons in *rune* offsets.
-func re2Loc(s string, loc []int) string {
-	return string([]rune(s)[loc[0]:loc[1]])
+func re2Loc(s string, loc []int) (string, error) {
+	converted := []rune(s)
+
+	size := len(converted)
+	if loc[0] < 0 || loc[1] > size {
+		msg := fmt.Errorf("%d (%d:%d)", size, loc[0], loc[1])
+		return "", core.NewE100("re2loc: bounds", msg)
+	}
+
+	return string(converted[loc[0]:loc[1]]), nil
 }
 
-func makeAlert(chk Definition, loc []int, txt string) core.Alert {
-	match := re2Loc(txt, loc)
+func makeAlert(chk Definition, loc []int, txt string) (core.Alert, error) {
+	match, err := re2Loc(txt, loc)
+	if err != nil {
+		return core.Alert{}, err
+	}
+
 	a := core.Alert{
 		Check: chk.Name, Severity: chk.Level, Span: loc, Link: chk.Link,
 		Match: match, Action: chk.Action}
 	a.Message, a.Description = formatMessages(chk.Message, chk.Description, match)
-	return a
+
+	return a, nil
 }
 
 func parse(file []byte, path string) (map[string]interface{}, error) {

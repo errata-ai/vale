@@ -71,9 +71,18 @@ func (e Existence) Run(blk nlp.Block, file *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
 	for _, loc := range e.pattern.FindAllStringIndex(blk.Text, -1) {
-		observed := strings.TrimSpace(re2Loc(blk.Text, loc))
+		converted, err := re2Loc(blk.Text, loc)
+		if err != nil {
+			return alerts, err
+		}
+
+		observed := strings.TrimSpace(converted)
 		if !isMatch(e.exceptRe, observed) {
-			alerts = append(alerts, makeAlert(e.Definition, loc, blk.Text))
+			a, err := makeAlert(e.Definition, loc, blk.Text)
+			if err != nil {
+				return alerts, err
+			}
+			alerts = append(alerts, a)
 		}
 	}
 

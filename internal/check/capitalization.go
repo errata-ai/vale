@@ -88,7 +88,11 @@ func (o Capitalization) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	txt := blk.Text
 	if !o.Check(txt, o.exceptRe) {
 		pos := []int{0, utf8.RuneCountInString(txt)}
-		alerts = append(alerts, makeAlert(o.Definition, pos, txt))
+		a, err := makeAlert(o.Definition, pos, txt)
+		if err != nil {
+			return alerts, err
+		}
+		alerts = append(alerts, a)
 	}
 
 	return alerts, nil

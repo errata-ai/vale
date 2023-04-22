@@ -1,4 +1,12 @@
 Feature: Checks
+    Scenario: Script
+        When I test "checks/Script"
+        Then the output should contain exactly:
+            """
+            test.md:29:1:Checks.ScriptRE:Consider inserting a new section heading at this point.
+            test.md:39:1:Checks.ScriptRE:Consider inserting a new section heading at this point.
+            """
+
     Scenario: Metric
         When I test "checks/Metric"
         Then the output should contain exactly:

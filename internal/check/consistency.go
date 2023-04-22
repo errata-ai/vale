@@ -93,7 +93,12 @@ func (o Consistency) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 
 		if matches != nil && core.AllStringsInSlice(s.subs, f.Sequences) {
 			o.Name = o.Extends
-			alerts = append(alerts, makeAlert(o.Definition, loc, txt))
+
+			a, err := makeAlert(o.Definition, loc, txt)
+			if err != nil {
+				return alerts, err
+			}
+			alerts = append(alerts, a)
 		}
 	}
 

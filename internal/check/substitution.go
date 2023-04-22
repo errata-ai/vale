@@ -96,10 +96,16 @@ func (s Substitution) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 		for idx, mat := range submat {
 			if mat != -1 && idx > 0 && idx%2 == 0 {
 				loc := []int{mat, submat[idx+1]}
+
+				converted, err := re2Loc(txt, loc)
+				if err != nil {
+					return alerts, err
+				}
+
 				// Based on the current capture group (`idx`), we can determine
 				// the associated replacement string by using the `repl` slice:
 				expected := s.repl[(idx/2)-1]
-				observed := strings.TrimSpace(re2Loc(txt, loc))
+				observed := strings.TrimSpace(converted)
 
 				same := matchToken(expected, observed, s.Ignorecase)
 				if !same && !isMatch(s.exceptRe, observed) {
@@ -112,7 +118,12 @@ func (s Substitution) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 						// that we don't double quote.
 						s.Message = convertMessage(s.Message)
 					}
-					a := makeAlert(s.Definition, loc, txt)
+
+					a, err := makeAlert(s.Definition, loc, txt)
+					if err != nil {
+						return alerts, err
+					}
+
 					a.Message, a.Description = formatMessages(s.Message,
 						s.Description, expected, observed)
 					a.Action = action

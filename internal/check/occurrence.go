@@ -44,6 +44,7 @@ func NewOccurrence(cfg *core.Config, generic baseCheck, path string) (Occurrence
 // certain threshold.
 func (o Occurrence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var a core.Alert
+	var err error
 	var alerts []core.Alert
 
 	txt := blk.Text
@@ -67,7 +68,10 @@ func (o Occurrence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 			// matching.
 			//
 			// See (core/location.go#initialPosition).
-			a = makeAlert(o.Definition, locs[0], txt)
+			a, err = makeAlert(o.Definition, locs[0], txt)
+			if err != nil {
+				return alerts, err
+			}
 		}
 
 		a.Message = o.Message

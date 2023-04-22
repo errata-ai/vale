@@ -56,7 +56,16 @@ func (s Script) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	}
 
 	for _, loc := range toLocation(compiled.Get("matches").Array()) {
-		alerts = append(alerts, makeAlert(s.Definition, loc, blk.Text))
+		match := blk.Text[loc[0]:loc[1]]
+		// NOTE: We can't call `makeAlert` here because `script`-based rules
+		// don't use our custom regexp2 library, which means the offsets
+		// (`re2loc`) will be off.
+		a := core.Alert{
+			Check: s.Name, Severity: s.Level, Span: loc, Link: s.Link,
+			Match: match, Action: s.Action}
+
+		a.Message, a.Description = formatMessages(s.Message, s.Description, match)
+		alerts = append(alerts, a)
 	}
 
 	return alerts, nil

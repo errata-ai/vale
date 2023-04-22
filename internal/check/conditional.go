@@ -79,11 +79,19 @@ func (c Conditional) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	// Now we look for the antecedent.
 	locs := c.patterns[1].FindAllStringIndex(txt, -1)
 	for _, loc := range locs {
-		s := re2Loc(txt, loc)
+		s, err := re2Loc(txt, loc)
+		if err != nil {
+			return alerts, err
+		}
+
 		if !core.StringInSlice(s, f.Sequences) && !isMatch(c.exceptRe, s) {
 			// If we've found one (e.g., "WHO") and we haven't marked it as
 			// being defined previously, send an Alert.
-			alerts = append(alerts, makeAlert(c.Definition, loc, txt))
+			a, err := makeAlert(c.Definition, loc, txt)
+			if err != nil {
+				return alerts, err
+			}
+			alerts = append(alerts, a)
 		}
 	}
 

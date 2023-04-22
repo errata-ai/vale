@@ -250,7 +250,11 @@ func (s Sequence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 					alerts = append(alerts, a)
 					offset = []string{}
 				} else {
-					offset = append(offset, re2Loc(txt, loc))
+					converted, err := re2Loc(txt, loc)
+					if err != nil {
+						return alerts, err
+					}
+					offset = append(offset, converted)
 				}
 			}
 			break
