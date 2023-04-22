@@ -3,6 +3,7 @@ package spell
 import (
 	"bytes"
 	_ "embed"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -165,7 +166,7 @@ func (m *Checker) AddWordListFile(name string) error {
 	return nil
 }
 
-func (m *Checker) readAsset(name string) string {
+func (m *Checker) readAsset(name string) (string, error) {
 	roots := []string{
 		m.options.path,
 		m.options.system,
@@ -174,20 +175,37 @@ func (m *Checker) readAsset(name string) string {
 	for _, p := range roots {
 		option := filepath.Join(p, name)
 		if core.FileExists(option) {
-			return option
+			return option, nil
+		}
+
+		ln, err := os.Readlink(option)
+		if err != nil {
+			return "", err
+		} else if core.FileExists(ln) {
+			return ln, nil
 		}
 	}
 
-	return ""
+	return "", fmt.Errorf("'%s' not found in %v", name, roots)
 }
 
 func (m *Checker) loadDic(name string) error {
-	dic, err := os.Open(m.readAsset(name + ".dic"))
+	dicPath, err := m.readAsset(name + ".dic")
 	if err != nil {
 		return err
 	}
 
-	aff, err := os.Open(m.readAsset(name + ".aff"))
+	dic, err := os.Open(dicPath)
+	if err != nil {
+		return err
+	}
+
+	affPath, err := m.readAsset(name + ".aff")
+	if err != nil {
+		return err
+	}
+
+	aff, err := os.Open(affPath)
 	if err != nil {
 		return err
 	}
