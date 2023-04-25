@@ -65,7 +65,7 @@ var defaultRules = map[string]map[string]interface{}{
 		"scope":      "text",
 		"ignorecase": false,
 		"tokens":     []string{},
-		"path":       "",
+		"path":       "internal",
 	},
 	"Terms": {
 		"extends":    "substitution",
@@ -75,7 +75,7 @@ var defaultRules = map[string]map[string]interface{}{
 		"scope":      "text",
 		"ignorecase": true,
 		"swap":       map[string]string{},
-		"path":       "",
+		"path":       "internal",
 	},
 	"Repetition": {
 		"extends": "repetition",
@@ -89,7 +89,7 @@ var defaultRules = map[string]map[string]interface{}{
 			Params: []string{"truncate", " "},
 		},
 		"tokens": []string{`[^\s]+`},
-		"path":   "",
+		"path":   "internal",
 	},
 	"Spelling": {
 		"extends": "spelling",
@@ -102,7 +102,7 @@ var defaultRules = map[string]map[string]interface{}{
 			Params: []string{"spellings"},
 		},
 		"ignore": []interface{}{"vocab.txt"},
-		"path":   "",
+		"path":   "internal",
 	},
 }
 
@@ -116,7 +116,11 @@ const (
 type baseCheck map[string]interface{}
 
 func buildRule(cfg *core.Config, generic baseCheck) (Rule, error) {
-	path := generic["path"].(string)
+	path, ok := generic["path"].(string)
+	if !ok {
+		msg := fmt.Errorf("'%v' is not valid .", generic)
+		return Existence{}, core.NewE100("buildRule: path", msg)
+	}
 
 	name, ok := generic["extends"].(string)
 	if !ok {

@@ -30,7 +30,7 @@ closed:
 	GOOS=$(os) GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/$(exe) ./cmd/vale
 
 bench:
-	go test -bench=. -benchmem ./core ./lint ./check
+	go test -bench=. -benchmem ./internal/core ./internal/lint ./internal/check
 
 compare:
 	cd lint && \

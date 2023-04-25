@@ -4,7 +4,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/errata-ai/vale/v2/internal/check"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/jdkato/regexp"
 )
@@ -52,28 +51,33 @@ func benchmarkLint(path string, b *testing.B) {
 	if err != nil {
 		panic(err)
 	}
+
+	cfg.MinAlertLevel = 0
 	cfg.GBaseStyles = []string{"Vale"}
+	cfg.Flags.InExt = ".txt" // default value
+
+	linter, err := NewLinter(cfg)
+	if err != nil {
+		b.Fatal(err)
+	}
 
 	path, err = filepath.Abs(path)
 	if err != nil {
-		panic(err)
+		b.Fatal(err)
 	}
 
-	mgr, err := check.NewManager(cfg)
-	if err != nil {
-		panic(err)
-	}
-
-	linter := Linter{Manager: mgr}
 	for n := 0; n < b.N; n++ {
-		_, _ = linter.Lint([]string{path}, "*")
+		_, err = linter.Lint([]string{path}, "*")
+		if err != nil {
+			b.Fatal(err)
+		}
 	}
 }
 
 func BenchmarkLintRST(b *testing.B) {
-	benchmarkLint("../../fixtures/benchmarks/bench.rst", b)
+	benchmarkLint("../../testdata/fixtures/benchmarks/bench.rst", b)
 }
 
 func BenchmarkLintMD(b *testing.B) {
-	benchmarkLint("../../fixtures/benchmarks/bench.md", b)
+	benchmarkLint("../../testdata/fixtures/benchmarks/bench.md", b)
 }
