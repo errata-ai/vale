@@ -32,6 +32,10 @@ closed:
 bench:
 	go test -bench=. -benchmem ./internal/core ./internal/lint ./internal/check
 
+profile:
+	go test -benchmem -run=^$$ -bench ^BenchmarkLintMD$$ github.com/errata-ai/vale/v2/internal/lint -cpuprofile=bin/cpu.out -memprofile=bin/mem.out -trace=bin/trace.out
+	mv lint.test bin
+
 compare:
 	cd lint && \
 	benchmany -n 5 -o new.txt ${CURR_SHA} && \
