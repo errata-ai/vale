@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/mholt/archiver"
+	"github.com/mholt/archiver/v3"
 	"github.com/spf13/pflag"
 )
 
