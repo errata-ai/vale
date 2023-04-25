@@ -16,7 +16,7 @@ require (
 	github.com/karrick/godirwalk v1.16.1
 	github.com/mholt/archiver/v3 v3.5.1
 	github.com/mitchellh/mapstructure v1.4.0
-	github.com/niklasfasching/go-org v1.6.5
+	github.com/niklasfasching/go-org v1.6.6
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/otiai10/copy v1.7.0
 	github.com/pterm/pterm v0.12.33
