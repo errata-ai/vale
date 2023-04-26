@@ -123,6 +123,10 @@ func FormatMessage(msg string, subs ...string) string {
 }
 
 // Substitute replaces the substring `sub` with a string of asterisks.
+//
+// TODO: This function consumes a lot of memory (see `make profile`) because
+// it's using `strings.Replace` instead of `bytes.Replace`. We should consider
+// switching ... but that would require a lot of refactoring.
 func Substitute(src, sub string, char rune) (string, bool) {
 	idx := strings.Index(src, sub)
 	if idx < 0 {
@@ -134,7 +138,7 @@ func Substitute(src, sub string, char rune) (string, bool) {
 		}
 		return r
 	}, sub)
-	return src[:idx] + repl + src[idx+len(sub):], true
+	return strings.Replace(src, sub, repl, 1), true
 }
 
 // StringsToInterface converts a slice of strings to an interface.
