@@ -17,7 +17,20 @@ var reOrgAttribute = regexp.MustCompile(`(#(?:\+| )[^\s]+:.+)`)
 var reOrgProps = regexp.MustCompile(`(:PROPERTIES:\n.+\n:END:)`)
 var reOrgSrc = regexp.MustCompile(`(?i)#\+BEGIN_SRC .+`)
 
+type ExtendedHTMLWriter struct {
+	*org.HTMLWriter
+}
+
+func (w *ExtendedHTMLWriter) WriteComment(n org.Comment) {
+	w.HTMLWriter.WriteString("<!-- ")
+	w.HTMLWriter.WriteString(n.Content)
+	w.HTMLWriter.WriteString(" -->\n")
+}
+
 func (l Linter) lintOrg(f *core.File) error {
+	extendedWriter := &ExtendedHTMLWriter{orgWriter}
+	orgWriter.ExtendingWriter = extendedWriter
+
 	s := reOrgAttribute.ReplaceAllString(f.Content, "\n=$1=\n")
 	s = reOrgProps.ReplaceAllString(s, orgExample)
 

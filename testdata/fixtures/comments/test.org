@@ -1,0 +1,17 @@
+#+title:  Example Org File
+#+author: TEC
+#+date:   2020-10-27
+
+# vale off
+
+Revamp orgmode.org website
+
+The /beauty/ of org *must* be shared.
+
+This is some text ACT test
+
+This is some text ACT test
+
+# vale on
+
+This is some text **ACT test**

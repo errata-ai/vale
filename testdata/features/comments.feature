@@ -18,3 +18,10 @@ Feature: Comments
     test.rst:20:19:vale.Redundancy:'ACT test' is redundant
     test.rst:26:20:demo.Ending-Preposition:Don't end a sentence with 'of.'
     """
+
+  Scenario: Org Mode
+    When I test comments for ".org"
+    Then the output should contain exactly:
+    """
+    test.org:17:21:vale.Redundancy:'ACT test' is redundant
+    """

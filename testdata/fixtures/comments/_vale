@@ -1,7 +1,7 @@
 StylesPath = ../../styles
 MinAlertLevel = suggestion
 
-[*.{md,rst}]
+[*.{md,rst,org}]
 BasedOnStyles = vale, demo
 
 vale.Spelling = NO
