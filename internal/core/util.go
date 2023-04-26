@@ -127,6 +127,9 @@ func FormatMessage(msg string, subs ...string) string {
 // TODO: This function consumes a lot of memory (see `make profile`) because
 // it's using `strings.Replace` instead of `bytes.Replace`. We should consider
 // switching ... but that would require a lot of refactoring.
+//
+// NOTE: A *better* idea to `return src[idx:]` and shift the position of the
+// match ...
 func Substitute(src, sub string, char rune) (string, bool) {
 	idx := strings.Index(src, sub)
 	if idx < 0 {
