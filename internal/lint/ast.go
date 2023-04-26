@@ -38,8 +38,9 @@ var tagToScope = map[string]string{
 	"i":      "emphasis",
 	"code":   "code",
 }
+var inlineScopes = []string{"strong", "link", "emphasis", "code"}
 
-func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
+func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 	var class, parentClass, attr string
 	var inBlock, inline, skip, skipClass bool
 
@@ -95,12 +96,12 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 		} else if tokt == html.TextToken {
 			skip = skip || shouldBeSkipped(walker.tagHistory, f.NormedExt)
 			if scope, match := tagToScope[walker.activeTag]; match {
-				if core.StringInSlice(walker.activeTag, inlineTags) {
+				if core.StringInSlice(scope, inlineScopes) {
 					// NOTE: We need to create a "temporary" context because
 					// this text is actually linted twice: once as a 'link' and
 					// once as part of the overall paragraph. See issue #105
 					// for more info.
-					tempCtx := updateContext(walker.context, walker.queue)
+					tempCtx := l.updateContext(walker.getCtx(), walker.queue)
 					ctxScope := getScope(walker.tagHistory, scope, f.RealExt)
 
 					err := l.lintBlock(
@@ -113,7 +114,9 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 					if err != nil {
 						return err
 					}
+
 					walker.activeTag = ""
+					l.resetContext(walker.getCtx())
 				}
 			}
 			walker.append(txt)
@@ -148,7 +151,7 @@ func (l Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 	return l.lintSizedScopes(f)
 }
 
-func (l Linter) lintScope(f *core.File, state walker, txt string) error {
+func (l *Linter) lintScope(f *core.File, state *walker, txt string) error {
 	for _, tag := range state.tagHistory {
 		scope, match := tagToScope[tag]
 		if (match && !core.StringInSlice(tag, inlineTags)) || heading.MatchString(tag) {
@@ -173,7 +176,7 @@ func (l Linter) lintScope(f *core.File, state walker, txt string) error {
 	return l.lintProse(f, b, state.lines)
 }
 
-func (l Linter) lintSizedScopes(f *core.File) error {
+func (l *Linter) lintSizedScopes(f *core.File) error {
 	f.ResetComments()
 
 	// Run all rules with `scope: summary`
@@ -200,7 +203,7 @@ func (l Linter) lintSizedScopes(f *core.File) error {
 	return nil
 }
 
-func (l Linter) lintTags(f *core.File, state walker, tok html.Token) error {
+func (l *Linter) lintTags(f *core.File, state *walker, tok html.Token) error {
 	ignored := core.StringInSlice("alt", l.Manager.Config.SkippedScopes)
 	if tok.Data == "img" {
 		for _, a := range tok.Attr {
@@ -215,6 +218,31 @@ func (l Linter) lintTags(f *core.File, state walker, tok html.Token) error {
 		}
 	}
 	return nil
+}
+
+func (l *Linter) updateContext(ctx string, queue []string) string {
+	for _, s := range queue {
+		pos := strings.Index(ctx, s)
+		if pos == -1 {
+			continue
+		}
+		l.views = append(l.views, view{s, pos})
+		ctx = updateCtx(ctx, s, html.TextToken)
+	}
+	return ctx
+}
+
+func (l *Linter) resetContext(ctx string) {
+	btx := string2ByteSlice(ctx)
+	for _, v := range l.views {
+		if v.offset == -1 {
+			continue
+		}
+		for i, s := range string2ByteSlice(v.text) {
+			btx[v.offset+i] = s
+		}
+	}
+	l.views = []view{}
 }
 
 func checkClasses(attr string, ignore []string) bool {
@@ -265,21 +293,14 @@ func getAttribute(tok html.Token, key string) string {
 	return ""
 }
 
-func updateContext(ctx string, queue []string) string {
-	for _, s := range queue {
-		ctx = updateCtx(ctx, s, html.TextToken)
-	}
-	return ctx
-}
-
 func updateCtx(ctx, txt string, tokt html.TokenType) string {
 	var found bool
 	if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
 		for _, s := range strings.Split(txt, "\n") {
-			ctx, found = core.Substitute(ctx, s, '@')
+			ctx, found = subInplace(ctx, s, '@')
 			if !found {
 				for _, w := range strings.Fields(s) {
-					ctx, _ = core.Substitute(ctx, w, '@')
+					ctx, _ = subInplace(ctx, w, '@')
 				}
 			}
 		}

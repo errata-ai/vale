@@ -24,11 +24,23 @@ type Linter struct {
 	client    *http.Client
 	HasDir    bool
 	nonGlobal bool
+	views     []view
 }
 
 type lintResult struct {
 	file *core.File
 	err  error
+}
+
+// A view is temporary state of a `File`'s contents.
+//
+// Each view has a `text` and an `offset` that represents the position of the
+// modification that created the view.
+//
+// See core/ast.go@updateContext for more information.
+type view struct {
+	text   string
+	offset int
 }
 
 // NewLinter initializes a Linter.

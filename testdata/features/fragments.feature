@@ -39,5 +39,5 @@ Feature: Fragments
             test2.py:246:39:Vale.Spelling:Did you really mean 'vaiable'?
             test2.py:252:36:Vale.Spelling:Did you really mean 'vaiable'?
             test2.rs:47:42:Vale.Spelling:Did you really mean 'vrsion'?
-            test2.rs:2829:34:Vale.Spelling:Did you really mean 'conlicts'?
+            test2.rs:2860:34:Vale.Spelling:Did you really mean 'conlicts'?
             """

@@ -103,9 +103,14 @@ func NewFile(src string, config *Config) (*File, error) {
 			break
 		}
 	}
-
 	content := Sanitize(string(fbytes))
-	lines := strings.SplitAfter(content, "\n")
+
+	// NOTE: We need to perform a clone here because we perform inplace editing
+	// of the files contents that we don't want reflected in `lines`.
+	//
+	// See lint/walk.go.
+	lines := strings.SplitAfter(strings.Clone(content), "\n")
+
 	file := File{
 		NormedExt: ext, Format: format, RealExt: filepath.Ext(src),
 		BaseStyles: baseStyles, Checks: checks, Lines: lines, Content: content,
