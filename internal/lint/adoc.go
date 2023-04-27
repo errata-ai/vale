@@ -101,7 +101,10 @@ func (l *Linter) lintADoc(f *core.File) error {
 	} else {
 		html, err = l.post(f, s, adocURL)
 		if err != nil {
-			return core.NewE100(f.Path, err)
+			html, err = callAdoc(f, s, exe, attrs)
+			if err != nil {
+				return core.NewE100(f.Path, err)
+			}
 		}
 	}
 

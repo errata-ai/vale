@@ -157,7 +157,10 @@ func (l *Linter) lintRST(f *core.File) error {
 	} else {
 		html, err = l.post(f, s, rstURL)
 		if err != nil {
-			return core.NewE100(f.Path, err)
+			html, err = callRst(f, s, rst2html, python)
+			if err != nil {
+				return core.NewE100(f.Path, err)
+			}
 		}
 	}
 
