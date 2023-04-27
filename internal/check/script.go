@@ -35,7 +35,7 @@ func (s Script) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 	var alerts []core.Alert
 
 	script := tengo.NewScript([]byte(s.Script))
-	// TODO: Should we enable the `os` module? Is it worth the security
+	// NOTE: We don't want to enable the`os` module because of the security
 	// implications?
 	//
 	// See #495, for example.
