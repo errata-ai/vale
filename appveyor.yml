@@ -4,11 +4,19 @@ clone_folder: c:\GOPATH\src\github.com\errata-ai\vale
 environment:
   GOPATH: c:\GOPATH
   GOROOT: C:\go
+  GOVERSION: 1.20.3
 init:
   - cmd: set PATH=C:\MinGW\bin;%cd%/bin;%PATH%
   - cmd: copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
 install:
   - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby24\bin;%cd%;%PATH%
+
+  - rmdir C:\go /s /q
+  - appveyor DownloadFile https://storage.googleapis.com/golang/go%GOVERSION%.windows-amd64.zip
+  - 7z x go%GOVERSION%.windows-amd64.zip -y -oC:\ > NUL
+  - go version
+  - go env
+
   - cinst ansicon
 
   - pip install sphinx
@@ -22,8 +30,6 @@ install:
   - 7z x C:\dita-ot-3.4.zip -y -r -oC:\dita
   - set PATH=C:\dita\dita-ot-3.4\bin;%PATH%
 build_script:
-  - set PATH=C:\go\bin;%PATH%
-  - set GOROOT=C:\go
   - cmd: go version
   - cmd: make setup
   - cmd: make build os=windows exe=vale.exe
