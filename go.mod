@@ -13,7 +13,7 @@ require (
 	github.com/jdkato/prose v1.2.1
 	github.com/jdkato/regexp v0.1.0
 	github.com/jdkato/titlecase v0.0.0-20220120021253-0158ddd948b8
-	github.com/karrick/godirwalk v1.16.1
+	github.com/karrick/godirwalk v1.17.0
 	github.com/mholt/archiver/v3 v3.5.1
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/niklasfasching/go-org v1.6.6
