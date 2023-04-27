@@ -1,5 +1,5 @@
 # See https://cloud.docker.com/repository/docker/jdkato/vale
-FROM --platform=$BUILDPLATFORM golang:1.18-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.20-alpine AS build
 
 # TODO: DITA / XML:
 #    openjdk11 \
