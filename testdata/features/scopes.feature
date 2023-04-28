@@ -56,21 +56,17 @@ Feature: Scopes
             test.rst:4:10:rules.Alt:alt text should be less than 125 characters.
             """
 
-    Scenario: Link
+    Scenario: Inline
         When I test scope "link"
         Then the output should contain exactly:
             """
-            test.adoc:1:35:rules.Link:Don't use 'here' as the content of a link.
-            test.adoc:5:57:rules.Link:Don't use 'here' as the content of a link.
-            test.md:3:20:rules.Code:'XXX' left in text
-            test.md:5:35:rules.Link:Don't use 'here' as the content of a link.
-            test.md:7:57:rules.Link:Don't use 'here' as the content of a link.
-            test.md:9:10:rules.Strong:'TODO' left in text
-            test.md:11:3:rules.Strong:'TODO' left in text
-            test.md:13:7:rules.Code:'XXX' left in text
-            test.md:15:2:rules.Code:'XXX' left in text
-            test.rst:1:40:rules.Link:Don't use 'here' as the content of a link.
-            test.rst:5:54:rules.Link:Don't use 'here' as the content of a link.
+            test.adoc:1:34:rules.Link:Don't use '[here]' as the content of a link.
+            test.adoc:5:56:rules.Link:Don't use '[here]' as the content of a link.
+            test.md:3:19:rules.Code:'`XXX`' left in text
+            test.md:5:34:rules.Link:Don't use '[here]' as the content of a link.
+            test.md:7:56:rules.Link:Don't use '[here]' as the content of a link.
+            test.md:13:6:rules.Code:'`XXX`' left in text
+            test.md:15:1:rules.Code:'`XXX`' left in text
             """
 
     Scenario: Heading

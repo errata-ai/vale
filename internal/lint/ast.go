@@ -95,30 +95,19 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 			f.UpdateComments(txt)
 		} else if tokt == html.TextToken {
 			skip = skip || shouldBeSkipped(walker.tagHistory, f.NormedExt)
-			if scope, match := tagToScope[walker.activeTag]; match {
-				if core.StringInSlice(scope, inlineScopes) {
-					// NOTE: We need to create a "temporary" context because
-					// this text is actually linted twice: once as a 'link' and
-					// once as part of the overall paragraph. See issue #105
-					// for more info.
-					tempCtx := l.updateContext(walker.getCtx(), walker.queue)
-					ctxScope := getScope(walker.tagHistory, scope, f.RealExt)
-
-					err := l.lintBlock(
-						f,
-						nlp.NewBlockWithParent(tempCtx, txt, scope, ctxScope),
-						walker.lines,
-						0,
-						true)
-
-					if err != nil {
-						return err
-					}
-
-					walker.activeTag = ""
-					l.resetContext(walker.getCtx())
-				}
-			}
+			// NOTE: We used to create a "temporary" context here to support
+			// nested scopes, such as 'link', that are linted twice: once as
+			// their own scope and once as part of the overall paragraph.
+			//
+			// See issue #105 for more info.
+			//
+			// We no longer support this because the performance (+memory)
+			// overhead is too high. Instead, we reccomend that users use
+			// `scope: raw` and target the actual markup they want to lint.
+			//
+			// Styles should still be able to support rules that require this
+			// (such as disallowing 'here' links) by using format-specific
+			// scopes (e.g., `text.md`).
 			walker.append(txt)
 			if !inBlock && txt != "" {
 				skipClass = checkClasses(parentClass, skipClasses)

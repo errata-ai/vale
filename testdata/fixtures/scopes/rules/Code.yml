@@ -1,10 +1,11 @@
-message: "'%s' left in text"
 extends: existence
+message: "'%s' left in text"
 ignorecase: false
 level: suggestion
-scope: code
+scope: raw
+nonword: true
 tokens:
-  - XXX
-  - FIXME
-  - TODO
-  - NOTE
+  - "`XXX`"
+  - "`FIXME`"
+  - "`TODO`"
+  - "`NOTE`"
