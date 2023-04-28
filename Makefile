@@ -23,12 +23,6 @@ release:
 build:
 	GOOS=$(os) GOARCH=$(arch) go build ${LDFLAGS} -o bin/$(exe) ./cmd/vale
 
-arm:
-	GOOS=darwin GOARCH=arm64 go build ${LDFLAGS} -o bin/$(exe) ./cmd/vale
-
-closed:
-	GOOS=$(os) GOARCH=amd64 go build -tags closed ${LDFLAGS} -o bin/$(exe) ./cmd/vale
-
 bench:
 	go test -bench=. -benchmem ./internal/core ./internal/lint ./internal/check
 
@@ -37,7 +31,7 @@ profile:
 	mv lint.test bin
 
 compare:
-	cd lint && \
+	cd internal/lint && \
 	benchmany -n 5 -o new.txt ${CURR_SHA} && \
 	benchmany -n 5 -o old.txt ${LAST_TAG} && \
 	benchcmp old.txt new.txt && \
