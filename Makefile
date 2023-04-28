@@ -30,11 +30,13 @@ profile:
 	go test -benchmem -run=^$$ -bench ^BenchmarkLintMD$$ github.com/errata-ai/vale/v2/internal/lint -cpuprofile=bin/cpu.out -memprofile=bin/mem.out -trace=bin/trace.out
 	mv lint.test bin
 
+# go install github.com/aclements/go-misc/benchmany@latest
+# go install golang.org/x/tools/cmd/benchcmp@latest
+# go install golang.org/x/perf/cmd/benchstat@latest
 compare:
 	cd internal/lint && \
-	benchmany -n 5 -o new.txt ${CURR_SHA} && \
-	benchmany -n 5 -o old.txt ${LAST_TAG} && \
-	benchcmp old.txt new.txt && \
+	benchmany -n 10 -o new.txt ${CURR_SHA} && \
+	benchmany -n 10 -o old.txt ${LAST_TAG} && \
 	benchstat old.txt new.txt
 
 setup:
