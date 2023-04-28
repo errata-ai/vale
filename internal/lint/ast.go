@@ -28,17 +28,7 @@ var tagToScope = map[string]string{
 	"li":         "text.list",
 	"blockquote": "text.blockquote",
 	"figcaption": "text.figure.caption",
-
-	// NOTE: These shouldn't inherit from `text`
-	// (or else they'll be linted twice.)
-	"strong": "strong",
-	"b":      "strong",
-	"a":      "link",
-	"em":     "emphasis",
-	"i":      "emphasis",
-	"code":   "code",
 }
-var inlineScopes = []string{"strong", "link", "emphasis", "code"}
 
 func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 	var class, parentClass, attr string
@@ -99,7 +89,7 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 			// nested scopes, such as 'link', that are linted twice: once as
 			// their own scope and once as part of the overall paragraph.
 			//
-			// See issue #105 for more info.
+			// (See issue #105 for more info.)
 			//
 			// We no longer support this because the performance (+memory)
 			// overhead is too high. Instead, we reccomend that users use
@@ -209,31 +199,6 @@ func (l *Linter) lintTags(f *core.File, state *walker, tok html.Token) error {
 	return nil
 }
 
-func (l *Linter) updateContext(ctx string, queue []string) string {
-	for _, s := range queue {
-		pos := strings.Index(ctx, s)
-		if pos == -1 {
-			continue
-		}
-		l.views = append(l.views, view{s, pos})
-		ctx = updateCtx(ctx, s, html.TextToken)
-	}
-	return ctx
-}
-
-func (l *Linter) resetContext(ctx string) {
-	btx := string2ByteSlice(ctx)
-	for _, v := range l.views {
-		if v.offset == -1 {
-			continue
-		}
-		for i, s := range string2ByteSlice(v.text) {
-			btx[v.offset+i] = s
-		}
-	}
-	l.views = []view{}
-}
-
 func checkClasses(attr string, ignore []string) bool {
 	for _, class := range strings.Split(attr, " ") {
 		if core.StringInSlice(class, ignore) {
@@ -280,21 +245,6 @@ func getAttribute(tok html.Token, key string) string {
 		}
 	}
 	return ""
-}
-
-func updateCtx(ctx, txt string, tokt html.TokenType) string {
-	var found bool
-	if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
-		for _, s := range strings.Split(txt, "\n") {
-			ctx, found = subInplace(ctx, s, '@')
-			if !found {
-				for _, w := range strings.Fields(s) {
-					ctx, _ = subInplace(ctx, w, '@')
-				}
-			}
-		}
-	}
-	return ctx
 }
 
 func getScope(tags []string, new, ext string) string {

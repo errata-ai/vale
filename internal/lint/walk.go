@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"net/url"
 	"strings"
+	"unicode/utf8"
+	"unsafe"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
@@ -12,7 +14,7 @@ import (
 
 type walker struct {
 	lines   int
-	context string
+	context []byte
 
 	activeTag string
 	activeCls string
@@ -33,19 +35,43 @@ type walker struct {
 	end   int
 }
 
-func newWalker(f *core.File, raw []byte, offset int) walker {
-	return walker{
+func newWalker(f *core.File, raw []byte, offset int) *walker {
+	return &walker{
 		lines:   len(f.Lines) + offset,
-		context: f.Content,
+		context: string2ByteSlice(f.Content),
 		z:       html.NewTokenizer(bytes.NewReader(raw))}
+}
+
+func (w *walker) sub(sub string, char rune) bool {
+	s, found := subInplace(w.getCtx(), sub, char)
+	w.context = string2ByteSlice(s)
+	return found
+}
+
+func (w *walker) update(txt string, tokt html.TokenType) {
+	var found bool
+	if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
+		for _, s := range strings.Split(txt, "\n") {
+			found = w.sub(s, '@')
+			if !found {
+				for _, f := range strings.Fields(s) {
+					_ = w.sub(f, '@')
+				}
+			}
+		}
+	}
 }
 
 func (w *walker) reset() {
 	for _, s := range w.queue {
-		w.context = updateCtx(w.context, s, html.TextToken)
+		w.update(s, html.TextToken)
 	}
 	w.queue = []string{}
 	w.tagHistory = []string{}
+}
+
+func (w *walker) getCtx() string {
+	return byteSlice2String(w.context)
 }
 
 func (w *walker) append(text string) {
@@ -99,7 +125,7 @@ func (w *walker) block(text, scope string) nlp.Block {
 		line = pos
 	}
 
-	return nlp.NewLinedBlock(w.context, text, scope, line, nil)
+	return nlp.NewLinedBlock(w.getCtx(), text, scope, line, nil)
 }
 
 func (w *walker) walk() (html.TokenType, html.Token, string) {
@@ -115,7 +141,7 @@ func (w *walker) replaceToks(tok html.Token) {
 				if a.Key == "href" {
 					a.Val, _ = url.QueryUnescape(a.Val)
 				}
-				w.context = updateCtx(w.context, a.Val, html.TextToken)
+				w.update(a.Val, html.TextToken)
 			}
 		}
 	}
@@ -123,16 +149,18 @@ func (w *walker) replaceToks(tok html.Token) {
 
 func (w *walker) advance(text string) int {
 	pos := 0
+	ctx := w.getCtx()
+
 	for _, s := range strings.Split(text, "\n") {
-		pos = strings.Index(w.context, s)
+		pos = strings.Index(ctx, s)
 		if pos < 0 {
 			for _, ss := range strings.Fields(s) {
-				pos = strings.Index(w.context, ss)
+				pos = strings.Index(ctx, ss)
 			}
 		}
 	}
 	if pos >= 0 {
-		l := strings.Count(w.context[:pos], "\n")
+		l := strings.Count(ctx[:pos], "\n")
 		if l > w.idx {
 			return l
 		}
@@ -145,4 +173,41 @@ func (w *walker) lastTag() string {
 		return w.tagHistory[len(w.tagHistory)-1]
 	}
 	return w.activeTag
+}
+
+func string2ByteSlice(str string) []byte {
+	if str == "" {
+		return nil
+	}
+	return unsafe.Slice(unsafe.StringData(str), len(str))
+}
+
+func byteSlice2String(bs []byte) string {
+	if len(bs) == 0 {
+		return ""
+	}
+	return unsafe.String(unsafe.SliceData(bs), len(bs))
+}
+
+func subInplace(ctx, sub string, char rune) (string, bool) {
+	idx := strings.Index(ctx, sub)
+	if idx < 0 {
+		return ctx, false
+	}
+
+	bss := string2ByteSlice(sub)
+	btx := string2ByteSlice(ctx)
+
+	repl := bytes.Map(func(r rune) rune {
+		if r != '\n' && utf8.RuneLen(r) == 1 {
+			return char
+		}
+		return r
+	}, bss)
+
+	p1 := btx[:idx]
+	p2 := btx[idx+len(sub):]
+
+	btx = append(append(p1, repl...), p2...)
+	return byteSlice2String(btx), true
 }
