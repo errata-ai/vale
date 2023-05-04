@@ -91,3 +91,13 @@ The |biohazard| symbol must be used on TODO containers used to dispose of medica
         obviously = False
         very = True
         return very and obviously
+
+
+.. code:: pwsh
+
+   & TODO
+
+
+.. code:: pwsh-session
+
+   & TODO
