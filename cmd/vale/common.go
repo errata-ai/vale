@@ -19,6 +19,6 @@ func PrintAlerts(linted []*core.File, config *core.Config) (bool, error) {
 	case "CLI":
 		return PrintVerboseAlerts(linted, config.Flags.Wrap), nil
 	default:
-		return PrintCustomAlerts(linted, config.Flags.Output)
+		return PrintCustomAlerts(linted, config)
 	}
 }

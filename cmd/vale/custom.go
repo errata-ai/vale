@@ -22,8 +22,13 @@ type Data struct {
 }
 
 // PrintCustomAlerts formats the given alerts using a user-defined template.
-func PrintCustomAlerts(linted []*core.File, path string) (bool, error) {
+func PrintCustomAlerts(linted []*core.File, cfg *core.Config) (bool, error) {
 	var alertCount int
+
+	path := cfg.Flags.Output
+	if !core.FileExists(path) {
+		path = core.FindAsset(cfg, path)
+	}
 
 	b, err := os.ReadFile(path)
 	if err != nil {
