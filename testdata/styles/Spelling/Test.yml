@@ -5,6 +5,6 @@ custom: true
 append: false
 action:
   name: suggest
-dicpath: ../../fixtures/spelling/medical
+dicpath: medical
 dictionaries:
   - test
