@@ -46,6 +46,14 @@ Feature: IgnorePatterns
             """
         And the exit status should be 1
 
+    Scenario: Python
+        When I test patterns for "test.py"
+        Then the output should contain exactly:
+            """
+            test.py:1:75:Vale.Spelling:Did you really mean 'ignre'?
+            """
+        And the exit status should be 1
+
     Scenario: Ignored Classes on inline elements
         When I test patterns for "test2.rst"
         Then the output should contain exactly:

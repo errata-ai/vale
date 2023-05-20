@@ -23,7 +23,13 @@ func (l *Linter) lintCode(f *core.File) error {
 	if len(comments) == 0 {
 		return nil
 	}
+
 	scanner := bufio.NewScanner(strings.NewReader(f.Content))
+	ignored := l.Manager.Config.IgnoredScopes
+
+	skipAll := core.StringInSlice("comment", ignored)
+	skipInline := core.StringInSlice("comment.line", ignored)
+	skipBlock := core.StringInSlice("comment.block", ignored)
 
 	scope := "%s" + f.RealExt
 	inline := regexp.MustCompile(comments["inline"])
@@ -43,11 +49,15 @@ func (l *Linter) lintCode(f *core.File) error {
 				// We've found the end of the block.
 				block.WriteString(line)
 				txt = block.String()
+
 				b := nlp.NewBlock(
 					txt, txt, fmt.Sprintf(scope, "text.comment.block"))
-				if err := l.lintBlock(f, b, lines+1, 0, true); err != nil {
-					return err
+				if !(skipAll || skipBlock) {
+					if err := l.lintBlock(f, b, lines+1, 0, true); err != nil {
+						return err
+					}
 				}
+
 				block.Reset()
 				inBlock = false
 			} else {
@@ -58,10 +68,13 @@ func (l *Linter) lintCode(f *core.File) error {
 			// calculate the column span because, for example, a line like
 			// 'print("foo") # ...' will be condensed to '# ...'.
 			padding = lnLength - len(match)
+
 			b := nlp.NewBlock(
 				match, match, fmt.Sprintf(scope, "text.comment.line"))
-			if err := l.lintBlock(f, b, lines, padding-1, true); err != nil {
-				return err
+			if !(skipAll || skipInline) {
+				if err := l.lintBlock(f, b, lines, padding-1, true); err != nil {
+					return err
+				}
 			}
 		} else if match = blockStart.FindString(line); len(match) > 0 && !ignore {
 			// We've found the start of a block comment.

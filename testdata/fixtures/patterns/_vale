@@ -1,7 +1,7 @@
 StylesPath = ../../styles
 MinAlertLevel = suggestion
 
-IgnoredScopes = code, tt, strong
+IgnoredScopes = code, tt, strong, comment.line
 IgnoredClasses = metrics, blurb, alignedsummary
 
 [*]
