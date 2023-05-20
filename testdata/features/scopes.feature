@@ -19,6 +19,7 @@ Feature: Scopes
             """
             test.md:5:1:rules.Raw:Don't use italics/bolding in a heading.
             test.md:9:1:rules.Fence:Syntax highlighting hint "```sh " must be one of: yaml, ruby, plaintext, markdown, javascript, shell, golang, python, dockerfile, or typescript.
+            test.py:1:1:rules.Raw:Don't use italics/bolding in a heading.
             """
 
     Scenario: Blockquote

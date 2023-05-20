@@ -164,15 +164,7 @@ func (l *Linter) lintSizedScopes(f *core.File) error {
 	summary := nlp.NewLinedBlock(f.Content, f.Summary.String(),
 		"summary"+f.RealExt, 0, &f.NLP)
 
-	// Run all rules with `scope: raw`
-	//
-	// NOTE: We need to use `f.Lines` (instead of `f.Content`) to ensure that
-	// we don't include any markup preprocessing.
-	//
-	// See #248, #306.
-	raw := nlp.NewBlock("", strings.Join(f.Lines, ""), "raw"+f.RealExt)
-
-	for _, blk := range []nlp.Block{summary, raw} {
+	for _, blk := range []nlp.Block{summary} {
 		err := l.lintBlock(f, blk, len(f.Lines), 0, true)
 		if err != nil {
 			return err

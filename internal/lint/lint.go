@@ -201,6 +201,17 @@ func (l *Linter) lintFile(src string) lintResult {
 		err = l.lintLines(file)
 	}
 
+	if err == nil {
+		// Run all rules with `scope: raw`
+		//
+		// NOTE: We need to use `f.Lines` (instead of `f.Content`) to ensure
+		// that we don't include any markup preprocessing.
+		//
+		// See #248, #306.
+		raw := nlp.NewBlock("", strings.Join(file.Lines, ""), "raw"+file.RealExt)
+		err = l.lintBlock(file, raw, len(file.Lines), 0, true)
+	}
+
 	return lintResult{file, err}
 }
 
