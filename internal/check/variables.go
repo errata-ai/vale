@@ -90,13 +90,13 @@ func sentence(s string, indicators []string, except *regexp2.Regexp, threshold f
 		}
 
 		if strings.Contains(w, "-") {
-			// NOTE: This is necessary for works like `Top-level`.
+			// NOTE: This is necessary for words like `Top-level`.
 			w = strings.Split(w, "-")[0]
 		} else if strings.Contains(w, "'") {
-			// NOTE: This is necessary for works like `Client's`.
+			// NOTE: This is necessary for words like `Client's`.
 			w = strings.Split(w, "'")[0]
 		} else if strings.Contains(w, "’") {
-			// NOTE: This is necessary for works like `Client's`.
+			// NOTE: This is necessary for words like `Client's`.
 			w = strings.Split(w, "’")[0]
 		}
 
