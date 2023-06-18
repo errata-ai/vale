@@ -60,7 +60,7 @@ func title(s string, except *regexp2.Regexp, tc *titlecase.TitleConverter, thres
 		words++
 	}
 
-	return (count / words) > threshold
+	return (count / words) >= threshold
 }
 
 func hasAnySuffix(s string, suffixes []string) bool {
@@ -110,7 +110,7 @@ func sentence(s string, indicators []string, except *regexp2.Regexp, threshold f
 		words++
 	}
 
-	return (count / words) > threshold
+	return (count / words) >= threshold
 }
 
 var varToFunc = map[string]func(string, *regexp2.Regexp) bool{

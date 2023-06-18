@@ -41,6 +41,19 @@ func TestSentence(t *testing.T) {
 			match:      true,
 			exceptions: []string{"errata-ai/vale"},
 		},
+		{
+			heading: "Use the Package Builder to install",
+			match:   false,
+		},
+		{
+			heading:    "Use the Package Builder to install",
+			match:      true,
+			exceptions: []string{"Package Builder"},
+		},
+		{
+			heading: "Use the High-Def Render Pipeline to install",
+			match:   false,
+		},
 	}
 
 	for _, h := range headings {
@@ -56,7 +69,7 @@ func TestSentence(t *testing.T) {
 			r = regexp2.MustCompileStd(regex)
 		}
 
-		s := sentence(h.heading, h.indicators, r, 0.8)
+		s := sentence(h.heading, h.indicators, r, 1)
 		if s != h.match {
 			t.Errorf("expected = %v, got = %v (%s)", h.match, s, h.heading)
 		}
