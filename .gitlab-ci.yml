@@ -14,7 +14,7 @@ test:
     - apt-get install -y curl gnupg build-essential default-jre
     - apt-get install -y xsltproc zip unzip python3-pip ruby-full
 
-    - pip install sphinx
+    - apt install -y python3-sphinx
     - gem install asciidoctor bundler
 
     - wget https://github.com/dita-ot/dita-ot/releases/download/3.6/dita-ot-3.6.zip
