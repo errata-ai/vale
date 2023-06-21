@@ -17,6 +17,11 @@ var CommentsByNormedExt = map[string]map[string]string{
 		"blockStart": `(/\*.*)`,
 		"blockEnd":   `(.*\*/)`,
 	},
+	".clj": {
+		"inline":     `(;+.+)`,
+		"blockStart": `$^`,
+		"blockEnd":   `$^`,
+	},
 	".css": {
 		"inline":     `(/\*.+\*/)`,
 		"blockStart": `(/\*.*)`,
@@ -71,6 +76,7 @@ var FormatByExtension = map[string][]string{
 	`\.(?:adoc|asciidoc|asc)$`:                    {".adoc", "markup"},
 	`\.(?:cpp|cc|c|cp|cxx|c\+\+|h|hpp|h\+\+)$`:    {".c", "code"},
 	`\.(?:cs|csx)$`:                               {".c", "code"},
+	`\.(?:clj|cljs|cljc|cljd)$`:                   {".clj", "code"},
 	`\.(?:css)$`:                                  {".css", "code"},
 	`\.(?:go)$`:                                   {".c", "code"},
 	`\.(?:html|htm|shtml|xhtml)$`:                 {".html", "markup"},

@@ -30,6 +30,13 @@ var patterns = map[string]map[string][]*regexp.Regexp{
 			regexp.MustCompile(`(.*\*/)`),
 		},
 	},
+	".clj": {
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s);+(.+)`),
+		},
+		"blockStart": []*regexp.Regexp{},
+		"blockEnd":   []*regexp.Regexp{},
+	},
 	".css": {
 		"inline": []*regexp.Regexp{
 			regexp.MustCompile(`(?s)/\*(.+)\*/`),
