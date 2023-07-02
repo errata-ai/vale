@@ -215,7 +215,8 @@ func loadINI(cfg *Config, dry bool) error {
 // loadConfig loads the .vale file. It checks the ancestors of the current
 // directory, stopping on the first occurrence of a .vale or _vale file. If
 // no ancestor of the current directory has a configuration file, it checks
-// the user's home directory for a configuration file.
+// the user's config directory, and then home directory, for a configuration
+// file.
 func loadConfig(names []string) (string, error) {
 	var parent string
 
@@ -238,6 +239,20 @@ func loadConfig(names []string) (string, error) {
 			break
 		}
 		cwd = parent
+	}
+
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	valeDir := path.Join(configDir, "vale")
+
+	for _, name := range names {
+		loc := path.Join(valeDir, name)
+		if FileExists(loc) && !IsDir(loc) {
+			return loc, nil
+		}
 	}
 
 	homeDir, err := os.UserHomeDir()
