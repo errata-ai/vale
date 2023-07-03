@@ -55,7 +55,7 @@ func TestNormalizePath(t *testing.T) {
 		t.Log("os.UserHomeDir failed, will not proceed with tests")
 		return
 	}
-	stylesPathInput := "~/.vale"
+	stylesPathInput := filepath.FromSlash("~/.vale")
 	expectedOutput := filepath.Join(homedir, ".vale")
 	result := normalizePath(stylesPathInput)
 	if result != expectedOutput {
