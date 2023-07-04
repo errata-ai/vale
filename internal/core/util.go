@@ -233,7 +233,7 @@ func normalizePath(path string) string {
 	}
 	if path == "~" {
 		return homedir
-	} else if strings.HasPrefix(path, "~/") {
+	} else if strings.HasPrefix(path, filepath.FromSlash("~/")) {
 		path = filepath.Join(homedir, path[2:])
 	}
 	return path
