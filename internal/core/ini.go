@@ -202,6 +202,7 @@ func loadINI(cfg *Config, dry bool) error {
 			return NewE100("invalid VALE_CONFIG_PATH", err)
 		}
 		cfg.Root = filepath.Dir(fromEnv)
+		cfg.Flags.Path = fromEnv
 	} else {
 		// We're using a config file found using a local search process.
 		uCfg, err = shadowLoad(base)
