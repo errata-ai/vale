@@ -178,6 +178,7 @@ func loadINI(cfg *Config, dry bool) error {
 		}
 	}
 
+	fromEnv, hasEnv := os.LookupEnv("VALE_CONFIG_PATH")
 	if cfg.Flags.Sources != "" {
 		// We have multiple sources -- e.g., local config + remote package(s).
 		//
@@ -194,6 +195,13 @@ func loadINI(cfg *Config, dry bool) error {
 			return NewE100("invalid --config", err)
 		}
 		cfg.Root = filepath.Dir(cfg.Flags.Path)
+	} else if hasEnv {
+		// We've been given a value through `VALE_CONFIG_PATH`.
+		uCfg, err = shadowLoad(fromEnv)
+		if err != nil {
+			return NewE100("invalid VALE_CONFIG_PATH", err)
+		}
+		cfg.Root = filepath.Dir(fromEnv)
 	} else {
 		// We're using a config file found using a local search process.
 		uCfg, err = shadowLoad(base)
