@@ -357,3 +357,22 @@ func decodeRule(input interface{}, output interface{}) error {
 
 	return decoder.Decode(input)
 }
+
+func checkScopes(scopes []string, path string) error {
+	for _, scope := range scopes {
+		// Negation ...
+		scope = strings.TrimPrefix(scope, "~")
+
+		// Specification ...
+		//
+		// TODO: check sub-scopes too?
+		scope = strings.Split(scope, ".")[0]
+		if !core.StringInSlice(scope, allowedScopes) {
+			return core.NewE201FromTarget(
+				fmt.Sprintf("'scope' must be one of %v", allowedScopes),
+				"scope",
+				path)
+		}
+	}
+	return nil
+}
