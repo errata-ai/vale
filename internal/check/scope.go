@@ -25,6 +25,7 @@ var allowedScopes = []string{
 	"paragraph",
 	"sentence",
 	"alt",
+	"title",
 	"blockquote",
 	"summary",
 	"raw",
