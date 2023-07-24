@@ -87,7 +87,7 @@ func IsLetter(s string) bool {
 // This is used to differentiate regex tokens from non-regex.
 func IsPhrase(s string) bool {
 	for _, r := range s {
-		if !unicode.IsLetter(r) && r != ' ' && !unicode.IsDigit(r) {
+		if !unicode.IsLetter(r) && r != ' ' && !unicode.IsDigit(r) && r != '-' {
 			return false
 		}
 	}
