@@ -88,6 +88,7 @@ func sentence(s string, indicators []string, except *regexp2.Regexp, threshold f
 		if i-1 >= 0 {
 			prev = tokens[i-1]
 		}
+		t := w
 
 		if strings.Contains(w, "-") {
 			// NOTE: This is necessary for words like `Top-level`.
@@ -100,7 +101,7 @@ func sentence(s string, indicators []string, except *regexp2.Regexp, threshold f
 			w = strings.Split(w, "’")[0]
 		}
 
-		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || isMatch(except, w) {
+		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || isMatch(except, t) {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) {
 			return false
