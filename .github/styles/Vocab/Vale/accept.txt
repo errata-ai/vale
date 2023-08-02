@@ -2,6 +2,7 @@
 alex
 api
 apos
+Appwrite
 asciidoc
 asciidoctor
 backreferences
