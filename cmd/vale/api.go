@@ -60,7 +60,7 @@ func fetch(src, dst string) error {
 	if err != nil {
 		return err
 	} else if resp.StatusCode != 200 {
-		return fmt.Errorf("Could not fetch '%s' (status code '%d').", src, resp.StatusCode)
+		return fmt.Errorf("could not fetch '%s' (status code '%d').", src, resp.StatusCode)
 	}
 
 	// Create a temp file to represent the archive locally:

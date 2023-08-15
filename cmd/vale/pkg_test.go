@@ -170,3 +170,20 @@ func TestLocalOnlyStyles(t *testing.T) {
 	}
 
 }
+
+func TestNoPkgFound(t *testing.T) {
+	path, err := mockPath()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = readPkg("https://github.com/errata-ai/Microsoft/releases/download/v0.14.1/Microsoft.zip", path, 0)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+
+	msg := "could not fetch 'https://github.com/errata-ai/Microsoft/releases/download/v0.14.1/Microsoft.zip' (status code '404')."
+	if !strings.Contains(err.Error(), msg) {
+		t.Fatalf("expected '%s', got '%s'", msg, err.Error())
+	}
+}
