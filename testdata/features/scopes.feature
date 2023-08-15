@@ -66,6 +66,8 @@ Feature: Scopes
             test.md:3:19:rules.Code:'`XXX`' left in text
             test.md:5:34:rules.Link:Don't use '[here]' as the content of a link.
             test.md:7:56:rules.Link:Don't use '[here]' as the content of a link.
+            test.md:9:10:rules.Strong:'TODO' left in text
+            test.md:11:3:rules.Strong:'TODO' left in text
             test.md:13:6:rules.Code:'`XXX`' left in text
             test.md:15:1:rules.Code:'`XXX`' left in text
             """

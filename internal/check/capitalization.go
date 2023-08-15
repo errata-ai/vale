@@ -40,6 +40,11 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 		return rule, readStructureError(err, path)
 	}
 
+	err = checkScopes(rule.Scope, path)
+	if err != nil {
+		return rule, err
+	}
+
 	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)

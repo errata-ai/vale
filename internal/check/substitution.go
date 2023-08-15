@@ -30,6 +30,11 @@ func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitu
 	if err != nil {
 		return rule, readStructureError(err, path)
 	}
+
+	err = checkScopes(rule.Scope, path)
+	if err != nil {
+		return rule, err
+	}
 	tokens := ""
 
 	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)

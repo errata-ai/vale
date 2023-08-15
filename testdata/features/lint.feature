@@ -146,6 +146,17 @@ Feature: Lint
             """
         And the exit status should be 0
 
+    Scenario: Lint a Clojure file
+        When I lint "test.clj"
+        Then the output should contain exactly:
+            """
+            test.clj:3:6:vale.Annotations:'NOTE' left in text
+            test.clj:5:15:vale.Annotations:'TODO' left in text
+            test.clj:7:6:vale.Annotations:'FIXME' left in text
+            test.clj:9:11:vale.Annotations:'XXX' left in text
+            """
+        And the exit status should be 0
+
     Scenario: Lint a JSX file
         When I lint "test.jsx"
         Then the output should contain exactly:

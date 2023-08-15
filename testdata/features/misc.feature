@@ -8,6 +8,8 @@ Feature: Misc
             test.md:7:1:Vale.Terms:Use 'definately' instead of 'Definately'.
             test.md:13:1:Vale.Terms:Use 'Documentarians' instead of 'documentarians'.
             test.md:17:11:Vale.Terms:Use 'Log4j' instead of 'log4j'.
+            test.md:19:1:Vale.Terms:Use 'ABCDEF' instead of 'ABCDEf'.
+            test.md:21:1:Vale.Terms:Use 'ABC-DEF' instead of 'ABC-DEf'.
             """
 
     Scenario: Multiple Vocabs

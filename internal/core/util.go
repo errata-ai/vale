@@ -87,7 +87,7 @@ func IsLetter(s string) bool {
 // This is used to differentiate regex tokens from non-regex.
 func IsPhrase(s string) bool {
 	for _, r := range s {
-		if !unicode.IsLetter(r) && r != ' ' && !unicode.IsDigit(r) {
+		if !unicode.IsLetter(r) && r != ' ' && !unicode.IsDigit(r) && r != '-' {
 			return false
 		}
 	}
@@ -233,7 +233,7 @@ func normalizePath(path string) string {
 	}
 	if path == "~" {
 		return homedir
-	} else if strings.HasPrefix(path, "~/") {
+	} else if strings.HasPrefix(path, filepath.FromSlash("~/")) {
 		path = filepath.Join(homedir, path[2:])
 	}
 	return path

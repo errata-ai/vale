@@ -7,6 +7,30 @@ import (
 	"github.com/errata-ai/vale/v2/internal/nlp"
 )
 
+var allowedScopes = []string{
+	"text",
+	"heading",
+	"heading.h1",
+	"heading.h2",
+	"heading.h3",
+	"heading.h4",
+	"heading.h5",
+	"heading.h6",
+	"table",
+	"table.header",
+	"table.cell",
+	"table.caption",
+	"figure.caption",
+	"list",
+	"paragraph",
+	"sentence",
+	"alt",
+	"title",
+	"blockquote",
+	"summary",
+	"raw",
+}
+
 // A Selector represents a named section of text.
 type Selector struct {
 	Value   []string // e.g., text.comment.line.py

@@ -2,9 +2,7 @@ message: "'%s' left in text"
 extends: existence
 ignorecase: false
 level: suggestion
-scope: strong
+nonword: true
+scope: raw
 tokens:
-  - XXX
-  - FIXME
-  - TODO
-  - NOTE
+  - (?<=\*\*)(?:TODO|NOTE|FIXME|XXX)(?=\*\*)

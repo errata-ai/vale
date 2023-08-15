@@ -15,6 +15,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var inlineScopes = []string{"code", "link", "strong", "emphasis"}
+
 // FilterEnv is the environment passed to the `--filter` flag.
 type FilterEnv struct {
 	Rules []Definition
@@ -356,4 +358,35 @@ func decodeRule(input interface{}, output interface{}) error {
 	}
 
 	return decoder.Decode(input)
+}
+
+func checkScopes(scopes []string, path string) error {
+	for _, scope := range scopes {
+		if strings.Contains(scope, "&") {
+			// FIXME: multi part ...
+			continue
+		}
+
+		// Negation ...
+		scope = strings.TrimPrefix(scope, "~")
+
+		// Specification ...
+		//
+		// TODO: check sub-scopes too?
+		scope = strings.Split(scope, ".")[0]
+
+		if core.StringInSlice(scope, inlineScopes) {
+			return core.NewE201FromTarget(
+				fmt.Sprintf("scope '%v' is no longer supported; use 'raw' instead.", scope),
+				"scope",
+				path)
+		} else if !core.StringInSlice(scope, allowedScopes) {
+			return core.NewE201FromTarget(
+				fmt.Sprintf("'%v' is not a valid scope; must be one of %v", scope, allowedScopes),
+				"scope",
+				path)
+		}
+	}
+
+	return nil
 }

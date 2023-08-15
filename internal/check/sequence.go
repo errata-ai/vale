@@ -47,6 +47,11 @@ func NewSequence(cfg *core.Config, generic baseCheck, path string) (Sequence, er
 		return rule, readStructureError(err, path)
 	}
 
+	err = checkScopes(rule.Scope, path)
+	if err != nil {
+		return rule, err
+	}
+
 	for i, token := range rule.Tokens {
 		if !rule.needsTagging && token.Tag != "" {
 			rule.needsTagging = true

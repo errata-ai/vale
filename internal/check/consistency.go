@@ -40,6 +40,11 @@ func NewConsistency(cfg *core.Config, generic baseCheck, path string) (Consisten
 		return rule, readStructureError(err, path)
 	}
 
+	err = checkScopes(rule.Scope, path)
+	if err != nil {
+		return rule, err
+	}
+
 	regex := makeRegexp(
 		cfg.WordTemplate,
 		rule.Ignorecase,

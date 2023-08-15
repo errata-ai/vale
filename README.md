@@ -24,7 +24,7 @@
 
 ## :heart: Sponsors
 
-> Hi there! I'm [@jdkato](https://github.com/jdkato), the sole developer of Vale. If you'd like to help me dedicate more time to *developing*, *documenting*, and *supporting* Vale, feel free to donate through the [Open Collective](https://opencollective.com/vale). Any donation&mdash;big, small, one-time, or recurring&mdash;is greatly appreciated!
+> Hi there! I'm [@jdkato](https://github.com/jdkato), the sole developer of Vale. If you'd like to help me dedicate more time to _developing_, _documenting_, and _supporting_ Vale, feel free to donate through the [Open Collective](https://opencollective.com/vale). Any donation&mdash;big, small, one-time, or recurring&mdash;is greatly appreciated!
 
 ### Organizations
 
@@ -39,13 +39,21 @@
 <a href="https://opencollective.com/vale/organization/8/website"><img src="https://opencollective.com/vale/organization/8/avatar.svg?avatarHeight=100"></a>
 <a href="https://opencollective.com/vale/organization/9/website"><img src="https://opencollective.com/vale/organization/9/avatar.svg?avatarHeight=100"></a>
 
-### Hosting
+### Other
 
-> Special thanks to [DigitalOcean][1] for providing hosting credits for [Vale Studio][2].
+> Thanks to [DigitalOcean][1] for providing hosting credits for [Vale Studio][2].
 
 <p>
   <a href="https://www.digitalocean.com/">
     <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" width="201px">
+  </a>
+</p>
+
+> Thanks to [Appwrite][4] for supporting Vale through their [Open Source Sponsorship program][3].
+
+<p>
+  <a href="https://appwrite.io/">
+    <img src="https://github.com/errata-ai/vale/assets/8785025/95d4b2f8-a94b-4512-8197-7e80973655cc" width="201px">
   </a>
 </p>
 
@@ -57,7 +65,7 @@
 
 - [x] **Support for markup**: Vale has a rich understanding of many [markup formats](https://docs.errata.ai/vale/scoping#formats), allowing it to avoid syntax-related false positives and intelligently exclude code snippets from prose-related rules.
 
-- [x] A **highly customizable** [extension system](https://vale.sh/docs/topics/styles/): Vale is capable of enforcing *your style*&mdash;be it a standard [editorial style guide](https://github.com/errata-ai/styles#available-styles) or a custom in-house set of rules (such as those created by [GitLab](https://docs.gitlab.com/ee/development/documentation/testing.html#vale), [Homebrew](https://github.com/Homebrew/brew/tree/master/docs/vale-styles/Homebrew), [Linode](https://www.linode.com/blog/linode/docs-as-code-at-linode/), [CockroachDB](https://github.com/cockroachdb/docs/tree/master/vale), and [Spotify](https://github.com/spotify/backstage)).
+- [x] A **highly customizable** [extension system](https://vale.sh/docs/topics/styles/): Vale is capable of enforcing _your style_&mdash;be it a standard [editorial style guide](https://github.com/errata-ai/styles#available-styles) or a custom in-house set of rules (such as those created by [GitLab](https://docs.gitlab.com/ee/development/documentation/testing.html#vale), [Homebrew](https://github.com/Homebrew/brew/tree/master/docs/vale-styles/Homebrew), [Linode](https://www.linode.com/blog/linode/docs-as-code-at-linode/), [CockroachDB](https://github.com/cockroachdb/docs/tree/master/vale), and [Spotify](https://github.com/spotify/backstage)).
 
 - [x] **Easy-to-install**, stand-alone binaries: Unlike other tools, Vale doesn't require you to install and configure a particular programming language and its related tooling (such as Python/pip or Node.js/npm).
 
@@ -70,7 +78,7 @@ See the [documentation](https://vale.sh) for more information.
 ### Functionality
 
 | Tool       | Extensible           | Checks          | Supports Markup                                                         | Built With | License      |
-|------------|----------------------|-----------------|-------------------------------------------------------------------------|------------|--------------|
+| ---------- | -------------------- | --------------- | ----------------------------------------------------------------------- | ---------- | ------------ |
 | Vale       | Yes (via YAML)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, XML, Org)              | Go         | MIT          |
 | textlint   | Yes (via JavaScript) | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, Re:VIEW)               | JavaScript | MIT          |
 | RedPen     | Yes (via Java)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, Textile, Re:VIEW, and LaTeX) | Java       | Apache-2.0   |
@@ -134,7 +142,7 @@ The corpus IDs in the above plots&mdash;`gitlab` and `ydkjs`&mdash;correspond to
 
 - A [snapshot](https://gitlab.com/gitlab-org/gitlab/-/tree/7d6a4025a0346f1f50d2825c85742e5a27b39a8b/doc) of GitLab's open-source documentation (1,500 Markdown files).
 
-- A [chapter](https://raw.githubusercontent.com/getify/You-Dont-Know-JS/1st-ed/es6%20%26%20beyond/ch2.md) from the open-source book *You Don't Know JS*.
+- A [chapter](https://raw.githubusercontent.com/getify/You-Dont-Know-JS/1st-ed/es6%20%26%20beyond/ch2.md) from the open-source book _You Don't Know JS_.
 
 ## :page_facing_up: License
 
@@ -142,3 +150,5 @@ The corpus IDs in the above plots&mdash;`gitlab` and `ydkjs`&mdash;correspond to
 
 [1]: https://www.digitalocean.com/open-source/credits-for-projects
 [2]: https://studio.vale.sh/
+[3]: https://appwrite.io/oss-fund
+[4]: https://appwrite.io/

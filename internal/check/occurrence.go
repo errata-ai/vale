@@ -25,6 +25,11 @@ func NewOccurrence(cfg *core.Config, generic baseCheck, path string) (Occurrence
 		return rule, readStructureError(err, path)
 	}
 
+	err = checkScopes(rule.Scope, path)
+	if err != nil {
+		return rule, err
+	}
+
 	regex := ""
 	if rule.Ignorecase {
 		regex += ignoreCase

@@ -27,6 +27,11 @@ func NewRepetition(cfg *core.Config, generic baseCheck, path string) (Repetition
 		return rule, readStructureError(err, path)
 	}
 
+	err = checkScopes(rule.Scope, path)
+	if err != nil {
+		return rule, err
+	}
+
 	regex := ""
 	if rule.Ignorecase {
 		regex += ignoreCase
