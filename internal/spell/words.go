@@ -19,19 +19,12 @@ var numberHexRegexp = regexp.MustCompile("^0?[x][0-9A-Fa-f]+$")
 
 var numberBinaryRegexp = regexp.MustCompile("^0[b][01]+$")
 
-var camelCaseRegexp1 = regexp.MustCompile("[A-Z]+")
-
 var shaHashRegexp = regexp.MustCompile("^[0-9a-z]{40}$")
 
 // splitter splits a text into words
 // Highly likely this implementation will change so we are encapsulating.
 type splitter struct {
 	fn func(c rune) bool
-}
-
-// split is the function to split an input into a `[]string`
-func (s *splitter) split(in string) []string {
-	return strings.FieldsFunc(in, s.fn)
 }
 
 // newSplitter creates a new splitter.  The input is a string in
@@ -43,7 +36,7 @@ func newSplitter(chars string) *splitter {
 	s := splitter{}
 	s.fn = (func(c rune) bool {
 		// break if it's not a letter, and not another special character
-		return !unicode.IsLetter(c) && -1 == strings.IndexRune(chars, c)
+		return !unicode.IsLetter(c) && !strings.ContainsRune(chars, c)
 	})
 	return &s
 }
@@ -81,41 +74,4 @@ func isNumberHex(s string) bool {
 
 func isHash(s string) bool {
 	return shaHashRegexp.MatchString(s)
-}
-
-func splitCamelCase(s string) []string {
-	out := []string{}
-
-	s = strings.Replace(s, "HTTP", "Http", -1)
-	s = strings.Replace(s, "HTML", "Html", -1)
-	s = strings.Replace(s, "URL", "Url", -1)
-	s = strings.Replace(s, "URI", "Uri", -1)
-
-	caps := camelCaseRegexp1.FindAllStringIndex(s, -1)
-
-	// all lower case
-	if len(caps) == 0 {
-		return nil
-	}
-
-	// is only first character capitalized? or is the whole word capitalized
-	if len(caps) == 1 && caps[0][0] == 0 && (caps[0][1] == 1 || caps[0][1] == len(s)) {
-		return nil
-	}
-	last := 0
-	for i := 0; i < len(caps); i++ {
-		if last != caps[i][0] {
-			out = append(out, s[last:caps[i][0]])
-			last = caps[i][0]
-		}
-		if caps[i][1]-caps[i][0] > 1 {
-			out = append(out, s[caps[i][0]:caps[i][1]])
-			last = caps[i][1]
-		}
-	}
-	if last < len(s) {
-		out = append(out, s[last:])
-	}
-
-	return out
 }

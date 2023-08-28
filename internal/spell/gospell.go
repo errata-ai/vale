@@ -19,8 +19,7 @@ type wordMatch struct {
 }
 
 type goSpell struct {
-	config dictConfig
-	dict   map[string]struct{}
+	dict map[string]struct{}
 
 	ireplacer *strings.Replacer
 	compounds []*regexp.Regexp
@@ -41,11 +40,6 @@ func (s *goSpell) inputConversion(raw []byte) string {
 		return sraw
 	}
 	return s.ireplacer.Replace(sraw)
-}
-
-// split a text into Words
-func (s *goSpell) split(text string) []string {
-	return s.splitter.split(text)
 }
 
 // addWordRaw adds a single word to the internal dictionary without modifications
@@ -122,10 +116,10 @@ func (s *goSpell) suggest(word string) []wordMatch {
 	})
 
 	hits := matches[:5]
-	if word == strings.Title(word) {
+	if word == strings.Title(word) { //nolint:staticcheck
 		// Capitalized word, so capitalize the suggestions
 		for i := range hits {
-			hits[i].word = strings.Title(hits[i].word)
+			hits[i].word = strings.Title(hits[i].word) //nolint:staticcheck
 		}
 	}
 
@@ -208,7 +202,7 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 
 		words, err = affix.expand(line, words)
 		if err != nil {
-			return nil, fmt.Errorf("Unable to process %q: %s", line, err)
+			return nil, fmt.Errorf("unable to process %q: %s", line, err.Error())
 		}
 
 		if len(words) == 0 {
@@ -220,7 +214,7 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 		}
 	}
 
-	if err := scanner.Err(); err != nil {
+	if err = scanner.Err(); err != nil {
 		return nil, err
 	}
 
@@ -229,16 +223,17 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 		for _, key := range compoundRule {
 			switch key {
 			case '(', ')', '+', '?', '*':
-				pattern = pattern + string(key)
+				pattern += string(key)
 			default:
 				groups := affix.compoundMap[key]
 				pattern = pattern + "(" + strings.Join(groups, "|") + ")"
 			}
 		}
-		pattern = pattern + "$"
-		pat, err := regexp.Compile(pattern)
-		if err != nil {
-			return nil, err
+		pattern += "$"
+
+		pat, perr := regexp.Compile(pattern)
+		if perr != nil {
+			return nil, perr
 		}
 		gs.compounds = append(gs.compounds, pat)
 	}
@@ -253,12 +248,12 @@ func newGoSpellReader(aff, dic io.Reader) (*goSpell, error) {
 func newGoSpell(affFile, dicFile string) (*goSpell, error) {
 	aff, err := os.Open(affFile)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to open aff: %s", err)
+		return nil, fmt.Errorf("unable to open aff: %s", err.Error())
 	}
 	defer aff.Close()
 	dic, err := os.Open(dicFile)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to open dic: %s", err)
+		return nil, fmt.Errorf("unable to open dic: %s", err.Error())
 	}
 	defer dic.Close()
 	h, err := newGoSpellReader(aff, dic)
