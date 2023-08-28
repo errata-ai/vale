@@ -235,8 +235,8 @@ func (s Sequence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 			// We're looking for our "anchor" ...
 			for _, loc := range tok.re.FindAllStringIndex(txt, -1) {
 				// These are all possible violations in `txt`:
-				steps, _ := sequenceMatches(idx, s, tok, words)
-				// s.history = append(s.history, index)
+				steps, index := sequenceMatches(idx, s, tok, words)
+				s.history = append(s.history, index) //nolint:staticcheck
 
 				if len(steps) > 0 {
 					seq := stepsToString(steps)
