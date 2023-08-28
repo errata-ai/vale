@@ -34,7 +34,7 @@ func title(s string, except *regexp2.Regexp, tc *titlecase.TitleConverter, thres
 	words := 0.0
 
 	ps := `[\p{N}\p{L}*]+[^\s]*`
-	if except != nil {
+	if except != nil && except.String() != "" {
 		ps = except.String() + "|" + ps
 	}
 	re := regexp2.MustCompileStd(ps)
