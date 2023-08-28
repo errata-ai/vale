@@ -19,7 +19,7 @@ func ReadPipeline(provider string, flags *CLIFlags, dry bool) (*Config, error) {
 	config, err := NewConfig(flags)
 	if err != nil {
 		return config, err
-	} else if err := validateFlags(config); err != nil {
+	} else if err = validateFlags(config); err != nil {
 		return config, err
 	}
 

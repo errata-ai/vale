@@ -30,7 +30,7 @@ func annotate(file []byte, target string, finder errorCondition) (lineError, err
 	for scanner.Scan() {
 		markup := scanner.Text()
 		plain := StripANSI(markup)
-		if idx-context.line > 2 && context.line != 0 {
+		if idx-context.line > 2 && context.line != 0 { //nolint:gocritic
 			break
 		} else if finder(idx, plain, target) && context.line == 0 {
 			context.line = idx
@@ -64,7 +64,7 @@ func annotate(file []byte, target string, finder errorCondition) (lineError, err
 
 // NewError creates a colored error from the given information.
 //
-// The standard format is
+// # The standard format is
 //
 // ```
 // <code> [<context>] <title>
@@ -100,10 +100,6 @@ func NewE201(msg, value, path string, finder errorCondition) error {
 	f, err := os.ReadFile(path)
 	if err != nil {
 		return NewE100("NewE201", errors.New(msg))
-	}
-
-	if err != nil {
-		return NewE100("NewE201/Highlight", err)
 	}
 
 	ctx, err := annotate(f, value, finder)

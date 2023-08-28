@@ -38,7 +38,7 @@ func StripANSI(s string) string {
 // WhitespaceToSpace converts newlines and multiple spaces (e.g., "  ") into a
 // single space.
 func WhitespaceToSpace(msg string) string {
-	msg = strings.Replace(msg, "\n", " ", -1)
+	msg = strings.ReplaceAll(msg, "\n", " ")
 	msg = spaces.ReplaceAllString(msg, " ")
 	return msg
 }
@@ -205,7 +205,7 @@ func AllStringsInSlice(strings []string, slice []string) bool {
 }
 
 // SplitLines splits on CRLF, CR not followed by LF, and LF.
-func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) {
+func SplitLines(data []byte, atEOF bool) (adv int, token []byte, err error) { //nolint:nonamedreturns
 	if atEOF && len(data) == 0 {
 		return 0, nil, nil
 	}

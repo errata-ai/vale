@@ -39,45 +39,45 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 
 		return nil
 	},
-	"IgnorePatterns": func(label string, sec *ini.Section, cfg *Config) error {
+	"IgnorePatterns": func(label string, sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.BlockIgnores[label] = sec.Key("IgnorePatterns").Strings(",")
 		return nil
 	},
-	"BlockIgnores": func(label string, sec *ini.Section, cfg *Config) error {
+	"BlockIgnores": func(label string, sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.BlockIgnores[label] = mergeValues(sec.Key("BlockIgnores").StringsWithShadows(","))
 		return nil
 	},
-	"TokenIgnores": func(label string, sec *ini.Section, cfg *Config) error {
+	"TokenIgnores": func(label string, sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.TokenIgnores[label] = mergeValues(sec.Key("TokenIgnores").StringsWithShadows(","))
 		return nil
 	},
-	"Transform": func(label string, sec *ini.Section, cfg *Config) error {
+	"Transform": func(label string, sec *ini.Section, cfg *Config) error { //nolint:unparam
 		candidate := sec.Key("Transform").String()
 		cfg.Stylesheets[label] = determinePath(cfg.Flags.Path, candidate)
 		return nil
 
 	},
-	"Lang": func(label string, sec *ini.Section, cfg *Config) error {
+	"Lang": func(label string, sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.FormatToLang[label] = sec.Key("Lang").String()
 		return nil
 	},
 }
 
 var globalOpts = map[string]func(*ini.Section, *Config, []string){
-	"BasedOnStyles": func(sec *ini.Section, cfg *Config, args []string) {
+	"BasedOnStyles": func(sec *ini.Section, cfg *Config, _ []string) {
 		cfg.GBaseStyles = mergeValues(sec.Key("BasedOnStyles").StringsWithShadows(","))
 		cfg.Styles = append(cfg.Styles, cfg.GBaseStyles...)
 	},
-	"IgnorePatterns": func(sec *ini.Section, cfg *Config, args []string) {
+	"IgnorePatterns": func(sec *ini.Section, cfg *Config, _ []string) {
 		cfg.BlockIgnores["*"] = sec.Key("IgnorePatterns").Strings(",")
 	},
-	"BlockIgnores": func(sec *ini.Section, cfg *Config, args []string) {
+	"BlockIgnores": func(sec *ini.Section, cfg *Config, _ []string) {
 		cfg.BlockIgnores["*"] = mergeValues(sec.Key("BlockIgnores").StringsWithShadows(","))
 	},
-	"TokenIgnores": func(sec *ini.Section, cfg *Config, args []string) {
+	"TokenIgnores": func(sec *ini.Section, cfg *Config, _ []string) {
 		cfg.TokenIgnores["*"] = mergeValues(sec.Key("TokenIgnores").StringsWithShadows(","))
 	},
-	"Lang": func(sec *ini.Section, cfg *Config, args []string) {
+	"Lang": func(sec *ini.Section, cfg *Config, _ []string) {
 		cfg.FormatToLang["*"] = sec.Key("Lang").String()
 	},
 }
@@ -106,9 +106,9 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		}
 		return nil
 	},
-	"MinAlertLevel": func(sec *ini.Section, cfg *Config, args []string) error {
+	"MinAlertLevel": func(sec *ini.Section, cfg *Config, _ []string) error {
 		if !StringInSlice(cfg.Flags.AlertLevel, AlertLevels) {
-			level := sec.Key("MinAlertLevel").String() //.In("suggestion", AlertLevels)
+			level := sec.Key("MinAlertLevel").String() // .In("suggestion", AlertLevels)
 			if index, found := LevelToInt[level]; found {
 				cfg.MinAlertLevel = index
 			} else {
@@ -120,27 +120,27 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		}
 		return nil
 	},
-	"IgnoredScopes": func(sec *ini.Section, cfg *Config, args []string) error {
+	"IgnoredScopes": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
 		cfg.IgnoredScopes = mergeValues(sec.Key("IgnoredScopes").StringsWithShadows(","))
 		return nil
 	},
-	"WordTemplate": func(sec *ini.Section, cfg *Config, args []string) error {
+	"WordTemplate": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
 		cfg.WordTemplate = sec.Key("WordTemplate").String()
 		return nil
 	},
-	"DictionaryPath": func(sec *ini.Section, cfg *Config, args []string) error {
+	"DictionaryPath": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
 		cfg.DictionaryPath = sec.Key("DictionaryPath").String()
 		return nil
 	},
-	"SkippedScopes": func(sec *ini.Section, cfg *Config, args []string) error {
+	"SkippedScopes": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
 		cfg.SkippedScopes = mergeValues(sec.Key("SkippedScopes").StringsWithShadows(","))
 		return nil
 	},
-	"IgnoredClasses": func(sec *ini.Section, cfg *Config, args []string) error {
+	"IgnoredClasses": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
 		cfg.IgnoredClasses = mergeValues(sec.Key("IgnoredClasses").StringsWithShadows(","))
 		return nil
 	},
-	"Vocab": func(sec *ini.Section, cfg *Config, args []string) error {
+	"Vocab": func(sec *ini.Section, cfg *Config, _ []string) error {
 		cfg.Vocab = mergeValues(sec.Key("Vocab").StringsWithShadows(","))
 		for _, v := range cfg.Vocab {
 			if err := loadVocab(v, cfg); err != nil {
@@ -149,7 +149,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		}
 		return nil
 	},
-	"NLPEndpoint": func(sec *ini.Section, cfg *Config, args []string) error {
+	"NLPEndpoint": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
 		cfg.NLPEndpoint = sec.Key("NLPEndpoint").MustString("")
 		return nil
 	},
@@ -179,7 +179,7 @@ func loadINI(cfg *Config, dry bool) error {
 	}
 
 	fromEnv, hasEnv := os.LookupEnv("VALE_CONFIG_PATH")
-	if cfg.Flags.Sources != "" {
+	if cfg.Flags.Sources != "" { //nolint:gocritic
 		// We have multiple sources -- e.g., local config + remote package(s).
 		//
 		// See fixtures/config.feature#451 for an explanation of how this has
@@ -300,7 +300,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 			if err := f(core, cfg, paths); err != nil && !dry {
 				return err
 			}
-		} else if _, found := syntaxOpts[k]; found {
+		} else if _, found = syntaxOpts[k]; found {
 			msg := fmt.Sprintf("'%s' is a syntax-specific option", k)
 			return NewE201FromTarget(msg, k, cfg.RootINI)
 		}
@@ -320,7 +320,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 	for _, k := range global.KeyStrings() {
 		if f, found := globalOpts[k]; found {
 			f(global, cfg, paths)
-		} else if _, found := syntaxOpts[k]; found {
+		} else if _, found = syntaxOpts[k]; found {
 			msg := fmt.Sprintf("'%s' is a syntax-specific option", k)
 			return NewE201FromTarget(msg, k, cfg.RootINI)
 		} else {

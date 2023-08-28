@@ -137,7 +137,7 @@ func (f *File) ComputeMetrics() (map[string]interface{}, error) {
 		if strings.HasPrefix(k, "table") {
 			continue
 		}
-		k = strings.Replace(k, ".", "_", -1)
+		k = strings.ReplaceAll(k, ".", "_")
 		params[k] = float64(v)
 	}
 
@@ -259,8 +259,8 @@ func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 
 			if _, found := f.history[entry]; !found {
 				// Check rule-assigned limits for reporting:
-				count, found := f.limits[a.Check]
-				if (!found || a.Limit == 0) || count < a.Limit {
+				count, occur := f.limits[a.Check]
+				if (!occur || a.Limit == 0) || count < a.Limit {
 					f.Alerts = append(f.Alerts, a)
 
 					f.history[entry] = 1
@@ -275,7 +275,7 @@ func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 
 // UpdateComments sets a new status based on comment.
 func (f *File) UpdateComments(comment string) {
-	if comment == "vale off" {
+	if comment == "vale off" { //nolint:gocritic
 		f.Comments["off"] = true
 	} else if comment == "vale on" {
 		f.Comments["off"] = false
