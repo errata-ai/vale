@@ -74,12 +74,12 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 	} else if f, ok := varToFunc[rule.Match]; ok {
 		rule.Check = f
 	} else {
-		re, err := regexp2.CompileStd(rule.Match)
-		if err != nil {
-			return rule, core.NewE201FromPosition(err.Error(), path, 1)
+		re2, errc := regexp2.CompileStd(rule.Match)
+		if errc != nil {
+			return rule, core.NewE201FromPosition(errc.Error(), path, 1)
 		}
 		rule.Check = func(s string, r *regexp2.Regexp) bool {
-			return re.MatchStringStd(s) || isMatch(r, s)
+			return re2.MatchStringStd(s) || isMatch(r, s)
 		}
 	}
 
@@ -87,7 +87,7 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 }
 
 // Run checks the capitalization style of the provided text.
-func (o Capitalization) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
+func (o Capitalization) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
 	txt := blk.Text

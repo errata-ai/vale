@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var checktests = []struct {
+/*var checktests = []struct {
 	check string
 	msg   string
 }{
@@ -12,7 +12,6 @@ var checktests = []struct {
 	{"NoMsg.yml", "YAML.NoMsg: missing message!"},
 }
 
-/*
 func TestAddCheck(t *testing.T) {
 	cfg, err := config.New()
 	if err != nil {

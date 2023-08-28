@@ -17,7 +17,7 @@ type Occurrence struct {
 }
 
 // NewOccurrence creates a new `occurrence`-based rule.
-func NewOccurrence(cfg *core.Config, generic baseCheck, path string) (Occurrence, error) {
+func NewOccurrence(_ *core.Config, generic baseCheck, path string) (Occurrence, error) {
 	rule := Occurrence{}
 
 	err := decodeRule(generic, &rule)
@@ -47,7 +47,7 @@ func NewOccurrence(cfg *core.Config, generic baseCheck, path string) (Occurrence
 
 // Run checks the number of occurrences of a user-defined regex against a
 // certain threshold.
-func (o Occurrence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
+func (o Occurrence) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 	var a core.Alert
 	var err error
 	var alerts []core.Alert

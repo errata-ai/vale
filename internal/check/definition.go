@@ -112,7 +112,7 @@ const (
 	ignoreCase      = `(?i)`
 	wordTemplate    = `(?m)\b(?:%s)\b`
 	nonwordTemplate = `(?m)(?:%s)`
-	tokenTemplate   = `^(?:%s)$`
+	tokenTemplate   = `^(?:%s)$` //nolint:gosec
 )
 
 type baseCheck map[string]interface{}
@@ -120,7 +120,7 @@ type baseCheck map[string]interface{}
 func buildRule(cfg *core.Config, generic baseCheck) (Rule, error) {
 	path, ok := generic["path"].(string)
 	if !ok {
-		msg := fmt.Errorf("'%v' is not valid .", generic)
+		msg := fmt.Errorf("'%v' is not valid", generic)
 		return Existence{}, core.NewE100("buildRule: path", msg)
 	}
 
@@ -202,13 +202,13 @@ func parse(file []byte, path string) (map[string]interface{}, error) {
 		r := regexp.MustCompile(`yaml: line (\d+): (.+)`)
 		if r.MatchString(err.Error()) {
 			groups := r.FindStringSubmatch(err.Error())
-			i, err := strconv.Atoi(groups[1])
-			if err != nil {
-				return generic, core.NewE100("addCheck/Atoi", err)
+			i, erri := strconv.Atoi(groups[1])
+			if erri != nil {
+				return generic, core.NewE100("addCheck/Atoi", erri)
 			}
 			return generic, core.NewE201FromPosition(groups[2], path, i)
 		}
-	} else if err := validateDefinition(generic, path); err != nil {
+	} else if err = validateDefinition(generic, path); err != nil {
 		return generic, err
 	}
 
@@ -222,7 +222,7 @@ func validateDefinition(generic map[string]interface{}, path string) error {
 			path,
 			1)
 	} else if !core.StringInSlice(point.(string), extensionPoints) {
-		key := point.(string)
+		key, _ := point.(string)
 		return core.NewE201FromTarget(
 			fmt.Sprintf("'extends' key must be one of %v.", extensionPoints),
 			key,
@@ -279,7 +279,7 @@ func makeRegexp(
 	noCase bool,
 	word func() bool,
 	callback func() string,
-	append bool,
+	shouldAppend bool,
 ) string {
 	regex := ""
 
@@ -293,7 +293,7 @@ func makeRegexp(
 		regex += nonwordTemplate
 	}
 
-	if append {
+	if shouldAppend {
 		regex += callback()
 	} else {
 		regex = callback() + regex
@@ -341,7 +341,7 @@ func updateExceptions(previous []string, current map[string]struct{}) (*regexp2.
 		return regexp2.CompileStd(regex)
 	}
 
-	return nil, nil
+	return &regexp2.Regexp{}, nil
 }
 
 func decodeRule(input interface{}, output interface{}) error {

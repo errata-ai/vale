@@ -19,7 +19,7 @@ type Repetition struct {
 }
 
 // NewRepetition creates a new `repetition`-based rule.
-func NewRepetition(cfg *core.Config, generic baseCheck, path string) (Repetition, error) {
+func NewRepetition(_ *core.Config, generic baseCheck, path string) (Repetition, error) {
 	rule := Repetition{}
 
 	err := decodeRule(generic, &rule)
@@ -50,7 +50,7 @@ func NewRepetition(cfg *core.Config, generic baseCheck, path string) (Repetition
 // Run executes the the `repetition`-based rule.
 //
 // The rule looks for repeated matches of its regex -- such as "this this".
-func (o Repetition) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
+func (o Repetition) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 	var curr, prev string
 	var hit bool
 	var ploc []int
@@ -87,9 +87,9 @@ func (o Repetition) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 			if !strings.Contains(converted, "\n") {
 				floc := []int{ploc[0], loc[1]}
 
-				a, err := makeAlert(o.Definition, floc, txt)
-				if err != nil {
-					return alerts, err
+				a, erra := makeAlert(o.Definition, floc, txt)
+				if erra != nil {
+					return alerts, erra
 				}
 
 				a.Message, a.Description = formatMessages(o.Message,

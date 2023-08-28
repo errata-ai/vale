@@ -31,7 +31,7 @@ type Metric struct {
 }
 
 // NewMetric creates a new `metric`-based rule.
-func NewMetric(cfg *core.Config, generic baseCheck, path string) (Metric, error) {
+func NewMetric(_ *core.Config, generic baseCheck, path string) (Metric, error) {
 	rule := Metric{}
 
 	err := decodeRule(generic, &rule)
@@ -47,13 +47,13 @@ func NewMetric(cfg *core.Config, generic baseCheck, path string) (Metric, error)
 }
 
 // Run calculates the readability level of the given text.
-func (o Metric) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
+func (o Metric) Run(_ nlp.Block, f *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 	ctx := context.Background()
 
 	parameters, err := f.ComputeMetrics()
 	if err != nil {
-		return alerts, nil
+		return alerts, err
 	}
 
 	for _, k := range variables {

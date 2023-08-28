@@ -18,7 +18,7 @@ type Script struct {
 }
 
 // NewScript creates a new `script`-based rule.
-func NewScript(cfg *core.Config, generic baseCheck, path string) (Script, error) {
+func NewScript(_ *core.Config, generic baseCheck, path string) (Script, error) {
 	rule := Script{}
 
 	err := decodeRule(generic, &rule)
@@ -31,7 +31,7 @@ func NewScript(cfg *core.Config, generic baseCheck, path string) (Script, error)
 }
 
 // Run executes the given script and returns its Alerts.
-func (s Script) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
+func (s Script) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 	var alerts []core.Alert
 
 	script := tengo.NewScript([]byte(s.Script))
@@ -51,7 +51,7 @@ func (s Script) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 		return alerts, core.NewE201FromTarget(err.Error(), "script", s.path)
 	}
 
-	if err := compiled.Run(); err != nil {
+	if err = compiled.Run(); err != nil {
 		return alerts, core.NewE201FromTarget(err.Error(), "script", s.path)
 	}
 
@@ -74,7 +74,7 @@ func (s Script) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 func toLocation(a []interface{}) [][]int {
 	locs := [][]int{}
 	for _, i := range a {
-		m := i.(map[string]interface{})
+		m, _ := i.(map[string]interface{})
 		locs = append(locs, []int{
 			int(m["begin"].(int64)),
 			int(m["end"].(int64)),

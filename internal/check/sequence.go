@@ -66,13 +66,12 @@ func NewSequence(cfg *core.Config, generic baseCheck, path string) (Sequence, er
 				false)
 			regex = fmt.Sprintf(regex, token.Pattern)
 
-			re, err := regexp2.CompileStd(regex)
-			if err != nil {
-				return rule, core.NewE201FromPosition(err.Error(), path, 1)
+			re, errc := regexp2.CompileStd(regex)
+			if errc != nil {
+				return rule, core.NewE201FromPosition(errc.Error(), path, 1)
 			}
 			rule.Tokens[i].re = re
 		}
-
 	}
 
 	rule.Definition.Scope = []string{"sentence"}
@@ -236,16 +235,16 @@ func (s Sequence) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 			// We're looking for our "anchor" ...
 			for _, loc := range tok.re.FindAllStringIndex(txt, -1) {
 				// These are all possible violations in `txt`:
-				steps, index := sequenceMatches(idx, s, tok, words)
-				s.history = append(s.history, index)
+				steps, _ := sequenceMatches(idx, s, tok, words)
+				// s.history = append(s.history, index)
 
 				if len(steps) > 0 {
 					seq := stepsToString(steps)
-					idx := strings.Index(txt, seq)
+					ssp := strings.Index(txt, seq)
 
 					a := core.Alert{
 						Check: s.Name, Severity: s.Level, Link: s.Link,
-						Span: []int{idx, idx + len(seq)}, Hide: false,
+						Span: []int{ssp, ssp + len(seq)}, Hide: false,
 						Match: seq, Action: s.Action}
 
 					a.Message, a.Description = formatMessages(s.Message,

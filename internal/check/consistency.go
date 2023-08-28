@@ -33,7 +33,7 @@ func NewConsistency(cfg *core.Config, generic baseCheck, path string) (Consisten
 	var chkRE string
 
 	rule := Consistency{}
-	name := generic["name"].(string)
+	name, _ := generic["name"].(string)
 
 	err := mapstructure.WeakDecode(generic, &rule)
 	if err != nil {
@@ -63,9 +63,9 @@ func NewConsistency(cfg *core.Config, generic baseCheck, path string) (Consisten
 		chkRE = fmt.Sprintf("(?P<%s>%s)|(?P<%s>%s)", subs[0], v1, subs[1], v2)
 		chkRE = fmt.Sprintf(regex, chkRE)
 
-		re, err := regexp2.CompileStd(chkRE)
-		if err != nil {
-			return rule, core.NewE201FromPosition(err.Error(), path, 1)
+		re, errc := regexp2.CompileStd(chkRE)
+		if errc != nil {
+			return rule, core.NewE201FromPosition(errc.Error(), path, 1)
 		}
 
 		rule.Extends = name

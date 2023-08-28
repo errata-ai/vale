@@ -11,11 +11,14 @@ func isMatch(r *regexp2.Regexp, s string) bool {
 	// TODO: `r.String() != ""`?
 	//
 	// Should we ensure that empty regexes == `nil`?
-	if r == nil {
+	if r == nil || r.String() == "" {
 		return false
 	}
-	match, _ := r.MatchString(s)
-	return r.String() != "" && match
+	match, err := r.MatchString(s)
+	if err != nil {
+		return false
+	}
+	return match
 }
 
 func lower(s string, re *regexp2.Regexp) bool {
@@ -40,7 +43,7 @@ func title(s string, except *regexp2.Regexp, tc *titlecase.TitleConverter, thres
 
 	extent := len(expected)
 	for i, word := range re.FindAllString(s, -1) {
-		if i >= extent {
+		if i >= extent { //nolint:gocritic
 			// TODO: Look into this more.
 			//
 			// The problem is that `prose/transform` uses a different split
@@ -90,7 +93,7 @@ func sentence(s string, indicators []string, except *regexp2.Regexp, threshold f
 		}
 		t := w
 
-		if strings.Contains(w, "-") {
+		if strings.Contains(w, "-") { //nolint:gocritic
 			// NOTE: This is necessary for words like `Top-level`.
 			w = strings.Split(w, "-")[0]
 		} else if strings.Contains(w, "'") {
@@ -101,9 +104,9 @@ func sentence(s string, indicators []string, except *regexp2.Regexp, threshold f
 			w = strings.Split(w, "’")[0]
 		}
 
-		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || isMatch(except, t) {
+		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || isMatch(except, t) { //nolint:gocritic
 			count++
-		} else if i == 0 && w != strings.Title(strings.ToLower(w)) {
+		} else if i == 0 && w != strings.Title(strings.ToLower(w)) { //nolint:staticcheck
 			return false
 		} else if i == 0 || w == strings.ToLower(w) {
 			count++

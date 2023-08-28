@@ -92,9 +92,9 @@ func (c Conditional) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 		if !core.StringInSlice(s, f.Sequences) && !isMatch(c.exceptRe, s) {
 			// If we've found one (e.g., "WHO") and we haven't marked it as
 			// being defined previously, send an Alert.
-			a, err := makeAlert(c.Definition, loc, txt)
-			if err != nil {
-				return alerts, err
+			a, erra := makeAlert(c.Definition, loc, txt)
+			if erra != nil {
+				return alerts, erra
 			}
 			alerts = append(alerts, a)
 		}

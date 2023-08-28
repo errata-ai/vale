@@ -159,7 +159,7 @@ func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
 
 	if level, ok := mgr.Config.RuleToLevel[chkName]; ok {
 		generic["level"] = level
-	} else if _, ok := generic["level"]; !ok {
+	} else if _, ok = generic["level"]; !ok {
 		generic["level"] = "warning"
 	}
 	if scope, ok := generic["scope"]; scope == nil || !ok {
@@ -276,6 +276,6 @@ func (mgr *Manager) loadVocabRules() {
 }
 
 func (mgr *Manager) hasStyle(name string) bool {
-	styles := append(mgr.styles, defaultStyles...)
+	styles := append(mgr.styles, defaultStyles...) //nolint:gocritic
 	return core.StringInSlice(name, styles)
 }

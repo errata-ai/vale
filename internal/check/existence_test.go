@@ -43,7 +43,6 @@ func TestExistence(t *testing.T) {
 	if len(alerts) != 1 {
 		t.Errorf("expected one alert, not %v", alerts)
 	}
-
 }
 
 func FuzzExistenceInit(f *testing.F) {

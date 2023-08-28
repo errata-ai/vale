@@ -19,7 +19,7 @@ type Readability struct {
 }
 
 // NewReadability creates a new `readability`-based rule.
-func NewReadability(cfg *core.Config, generic baseCheck, path string) (Readability, error) {
+func NewReadability(_ *core.Config, generic baseCheck, path string) (Readability, error) {
 	rule := Readability{}
 
 	err := decodeRule(generic, &rule)
@@ -40,7 +40,7 @@ func NewReadability(cfg *core.Config, generic baseCheck, path string) (Readabili
 }
 
 // Run calculates the readability level of the given text.
-func (o Readability) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
+func (o Readability) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 	var grade float64
 	var alerts []core.Alert
 
@@ -62,7 +62,7 @@ func (o Readability) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
 		grade += doc.AutomatedReadability()
 	}
 
-	grade = grade / float64(len(o.Metrics))
+	grade /= float64(len(o.Metrics))
 	if grade > o.Grade {
 		a := core.Alert{Check: o.Name, Severity: o.Level,
 			Span: []int{1, 1}, Link: o.Link}

@@ -38,24 +38,24 @@ type Spelling struct {
 	Append       bool
 }
 
-func addFilters(s *Spelling, generic baseCheck, cfg *core.Config) error {
+func addFilters(s *Spelling, generic baseCheck, _ *core.Config) error {
 	if generic["filters"] != nil {
 		// We pre-compile user-provided filters for efficiency.
 		//
 		// NOTE: This makes a big difference: ~50s -> ~13s.
 		for _, filter := range generic["filters"].([]interface{}) {
-			if pat, e := regexp.Compile(filter.(string)); e != nil {
-				return e
-			} else {
-				s.Filters = append(s.Filters, pat)
+			pat, err := regexp.Compile(filter.(string))
+			if err != nil {
+				return err
 			}
+			s.Filters = append(s.Filters, pat)
 		}
 		delete(generic, "filters")
 	}
 	return nil
 }
 
-func addExceptions(s *Spelling, generic baseCheck, cfg *core.Config) error {
+func addExceptions(s *Spelling, generic baseCheck, cfg *core.Config) error { //nolint:unparam
 	if generic["ignore"] != nil {
 		// Backwards compatibility: we need to be able to accept a single
 		// or an array.
@@ -83,7 +83,7 @@ func NewSpelling(cfg *core.Config, generic baseCheck, path string) (Spelling, er
 	var model *spell.Checker
 
 	rule := Spelling{}
-	name := generic["name"].(string)
+	name, _ := generic["name"].(string)
 
 	err := addFilters(&rule, generic, cfg)
 	if err != nil {
@@ -135,7 +135,7 @@ func NewSpelling(cfg *core.Config, generic baseCheck, path string) (Spelling, er
 }
 
 // Run performs spell-checking on the provided text.
-func (s Spelling) Run(blk nlp.Block, f *core.File) ([]core.Alert, error) {
+func (s Spelling) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 	var alerts []core.Alert
 
 	txt := blk.Text

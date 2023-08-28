@@ -56,7 +56,7 @@ func filter(mgr *Manager) (map[string]Rule, error) {
 
 	filtered := map[string]Rule{}
 	for _, entry := range output.([]interface{}) {
-		rule := entry.(Definition)
+		rule, _ := entry.(Definition)
 
 		name := rule.Name
 		if strings.Count(name, ".") > 1 {
