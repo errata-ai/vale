@@ -2,7 +2,6 @@ package core
 
 import (
 	"bytes"
-	"errors"
 	"os"
 	"path/filepath"
 	"sort"
@@ -143,7 +142,7 @@ func (f *File) ComputeMetrics() (map[string]interface{}, error) {
 
 	doc := summarize.NewDocument(f.Summary.String())
 	if doc.NumWords == 0 {
-		return params, errors.New("empty file")
+		return params, nil
 	}
 
 	params["complex_words"] = doc.NumComplexWords
