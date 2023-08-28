@@ -103,8 +103,8 @@ func (mgr *Manager) NeedsTagging() bool {
 }
 
 // AssignNLP determines what NLP tasks a file needs.
-func (mgr *Manager) AssignNLP(f *core.File) nlp.NLPInfo {
-	return nlp.NLPInfo{
+func (mgr *Manager) AssignNLP(f *core.File) nlp.Info {
+	return nlp.Info{
 		Scope:        f.RealExt,
 		Segmentation: mgr.HasScope("sentence"),
 		Splitting:    mgr.HasScope("paragraph"),

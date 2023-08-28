@@ -13,8 +13,8 @@ type Tokenizer interface {
 	Tokenize(string) []string
 }
 
-// iterTokenizer splits a sentence into words.
-type iterTokenizer struct {
+// IterTokenizer splits a sentence into words.
+type IterTokenizer struct {
 	specialRE      *regexp.Regexp
 	sanitizer      *strings.Replacer
 	contractions   []string
@@ -25,67 +25,67 @@ type iterTokenizer struct {
 	isUnsplittable TokenTester
 }
 
-type TokenizerOptFunc func(*iterTokenizer)
+type TokenizerOptFunc func(*IterTokenizer)
 
 // UsingIsUnsplittable gives a function that tests whether a token is splittable or not.
 func UsingIsUnsplittable(x TokenTester) TokenizerOptFunc {
-	return func(tokenizer *iterTokenizer) {
+	return func(tokenizer *IterTokenizer) {
 		tokenizer.isUnsplittable = x
 	}
 }
 
 // UsingSpecialRE sets the provided special regex for unsplittable tokens.
 func UsingSpecialRE(x *regexp.Regexp) TokenizerOptFunc {
-	return func(tokenizer *iterTokenizer) {
+	return func(tokenizer *IterTokenizer) {
 		tokenizer.specialRE = x
 	}
 }
 
 // UsingSanitizer sets the provided sanitizer.
 func UsingSanitizer(x *strings.Replacer) TokenizerOptFunc {
-	return func(tokenizer *iterTokenizer) {
+	return func(tokenizer *IterTokenizer) {
 		tokenizer.sanitizer = x
 	}
 }
 
 // UsingSuffixes sets the provided suffixes.
 func UsingSuffixes(x []string) TokenizerOptFunc {
-	return func(tokenizer *iterTokenizer) {
+	return func(tokenizer *IterTokenizer) {
 		tokenizer.suffixes = x
 	}
 }
 
 // UsingPrefixes sets the provided prefixes.
 func UsingPrefixes(x []string) TokenizerOptFunc {
-	return func(tokenizer *iterTokenizer) {
+	return func(tokenizer *IterTokenizer) {
 		tokenizer.prefixes = x
 	}
 }
 
 // UsingEmoticons sets the provided map of emoticons.
 func UsingEmoticons(x map[string]int) TokenizerOptFunc {
-	return func(tokenizer *iterTokenizer) {
+	return func(tokenizer *IterTokenizer) {
 		tokenizer.emoticons = x
 	}
 }
 
 // UsingContractions sets the provided contractions.
 func UsingContractions(x []string) TokenizerOptFunc {
-	return func(tokenizer *iterTokenizer) {
+	return func(tokenizer *IterTokenizer) {
 		tokenizer.contractions = x
 	}
 }
 
 // UsingSplitCases sets the provided splitCases.
 func UsingSplitCases(x []string) TokenizerOptFunc {
-	return func(tokenizer *iterTokenizer) {
+	return func(tokenizer *IterTokenizer) {
 		tokenizer.splitCases = x
 	}
 }
 
 // NewIterTokenizer creates a new iterTokenizer.
-func NewIterTokenizer(opts ...TokenizerOptFunc) *iterTokenizer {
-	tok := new(iterTokenizer)
+func NewIterTokenizer(opts ...TokenizerOptFunc) *IterTokenizer {
+	tok := new(IterTokenizer)
 
 	// Set default parameters
 	tok.emoticons = emoticons
@@ -110,12 +110,12 @@ func addToken(s string, toks []string) []string {
 	return toks
 }
 
-func (t *iterTokenizer) isSpecial(token string) bool {
+func (t *IterTokenizer) isSpecial(token string) bool {
 	_, found := t.emoticons[token]
 	return found || t.specialRE.MatchString(token) || t.isUnsplittable(token)
 }
 
-func (t *iterTokenizer) doSplit(token string) []string {
+func (t *IterTokenizer) doSplit(token string) []string {
 	var tokens []string
 
 	last := 0
@@ -151,7 +151,7 @@ func (t *iterTokenizer) doSplit(token string) []string {
 }
 
 // Tokenize splits a sentence into a slice of words.
-func (t *iterTokenizer) Tokenize(text string) []string {
+func (t *IterTokenizer) Tokenize(text string) []string {
 	var tokens []string
 
 	clean, white := t.sanitizer.Replace(text), false
@@ -172,7 +172,7 @@ func (t *iterTokenizer) Tokenize(text string) []string {
 				if toks, found := cache[span]; found {
 					tokens = append(tokens, toks...)
 				} else {
-					toks := t.doSplit(span)
+					toks = t.doSplit(span)
 					cache[span] = toks
 					tokens = append(tokens, toks...)
 				}

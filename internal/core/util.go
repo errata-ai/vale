@@ -307,7 +307,7 @@ func loadVocab(root string, cfg *Config) error {
 	return err
 }
 
-func TextToContext(text string, meta *nlp.NLPInfo) []nlp.TaggedWord {
+func TextToContext(text string, meta *nlp.Info) []nlp.TaggedWord {
 	context := []nlp.TaggedWord{}
 
 	for idx, line := range strings.Split(text, "\n") {

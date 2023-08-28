@@ -35,7 +35,7 @@ func NewBlockWithParent(ctx, txt, sel, parent string) Block {
 }
 
 // NewLinedBlock creates a Block with an already-known location.
-func NewLinedBlock(ctx, txt, sel string, line int, nlp *NLPInfo) Block {
+func NewLinedBlock(ctx, txt, sel string, line int, _ *Info) Block {
 	if ctx == "" {
 		ctx = txt
 	}
@@ -48,11 +48,11 @@ func NewLinedBlock(ctx, txt, sel string, line int, nlp *NLPInfo) Block {
 		Line:    line}
 }
 
-// NLPInfo handles NLP-related tasks.
+// Info handles NLP-related tasks.
 //
 // Assigning this on a per-file basis allows us to handle multi-language
 // projects -- one file might be `en` while another is `ja`, for example.
-type NLPInfo struct {
+type Info struct {
 	Lang         string // Language of the file.
 	Endpoint     string // API endpoint (optional); TODO: should this be per-file?
 	Scope        string // The file's ext scope.
@@ -67,7 +67,7 @@ type NLPInfo struct {
 // The default implementation is the pure-Go prose library, but the goal is to
 // allow (fairly) seamless integration with non-Go libraries too (such as
 // spaCy).
-func (n *NLPInfo) Compute(block *Block) ([]Block, error) {
+func (n *Info) Compute(block *Block) ([]Block, error) {
 	seg := SentenceTokenizer.Tokenize
 	if n.Endpoint != "" && n.Lang != "en" {
 		// We only use external segmentation for non-English text since prose
@@ -83,7 +83,7 @@ func (n *NLPInfo) Compute(block *Block) ([]Block, error) {
 	return n.doNLP(block, seg)
 }
 
-func (n *NLPInfo) doNLP(blk *Block, seg segmenter) ([]Block, error) {
+func (n *Info) doNLP(blk *Block, seg segmenter) ([]Block, error) {
 	blks := []Block{}
 
 	ctx := blk.Context

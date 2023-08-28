@@ -20,7 +20,7 @@ type TagResult struct {
 func post(url string) ([]byte, error) {
 	var body []byte
 
-	resp, err := http.Post(url, "application/x-www-form-urlencoded", nil)
+	resp, err := http.Post(url, "application/x-www-form-urlencoded", nil) //nolint:gosec,noctx
 	if err != nil {
 		return body, err
 	}

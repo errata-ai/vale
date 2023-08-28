@@ -20,7 +20,7 @@ var commentControlRE = regexp.MustCompile(`^vale (.+\..+) = (YES|NO)$`)
 
 // A File represents a linted text file.
 type File struct {
-	NLP        nlp.NLPInfo       // -
+	NLP        nlp.Info          // -
 	Summary    bytes.Buffer      // holds content to be included in summarization checks
 	Alerts     []Alert           // all alerts associated with this file
 	BaseStyles []string          // base style assigned in .vale
@@ -117,7 +117,7 @@ func NewFile(src string, config *Config) (*File, error) {
 		Comments: make(map[string]bool), history: make(map[string]int),
 		simple: config.Flags.Simple, Transform: transform,
 		limits: make(map[string]int), Path: src, Metrics: make(map[string]int),
-		NLP:    nlp.NLPInfo{Endpoint: config.NLPEndpoint, Lang: lang},
+		NLP:    nlp.Info{Endpoint: config.NLPEndpoint, Lang: lang},
 		Lookup: lookup,
 	}
 

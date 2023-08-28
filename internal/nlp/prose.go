@@ -52,7 +52,7 @@ func textToWords(text string, nlp bool) []string {
 }
 
 // TextToTokens converts a string to a slice of tokens.
-func TextToTokens(text string, nlp *NLPInfo) []tag.Token {
+func TextToTokens(text string, nlp *Info) []tag.Token {
 	// Determine if (and how) we need to do POS tagging.
 	if nlp == nil || nlp.Endpoint == "" {
 		// Fall back to our internal library (English-only).
