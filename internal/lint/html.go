@@ -2,6 +2,7 @@ package lint
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -38,10 +39,10 @@ func (l *Linter) applyPatterns(content, block, inline, ext string) (string, erro
 			return s, err
 		} else if sec.Match(ext) {
 			for _, r := range regexes {
-				pat, err := regexp2.CompileStd(r)
-				if err != nil {
+				pat, errc := regexp2.CompileStd(r)
+				if errc != nil { //nolint:gocritic
 					return s, core.NewE201FromTarget(
-						err.Error(),
+						errc.Error(),
 						r,
 						l.Manager.Config.Flags.Path,
 					)
@@ -71,10 +72,10 @@ func (l *Linter) applyPatterns(content, block, inline, ext string) (string, erro
 			return s, err
 		} else if sec.Match(ext) {
 			for _, r := range regexes {
-				pat, err := regexp2.CompileStd(r)
-				if err != nil {
+				pat, errc := regexp2.CompileStd(r)
+				if errc != nil {
 					return s, core.NewE201FromTarget(
-						err.Error(),
+						errc.Error(),
 						r,
 						l.Manager.Config.Flags.Path,
 					)
@@ -95,10 +96,16 @@ func (l *Linter) applyPatterns(content, block, inline, ext string) (string, erro
 }
 
 func (l *Linter) post(f *core.File, text, url string) (string, error) {
-	req, err := http.NewRequest("POST", url, bytes.NewBufferString(text))
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		"POST",
+		url,
+		bytes.NewBufferString(text))
+
 	if err != nil {
 		return "", core.NewE100(f.Path, err)
 	}
+
 	req.Header.Set("Content-Type", "text/plain")
 	req.Header.Set("Accept", "text/plain")
 

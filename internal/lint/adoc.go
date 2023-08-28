@@ -93,7 +93,7 @@ func (l *Linter) lintADoc(f *core.File) error {
 		if err != nil {
 			return core.NewE100(f.Path, err)
 		}
-	} else if err := l.startAdocServer(exe, attrs); err != nil {
+	} else if err = l.startAdocServer(exe, attrs); err != nil {
 		html, err = callAdoc(f, s, exe, attrs)
 		if err != nil {
 			return core.NewE100(f.Path, err)
@@ -167,11 +167,11 @@ func (l *Linter) startAdocServer(exe string, attrs map[string]string) error {
 	)
 
 	tmpfile, _ := os.CreateTemp("", "server.*.rb")
-	if _, err := tmpfile.WriteString(adocServer); err != nil {
+	if _, err = tmpfile.WriteString(adocServer); err != nil {
 		return err
 	}
 
-	if err := tmpfile.Close(); err != nil {
+	if err = tmpfile.Close(); err != nil {
 		return err
 	}
 
@@ -180,14 +180,14 @@ func (l *Linter) startAdocServer(exe string, attrs map[string]string) error {
 		"GEM_HOME="+home,
 	)
 
-	if err := cmd.Start(); err != nil {
+	if err = cmd.Start(); err != nil {
 		return err
 	}
 
 	l.pids = append(l.pids, cmd.Process.Pid)
 	l.temps = append(l.temps, tmpfile)
 
-	if err := ping(adocDomain); err != nil {
+	if err = ping(adocDomain); err != nil {
 		return err
 	}
 

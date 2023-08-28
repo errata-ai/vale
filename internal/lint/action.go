@@ -73,20 +73,24 @@ func suggest(alert core.Alert, cfg *core.Config) ([]string, error) {
 			return suggestions, err
 		}
 	}
-	rule := mgr.Rules()[alert.Check].(check.Spelling)
+
+	rule, ok := mgr.Rules()[alert.Check].(check.Spelling)
+	if !ok {
+		return suggestions, errors.New("unknown check")
+	}
 
 	return rule.Suggest(alert.Match), nil
 }
 
-func replace(alert core.Alert, cfg *core.Config) ([]string, error) {
+func replace(alert core.Alert, _ *core.Config) ([]string, error) {
 	return alert.Action.Params, nil
 }
 
-func remove(alert core.Alert, cfg *core.Config) ([]string, error) {
+func remove(_ core.Alert, _ *core.Config) ([]string, error) {
 	return []string{""}, nil
 }
 
-func convert(alert core.Alert, cfg *core.Config) ([]string, error) {
+func convert(alert core.Alert, _ *core.Config) ([]string, error) {
 	match := alert.Match
 	if alert.Action.Params[0] == "simple" {
 		match = nlp.Simple(match)
@@ -94,7 +98,7 @@ func convert(alert core.Alert, cfg *core.Config) ([]string, error) {
 	return []string{match}, nil
 }
 
-func edit(alert core.Alert, cfg *core.Config) ([]string, error) {
+func edit(alert core.Alert, _ *core.Config) ([]string, error) {
 	match := alert.Match
 
 	switch name := alert.Action.Params[0]; name {

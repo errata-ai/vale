@@ -11,7 +11,7 @@ func coalesce(comments []Comment) []Comment {
 
 	buf := bytes.Buffer{}
 	for i, comment := range comments {
-		if comment.Scope == "text.comment.block" {
+		if comment.Scope == "text.comment.block" { //nolint:gocritic
 			joined = append(joined, comment)
 		} else if i == 0 || comments[i-1].Line != comment.Line-1 {
 			if buf.Len() > 0 {

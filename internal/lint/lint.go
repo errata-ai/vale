@@ -24,23 +24,11 @@ type Linter struct {
 	client    *http.Client
 	HasDir    bool
 	nonGlobal bool
-	views     []view
 }
 
 type lintResult struct {
 	file *core.File
 	err  error
-}
-
-// A view is temporary state of a `File`'s contents.
-//
-// Each view has a `text` and an `offset` that represents the position of the
-// modification that created the view.
-//
-// See core/ast.go@updateContext for more information.
-type view struct {
-	text   string
-	offset int
 }
 
 // NewLinter initializes a Linter.
@@ -75,7 +63,7 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 		return linted, err
 	}
 
-	if err := l.setup(); err != nil {
+	if err = l.setup(); err != nil {
 		return linted, err
 	}
 
@@ -85,7 +73,10 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 
 		for result := range filesChan {
 			if result.err != nil {
-				l.teardown()
+				err = l.teardown()
+				if err != nil {
+					return linted, err
+				}
 				return linted, result.err
 			} else if l.Manager.Config.Flags.Normalize {
 				result.file.Path = filepath.ToSlash(result.file.Path)
@@ -93,13 +84,20 @@ func (l *Linter) Lint(input []string, pat string) ([]*core.File, error) {
 			linted = append(linted, result.file)
 		}
 
-		if err := <-errChan; err != nil {
-			l.teardown()
+		if err = <-errChan; err != nil {
+			terr := l.teardown()
+			if terr != nil {
+				return linted, terr
+			}
 			return linted, err
 		}
 	}
 
-	l.teardown()
+	err = l.teardown()
+	if err != nil {
+		return linted, err
+	}
+
 	return linted, nil
 }
 
@@ -174,7 +172,7 @@ func (l *Linter) lintFile(src string) lintResult {
 	file.NLP = l.Manager.AssignNLP(file)
 	simple := l.Manager.Config.Flags.Simple
 
-	if file.Format == "markup" && !simple {
+	if file.Format == "markup" && !simple { //nolint:gocritic
 		switch file.NormedExt {
 		case ".adoc":
 			err = l.lintADoc(file)
@@ -229,7 +227,7 @@ func (l *Linter) lintProse(f *core.File, blk nlp.Block, lines int) error {
 	// See fixtures/i18n for an example.
 	needsLookup := strings.Count(blk.Text, "\n") > 0 || f.Lookup
 	for _, b := range blks {
-		err := l.lintBlock(f, b, lines, 0, needsLookup)
+		err = l.lintBlock(f, b, lines, 0, needsLookup)
 		if err != nil {
 			return err
 		}
@@ -260,11 +258,10 @@ func (l *Linter) lintBlock(f *core.File, blk nlp.Block, lines, pad int, lookup b
 		alerts, err := chk.Run(blk, f)
 		if err != nil {
 			return err
-
 		}
-		for _, a := range alerts {
-			core.FormatAlert(&a, info.Limit, info.Level, name)
-			f.AddAlert(a, blk, lines, pad, lookup)
+		for i := range alerts {
+			core.FormatAlert(&alerts[i], info.Limit, info.Level, name)
+			f.AddAlert(alerts[i], blk, lines, pad, lookup)
 		}
 	}
 
@@ -285,7 +282,7 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk nlp.Bl
 	}
 
 	chkScope := check.NewScope(details.Scope)
-	if f.QueryComments(name) {
+	if f.QueryComments(name) { //nolint:gocritic
 		// It has been disabled via an in-text comment.
 		return false
 	} else if core.LevelToInt[details.Level] < min {

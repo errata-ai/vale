@@ -145,19 +145,19 @@ func (l *Linter) lintRST(f *core.File) error {
 	s = reCodeBlock.ReplaceAllString(s, "::")
 
 	if !l.HasDir {
-		html, err = callRst(f, s, rst2html, python)
+		html, err = callRst(s, rst2html, python)
 		if err != nil {
 			return core.NewE100(f.Path, err)
 		}
-	} else if err := l.startRstServer(rst2html, python); err != nil {
-		html, err = callRst(f, s, rst2html, python)
+	} else if err = l.startRstServer(rst2html, python); err != nil {
+		html, err = callRst(s, rst2html, python)
 		if err != nil {
 			return core.NewE100(f.Path, err)
 		}
 	} else {
 		html, err = l.post(f, s, rstURL)
 		if err != nil {
-			html, err = callRst(f, s, rst2html, python)
+			html, err = callRst(s, rst2html, python)
 			if err != nil {
 				return core.NewE100(f.Path, err)
 			}
@@ -167,13 +167,13 @@ func (l *Linter) lintRST(f *core.File) error {
 	return l.lintHTMLTokens(f, []byte(html), 0)
 }
 
-func callRst(f *core.File, text, lib, exe string) (string, error) {
+func callRst(text, lib, exe string) (string, error) {
 	var out bytes.Buffer
 	var cmd *exec.Cmd
 
 	if strings.HasPrefix(runtime.GOOS, "windows") {
 		// rst2html is executable by default on Windows.
-		cmd = exec.Command(exe, append([]string{lib}, rstArgs...)...)
+		cmd = exec.Command(exe, append([]string{lib}, rstArgs...)...) //nolint:gosec
 	} else {
 		cmd = exec.Command(lib, rstArgs...)
 	}
@@ -186,7 +186,7 @@ func callRst(f *core.File, text, lib, exe string) (string, error) {
 	}
 
 	html := out.String()
-	html = strings.Replace(html, "\r", "", -1)
+	html = strings.ReplaceAll(html, "\r", "")
 
 	bodyStart := strings.Index(html, "<body>\n")
 	if bodyStart < 0 {
@@ -203,7 +203,7 @@ func callRst(f *core.File, text, lib, exe string) (string, error) {
 	return html[bodyStart+7 : bodyEnd], nil
 }
 
-func (l *Linter) startRstServer(lib, exe string) error {
+func (l *Linter) startRstServer(lib, _ string) error {
 	if rstRunning {
 		return nil
 	}
@@ -216,23 +216,23 @@ func (l *Linter) startRstServer(lib, exe string) error {
 	}
 
 	tmpfile, _ := os.CreateTemp("", "server.*.py")
-	if _, err := tmpfile.WriteString(rstServer); err != nil {
+	if _, err = tmpfile.WriteString(rstServer); err != nil {
 		return err
 	}
 
-	if err := tmpfile.Close(); err != nil {
+	if err = tmpfile.Close(); err != nil {
 		return err
 	}
 
 	cmd := exec.Command(python, tmpfile.Name())
-	if err := cmd.Start(); err != nil {
+	if err = cmd.Start(); err != nil {
 		return err
 	}
 
 	l.pids = append(l.pids, cmd.Process.Pid)
 	l.temps = append(l.temps, tmpfile)
 
-	if err := ping(rstDomain); err != nil {
+	if err = ping(rstDomain); err != nil {
 		return err
 	}
 

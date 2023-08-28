@@ -125,16 +125,6 @@ var patterns = map[string]map[string][]*regexp.Regexp{
 	},
 }
 
-func toMarkup(comments []Comment) string {
-	var markup bytes.Buffer
-
-	for _, comment := range comments {
-		markup.WriteString(strings.TrimLeft(comment.Text, " "))
-	}
-
-	return markup.String()
-}
-
 func getSubMatch(r *regexp.Regexp, s string) string {
 	matches := r.FindStringSubmatch(s)
 	for i, m := range matches {
@@ -215,12 +205,12 @@ func getComments(content, ext string) []Comment {
 				Offset: strings.Index(line, match),
 				Scope:  "text.comment.line",
 			})
-		} else if match := doMatch(byLang["blockStart"], line); len(match) > 0 && !ignore {
+		} else if match = doMatch(byLang["blockStart"], line); len(match) > 0 && !ignore {
 			// We've found the start of a block comment.
 			block.WriteString(match)
 			start = lines
 			inBlock = true
-		} else if match := doMatch(byLang["blockEnd"], line); len(match) > 0 {
+		} else if match = doMatch(byLang["blockEnd"], line); len(match) > 0 {
 			ignore = !ignore
 		}
 	}

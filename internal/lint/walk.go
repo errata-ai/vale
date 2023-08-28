@@ -100,9 +100,9 @@ func (w *walker) setCls(tag string, cls bool) {
 func (w *walker) addCls(tag string, start bool) {
 	if tag == w.activeCls {
 		if start {
-			w.begin += 1
+			w.begin++
 		} else {
-			w.end += 1
+			w.end++
 		}
 	}
 }

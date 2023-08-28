@@ -34,7 +34,7 @@ func (l Linter) lintMarkdown(f *core.File) error {
 		return err
 	}
 
-	if err := goldMd.Convert([]byte(s), &buf); err != nil {
+	if err = goldMd.Convert([]byte(s), &buf); err != nil {
 		return core.NewE100(f.Path, err)
 	}
 

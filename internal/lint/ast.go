@@ -30,7 +30,7 @@ var tagToScope = map[string]string{
 	"figcaption": "text.figure.caption",
 }
 
-func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
+func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //nolint:unparam
 	var class, parentClass, attr string
 	var inBlock, inline, skip, skipClass bool
 
@@ -60,7 +60,7 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error {
 		skipClass = checkClasses(class, skipClasses)
 
 		blockSkip := skipClass && !core.StringInSlice(txt, inlineTags)
-		if tokt == html.ErrorToken {
+		if tokt == html.ErrorToken { //nolint:gocritic
 			break
 		} else if tokt == html.StartTagToken && (core.StringInSlice(txt, skipTags) || blockSkip) {
 			walker.setCls(txt, blockSkip)
@@ -141,7 +141,7 @@ func (l *Linter) lintScope(f *core.File, state *walker, txt string) error {
 			if !match {
 				scope = "text.heading." + tag
 			}
-			f.Metrics[strings.TrimPrefix(scope, "text.")] += 1
+			f.Metrics[strings.TrimPrefix(scope, "text.")]++
 
 			txt = strings.TrimLeft(txt, " ")
 			b := state.block(txt, scope+f.RealExt)
@@ -237,25 +237,4 @@ func getAttribute(tok html.Token, key string) string {
 		}
 	}
 	return ""
-}
-
-func getScope(tags []string, new, ext string) string {
-	if len(tags) == 0 {
-		tags = []string{"p"}
-	}
-
-	root := tags[0]
-	if root == "ul" {
-		root = "li"
-	} else if root == "p" {
-		root = ""
-	}
-
-	scope, match := tagToScope[root]
-	if !match && heading.MatchString(root) {
-		scope = "text.heading." + root
-	}
-
-	ctx := strings.Join([]string{scope, new}, ".")
-	return strings.TrimPrefix(ctx, ".") + ext
 }

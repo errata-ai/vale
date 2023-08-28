@@ -40,7 +40,7 @@ func (l Linter) lintDITA(file *core.File) error {
 	}...)
 	cmd.Stderr = &out
 
-	if err := cmd.Run(); err != nil {
+	if err = cmd.Run(); err != nil {
 		return core.NewE100(file.Path, err)
 	}
 
