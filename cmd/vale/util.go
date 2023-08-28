@@ -32,10 +32,11 @@ func getJSON(data interface{}) string {
 }
 
 func fetchJSON(url string) ([]byte, error) {
-	resp, err := http.Get(url)
+	resp, err := http.Get(url) //nolint:gosec,noctx
 	if err != nil {
 		return []byte{}, err
 	}
+	defer resp.Body.Close()
 	return io.ReadAll(resp.Body)
 }
 

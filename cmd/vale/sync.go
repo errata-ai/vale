@@ -25,7 +25,7 @@ func newVocab(path, name string) error {
 	}
 
 	for _, f := range []string{"accept.txt", "reject.txt"} {
-		ferr = os.WriteFile(filepath.Join(root, f), []byte{}, 0644)
+		ferr = os.WriteFile(filepath.Join(root, f), []byte{}, os.ModePerm)
 	}
 
 	return ferr
@@ -76,9 +76,8 @@ func loadPkg(name, urlOrPath, styles string, index int) error {
 	if fileInfo, err := os.Stat(urlOrPath); err == nil {
 		if fileInfo.IsDir() {
 			return loadLocalPkg(name, urlOrPath, styles, index)
-		} else {
-			return loadLocalZipPkg(name, urlOrPath, styles, index)
 		}
+		return loadLocalZipPkg(name, urlOrPath, styles, index)
 	}
 	return download(name, urlOrPath, styles, index)
 }
@@ -163,7 +162,7 @@ func installPkg(dir, name, styles string, index int) error {
 	return nil
 }
 
-func moveDir(old, new string, isVocab bool) error {
+func moveDir(old, new string, isVocab bool) error { //nolint:predeclared
 	files, err := os.ReadDir(old)
 	if err != nil {
 		return err
@@ -180,7 +179,7 @@ func moveDir(old, new string, isVocab bool) error {
 	return nil
 }
 
-func moveAsset(name, old, new string) error {
+func moveAsset(name, old, new string) error { //nolint:predeclared
 	src := filepath.Join(old, name)
 	dst := filepath.Join(new, name)
 
@@ -195,14 +194,10 @@ func moveAsset(name, old, new string) error {
 		return err
 	}
 
-	if err := cp.Copy(src, dst); err != nil {
-		return err
-	}
-
-	return nil
+	return cp.Copy(src, dst)
 }
 
-func getLibrary(path string) ([]Style, error) {
+func getLibrary(_ string) ([]Style, error) {
 	styles := []Style{}
 
 	resp, err := fetchJSON(library)

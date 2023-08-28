@@ -36,7 +36,7 @@ func doLint(args []string, l *lint.Linter, glob string) ([]*core.File, error) {
 	var err error
 
 	length := len(args)
-	if length == 1 && looksLikeStdin(args[0]) == 1 {
+	if length == 1 && looksLikeStdin(args[0]) == 1 { //nolint:gocritic
 		// Case 1:
 		//
 		// $ vale "some text in a string"
@@ -62,9 +62,9 @@ func doLint(args []string, l *lint.Linter, glob string) ([]*core.File, error) {
 		// Case 3:
 		//
 		// $ cat file.md | vale
-		stdin, err := io.ReadAll(os.Stdin)
-		if err != nil {
-			return linted, core.NewE100("doLint", err)
+		stdin, readErr := io.ReadAll(os.Stdin)
+		if readErr != nil {
+			return linted, core.NewE100("doLint", readErr)
 		}
 		linted, err = l.LintString(string(stdin))
 		if err != nil {
@@ -86,7 +86,7 @@ func main() {
 	args := pflag.Args()
 	argc := len(args)
 
-	if Flags.Version {
+	if Flags.Version { //nolint:gocritic
 		fmt.Println("vale version " + version)
 		os.Exit(0)
 	} else if Flags.Help {

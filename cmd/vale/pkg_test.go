@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,7 +9,7 @@ import (
 	"github.com/errata-ai/vale/v2/internal/core"
 )
 
-var TEST_DATA = "../../testdata/pkg"
+var TestData = "../../testdata/pkg"
 
 func mockPath() (string, error) {
 	cfg, err := core.NewConfig(&core.CLIFlags{})
@@ -53,7 +52,7 @@ func TestLocalZip(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	zip, err := filepath.Abs(filepath.Join(TEST_DATA, "write-good.zip"))
+	zip, err := filepath.Abs(filepath.Join(TestData, "write-good.zip"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -78,7 +77,7 @@ func TestLocalDir(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	zip, err := filepath.Abs(filepath.Join(TEST_DATA, "write-good"))
+	zip, err := filepath.Abs(filepath.Join(TestData, "write-good"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,13 +96,13 @@ func TestLocalDir(t *testing.T) {
 	}
 }
 
-func TestLocalComplete(t *testing.T) {
+func TestLocalComplete(t *testing.T) { //nolint:dupl
 	path, err := mockPath()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	zip, err := filepath.Abs(filepath.Join(TEST_DATA, "ISC.zip"))
+	zip, err := filepath.Abs(filepath.Join(TestData, "ISC.zip"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,18 +128,17 @@ func TestLocalComplete(t *testing.T) {
 	lines := strings.Split(string(b), "\n")
 
 	if !core.StringInSlice("bar", lines) {
-		t.Fatal(fmt.Sprintf("unable to find 'bar' in %v", lines))
+		t.Fatalf("unable to find 'bar' in %v", lines)
 	}
-
 }
 
-func TestLocalOnlyStyles(t *testing.T) {
+func TestLocalOnlyStyles(t *testing.T) { //nolint:dupl
 	path, err := mockPath()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	zip, err := filepath.Abs(filepath.Join(TEST_DATA, "OnlyStyles.zip"))
+	zip, err := filepath.Abs(filepath.Join(TestData, "OnlyStyles.zip"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -166,9 +164,8 @@ func TestLocalOnlyStyles(t *testing.T) {
 	lines := strings.Split(string(b), "\n")
 
 	if !core.StringInSlice("bar", lines) {
-		t.Fatal(fmt.Sprintf("unable to find 'bar' in %v", lines))
+		t.Fatalf("unable to find 'bar' in %v", lines)
 	}
-
 }
 
 func TestNoPkgFound(t *testing.T) {

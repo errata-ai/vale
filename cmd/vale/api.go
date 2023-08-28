@@ -56,11 +56,12 @@ func init() {
 
 func fetch(src, dst string) error {
 	// Fetch the resource from the web:
-	resp, err := http.Get(src)
+	resp, err := http.Get(src) //nolint:gosec,noctx
+
 	if err != nil {
 		return err
 	} else if resp.StatusCode != 200 {
-		return fmt.Errorf("could not fetch '%s' (status code '%d').", src, resp.StatusCode)
+		return fmt.Errorf("could not fetch '%s' (status code '%d')", src, resp.StatusCode)
 	}
 
 	// Create a temp file to represent the archive locally:
@@ -78,6 +79,7 @@ func fetch(src, dst string) error {
 		return err
 	}
 
+	resp.Body.Close()
 	return archiver.Unarchive(tmpfile.Name(), dst)
 }
 

@@ -65,13 +65,14 @@ func printVerboseAlert(f *core.File, wrap bool) (int, int, int) {
 
 	fmt.Printf("\n %s", pterm.Underscore.Sprintf(f.Path))
 	for _, a := range alerts {
-		if a.Severity == "suggestion" {
+		switch a.Severity {
+		case "suggestion":
 			level = pterm.Blue(a.Severity)
 			notifications++
-		} else if a.Severity == "warning" {
+		case "warning":
 			level = pterm.Yellow(a.Severity)
 			warnings++
-		} else {
+		case "error":
 			level = pterm.Red(a.Severity)
 			errors++
 		}

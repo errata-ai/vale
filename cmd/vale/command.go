@@ -72,11 +72,11 @@ func fix(args []string, flags *core.CLIFlags) error {
 	return printJSON(resp)
 }
 
-func sync(args []string, flags *core.CLIFlags) error {
+func sync(_ []string, flags *core.CLIFlags) error {
 	cfg, err := core.ReadPipeline("ini", flags, true)
 	if err != nil {
 		return err
-	} else if err := initPath(cfg); err != nil {
+	} else if err = initPath(cfg); err != nil {
 		return err
 	}
 
@@ -105,7 +105,7 @@ func sync(args []string, flags *core.CLIFlags) error {
 	return nil
 }
 
-func printConfig(args []string, flags *core.CLIFlags) error {
+func printConfig(_ []string, flags *core.CLIFlags) error {
 	cfg, err := core.ReadPipeline("ini", flags, false)
 	if err != nil {
 		return err
@@ -114,7 +114,7 @@ func printConfig(args []string, flags *core.CLIFlags) error {
 	return nil
 }
 
-func printMetrics(args []string, flags *core.CLIFlags) error {
+func printMetrics(args []string, _ *core.CLIFlags) error {
 	if len(args) != 1 {
 		return core.NewE100("ls-metrics", errors.New("one argument expected"))
 	} else if !core.FileExists(args[0]) {
@@ -144,7 +144,7 @@ func printMetrics(args []string, flags *core.CLIFlags) error {
 	return printJSON(computed)
 }
 
-func runTag(args []string, flags *core.CLIFlags) error {
+func runTag(args []string, _ *core.CLIFlags) error {
 	if len(args) != 3 {
 		return core.NewE100("tag", errors.New("three arguments expected"))
 	}
@@ -160,7 +160,7 @@ func runTag(args []string, flags *core.CLIFlags) error {
 	return printJSON(out)
 }
 
-func compileRule(args []string, flags *core.CLIFlags) error {
+func compileRule(args []string, _ *core.CLIFlags) error {
 	if len(args) != 1 {
 		return core.NewE100("compile", errors.New("one argument expected"))
 	}
@@ -187,7 +187,7 @@ func compileRule(args []string, flags *core.CLIFlags) error {
 	return printJSON(rule)
 }
 
-func runRule(args []string, flags *core.CLIFlags) error {
+func runRule(args []string, _ *core.CLIFlags) error {
 	if len(args) != 2 {
 		return core.NewE100("run", errors.New("two arguments expected"))
 	}
