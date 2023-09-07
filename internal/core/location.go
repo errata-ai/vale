@@ -28,7 +28,7 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 	sub := strings.ToValidUTF8(a.Match, "")
 	pat = regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|\b|$)`)
 
-	fsi := pat.FindStringIndex(ctx)
+	fsi := pat.FindAllStringIndex(ctx, -1)
 	if fsi == nil {
 		idx = strings.Index(ctx, sub)
 		if idx < 0 {
@@ -37,7 +37,28 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 			return guessLocation(ctx, txt, sub)
 		}
 	} else {
-		idx = fsi[0]
+		idx = fsi[0][0]
+		// NOTE: This is a workaround for #673.
+		//
+		// In cases where we have more than one match, we skip any that look
+		// like they're inside inline code (e.g., `code`).
+		//
+		// This is a bit of a hack: ideally, we'd handle this at the AST level
+		// by ignoring these inline code spans.
+		//
+		// TODO: What about `scope: raw`?
+		size := len(ctx)
+		for _, fs := range fsi {
+			start := fs[0] - 1
+			end := fs[1] + 1
+			if start > 0 && (ctx[start] == '`' || ctx[start] == '-') {
+				continue
+			} else if end < size && (ctx[end] == '`' || ctx[end] == '-') {
+				continue
+			}
+			idx = fs[0]
+			break
+		}
 	}
 
 	if strings.HasPrefix(ctx[idx:], "_") {

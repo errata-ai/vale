@@ -62,6 +62,9 @@ Feature: Checks
         Then the output should contain exactly:
             """
             test.md:16:1:Vale.Spelling:Did you really mean 'gitlab'?
+            test.md:28:11:Vale.Spelling:Did you really mean 'typpo'?
+            test.md:32:17:Vale.Spelling:Did you really mean 'gfm'?
+            test.md:34:17:Vale.Spelling:Did you really mean 'remmark'?
             """
 
     Scenario: Existence
@@ -74,6 +77,8 @@ Feature: Checks
         When I test "checks/Substitution"
         Then the output should contain exactly:
             """
+            test.md:5:5:Bugs.Newline:Use 'test' rather than 'linuxptp'.
+            test.md:8:5:Bugs.Newline:Use 'test' rather than 'linuxptp'.
             """
 
     Scenario: Sequence
