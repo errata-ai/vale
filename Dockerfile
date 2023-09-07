@@ -18,7 +18,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w -X main.version=$ltag" -o 
 
 FROM alpine
 
-RUN apk add --no-cache --update \
+RUN apk add --no-cache \
     py3-docutils \
     asciidoctor
 
