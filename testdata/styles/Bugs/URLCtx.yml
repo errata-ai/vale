@@ -1,0 +1,5 @@
+extends: substitution
+message: Use '%s' instead of '%s'
+level: error
+swap:
+  "term": Term

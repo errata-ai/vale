@@ -202,7 +202,13 @@ func (f *File) FindLoc(ctx, s string, pad, count int, a Alert) (int, []int) {
 func (f *File) assignLoc(ctx string, blk nlp.Block, pad int, a Alert) (int, []int) {
 	loc := a.Span
 	for idx, l := range strings.SplitAfter(ctx, "\n") {
-		if idx == blk.Line {
+		// NOTE: This fixes #473, but the real issue is that `blk.Line` is
+		// wrong. This seems related to `location.go#41`, but I'm not sure.
+		//
+		// At the very least, this change includes a representative test case
+		// and a temporary fix.
+		exact := len(l) > loc[1] && l[loc[0]:loc[1]] == a.Match
+		if exact || idx == blk.Line {
 			length := utf8.RuneCountInString(l)
 			pos, substring := initialPosition(l, blk.Text, a)
 
@@ -216,7 +222,7 @@ func (f *File) assignLoc(ctx string, blk nlp.Block, pad int, a Alert) (int, []in
 				loc[1] = 1
 			}
 
-			return blk.Line + 1, loc
+			return idx + 1, loc
 		}
 	}
 	return blk.Line + 1, a.Span

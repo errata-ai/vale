@@ -79,6 +79,7 @@ Feature: Checks
             """
             test.md:5:5:Bugs.Newline:Use 'test' rather than 'linuxptp'.
             test.md:8:5:Bugs.Newline:Use 'test' rather than 'linuxptp'.
+            test.md:10:1:Bugs.URLCtx:Use 'Term' instead of 'term'
             """
 
     Scenario: Sequence
