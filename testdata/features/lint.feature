@@ -299,6 +299,15 @@ Feature: Lint
             """
         And the exit status should be 0
 
+    Scenario: Lint a TypeScript file
+        When I lint "test.ts"
+        Then the output should contain exactly:
+            """
+            test.ts:1:4:vale.Annotations:'TODO' left in text
+            test.ts:17:4:vale.Annotations:'XXX' left in text
+            """
+        And the exit status should be 0
+
     Scenario: Lint a Ruby file
         When I lint "test.rb"
         Then the output should contain exactly:
