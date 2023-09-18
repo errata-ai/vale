@@ -1,0 +1,18 @@
+extends: script
+message: "Consider inserting a new section heading at this point."
+link: https://tengolang.com/
+# The unprocessed file contents.
+#
+# We need this to access heading markup.
+scope: raw
+script: |
+  text := import("text")
+
+  matches := []
+  p_limit := 3 // at most 3 paragraphs per section
+
+  // Remove all instances of code blocks since we don't want to count
+  // inter-block newlines as a new paragraph.
+  document := text.re_replace("(?s) *(\n```.*?```\n)", scope, "")
+
+  matches = append(matches, {begin: 1, end: 2, message: "Some message"})
