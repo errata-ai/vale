@@ -242,7 +242,11 @@ func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 		ctx = old
 	}
 
-	if len(a.Offset) == 0 && strings.Count(ctx, a.Match) > 1 {
+	// NOTE: If the `ctx` document is large (as could be the case with
+	// `scope: raw`) this is *slow*. Thus, the cap at 1k.
+	//
+	// TODO: Actually fix this.
+	if len(a.Offset) == 0 && strings.Count(ctx, a.Match) > 1 && len(ctx) < 1000 {
 		a.Offset = append(a.Offset, strings.Fields(ctx[0:a.Span[0]])...)
 	}
 

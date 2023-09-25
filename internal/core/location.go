@@ -29,7 +29,7 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 	pat = regexp.MustCompile(`(?:^|\b|_)` + regexp.QuoteMeta(sub) + `(?:_|\b|$)`)
 
 	fsi := pat.FindAllStringIndex(ctx, -1)
-	if fsi == nil {
+	if len(fsi) == 0 {
 		idx = strings.Index(ctx, sub)
 		if idx < 0 {
 			// This should only happen if we're in a scope that contains inline
