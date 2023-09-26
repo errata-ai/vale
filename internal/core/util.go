@@ -24,6 +24,14 @@ var sanitizer = strings.NewReplacer(
 	"\r\n", "\n",
 	"\r", "\n")
 
+// CapFirst capitalizes the first letter of a string.
+func CapFirst(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
+}
+
 // Sanitize prepares text for our check functions.
 func Sanitize(txt string) string {
 	// TODO: symbols?
