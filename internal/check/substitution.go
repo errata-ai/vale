@@ -117,13 +117,16 @@ func (s Substitution) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 					action := s.Fields().Action
 					if action.Name == "replace" && len(action.Params) == 0 {
 						action.Params = strings.Split(expected, "|")
-						if observed == core.CapFirst(observed) {
+
+						// TODO: Is this a breaking change?
+						/*if observed == core.CapFirst(observed) {
 							cased := []string{}
 							for _, param := range action.Params {
 								cased = append(cased, core.CapFirst(param))
 							}
 							action.Params = cased
-						}
+						}*/
+
 						expected = core.ToSentence(action.Params, "or")
 
 						// NOTE: For backwards-compatibility, we need to ensure
