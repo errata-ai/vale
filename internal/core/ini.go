@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/ini"
-	"github.com/gobwas/glob"
+	"github.com/errata-ai/vale/v2/internal/glob"
 )
 
 var configNames = []string{

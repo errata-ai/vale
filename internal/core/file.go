@@ -9,10 +9,11 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/gobwas/glob"
 	"github.com/jdkato/prose/summarize"
 	"github.com/jdkato/regexp"
+
+	"github.com/errata-ai/vale/v2/internal/glob"
+	"github.com/errata-ai/vale/v2/internal/nlp"
 )
 
 var commentControlRE = regexp.MustCompile(`^vale (.+\..+) = (YES|NO)$`)

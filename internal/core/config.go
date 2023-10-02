@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/errata-ai/ini"
-	"github.com/gobwas/glob"
+	"github.com/errata-ai/vale/v2/internal/glob"
 )
 
 // CLIFlags holds the values that are defined at runtime by the user.

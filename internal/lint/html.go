@@ -13,9 +13,10 @@ import (
 	"time"
 
 	"github.com/errata-ai/regexp2"
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/gobwas/glob"
 	"github.com/jdkato/regexp"
+
+	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v2/internal/glob"
 )
 
 var reFrontMatter = regexp.MustCompile(

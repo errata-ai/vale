@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/bmatcuk/doublestar/v4"
+	"github.com/gobwas/glob"
 )
 
-// Glob represents a glob pattern passed via `--glob`.
 type Glob struct {
 	Pattern string
 	Negated bool
@@ -16,8 +16,15 @@ type Glob struct {
 
 // Match returns whether or not the Glob g matches the string query.
 func (g Glob) Match(query string) bool {
-	matched, _ := doublestar.Match(g.Pattern, filepath.ToSlash(query))
-	return matched != g.Negated
+	q := filepath.ToSlash(query)
+
+	if strings.Contains(g.Pattern, "**") {
+		matched, _ := doublestar.Match(g.Pattern, q)
+		return matched != g.Negated
+	}
+
+	p := glob.MustCompile(g.Pattern)
+	return p.Match(q) != g.Negated
 }
 
 // NewGlob creates a Glob from the string pat.
@@ -32,4 +39,9 @@ func NewGlob(pat string) (Glob, error) {
 		return Glob{}, err
 	}
 	return Glob{Pattern: pat, Negated: negate}, nil
+}
+
+// Compile is a wrapper around NewGlobal for backwards compatibility.
+func Compile(pat string) (Glob, error) {
+	return NewGlob(pat)
 }
