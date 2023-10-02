@@ -350,7 +350,7 @@ Feature: Config
             """
 
     Scenario: Test another negated glob
-        When I test glob "!*.{md,py}"
+        When I test glob "!**/*.{md,py}"
         Then the output should not contain "md"
         And the output should not contain "py"
 

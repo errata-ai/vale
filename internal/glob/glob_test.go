@@ -20,11 +20,15 @@ var globTests = []struct {
 	{`!docs/**`, []globTest{
 		{`docs/a.md`, false}, {`docs/info/b.py`, false}, {`info/c.cc`, true}},
 	},
-	{`!*.min.js`, []globTest{
+	{`!**/*.min.js`, []globTest{
 		{`a/b/c/foo.py`, true}, {`a/b/c/foo.min.js`, false}},
 	},
-	{`docs/*.md`, []globTest{
+	{`docs/**/*.md`, []globTest{
 		{`docs/a.md`, true}, {`docs/info/b.md`, true}, {`docs/c.cc`, false}},
+	},
+	{`{documentation,website}/content/{ja,zh-tw}/**/*.adoc`, []globTest{
+		{`website/content/zh-tw/where.adoc`, true},
+		{`documentation/content/ja/articles/test.adoc`, true}},
 	},
 }
 

@@ -6,6 +6,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/adrg/strutil v0.3.0
 	github.com/antonmedv/expr v1.12.0
+	github.com/bmatcuk/doublestar/v4 v4.6.0
 	github.com/d5/tengo/v2 v2.10.0
 	github.com/errata-ai/ini v1.63.0
 	github.com/errata-ai/regexp2 v1.7.0
