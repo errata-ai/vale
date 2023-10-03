@@ -249,9 +249,9 @@ func loadConfig(names []string) (string, error) {
 		cwd = parent
 	}
 
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
+	homeDir, _ := os.UserHomeDir()
+	if homeDir == "" {
+		return "", nil
 	}
 
 	for _, name := range names {
