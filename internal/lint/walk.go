@@ -135,7 +135,9 @@ func (w *walker) walk() (html.TokenType, html.Token, string) {
 }
 
 func (w *walker) replaceToks(tok html.Token) {
-	if core.StringInSlice(tok.Data, []string{"img", "a", "p", "script"}) {
+	tags := core.StringInSlice(tok.Data, []string{
+		"img", "a", "p", "script", "h1", "h2", "h3", "h4", "h5", "h6"})
+	if tags {
 		for _, a := range tok.Attr {
 			if core.StringInSlice(a.Key, []string{"href", "id", "src"}) {
 				if a.Key == "href" {

@@ -31,6 +31,15 @@ Feature: Misc
             CRLF.md:32:11:vale.Editorializing:Consider removing 'very'
             """
 
+    Scenario: In-text attributes
+        When I test "misc/ids"
+        Then the output should contain exactly:
+            """
+            test.adoc:7:1:Markup.ID:Use 'leader' rather than 'Master'.
+            test.adoc:12:1:Markup.ID:Use 'leader' rather than 'master'.
+            test.adoc:14:55:Markup.ID:Use 'leader' rather than 'master'.
+            """
+
     Scenario: Unicode
         When I test "misc/unicode"
         Then the output should contain exactly:

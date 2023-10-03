@@ -1,0 +1,14 @@
+// Test
+[id="nw-ptp-grandmaster-clock-class-reference_{context}"]
+= Test
+
+grandmaster clock.
+
+Master
+
+and commander is a decent film.
+
+//This triggers the string "master" in the id to be highlighted.
+master
+
+This sentence is unrelated but does contain the term "master".

@@ -25,7 +25,7 @@ var adocSanitizer = strings.NewReplacer(
 
 // Convert listing blocks of the form `[source,.+]` to `[source]`
 var reSource = regexp.MustCompile(`\[source,.+\]`)
-var reComment = regexp.MustCompile(`// .+`)
+var reComment = regexp.MustCompile(`// ?.+`)
 
 var homes = []*regexp.Regexp{
 	// Homebrew
@@ -127,6 +127,10 @@ func (l *Linter) lintADoc(f *core.File) error {
 		// NOTE: This is required to avoid finding matches in line comments.
 		//
 		// See https://github.com/errata-ai/vale/issues/414.
+		//
+		// TODO: Multiple line comments are not handled correctly.
+		//
+		// https://docs.asciidoctor.org/asciidoc/latest/comments/
 		parts := strings.Split(m, "//")
 		span := strings.Repeat("*", len(parts[1])-1)
 		return "// " + span
