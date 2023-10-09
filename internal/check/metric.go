@@ -54,6 +54,9 @@ func (o Metric) Run(_ nlp.Block, f *core.File) ([]core.Alert, error) {
 	parameters, err := f.ComputeMetrics()
 	if err != nil {
 		return alerts, err
+	} else if len(parameters) == 0 {
+		// empty file.
+		return alerts, nil
 	}
 
 	for _, k := range variables {

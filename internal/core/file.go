@@ -133,17 +133,18 @@ func (f *File) SortedAlerts() []Alert {
 // ComputeMetrics returns all of f's metrics.
 func (f *File) ComputeMetrics() (map[string]interface{}, error) {
 	params := map[string]interface{}{}
+
+	doc := summarize.NewDocument(f.Summary.String())
+	if doc.NumWords == 0 {
+		return params, nil
+	}
+
 	for k, v := range f.Metrics {
 		if strings.HasPrefix(k, "table") {
 			continue
 		}
 		k = strings.ReplaceAll(k, ".", "_")
 		params[k] = float64(v)
-	}
-
-	doc := summarize.NewDocument(f.Summary.String())
-	if doc.NumWords == 0 {
-		return params, nil
 	}
 
 	params["complex_words"] = doc.NumComplexWords
