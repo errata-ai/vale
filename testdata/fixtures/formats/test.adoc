@@ -84,3 +84,7 @@ some NOTE
 ----
 
 This NOTE should be found too.
+
+////
+Multi-line comments cause a fatal error
+////

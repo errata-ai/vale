@@ -25,7 +25,7 @@ var adocSanitizer = strings.NewReplacer(
 
 // Convert listing blocks of the form `[source,.+]` to `[source]`
 var reSource = regexp.MustCompile(`\[source,.+\]`)
-var reComment = regexp.MustCompile(`(?m)^// ?.+`)
+var reComment = regexp.MustCompile(`// .+`)
 
 var homes = []*regexp.Regexp{
 	// Homebrew
