@@ -3,9 +3,10 @@ package check
 import (
 	"fmt"
 
+	"github.com/jdkato/twine/summarize"
+
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/prose/summarize"
 )
 
 // Readability checks the reading grade level of text.

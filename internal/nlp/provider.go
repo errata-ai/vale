@@ -68,12 +68,12 @@ type Info struct {
 // allow (fairly) seamless integration with non-Go libraries too (such as
 // spaCy).
 func (n *Info) Compute(block *Block) ([]Block, error) {
-	seg := SentenceTokenizer.Tokenize
+	seg := SentenceTokenizer.Segment
 	if n.Endpoint != "" && n.Lang != "en" {
 		// We only use external segmentation for non-English text since prose
 		// (our native library) is more efficient.
 		seg = func(text string) []string {
-			ret, err := segment(text, n.Lang, n.Endpoint)
+			ret, err := doSegment(text, n.Lang, n.Endpoint)
 			if err != nil {
 				panic(err)
 			}

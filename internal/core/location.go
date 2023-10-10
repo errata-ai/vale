@@ -70,7 +70,7 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 
 func guessLocation(ctx, sub, match string) (int, string) {
 	target := ""
-	for _, s := range nlp.SentenceTokenizer.Tokenize(sub) {
+	for _, s := range nlp.SentenceTokenizer.Segment(sub) {
 		if s == match || strings.Index(s, match) > 0 {
 			target = s
 		}

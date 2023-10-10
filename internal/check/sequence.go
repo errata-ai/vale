@@ -5,11 +5,11 @@ import (
 	"strings"
 
 	"github.com/errata-ai/regexp2"
+	"github.com/jdkato/twine/nlp/tag"
+	"github.com/mitchellh/mapstructure"
+
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/prose/tag"
-
-	"github.com/mitchellh/mapstructure"
 )
 
 // NLPToken represents a token of text with NLP-related attributes.

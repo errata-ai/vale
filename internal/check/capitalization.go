@@ -4,9 +4,10 @@ import (
 	"unicode/utf8"
 
 	"github.com/errata-ai/regexp2"
+	"github.com/jdkato/twine/strcase"
+
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/titlecase"
 )
 
 // Capitalization checks the case of a string.
@@ -58,11 +59,11 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 	}
 
 	if rule.Match == "$title" {
-		var tc *titlecase.TitleConverter
+		var tc *strcase.TitleConverter
 		if rule.Style == "Chicago" {
-			tc = titlecase.NewTitleConverter(titlecase.ChicagoStyle)
+			tc = strcase.NewTitleConverter(strcase.ChicagoStyle)
 		} else {
-			tc = titlecase.NewTitleConverter(titlecase.APStyle)
+			tc = strcase.NewTitleConverter(strcase.APStyle)
 		}
 		rule.Check = func(s string, re *regexp2.Regexp) bool {
 			return title(s, re, tc, rule.Threshold)

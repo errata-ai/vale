@@ -6,12 +6,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/jdkato/twine/nlp/tag"
+	"github.com/pterm/pterm"
+
 	"github.com/errata-ai/vale/v2/internal/check"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/lint"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/prose/tag"
-	"github.com/pterm/pterm"
 )
 
 // TaggedWord is a word with an NLP context.

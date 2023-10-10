@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/jdkato/prose/tag"
+	"github.com/jdkato/twine/nlp/tag"
 )
 
 type SegmentResult struct {
@@ -34,7 +34,7 @@ func post(url string) ([]byte, error) {
 	return body, nil
 }
 
-func segment(text, lang, apiURL string) (SegmentResult, error) {
+func doSegment(text, lang, apiURL string) (SegmentResult, error) {
 	var result SegmentResult
 
 	data := url.Values{"lang": {lang}, "text": {text}}

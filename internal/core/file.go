@@ -9,8 +9,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/jdkato/prose/summarize"
 	"github.com/jdkato/regexp"
+	"github.com/jdkato/twine/summarize"
 
 	"github.com/errata-ai/vale/v2/internal/glob"
 	"github.com/errata-ai/vale/v2/internal/nlp"

@@ -3,8 +3,9 @@ package nlp
 import (
 	"strings"
 
-	"github.com/jdkato/prose/tag"
-	"github.com/jdkato/prose/tokenize"
+	"github.com/jdkato/twine/nlp/segment"
+	"github.com/jdkato/twine/nlp/tag"
+	"github.com/jdkato/twine/nlp/tokenize"
 )
 
 // TaggedWord is a word with an NLP context.
@@ -18,7 +19,7 @@ type TaggedWord struct {
 var WordTokenizer = NewIterTokenizer()
 
 // SentenceTokenizer splits text into sentences.
-var SentenceTokenizer = tokenize.NewPunktSentenceTokenizer()
+var SentenceTokenizer = segment.NewPunktSentenceTokenizer()
 
 // tagger tags a sentence.
 //
@@ -40,7 +41,7 @@ func textToWords(text string, nlp bool) []string {
 	tok := tokenize.NewTreebankWordTokenizer()
 
 	words := []string{}
-	for _, s := range SentenceTokenizer.Tokenize(text) {
+	for _, s := range SentenceTokenizer.Segment(text) {
 		if nlp {
 			words = append(words, tok.Tokenize(s)...)
 		} else {
