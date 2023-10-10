@@ -361,3 +361,13 @@ func ReplaceAllStringSubmatchFunc(re *regexp.Regexp, str string, repl func([]str
 
 	return result + str[lastIndex:]
 }
+
+func HasAnySuffix(s string, suffixes []string) bool {
+	n := len(s)
+	for _, suffix := range suffixes {
+		if n > len(suffix) && strings.HasSuffix(s, suffix) {
+			return true
+		}
+	}
+	return false
+}

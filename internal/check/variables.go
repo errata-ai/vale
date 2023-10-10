@@ -5,7 +5,35 @@ import (
 
 	"github.com/errata-ai/regexp2"
 	"github.com/jdkato/twine/strcase"
+
+	"github.com/errata-ai/vale/v2/internal/core"
 )
+
+var reNumberList = regexp2.MustCompileStd(`\d+\.`)
+
+var varToFunc = map[string]func(string, *regexp2.Regexp) bool{
+	"$lower": lower,
+	"$upper": upper,
+}
+
+var readabilityMetrics = []string{
+	"Gunning Fog",
+	"Coleman-Liau",
+	"Flesch-Kincaid",
+	"SMOG",
+	"Automated Readability",
+}
+
+func wasIndicator(indicators []string) strcase.IndicatorFunc {
+	return func(word string, idx int) bool {
+		if core.HasAnySuffix(word, indicators) {
+			return true
+		} else if idx == 0 && reNumberList.MatchStringStd(word) {
+			return true
+		}
+		return false
+	}
+}
 
 func isMatch(r *regexp2.Regexp, s string) bool {
 	// TODO: `r.String() != ""`?
@@ -66,15 +94,6 @@ func title(s string, except *regexp2.Regexp, tc *strcase.TitleConverter, thresho
 	return (count / words) >= threshold
 }
 
-func hasAnySuffix(s string, suffixes []string) bool {
-	for _, sf := range suffixes {
-		if strings.HasSuffix(s, sf) {
-			return true
-		}
-	}
-	return false
-}
-
 func sentence(s string, sc *strcase.SentenceConverter, threshold float64) bool {
 	count := 0.0
 	words := 0.0
@@ -92,17 +111,4 @@ func sentence(s string, sc *strcase.SentenceConverter, threshold float64) bool {
 	}
 
 	return (count / words) >= threshold
-}
-
-var varToFunc = map[string]func(string, *regexp2.Regexp) bool{
-	"$lower": lower,
-	"$upper": upper,
-}
-
-var readabilityMetrics = []string{
-	"Gunning Fog",
-	"Coleman-Liau",
-	"Flesch-Kincaid",
-	"SMOG",
-	"Automated Readability",
 }

@@ -70,9 +70,10 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 			return title(s, re, tc, rule.Threshold)
 		}
 	} else if rule.Match == "$sentence" {
-		vocab := append(rule.Exceptions, maps.Keys(cfg.AcceptedTokens)...)
+		rule.Exceptions = append(rule.Exceptions, maps.Keys(cfg.AcceptedTokens)...)
 		sc := strcase.NewSentenceConverter(
-			strcase.UsingVocab(vocab),
+			strcase.UsingVocab(rule.Exceptions),
+			strcase.UsingIndicator(wasIndicator(rule.Indicators)),
 		)
 		rule.Check = func(s string, re *regexp2.Regexp) bool {
 			return sentence(s, sc, rule.Threshold)

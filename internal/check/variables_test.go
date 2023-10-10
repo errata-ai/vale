@@ -10,7 +10,6 @@ type changeCase struct {
 	match      bool
 	heading    string
 	exceptions []string
-	indicators []string
 }
 
 func TestSentence(t *testing.T) {
