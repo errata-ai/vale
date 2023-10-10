@@ -8,9 +8,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jdkato/twine/strcase"
+
 	"github.com/errata-ai/vale/v2/internal/check"
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/nlp"
 )
 
 // Solution is a potential solution to an alert.
@@ -93,7 +94,7 @@ func remove(_ core.Alert, _ *core.Config) ([]string, error) {
 func convert(alert core.Alert, _ *core.Config) ([]string, error) {
 	match := alert.Match
 	if alert.Action.Params[0] == "simple" {
-		match = nlp.Simple(match)
+		match = strcase.Simple(match)
 	}
 	return []string{match}, nil
 }

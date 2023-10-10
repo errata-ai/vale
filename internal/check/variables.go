@@ -75,41 +75,18 @@ func hasAnySuffix(s string, suffixes []string) bool {
 	return false
 }
 
-func sentence(s string, indicators []string, except *regexp2.Regexp, threshold float64) bool {
+func sentence(s string, sc *strcase.SentenceConverter, threshold float64) bool {
 	count := 0.0
 	words := 0.0
 
-	ps := `[\p{N}\p{L}*]+[^\s]*`
-	if except != nil {
-		ps = except.String() + "|" + ps
-	}
-	re := regexp2.MustCompileStd(ps)
+	observed := strings.Fields(s)
+	expected := strings.Fields(sc.Sentence(s))
 
-	tokens := re.FindAllString(strings.TrimRight(s, "?!.:"), -1)
-	for i, w := range tokens {
-		prev := ""
-		if i-1 >= 0 {
-			prev = tokens[i-1]
-		}
-		t := w
-
-		if strings.Contains(w, "-") { //nolint:gocritic
-			// NOTE: This is necessary for words like `Top-level`.
-			w = strings.Split(w, "-")[0]
-		} else if strings.Contains(w, "'") {
-			// NOTE: This is necessary for words like `Client's`.
-			w = strings.Split(w, "'")[0]
-		} else if strings.Contains(w, "’") {
-			// NOTE: This is necessary for words like `Client's`.
-			w = strings.Split(w, "’")[0]
-		}
-
-		if w == strings.ToUpper(w) || hasAnySuffix(prev, indicators) || isMatch(except, t) { //nolint:gocritic
+	for i, w := range observed {
+		if w == expected[i] {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) { //nolint:staticcheck
 			return false
-		} else if i == 0 || w == strings.ToLower(w) {
-			count++
 		}
 		words++
 	}

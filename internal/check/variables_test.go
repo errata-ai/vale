@@ -1,11 +1,9 @@
 package check
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
-	"github.com/errata-ai/regexp2"
+	"github.com/jdkato/twine/strcase"
 )
 
 type changeCase struct {
@@ -23,13 +21,8 @@ func TestSentence(t *testing.T) {
 		{heading: "Client's key share and finish", match: true},
 		{heading: "Client’s key share and finish", match: true},
 		{
-			heading:    "Find the thief: Introduction",
-			match:      true,
-			indicators: []string{":"},
-		},
-		{
 			heading: "Find the thief: Introduction",
-			match:   false,
+			match:   true,
 		},
 		{
 			heading:    "Creating a connection to Event Store",
@@ -54,22 +47,27 @@ func TestSentence(t *testing.T) {
 			heading: "Use the High-Def Render Pipeline to install",
 			match:   false,
 		},
+		{
+			heading: "1. An important heading",
+			match:   true,
+		},
+		{
+			heading: "An important heading",
+			match:   true,
+		},
+		{
+			heading: "An important Heading",
+			match:   false,
+		},
+		{
+			heading: "this isn't in sentence case",
+			match:   false,
+		},
 	}
 
 	for _, h := range headings {
-		var r *regexp2.Regexp
-		if len(h.exceptions) > 0 {
-			regex := makeRegexp(
-				"",
-				false,
-				func() bool { return true },
-				func() string { return "" },
-				true)
-			regex = fmt.Sprintf(regex, strings.Join(h.exceptions, "|"))
-			r = regexp2.MustCompileStd(regex)
-		}
-
-		s := sentence(h.heading, h.indicators, r, 1)
+		sc := strcase.NewSentenceConverter(strcase.UsingVocab(h.exceptions))
+		s := sentence(h.heading, sc, 1)
 		if s != h.match {
 			t.Errorf("expected = %v, got = %v (%s)", h.match, s, h.heading)
 		}

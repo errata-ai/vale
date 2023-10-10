@@ -5,6 +5,7 @@ import (
 
 	"github.com/errata-ai/regexp2"
 	"github.com/jdkato/twine/strcase"
+	"golang.org/x/exp/maps"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
@@ -69,8 +70,12 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 			return title(s, re, tc, rule.Threshold)
 		}
 	} else if rule.Match == "$sentence" {
+		vocab := append(rule.Exceptions, maps.Keys(cfg.AcceptedTokens)...)
+		sc := strcase.NewSentenceConverter(
+			strcase.UsingVocab(vocab),
+		)
 		rule.Check = func(s string, re *regexp2.Regexp) bool {
-			return sentence(s, rule.Indicators, re, rule.Threshold)
+			return sentence(s, sc, rule.Threshold)
 		}
 	} else if f, ok := varToFunc[rule.Match]; ok {
 		rule.Check = f
