@@ -56,6 +56,7 @@ Feature: Checks
         Then the output should contain exactly:
             """
             test2.md:1:3:demo.CustomCap:'Section about the MacBook pro ultimate edition' should be in title case
+            test4.md:9:4:demo.SentenceCase:'An unimportant Heading' should be sentence-cased
             """
 
     Scenario: Spelling
