@@ -67,7 +67,7 @@ func title(s string, except *regexp2.Regexp, tc *strcase.TitleConverter, thresho
 	}
 	re := regexp2.MustCompileStd(ps)
 
-	expected := re.FindAllString(tc.Title(s), -1)
+	expected := re.FindAllString(tc.Convert(s), -1)
 
 	extent := len(expected)
 	for i, word := range re.FindAllString(s, -1) {
@@ -99,7 +99,7 @@ func sentence(s string, sc *strcase.SentenceConverter, threshold float64) bool {
 	words := 0.0
 
 	observed := strings.Fields(s)
-	expected := strings.Fields(sc.Sentence(s))
+	expected := strings.Fields(sc.Convert(s))
 
 	for i, w := range observed {
 		if w == expected[i] {

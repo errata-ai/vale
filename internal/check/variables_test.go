@@ -62,6 +62,15 @@ func TestSentence(t *testing.T) {
 			heading: "this isn't in sentence case",
 			match:   false,
 		},
+		{
+			heading: "Community Leader responsibilities",
+			match:   false,
+		},
+		{
+			heading:    "Community Leader responsibilities",
+			exceptions: []string{"Community Leader"},
+			match:      true,
+		},
 	}
 
 	for _, h := range headings {

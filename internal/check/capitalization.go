@@ -59,18 +59,24 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 		rule.Threshold = 0.8
 	}
 
+	rule.Exceptions = append(rule.Exceptions, maps.Keys(cfg.AcceptedTokens)...)
 	if rule.Match == "$title" {
 		var tc *strcase.TitleConverter
 		if rule.Style == "Chicago" {
-			tc = strcase.NewTitleConverter(strcase.ChicagoStyle)
+			tc = strcase.NewTitleConverter(
+				strcase.ChicagoStyle,
+				strcase.UsingVocab(rule.Exceptions),
+			)
 		} else {
-			tc = strcase.NewTitleConverter(strcase.APStyle)
+			tc = strcase.NewTitleConverter(
+				strcase.APStyle,
+				strcase.UsingVocab(rule.Exceptions),
+			)
 		}
 		rule.Check = func(s string, re *regexp2.Regexp) bool {
 			return title(s, re, tc, rule.Threshold)
 		}
 	} else if rule.Match == "$sentence" {
-		rule.Exceptions = append(rule.Exceptions, maps.Keys(cfg.AcceptedTokens)...)
 		sc := strcase.NewSentenceConverter(
 			strcase.UsingVocab(rule.Exceptions),
 			strcase.UsingIndicator(wasIndicator(rule.Indicators)),
