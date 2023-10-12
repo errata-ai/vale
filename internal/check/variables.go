@@ -101,8 +101,12 @@ func sentence(s string, sc *strcase.SentenceConverter, threshold float64) bool {
 	observed := strings.Fields(s)
 	expected := strings.Fields(sc.Convert(s))
 
+	extent := len(expected)
 	for i, w := range observed {
-		if w == expected[i] {
+		if i >= extent { //nolint:gocritic
+			// NOTE: See the comment in `title` above.
+			count++
+		} else if w == expected[i] {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) { //nolint:staticcheck
 			return false
