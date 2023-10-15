@@ -26,7 +26,9 @@ var goldMd = goldmark.New(
 // Convert extended info strings -- e.g., ```callout{'title': 'NOTE'} -- that
 // might confuse Blackfriday into normal "```".
 var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
+
 var reLinkRef = regexp.MustCompile(`\]\[(?:[^]]+)\]`)
+var reLinkDef = regexp.MustCompile(`\[(?:[^]]+)\]:`)
 
 func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
@@ -61,6 +63,9 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	// NOTE: This is required to avoid finding matches inside link references.
 	body = reLinkRef.ReplaceAllStringFunc(body, func(m string) string {
 		return "][" + strings.Repeat("*", len(m)-3) + "]"
+	})
+	body = reLinkDef.ReplaceAllStringFunc(body, func(m string) string {
+		return "[" + strings.Repeat("*", len(m)-3) + "]:"
 	})
 
 	f.Content = body
