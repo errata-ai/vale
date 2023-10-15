@@ -6,12 +6,13 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"unicode"
 
-	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/regexp"
 	"github.com/karrick/godirwalk"
+
+	"github.com/errata-ai/vale/v2/internal/nlp"
 )
 
 var defaultIgnoreDirectories = []string{

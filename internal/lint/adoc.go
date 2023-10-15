@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/jdkato/regexp"
 )
 
 // NOTE: Asciidoctor converts "'" to "’".

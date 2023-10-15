@@ -9,11 +9,11 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
 	"github.com/errata-ai/regexp2"
-	"github.com/jdkato/regexp"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/glob"

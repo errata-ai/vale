@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
 	"unicode/utf8"
 
-	"github.com/jdkato/regexp"
 	"github.com/jdkato/twine/summarize"
 
 	"github.com/errata-ai/vale/v2/internal/glob"

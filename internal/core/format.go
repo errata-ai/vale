@@ -2,9 +2,8 @@ package core
 
 import (
 	"path/filepath"
+	"regexp"
 	"strings"
-
-	"github.com/jdkato/regexp"
 )
 
 // CommentsByNormedExt determines what parts of a file we should lint -- e.g.,

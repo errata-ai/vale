@@ -2,6 +2,7 @@ package check
 
 import (
 	"fmt"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -9,7 +10,6 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/regexp"
 	"github.com/mitchellh/mapstructure"
 
 	"gopkg.in/yaml.v2"

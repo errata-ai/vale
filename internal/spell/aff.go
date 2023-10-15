@@ -4,10 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/jdkato/regexp"
 )
 
 // affixType is either an affix prefix or suffix

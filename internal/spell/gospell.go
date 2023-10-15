@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 
 	"github.com/adrg/strutil"
 	"github.com/adrg/strutil/metrics"
-	"github.com/jdkato/regexp"
 )
 
 type wordMatch struct {

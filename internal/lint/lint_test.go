@@ -2,10 +2,10 @@ package lint
 
 import (
 	"path/filepath"
+	"regexp"
 	"testing"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/jdkato/regexp"
 )
 
 func TestGenderBias(t *testing.T) {

@@ -1,10 +1,10 @@
 package lint
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/jdkato/regexp"
 	"github.com/niklasfasching/go-org/org"
 )
 

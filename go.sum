@@ -46,10 +46,6 @@ github.com/huandu/xstrings v1.3.3 h1:/Gcsuc1x8JVbJ9/rlye4xZnVAbEkGauT8lbebqcQws4
 github.com/huandu/xstrings v1.3.3/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/imdario/mergo v0.3.11 h1:3tnifQM4i+fbajXKBHXWEH+KvNHqojZ778UH75j3bGA=
 github.com/imdario/mergo v0.3.11/go.mod h1:jmQim1M+e3UYxmgPu/WyfjB3N3VflVyUjjjwH0dnCYA=
-github.com/jdkato/regexp v0.1.0 h1:WxMR7sU+reKk+ITPwAeTtAEGy3uPMd+1O3wrQAV/ZMc=
-github.com/jdkato/regexp v0.1.0/go.mod h1:o9fY0c1vIooBxHLENPUeocgjhdBFuERi5VMDH+two4s=
-github.com/jdkato/twine v0.6.0 h1:pLhoVKVq2kBANC6N9VBtsVVk8VN3N6nkUHQbOFEZxUQ=
-github.com/jdkato/twine v0.6.0/go.mod h1:bt2oY1GJuFlWtiSVhNpmYfQeLVmzNBfOyfLbg4Zt/Yg=
 github.com/jdkato/twine v0.6.1 h1:PoeMy5JASf+NJLhhHMWqaH+V4kn+YG6Qzq/ruCyRPiU=
 github.com/jdkato/twine v0.6.1/go.mod h1:bt2oY1GJuFlWtiSVhNpmYfQeLVmzNBfOyfLbg4Zt/Yg=
 github.com/karrick/godirwalk v1.16.1 h1:DynhcF+bztK8gooS0+NDJFrdNZjJ3gzVzC545UNA9iw=

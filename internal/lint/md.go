@@ -2,13 +2,14 @@ package lint
 
 import (
 	"bytes"
+	"regexp"
 	"strings"
 
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/jdkato/regexp"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	grh "github.com/yuin/goldmark/renderer/html"
+
+	"github.com/errata-ai/vale/v2/internal/core"
 )
 
 // Markdown configuration.
@@ -25,6 +26,7 @@ var goldMd = goldmark.New(
 // Convert extended info strings -- e.g., ```callout{'title': 'NOTE'} -- that
 // might confuse Blackfriday into normal "```".
 var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
+var reLinkRef = regexp.MustCompile(`\]\[(?:[^]]+)\]`)
 
 func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
@@ -54,6 +56,11 @@ func (l Linter) lintMarkdown(f *core.File) error {
 		span := strings.Repeat("*", len(parts[len(parts)-1]))
 
 		return tags + span
+	})
+
+	// NOTE: This is required to avoid finding matches inside link references.
+	body = reLinkRef.ReplaceAllStringFunc(body, func(m string) string {
+		return "][" + strings.Repeat("*", len(m)-3) + "]"
 	})
 
 	f.Content = body

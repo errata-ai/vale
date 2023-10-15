@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/jdkato/regexp"
 )
 
 // lintCode lints source code -- whether it be a markup code block, a complete

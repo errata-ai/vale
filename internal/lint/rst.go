@@ -5,11 +5,11 @@ import (
 	"errors"
 	"os"
 	"os/exec"
+	"regexp"
 	"runtime"
 	"strings"
 
 	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/jdkato/regexp"
 )
 
 var shebang = regexp.MustCompile(`(?m)^#!(.+)$`)

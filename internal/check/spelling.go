@@ -5,14 +5,15 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"strings"
 
 	"github.com/errata-ai/regexp2"
+	"github.com/mitchellh/mapstructure"
+
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/errata-ai/vale/v2/internal/spell"
-	"github.com/jdkato/regexp"
-	"github.com/mitchellh/mapstructure"
 )
 
 var defaultFilters = []*regexp.Regexp{
