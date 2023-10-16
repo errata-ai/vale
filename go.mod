@@ -11,7 +11,7 @@ require (
 	github.com/errata-ai/ini v1.63.0
 	github.com/errata-ai/regexp2 v1.7.0
 	github.com/gobwas/glob v0.2.3
-	github.com/jdkato/twine v0.6.1
+	github.com/jdkato/twine v0.7.0
 	github.com/karrick/godirwalk v1.16.1
 	github.com/mholt/archiver/v3 v3.5.1
 	github.com/mitchellh/mapstructure v1.4.0
