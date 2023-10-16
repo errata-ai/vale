@@ -94,19 +94,24 @@ func title(s string, except *regexp2.Regexp, tc *strcase.TitleConverter, thresho
 	return (count / words) >= threshold
 }
 
-func sentence(s string, sc *strcase.SentenceConverter, threshold float64) bool {
+func sentence(s string, except *regexp2.Regexp, sc *strcase.SentenceConverter, threshold float64) bool {
 	count := 0.0
 	words := 0.0
 
-	observed := strings.Fields(s)
-	expected := strings.Fields(sc.Convert(s))
+	ps := `[\p{N}\p{L}*]+[^\s]*`
+	if except != nil && except.String() != "" {
+		ps = except.String() + "|" + ps
+	}
+	re := regexp2.MustCompileStd(ps)
+
+	expected := re.FindAllString(sc.Convert(s), -1)
 
 	extent := len(expected)
-	for i, w := range observed {
+	for i, w := range re.FindAllString(s, -1) {
 		if i >= extent { //nolint:gocritic
 			// NOTE: See the comment in `title` above.
 			count++
-		} else if w == expected[i] {
+		} else if w == expected[i] || isMatch(except, w) {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) { //nolint:staticcheck
 			return false

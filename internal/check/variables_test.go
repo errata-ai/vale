@@ -75,7 +75,7 @@ func TestSentence(t *testing.T) {
 
 	for _, h := range headings {
 		sc := strcase.NewSentenceConverter(strcase.UsingVocab(h.exceptions))
-		s := sentence(h.heading, sc, 1)
+		s := sentence(h.heading, nil, sc, 1)
 		if s != h.match {
 			t.Errorf("expected = %v, got = %v (%s)", h.match, s, h.heading)
 		}

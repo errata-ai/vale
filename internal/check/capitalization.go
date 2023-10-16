@@ -82,7 +82,7 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 			strcase.UsingIndicator(wasIndicator(rule.Indicators)),
 		)
 		rule.Check = func(s string, re *regexp2.Regexp) bool {
-			return sentence(s, sc, rule.Threshold)
+			return sentence(s, re, sc, rule.Threshold)
 		}
 	} else if f, ok := varToFunc[rule.Match]; ok {
 		rule.Check = f
