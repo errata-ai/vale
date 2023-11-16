@@ -5,3 +5,5 @@ Documentarians
 Log4j
 ABCDEF
 ABC-DEF
+PLuG
+(?i)GitHub

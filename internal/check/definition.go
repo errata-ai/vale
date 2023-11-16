@@ -329,6 +329,15 @@ func updateExceptions(previous []string, current map[string]struct{}) (*regexp2.
 		return len(previous[p]) > len(previous[q])
 	})
 
+	// NOTE: We need to add `(?-i)` to each term that doesn't already have it,
+	// otherwise any instance of the `(?i)` flag will be set for the entire
+	// expression.
+	for i, term := range previous {
+		if !strings.HasPrefix(term, "(?i)") {
+			previous[i] = fmt.Sprintf("(?-i)%s", term)
+		}
+	}
+
 	regex := makeRegexp(
 		"",
 		false,

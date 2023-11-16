@@ -10,6 +10,7 @@ Feature: Misc
             test.md:17:11:Vale.Terms:Use 'Log4j' instead of 'log4j'.
             test.md:19:1:Vale.Terms:Use 'ABCDEF' instead of 'ABCDEf'.
             test.md:21:1:Vale.Terms:Use 'ABC-DEF' instead of 'ABC-DEf'.
+            test.md:23:1:Vale.Terms:Use 'PLuG' instead of 'plug'.
             """
 
     Scenario: Multiple Vocabs
