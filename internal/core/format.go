@@ -70,7 +70,7 @@ var CommentsByNormedExt = map[string]map[string]string{
 		"inline":     `(#.+)`,
 		"blockStart": `(#=)`,
 		"blockEnd":   `(=#)`,
-	}
+	},
 }
 
 // FormatByExtension associates a file extension with its "normed" extension
