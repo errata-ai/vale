@@ -23,9 +23,19 @@ function g(x)
     return x^3
 end
 
+@doc raw"""
+    h(x)
+
+I am an example doc string, which has one further macro (`@doc`) upfront,
+there might also be other macros or string types (besides raw and doc) upfront.
+"""
+function h(x)
+    return x^4
+end
+
 # single strings could also be doc strings I think.
 
-function h(x)
+function i(x)
     println("I am just a single line string")
-    return x^4
+    return x^5
 end
