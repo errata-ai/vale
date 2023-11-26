@@ -105,7 +105,7 @@ func main() {
 		}
 	}
 
-	config, err := core.ReadPipeline("ini", &Flags, false)
+	config, _, err := core.ReadPipeline("ini", &Flags, false)
 	if err != nil {
 		handleError(err)
 	}

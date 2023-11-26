@@ -161,13 +161,13 @@ func shadowLoad(source interface{}, others ...interface{}) (*ini.File, error) {
 		SpaceBeforeInlineComment: true}, source, others...)
 }
 
-func loadINI(cfg *Config, dry bool) error {
+func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 	var uCfg *ini.File
 	var sources []string
 
 	base, err := loadConfig(configNames)
 	if err != nil {
-		return NewE100("loadINI/homedir", err)
+		return nil, NewE100("loadINI/homedir", err)
 	}
 	cfg.RootINI = base
 
@@ -186,20 +186,20 @@ func loadINI(cfg *Config, dry bool) error {
 		// changed since Vale Server was deprecated.
 		uCfg, err = processSources(cfg, sources)
 		if err != nil {
-			return NewE100("config pipeline failed", err)
+			return nil, NewE100("config pipeline failed", err)
 		}
 	} else if cfg.Flags.Path != "" {
 		// We've been given a value through `--config`.
 		uCfg, err = shadowLoad(cfg.Flags.Path)
 		if err != nil {
-			return NewE100("invalid --config", err)
+			return nil, NewE100("invalid --config", err)
 		}
 		cfg.Root = filepath.Dir(cfg.Flags.Path)
 	} else if hasEnv {
 		// We've been given a value through `VALE_CONFIG_PATH`.
 		uCfg, err = shadowLoad(fromEnv)
 		if err != nil {
-			return NewE100("invalid VALE_CONFIG_PATH", err)
+			return nil, NewE100("invalid VALE_CONFIG_PATH", err)
 		}
 		cfg.Root = filepath.Dir(fromEnv)
 		cfg.Flags.Path = fromEnv
@@ -207,7 +207,7 @@ func loadINI(cfg *Config, dry bool) error {
 		// We're using a config file found using a local search process.
 		uCfg, err = shadowLoad(base)
 		if err != nil {
-			return NewE100(".vale.ini not found", err)
+			return nil, NewE100(".vale.ini not found", err)
 		}
 		cfg.Root = filepath.Dir(base)
 		cfg.Flags.Path = base
@@ -287,7 +287,7 @@ func processSources(cfg *Config, sources []string) (*ini.File, error) {
 	return uCfg, err
 }
 
-func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error {
+func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) (*ini.File, error) {
 	core := uCfg.Section("")
 	global := uCfg.Section("*")
 
@@ -298,11 +298,11 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 	for _, k := range core.KeyStrings() {
 		if f, found := coreOpts[k]; found {
 			if err := f(core, cfg, paths); err != nil && !dry {
-				return err
+				return nil, err
 			}
 		} else if _, found = syntaxOpts[k]; found {
 			msg := fmt.Sprintf("'%s' is a syntax-specific option", k)
-			return NewE201FromTarget(msg, k, cfg.RootINI)
+			return nil, NewE201FromTarget(msg, k, cfg.RootINI)
 		}
 	}
 
@@ -322,7 +322,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 			f(global, cfg, paths)
 		} else if _, found = syntaxOpts[k]; found {
 			msg := fmt.Sprintf("'%s' is a syntax-specific option", k)
-			return NewE201FromTarget(msg, k, cfg.RootINI)
+			return nil, NewE201FromTarget(msg, k, cfg.RootINI)
 		} else {
 			cfg.GChecks[k] = validateLevel(k, global.Key(k).String(), cfg)
 			cfg.Checks = append(cfg.Checks, k)
@@ -337,7 +337,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 
 		pat, err := glob.Compile(sec)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		cfg.SecToPat[sec] = pat
 
@@ -345,7 +345,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 		for _, k := range uCfg.Section(sec).KeyStrings() {
 			if f, found := syntaxOpts[k]; found {
 				if err = f(sec, uCfg.Section(sec), cfg); err != nil && !dry {
-					return err
+					return nil, err
 				}
 			} else {
 				syntaxMap[k] = validateLevel(k, uCfg.Section(sec).Key(k).String(), cfg)
@@ -356,5 +356,5 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) error 
 		cfg.SChecks[sec] = syntaxMap
 	}
 
-	return nil
+	return uCfg, nil
 }

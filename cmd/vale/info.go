@@ -64,6 +64,8 @@ var hidden = []string{
 	"compile",
 	"run",
 	"fix",
+	"get-config",
+	"write-config",
 }
 
 // PrintIntro shows basic usage / getting started info.

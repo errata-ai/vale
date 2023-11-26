@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
@@ -36,14 +37,16 @@ var commandInfo = map[string]string{
 
 // Actions are the available CLI commands.
 var Actions = map[string]func(args []string, flags *core.CLIFlags) error{
-	"ls-config":  printConfig,
-	"ls-metrics": printMetrics,
-	"dc":         printConfig,
-	"tag":        runTag,
-	"compile":    compileRule,
-	"run":        runRule,
-	"sync":       sync,
-	"fix":        fix,
+	"ls-config":    printConfig,
+	"ls-metrics":   printMetrics,
+	"get-config":   getConfig,
+	"write-config": writeConfig,
+	"dc":           printConfig,
+	"tag":          runTag,
+	"compile":      compileRule,
+	"run":          runRule,
+	"sync":         sync,
+	"fix":          fix,
 }
 
 func fix(args []string, flags *core.CLIFlags) error {
@@ -60,7 +63,7 @@ func fix(args []string, flags *core.CLIFlags) error {
 		alert = string(b)
 	}
 
-	cfg, err := core.ReadPipeline("ini", flags, false)
+	cfg, _, err := core.ReadPipeline("ini", flags, false)
 	if err != nil {
 		return err
 	}
@@ -74,7 +77,7 @@ func fix(args []string, flags *core.CLIFlags) error {
 }
 
 func sync(_ []string, flags *core.CLIFlags) error {
-	cfg, err := core.ReadPipeline("ini", flags, true)
+	cfg, _, err := core.ReadPipeline("ini", flags, true)
 	if err != nil {
 		return err
 	} else if err = initPath(cfg); err != nil {
@@ -107,12 +110,47 @@ func sync(_ []string, flags *core.CLIFlags) error {
 }
 
 func printConfig(_ []string, flags *core.CLIFlags) error {
-	cfg, err := core.ReadPipeline("ini", flags, false)
+	cfg, _, err := core.ReadPipeline("ini", flags, false)
 	if err != nil {
 		return err
 	}
 	fmt.Println(cfg.String())
 	return nil
+}
+
+func getConfig(_ []string, flags *core.CLIFlags) error {
+	var out bytes.Buffer
+
+	_, sourced, err := core.ReadPipeline("ini", flags, false)
+	if err != nil {
+		return err
+	}
+
+	// Remove empty sections.
+	for _, section := range sourced.Sections() {
+		if len(section.Keys()) == 0 {
+			sourced.DeleteSection(section.Name())
+		}
+	}
+
+	if _, err = sourced.WriteTo(&out); err != nil {
+		return err
+	}
+
+	return printJSON(out.String())
+}
+
+func writeConfig(ini []string, flags *core.CLIFlags) error {
+	cfg, _, err := core.ReadPipeline("ini", flags, false)
+	if err != nil {
+		return err
+	}
+
+	if len(ini) == 0 {
+		return errors.New("no data provided")
+	}
+
+	return os.WriteFile(cfg.RootINI, []byte(ini[0]), os.ModePerm)
 }
 
 func printMetrics(args []string, _ *core.CLIFlags) error {
