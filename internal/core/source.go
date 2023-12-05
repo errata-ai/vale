@@ -8,57 +8,65 @@ import (
 	"github.com/errata-ai/ini"
 )
 
-func validateFlags(cfg *Config) error {
-	if cfg.Flags.Path != "" && !FileExists(cfg.Flags.Path) {
-		return NewE100(
-			"--config",
-			fmt.Errorf("path '%s' does not exist", cfg.Flags.Path))
-	}
-	return nil
-}
+type ConfigSrc int
 
-func ReadPipeline(provider string, flags *CLIFlags, dry bool) (*Config, *ini.File, error) {
-	var sourced *ini.File
+const (
+	FileSrc ConfigSrc = iota
+	StringSrc
+)
 
+func ReadPipeline(flags *CLIFlags, dry bool) (*Config, error) {
 	config, err := NewConfig(flags)
 	if err != nil {
-		return config, nil, err
+		return config, err
 	} else if err = validateFlags(config); err != nil {
-		return config, nil, err
+		return config, err
 	}
 
-	sourced, err = from(provider, config, dry)
+	_, err = FromFile(config, dry)
 	if err != nil {
-		return config, nil, err
+		return config, err
 	}
 
 	sources, err := pipeConfig(config)
 	if err != nil {
-		return config, nil, err
+		return config, err
 	}
 
 	if len(sources) > 0 {
 		config.Flags.Sources = strings.Join(sources, ",")
 
-		sourced, err = from(provider, config, dry)
+		_, err = FromFile(config, dry)
 		if err != nil {
-			return config, nil, err
+			return config, err
 		}
 	}
 
-	return config, sourced, nil
+	return config, nil
 }
 
-// from updates an existing configuration with values from a user-provided
+// from updates an existing configuration with values From a user-provided
 // source.
-func from(provider string, cfg *Config, dry bool) (*ini.File, error) {
+func from(provider ConfigSrc, src string, cfg *Config, dry bool) (*ini.File, error) {
 	switch provider {
-	case "ini":
+	case FileSrc:
 		return loadINI(cfg, dry)
+	case StringSrc:
+		return loadStdin(src, cfg, dry)
 	default:
 		return nil, NewE100(
-			"source/From", fmt.Errorf("unknown provider '%s'", provider))
+			"source/From", fmt.Errorf("unknown provider '%v'", provider))
 	}
+}
+
+// FromFile loads an INI configuration from a file.
+func FromFile(cfg *Config, dry bool) (*ini.File, error) {
+	return from(FileSrc, "", cfg, dry)
+}
+
+// FromString loads an INI configuration from a string.
+func FromString(src string, cfg *Config, dry bool) (*ini.File, error) {
+	return from(StringSrc, src, cfg, dry)
 }
 
 // FindAsset tries to locate a Vale-related resource by looking in the
@@ -74,4 +82,13 @@ func FindAsset(cfg *Config, path string) string {
 	}
 
 	return determinePath(cfg.Flags.Path, path)
+}
+
+func validateFlags(cfg *Config) error {
+	if cfg.Flags.Path != "" && !FileExists(cfg.Flags.Path) {
+		return NewE100(
+			"--config",
+			fmt.Errorf("path '%s' does not exist", cfg.Flags.Path))
+	}
+	return nil
 }

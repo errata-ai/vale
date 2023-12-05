@@ -84,7 +84,7 @@ func fetch(src, dst string) error {
 }
 
 func install(args []string, flags *core.CLIFlags) error {
-	cfg, _, err := core.ReadPipeline("ini", flags, false)
+	cfg, err := core.ReadPipeline(flags, false)
 	if err != nil {
 		return err
 	}

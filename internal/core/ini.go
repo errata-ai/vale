@@ -161,6 +161,14 @@ func shadowLoad(source interface{}, others ...interface{}) (*ini.File, error) {
 		SpaceBeforeInlineComment: true}, source, others...)
 }
 
+func loadStdin(src string, cfg *Config, dry bool) (*ini.File, error) {
+	uCfg, err := shadowLoad([]byte(src))
+	if err != nil {
+		return nil, NewE100("loadStdin", err)
+	}
+	return processConfig(uCfg, cfg, []string{}, dry)
+}
+
 func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 	var uCfg *ini.File
 	var sources []string
