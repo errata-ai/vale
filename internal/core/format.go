@@ -66,6 +66,11 @@ var CommentsByNormedExt = map[string]map[string]string{
 		"blockStart": `(^=begin)`,
 		"blockEnd":   `(^=end)`,
 	},
+	".jl": { // Julia
+		"inline":     `(#.*|".+"|"{3}.+"{3})`, // Comments staring with #, single and tripple one line strings
+		"blockStart": `(#=|"{3})`, // the triple-string might still have @doc raw or just raw upfront, is that ok here, when I do not use ^?
+		"blockEnd":   `(=#|"{3})`,
+	},
 }
 
 // FormatByExtension associates a file extension with its "normed" extension
@@ -99,6 +104,7 @@ var FormatByExtension = map[string][]string{
 	`\.(?:xml)$`:                                  {".xml", "markup"},
 	`\.(?:dita)$`:                                 {".dita", "markup"},
 	`\.(?:org)$`:                                  {".org", "markup"},
+	`\.(?:jl)$`:                                   {".jl", "code"},
 }
 
 // FormatFromExt takes a file extension and returns its [normExt, format]
