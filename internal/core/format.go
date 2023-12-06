@@ -66,10 +66,10 @@ var CommentsByNormedExt = map[string]map[string]string{
 		"blockStart": `(^=begin)`,
 		"blockEnd":   `(^=end)`,
 	},
-	".jl": { // Julia
-		"inline":     `(#.*|".+"|"{3}.+"{3})`, // Comments staring with #, single and tripple one line strings
-		"blockStart": `(#=|"{3})`, // the triple-string might still have @doc raw or just raw upfront, is that ok here, when I do not use ^?
-		"blockEnd":   `(=#|"{3})`,
+	".jl": {
+		"inline":     `(# .+)`,
+		"blockStart": `(^#=)|(^(?:@doc )?(?:raw)?["']{3}.*)`,
+		"blockEnd":   `(^=#)|(.*["']{3})`,
 	},
 }
 
