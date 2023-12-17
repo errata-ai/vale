@@ -12,6 +12,26 @@ import (
 	"github.com/errata-ai/vale/v2/internal/glob"
 )
 
+var (
+	// ConfigDir is the default location for Vale's configuration files.
+	//
+	// This was introduced in v3.0.0 as a means of standardizing the location
+	// of Vale's configuration files.
+	//
+	// This directory is relative to the user's specified `StylesPath`, which
+	// can be set via the `--config` flag, the `VALE_CONFIG_PATH` environment
+	// variable, or the default search process.
+	//
+	// NOTE: The config pipeline is stored in the top-level `.config`
+	// directory. See `cmd/vale/sync.go`.
+	ConfigDir = "config"
+
+	VocabDir  = filepath.Join(ConfigDir, "vocabularies")
+	DictDir   = filepath.Join(ConfigDir, "dictionaries")
+	TmplDir   = filepath.Join(ConfigDir, "templates")
+	IgnoreDir = filepath.Join(ConfigDir, "ignorefiles")
+)
+
 // CLIFlags holds the values that are defined at runtime by the user.
 //
 // For example, `vale --minAlertLevel=error`.

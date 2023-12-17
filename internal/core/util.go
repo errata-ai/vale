@@ -288,7 +288,7 @@ func validateLevel(key, val string, cfg *Config) bool {
 func loadVocab(root string, cfg *Config) error {
 	target := ""
 	for _, p := range cfg.Paths {
-		opt := filepath.Join(p, "Vocab", root)
+		opt := filepath.Join(p, VocabDir, root)
 		if IsDir(opt) {
 			target = opt
 			break
@@ -296,7 +296,8 @@ func loadVocab(root string, cfg *Config) error {
 	}
 
 	if target == "" {
-		return NewE100("vocab", fmt.Errorf("'%s' does not exist", root))
+		return NewE100("vocab", fmt.Errorf(
+			"The '%s/%s' directory does not exist", VocabDir, root))
 	}
 
 	err := godirwalk.Walk(target, &godirwalk.Options{
