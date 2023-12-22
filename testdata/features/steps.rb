@@ -52,7 +52,7 @@ end
 
 When(/^I test template "(.*)"$/) do |t|
   step %(I cd to "../../fixtures/templates")
-  step %(I run `#{cmd} --output='tmpl/#{t}' .`)
+  step %(I run `#{cmd} --output='#{t}' .`)
 end
 
 When(/^I lint AsciiDoc "(.*)"$/) do |file|

@@ -69,6 +69,23 @@ func FromString(src string, cfg *Config, dry bool) (*ini.File, error) {
 	return from(StringSrc, src, cfg, dry)
 }
 
+// getConfigAsset returns the path to a given asset if it exists.
+// Otherwise, it returns an empty string.
+func getConfigAsset(stylesPath, target string) string {
+	if stylesPath == "" {
+		return ""
+	}
+
+	for _, dir := range []string{DictDir, IgnoreDir, TmplDir, VocabDir} {
+		path := filepath.Join(stylesPath, dir, target)
+		if FileExists(path) {
+			return path
+		}
+	}
+
+	return ""
+}
+
 // FindAsset tries to locate a Vale-related resource by looking in the
 // user-defined StylesPath.
 func FindAsset(cfg *Config, path string) string {
@@ -79,6 +96,10 @@ func FindAsset(cfg *Config, path string) string {
 	inPath := filepath.Join(cfg.StylesPath, path)
 	if FileExists(inPath) {
 		return inPath
+	}
+
+	if p := getConfigAsset(cfg.StylesPath, path); p != "" {
+		return p
 	}
 
 	return determinePath(cfg.Flags.Path, path)

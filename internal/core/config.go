@@ -29,7 +29,7 @@ var (
 	VocabDir  = filepath.Join(ConfigDir, "vocabularies")
 	DictDir   = filepath.Join(ConfigDir, "dictionaries")
 	TmplDir   = filepath.Join(ConfigDir, "templates")
-	IgnoreDir = filepath.Join(ConfigDir, "ignorefiles")
+	IgnoreDir = filepath.Join(ConfigDir, "ignore")
 )
 
 // CLIFlags holds the values that are defined at runtime by the user.

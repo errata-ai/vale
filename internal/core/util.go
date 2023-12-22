@@ -297,7 +297,7 @@ func loadVocab(root string, cfg *Config) error {
 
 	if target == "" {
 		return NewE100("vocab", fmt.Errorf(
-			"The '%s/%s' directory does not exist", VocabDir, root))
+			"'%s/%s' directory does not exist", VocabDir, root))
 	}
 
 	err := godirwalk.Walk(target, &godirwalk.Options{
