@@ -126,8 +126,8 @@ func NewChecker(options ...CheckerOption) (*Checker, error) {
 		for _, f := range files {
 			name := filepath.Base(f)
 			name = name[:len(name)-4]
-			if err := checker.loadDic(name); err != nil {
-				return &checker, err
+			if loadErr := checker.loadDic(name); loadErr != nil {
+				return &checker, loadErr
 			}
 		}
 	}
