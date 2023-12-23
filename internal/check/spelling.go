@@ -101,7 +101,7 @@ func NewSpelling(cfg *core.Config, generic baseCheck, path string) (Spelling, er
 		return rule, readStructureError(err, path)
 	}
 
-	model, err = makeSpeller(&rule, cfg)
+	model, err = makeSpeller(&rule, cfg, path)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
@@ -186,12 +186,16 @@ func (s Spelling) Suggest(word string) []string {
 	return s.gs.Suggest(word)
 }
 
-func makeSpeller(s *Spelling, cfg *core.Config) (*spell.Checker, error) {
+func makeSpeller(s *Spelling, cfg *core.Config, rulePath string) (*spell.Checker, error) {
 	var options []spell.CheckerOption
 	var found bool
 
 	affloc := core.FindAsset(cfg, s.Aff)
 	dicloc := core.FindAsset(cfg, s.Dic)
+
+	if core.FileExists(affloc) && core.FileExists(dicloc) {
+		return spell.NewChecker(spell.UsingDictionaryByPath(dicloc, affloc))
+	}
 
 	options = append(options, spell.WithDefault(s.Append))
 	if s.Dicpath != "" {
@@ -222,14 +226,19 @@ func makeSpeller(s *Spelling, cfg *core.Config) (*spell.Checker, error) {
 		}
 	}
 
-	if core.FileExists(affloc) && core.FileExists(dicloc) {
-		return spell.NewChecker(spell.UsingDictionaryByPath(dicloc, affloc))
-	} else if len(s.Dictionaries) > 0 {
+	if len(s.Dictionaries) > 0 {
 		for _, name := range s.Dictionaries {
 			options = append(options, spell.UsingDictionary(name))
 		}
 		return spell.NewChecker(options...)
 	}
 
-	return spell.NewChecker()
+	if rulePath == "internal" {
+		// NOTE: New in v3.0 -- if we aren't given a `dicpath` or specific
+		// dictionaries, we use the default one.
+		options = append(options, spell.WithDefaultPath(
+			filepath.Join(cfg.StylesPath, core.DictDir)))
+	}
+
+	return spell.NewChecker(options...)
 }

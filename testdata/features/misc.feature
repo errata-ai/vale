@@ -97,6 +97,16 @@ Feature: Misc
             test.md:3:96:Spelling.Ignore:'human-friendly' is a typo!
             """
 
+    Scenario: v3.0 Spelling
+        When I test "spellingv3"
+        Then the output should contain exactly:
+            """
+            test.adoc:61:1:Vale.Spelling:Did you really mean 'Nginx'?
+            test.html:5:21:Vale.Spelling:Did you really mean 'docbook'?
+            test.md:1:1:Vale.Spelling:Did you really mean 'Nginx'?
+            test.md:3:1:Vale.Spelling:Did you really mean 'HTTPie'?
+            """
+
     Scenario: i18n
         When I test "i18n"
         Then the output should contain exactly:

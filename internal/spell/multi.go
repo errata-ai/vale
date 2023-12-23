@@ -26,11 +26,12 @@ var defaultOpts = Options{
 
 // Options controls the checker-creation process:
 type Options struct {
-	path   string
-	system string
-	names  []string
-	dics   []dictionary
-	load   bool
+	path        string
+	defaultPath string
+	system      string
+	names       []string
+	dics        []dictionary
+	load        bool
 }
 
 // A CheckerOption is a setting that changes the checker-creation process.
@@ -47,6 +48,14 @@ func WithPath(path string) CheckerOption {
 func WithDefault(load bool) CheckerOption {
 	return func(opts *Options) {
 		opts.load = load
+	}
+}
+
+// WithDefaultPath specifies a path from which all dictionaries should be
+// loaded.
+func WithDefaultPath(path string) CheckerOption {
+	return func(opts *Options) {
+		opts.defaultPath = path
 	}
 }
 
@@ -105,6 +114,22 @@ func NewChecker(options ...CheckerOption) (*Checker, error) {
 		}
 
 		checker.checkers = append(checker.checkers, c)
+	}
+
+	if base.defaultPath != "" {
+		// load all dictionaries from the given path ...
+		files, err := filepath.Glob(base.defaultPath + "/*.dic")
+		if err != nil {
+			return &checker, err
+		}
+
+		for _, f := range files {
+			name := filepath.Base(f)
+			name = name[:len(name)-4]
+			if err := checker.loadDic(name); err != nil {
+				return &checker, err
+			}
+		}
 	}
 
 	return &checker, nil
@@ -168,11 +193,16 @@ func (m *Checker) AddWordListFile(name string) error {
 
 func (m *Checker) readAsset(name string) (string, error) {
 	roots := []string{
+		m.options.defaultPath,
 		m.options.path,
 		m.options.system,
 	}
 
 	for _, p := range roots {
+		if p == "" {
+			continue
+		}
+
 		option := filepath.Join(p, name)
 		if core.FileExists(option) {
 			return option, nil

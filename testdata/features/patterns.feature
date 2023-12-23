@@ -68,7 +68,6 @@ Feature: IgnorePatterns
             test2.rst:132:11:Vale.Spelling:Did you really mean 'iconClass'?
             test2.rst:135:11:Vale.Spelling:Did you really mean 'tooltip'?
             test2.rst:137:32:Vale.Spelling:Did you really mean 'tooltip'?
-            test2.rst:139:11:Vale.Spelling:Did you really mean 'boolean'?
             test2.rst:143:143:Vale.Spelling:Did you really mean 'wil'?
             test2.rst:156:11:Vale.Spelling:Did you really mean 'confirmText'?
             test2.rst:159:11:Vale.Spelling:Did you really mean 'confirmAction'?
