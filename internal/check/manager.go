@@ -7,9 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/karrick/godirwalk"
+
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/karrick/godirwalk"
 )
 
 // Manager controls the loading and validating of the check extension points.
