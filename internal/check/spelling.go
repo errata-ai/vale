@@ -106,21 +106,39 @@ func NewSpelling(cfg *core.Config, generic baseCheck, path string) (Spelling, er
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
 
-	for _, ignore := range rule.Ignore {
-		if name == "Vale.Spelling" {
-			for _, v := range cfg.Vocab {
-				vocab := filepath.Join(
-					cfg.StylesPath,
-					"Vocab",
-					v,
-					ignore)
-				_ = model.AddWordListFile(vocab)
+	if name == "Vale.Spelling" {
+		// NOTE: For `Vale.Spelling`, there's no way to define specific
+		// ignore files, so we just check the default `config/ignore`
+		// directory.
+		//
+		// We **can't** add vocabularies here because `AddWordListFile`
+		// doesn't support regex.
+		ignored, err := core.IgnoreFiles(cfg.StylesPath)
+		if err != nil {
+			return rule, err
+		}
+
+		for _, file := range ignored {
+			if err = model.AddWordListFile(file); err != nil {
+				return rule, err
 			}
-		} else {
-			vocab := filepath.Join(cfg.StylesPath, ignore)
-			if err = model.AddWordListFile(vocab); err != nil {
-				vocab, _ = filepath.Abs(ignore)
-				if err = model.AddWordListFile(vocab); err != nil {
+		}
+	} else {
+		for _, ignore := range rule.Ignore {
+			fullPath, _ := filepath.Abs(ignore)
+
+			// There are a few cases we need to consider:
+			paths := []string{
+				// 1. An absolute path (similar to $DICPATH)
+				fullPath,
+				// 2. Relative to StylesPath
+				filepath.Join(cfg.StylesPath, ignore),
+				// 3. Relative to config/ignore
+				filepath.Join(cfg.StylesPath, core.IgnoreDir, ignore),
+			}
+
+			for _, p := range paths {
+				if err = model.AddWordListFile(p); err != nil && core.FileExists(p) {
 					return rule, err
 				}
 			}

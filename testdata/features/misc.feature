@@ -89,7 +89,6 @@ Feature: Misc
         When I test "spelling"
         Then the output should contain exactly:
             """
-            test.adoc:61:1:Vale.Spelling:Did you really mean 'Nginx'?
             test.dic.md:1:3:Spelling.Test:'Test' is a typo!
             test.html:5:21:Spelling.Ignores:Did you really mean 'docbook'?
             test.html:14:96:Spelling.Ignores:Did you really mean 'TODO'?
@@ -101,10 +100,7 @@ Feature: Misc
         When I test "spellingv3"
         Then the output should contain exactly:
             """
-            test.adoc:61:1:Vale.Spelling:Did you really mean 'Nginx'?
             test.html:5:21:Vale.Spelling:Did you really mean 'docbook'?
-            test.md:1:1:Vale.Spelling:Did you really mean 'Nginx'?
-            test.md:3:1:Vale.Spelling:Did you really mean 'HTTPie'?
             """
 
     Scenario: i18n

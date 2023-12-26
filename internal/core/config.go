@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/bmatcuk/doublestar/v4"
 	"github.com/errata-ai/ini"
 	"github.com/errata-ai/vale/v2/internal/glob"
 )
@@ -31,6 +32,12 @@ var (
 	TmplDir   = filepath.Join(ConfigDir, "templates")
 	IgnoreDir = filepath.Join(ConfigDir, "ignore")
 )
+
+// IgnoreFiles returns a list of all user-defined ignore files.
+func IgnoreFiles(stylesPath string) ([]string, error) {
+	ignore := filepath.Join(stylesPath, IgnoreDir)
+	return doublestar.FilepathGlob(filepath.Join(ignore, "**", "*.txt"))
+}
 
 // CLIFlags holds the values that are defined at runtime by the user.
 //

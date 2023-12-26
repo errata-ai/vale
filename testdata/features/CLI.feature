@@ -140,8 +140,6 @@ Feature: CLI
         Then the output should contain exactly:
             """
             test.md:1:3:demo.Cap:'intro' should be in title case.
-            test.md:3:1:Vale.Spelling:Did you really mean 'Nginx'?
-            test.md:5:1:Vale.Spelling:Did you really mean 'HTTPie'?
             test.md:5:8:Vale.Repetition:'is' is repeated!
             """
         And the exit status should be 1
@@ -159,8 +157,6 @@ Feature: CLI
         Then the output should contain exactly:
             """
             test.md:1:3:demo.HeadingStartsWithCapital:'intro' should be capitalized
-            test.md:3:1:Vale.Spelling:Did you really mean 'Nginx'?
-            test.md:5:1:Vale.Spelling:Did you really mean 'HTTPie'?
             test.md:5:8:Vale.Repetition:'is' is repeated!
             """
         And the exit status should be 1
