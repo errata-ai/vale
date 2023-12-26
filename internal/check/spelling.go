@@ -113,9 +113,9 @@ func NewSpelling(cfg *core.Config, generic baseCheck, path string) (Spelling, er
 		//
 		// We **can't** add vocabularies here because `AddWordListFile`
 		// doesn't support regex.
-		ignored, err := core.IgnoreFiles(cfg.StylesPath)
-		if err != nil {
-			return rule, err
+		ignored, readErr := core.IgnoreFiles(cfg.StylesPath)
+		if readErr != nil {
+			return rule, readErr
 		}
 
 		for _, file := range ignored {
