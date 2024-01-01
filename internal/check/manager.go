@@ -199,14 +199,22 @@ func (mgr *Manager) loadDefaultRules() error {
 	if level, ok := mgr.Config.RuleToLevel["Vale.Repetition"]; ok {
 		repetition["level"] = level
 	}
-	rule, _ := buildRule(mgr.Config, repetition)
+
+	rule, err := buildRule(mgr.Config, repetition)
+	if err != nil {
+		return err
+	}
 	mgr.rules["Vale.Repetition"] = rule
 
 	spelling := defaultRules["Spelling"]
 	if level, ok := mgr.Config.RuleToLevel["Vale.Spelling"]; ok {
 		spelling["level"] = level
 	}
-	rule, _ = buildRule(mgr.Config, spelling)
+
+	rule, err = buildRule(mgr.Config, spelling)
+	if err != nil {
+		return err
+	}
 	mgr.rules["Vale.Spelling"] = rule
 
 	// TODO: where should this go?
