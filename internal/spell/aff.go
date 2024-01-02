@@ -66,7 +66,7 @@ type dictConfig struct {
 	CamelCase         int
 	CompoundMin       int64
 	compoundMap       map[rune][]string
-	NoSuggestFlag     rune
+	NoSuggestFlag     string
 }
 
 // expand expands a word/affix using dictionary/affix rules
@@ -229,12 +229,7 @@ func newDictConfig(file io.Reader) (*dictConfig, error) { //nolint:funlen
 			if len(parts) < 2 {
 				return nil, fmt.Errorf("NOSUGGEST stanza had %d fields, expected 2", len(parts))
 			}
-			// should use runes or parse correctly
-			chars := []rune(parts[1])
-			if len(chars) != 1 {
-				return nil, fmt.Errorf("NOSUGGEST stanza had more than one flag: %q", parts[1])
-			}
-			aff.NoSuggestFlag = chars[0]
+			aff.NoSuggestFlag = parts[1]
 		case "WORDCHARS":
 			if len(parts) < 2 {
 				return nil, fmt.Errorf("WORDCHAR stanza had %d fields, expected 2", len(parts))
