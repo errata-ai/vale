@@ -33,6 +33,10 @@ var (
 	IgnoreDir = filepath.Join(ConfigDir, "ignore")
 )
 
+// ConfigDirs is a list of all directories that contain user-defined, non-style
+// configuration files.
+var ConfigDirs = []string{VocabDir, DictDir, TmplDir, IgnoreDir}
+
 // IgnoreFiles returns a list of all user-defined ignore files.
 func IgnoreFiles(stylesPath string) ([]string, error) {
 	ignore := filepath.Join(stylesPath, IgnoreDir)

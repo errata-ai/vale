@@ -26,6 +26,23 @@ func mockPath() (string, error) {
 	return cfg.StylesPath, nil
 }
 
+func TestNoPkgFound(t *testing.T) {
+	path, err := mockPath()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = readPkg("https://github.com/errata-ai/Microsoft/releases/download/v0.14.1/Microsoft.zip", path, 0)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+
+	msg := "could not fetch 'https://github.com/errata-ai/Microsoft/releases/download/v0.14.1/Microsoft.zip' (status code '404')"
+	if !strings.Contains(err.Error(), msg) {
+		t.Fatalf("expected '%s', got '%s'", msg, err.Error())
+	}
+}
+
 func TestLibrary(t *testing.T) {
 	path, err := mockPath()
 	if err != nil {
@@ -168,19 +185,31 @@ func TestLocalOnlyStyles(t *testing.T) { //nolint:dupl
 	}
 }
 
-func TestNoPkgFound(t *testing.T) {
+func TestV3Pkg(t *testing.T) {
 	path, err := mockPath()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = readPkg("https://github.com/errata-ai/Microsoft/releases/download/v0.14.1/Microsoft.zip", path, 0)
-	if err == nil {
-		t.Fatal("expected error, got nil")
+	zip, err := filepath.Abs(filepath.Join(TestData, "v3.zip"))
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	msg := "could not fetch 'https://github.com/errata-ai/Microsoft/releases/download/v0.14.1/Microsoft.zip' (status code '404')"
-	if !strings.Contains(err.Error(), msg) {
-		t.Fatalf("expected '%s', got '%s'", msg, err.Error())
+	err = readPkg(zip, path, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !core.IsDir(filepath.Join(path, "config")) {
+		t.Fatal("unable to find 'config' in StylesPath")
+	}
+
+	if !core.FileExists(filepath.Join(path, core.VocabDir, "Basic", "accept.txt")) {
+		t.Fatal("unable to find 'accept.txt'")
+	}
+
+	if !core.FileExists(filepath.Join(path, core.TmplDir, "t.tmpl")) {
+		t.Fatal("unable to find 't.tmpl'")
 	}
 }

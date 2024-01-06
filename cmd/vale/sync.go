@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
-	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/mholt/archiver/v3"
 	cp "github.com/otiai10/copy"
+
+	"github.com/errata-ai/vale/v2/internal/core"
 )
 
 var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library.json"
@@ -16,7 +18,7 @@ var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library
 func newVocab(path, name string) error {
 	var ferr error
 
-	root := filepath.Join(path, "Vocab", name)
+	root := filepath.Join(path, core.VocabDir, name)
 	if _, err := os.Stat(root); os.IsNotExist(err) {
 		ferr = os.MkdirAll(root, os.ModePerm)
 		if ferr != nil {
@@ -36,11 +38,6 @@ func initPath(cfg *core.Config) error {
 		if err := os.MkdirAll(cfg.StylesPath, os.ModePerm); err != nil {
 			e := fmt.Errorf("unable to initialize StylesPath (value = '%s')", cfg.StylesPath)
 			return core.NewE100("initPath", e)
-		}
-		for _, vocab := range cfg.Vocab {
-			if err := newVocab(cfg.StylesPath, vocab); err != nil {
-				return err
-			}
 		}
 	}
 	return nil
@@ -106,7 +103,10 @@ func download(name, url, styles string, index int) error {
 	}
 
 	if err = fetch(url, dir); err != nil {
-		return err
+		if strings.Contains(err.Error(), "unsupported protocol scheme") {
+			err = fmt.Errorf("'%s' is not a valid URL or the local file doesn't exist", url)
+		}
+		return core.NewE100("download", err)
 	}
 
 	return installPkg(dir, name, styles, index)
@@ -124,15 +124,21 @@ func installPkg(dir, name, styles string, index int) error {
 
 	// StylesPath
 	if core.IsDir(path) {
-		if err := moveDir(path, styles, false); err != nil {
+		if err := moveDir(path, styles); err != nil {
 			return err
 		}
-		// Vocab
-		loc1 := filepath.Join(path, "Vocab")
-		if core.IsDir(loc1) {
-			loc2 := filepath.Join(styles, "Vocab")
-			if err := moveDir(loc1, loc2, false); err != nil {
-				return err
+		// $StylesPath/config
+		//
+		// NOTE: We treat this directory differently than the rest of the
+		// entries on the path: we merge its contents with the existing
+		// $StylesPath/config directory.
+		for _, dir := range core.ConfigDirs {
+			loc1 := filepath.Join(path, dir)
+			if core.IsDir(loc1) {
+				loc2 := filepath.Join(styles, dir)
+				if err := moveDir(loc1, loc2); err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -162,14 +168,14 @@ func installPkg(dir, name, styles string, index int) error {
 	return nil
 }
 
-func moveDir(old, new string, isVocab bool) error { //nolint:predeclared
+func moveDir(old, new string) error { //nolint:predeclared
 	files, err := os.ReadDir(old)
 	if err != nil {
 		return err
 	}
 
 	for _, file := range files {
-		if file.Name() == "Vocab" == isVocab {
+		if !file.IsDir() || file.Name() != "config" {
 			if err = moveAsset(file.Name(), old, new); err != nil {
 				return err
 			}
