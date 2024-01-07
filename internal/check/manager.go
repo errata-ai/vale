@@ -58,9 +58,14 @@ func NewManager(config *core.Config) (*Manager, error) {
 			// If this rule isn't part of an already-loaded style, we load it
 			// individually.
 			fName := parts[1] + ".yml"
-			path = filepath.Join(mgr.Config.StylesPath, parts[0], fName)
-			if err = mgr.addRuleFromSource(fName, path); err != nil {
-				return &mgr, err
+			for _, p := range mgr.Config.Paths {
+				path = filepath.Join(p, parts[0], fName)
+				if !core.FileExists(path) {
+					continue
+				}
+				if err = mgr.addRuleFromSource(fName, path); err != nil {
+					return &mgr, err
+				}
 			}
 		}
 	}

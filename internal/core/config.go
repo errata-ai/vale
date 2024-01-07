@@ -47,24 +47,25 @@ func IgnoreFiles(stylesPath string) ([]string, error) {
 //
 // For example, `vale --minAlertLevel=error`.
 type CLIFlags struct {
-	AlertLevel string
-	Built      string
-	Glob       string
-	InExt      string
-	Output     string
-	Path       string
-	Sources    string
-	Filter     string
-	Local      bool
-	NoExit     bool
-	Normalize  bool
-	Relative   bool
-	Remote     bool
-	Simple     bool
-	Sorted     bool
-	Wrap       bool
-	Version    bool
-	Help       bool
+	AlertLevel   string
+	Built        string
+	Glob         string
+	InExt        string
+	Output       string
+	Path         string
+	Sources      string
+	Filter       string
+	Local        bool
+	NoExit       bool
+	Normalize    bool
+	Relative     bool
+	Remote       bool
+	Simple       bool
+	Sorted       bool
+	Wrap         bool
+	Version      bool
+	Help         bool
+	IgnoreGlobal bool
 }
 
 // Config holds the configuration values from both the CLI and `.vale.ini`.

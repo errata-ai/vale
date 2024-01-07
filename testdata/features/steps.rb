@@ -4,7 +4,7 @@ exe = 'vale'
 if OS.windows?
   exe += '.exe'
 end
-cmd = (exe + ' --output=line --sort --normalize --relative')
+cmd = (exe + ' --output=line --sort --normalize --relative --no-global')
 
 Given(/^on Unix$/) do
   pending unless OS.posix?

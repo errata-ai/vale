@@ -248,7 +248,7 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 	}
 
 	defaultCfg := path.Join(configDir, "vale", ".vale.ini")
-	if FileExists(defaultCfg) {
+	if FileExists(defaultCfg) && !cfg.Flags.IgnoreGlobal {
 		err = uCfg.Append(defaultCfg)
 		if err != nil {
 			return nil, NewE100("default/ini", err)
