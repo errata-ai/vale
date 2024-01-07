@@ -34,4 +34,10 @@ fixtures/formats/Sphinx/_build/
 *.snap
 
 .github/styles/*
-!.github/styles/Vocab/Vale
+!.github/styles/config/
+
+.github/styles/config/*
+!.github/styles/config/vocabularies/
+
+.github/styles/config/vocabularies/*
+!.github/styles/config/vocabularies/Vale

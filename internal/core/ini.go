@@ -246,6 +246,8 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		if err != nil {
 			return nil, NewE100("default/ini", err)
 		}
+		cfg.Flags.Local = true
+		sources = append(sources, []string{defaultCfg, cfg.Root}...)
 	}
 
 	uCfg.BlockMode = false
