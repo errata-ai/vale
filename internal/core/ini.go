@@ -170,8 +170,34 @@ func loadStdin(src string, cfg *Config, dry bool) (*ini.File, error) {
 }
 
 func loadINI(cfg *Config, dry bool) (*ini.File, error) {
-	var uCfg *ini.File
 	var sources []string
+
+	uCfg := ini.Empty(ini.LoadOptions{
+		AllowShadows:             true,
+		SpaceBeforeInlineComment: true,
+	})
+
+	// NOTE: In v3.0, we now use the user's config directory as the default
+	// location.
+	//
+	// This is different from the other config-defining options (`--config`,
+	// `VALE_CONFIG_PATH`, etc.) in that it's loaded in addition to, rather
+	// than instead of, any other configuration sources.
+	//
+	// In other words, this config file is *always* loaded and then any other
+	// sources are loaded on top of it.
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return nil, err
+	}
+
+	defaultCfg := path.Join(configDir, "vale", ".vale.ini")
+	if FileExists(defaultCfg) {
+		err = uCfg.Append(defaultCfg)
+		if err != nil {
+			return nil, NewE100("default/ini", err)
+		}
+	}
 
 	base, err := loadConfig(configNames)
 	if err != nil {
@@ -180,14 +206,11 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 	cfg.RootINI = base
 
 	if cfg.Flags.Sources != "" {
+		// NOTE: This case shouldn't be accessible from the CLI.
 		for _, source := range strings.Split(cfg.Flags.Sources, ",") {
 			abs, _ := filepath.Abs(source)
 			sources = append(sources, abs)
 		}
-	}
-
-	fromEnv, hasEnv := os.LookupEnv("VALE_CONFIG_PATH")
-	if cfg.Flags.Sources != "" { //nolint:gocritic
 		// We have multiple sources -- e.g., local config + remote package(s).
 		//
 		// See fixtures/config.feature#451 for an explanation of how this has
@@ -198,14 +221,14 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		}
 	} else if cfg.Flags.Path != "" {
 		// We've been given a value through `--config`.
-		uCfg, err = shadowLoad(cfg.Flags.Path)
+		err = uCfg.Append(cfg.Flags.Path)
 		if err != nil {
 			return nil, NewE100("invalid --config", err)
 		}
 		cfg.Root = filepath.Dir(cfg.Flags.Path)
-	} else if hasEnv {
+	} else if fromEnv, hasEnv := os.LookupEnv("VALE_CONFIG_PATH"); hasEnv {
 		// We've been given a value through `VALE_CONFIG_PATH`.
-		uCfg, err = shadowLoad(fromEnv)
+		err = uCfg.Append(fromEnv)
 		if err != nil {
 			return nil, NewE100("invalid VALE_CONFIG_PATH", err)
 		}
@@ -213,7 +236,7 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		cfg.Flags.Path = fromEnv
 	} else {
 		// We're using a config file found using a local search process.
-		uCfg, err = shadowLoad(base)
+		err = uCfg.Append(base)
 		if err != nil {
 			return nil, NewE100(".vale.ini not found", err)
 		}
