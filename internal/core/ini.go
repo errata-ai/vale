@@ -180,6 +180,7 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 
 	uCfg := ini.Empty(ini.LoadOptions{
 		AllowShadows:             true,
+		Loose:                    true,
 		SpaceBeforeInlineComment: true,
 	})
 
@@ -254,6 +255,8 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		}
 		cfg.Flags.Local = true
 		sources = append(sources, []string{defaultCfg, cfg.Root}...)
+	} else if base == "" {
+		return nil, NewE100("loadINI", errors.New("no config file found"))
 	}
 
 	uCfg.BlockMode = false
