@@ -177,28 +177,6 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		SpaceBeforeInlineComment: true,
 	})
 
-	// NOTE: In v3.0, we now use the user's config directory as the default
-	// location.
-	//
-	// This is different from the other config-defining options (`--config`,
-	// `VALE_CONFIG_PATH`, etc.) in that it's loaded in addition to, rather
-	// than instead of, any other configuration sources.
-	//
-	// In other words, this config file is *always* loaded and then any other
-	// sources are loaded on top of it.
-	configDir, err := os.UserConfigDir()
-	if err != nil {
-		return nil, err
-	}
-
-	defaultCfg := path.Join(configDir, "vale", ".vale.ini")
-	if FileExists(defaultCfg) {
-		err = uCfg.Append(defaultCfg)
-		if err != nil {
-			return nil, NewE100("default/ini", err)
-		}
-	}
-
 	base, err := loadConfig(configNames)
 	if err != nil {
 		return nil, NewE100("loadINI/homedir", err)
@@ -246,6 +224,28 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 
 	if StringInSlice(cfg.Flags.AlertLevel, AlertLevels) {
 		cfg.MinAlertLevel = LevelToInt[cfg.Flags.AlertLevel]
+	}
+
+	// NOTE: In v3.0, we now use the user's config directory as the default
+	// location.
+	//
+	// This is different from the other config-defining options (`--config`,
+	// `VALE_CONFIG_PATH`, etc.) in that it's loaded in addition to, rather
+	// than instead of, any other configuration sources.
+	//
+	// In other words, this config file is *always* loaded and is read after
+	// any other sources to allow for project-agnostic customization.
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return nil, err
+	}
+
+	defaultCfg := path.Join(configDir, "vale", ".vale.ini")
+	if FileExists(defaultCfg) {
+		err = uCfg.Append(defaultCfg)
+		if err != nil {
+			return nil, NewE100("default/ini", err)
+		}
 	}
 
 	uCfg.BlockMode = false
