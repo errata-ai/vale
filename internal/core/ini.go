@@ -85,9 +85,15 @@ var globalOpts = map[string]func(*ini.Section, *Config, []string){
 var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 	"StylesPath": func(sec *ini.Section, cfg *Config, args []string) error {
 		paths := sec.Key("StylesPath").ValueWithShadows()
-		if cfg.Flags.Local && len(paths) == 2 {
-			basePath := determinePath(args[0], filepath.FromSlash(paths[1]))
+		if cfg.Flags.Local && len(args) == 2 {
+			// This case handles the situation where both configs define the
+			// same StylesPath (e.g., `StylesPath = styles`).
+			basePath := determinePath(args[0], filepath.FromSlash(paths[0]))
 			mockPath := determinePath(args[1], filepath.FromSlash(paths[0]))
+			if len(paths) == 2 {
+				basePath = determinePath(args[0], filepath.FromSlash(paths[1]))
+				mockPath = determinePath(args[1], filepath.FromSlash(paths[0]))
+			}
 			cfg.Paths = []string{basePath, mockPath}
 			cfg.StylesPath = basePath
 		} else {
