@@ -78,7 +78,9 @@ func NewFile(src string, config *Config) (*File, error) {
 	checks := make(map[string]bool)
 	for _, sec := range config.RuleKeys {
 		if pat, found := config.SecToPat[sec]; found && pat.Match(fp) {
-			checks = config.SChecks[sec]
+			for k, v := range config.SChecks[sec] {
+				checks[k] = v
+			}
 		}
 	}
 
