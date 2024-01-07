@@ -13,7 +13,7 @@ import (
 
 func globalConfig() string {
 	configDir, _ := os.UserConfigDir()
-	return path.Join(configDir, "vale", ".vale.ini")
+	return pterm.Gray(path.Join(configDir, "vale", ".vale.ini"))
 }
 
 var exampleConfig = `MinAlertLevel = suggestion
