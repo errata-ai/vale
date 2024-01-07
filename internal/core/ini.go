@@ -256,7 +256,7 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		cfg.Flags.Local = true
 		sources = append(sources, []string{defaultCfg, cfg.Root}...)
 	} else if base == "" {
-		return nil, NewE100("loadINI", errors.New("no config file found"))
+		return nil, NewE100(".vale.ini not found", errors.New("no config file found"))
 	}
 
 	uCfg.BlockMode = false
