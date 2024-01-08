@@ -237,7 +237,7 @@ func printDirs(_ []string, flags *core.CLIFlags) error {
 	}
 
 	tableData := pterm.TableData{
-		{"File/directory", "Location"},
+		{"Asset", "Location"},
 		{"StylesPath", styles},
 		{".vale.ini", cfg},
 	}
