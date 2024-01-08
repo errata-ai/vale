@@ -3,9 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/pterm/pterm"
 	"github.com/spf13/pflag"
+
+	"github.com/errata-ai/vale/v2/internal/core"
 )
 
 // Flags are the user-defined CLI flags.

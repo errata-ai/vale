@@ -5,11 +5,14 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
+	"github.com/adrg/xdg"
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/errata-ai/ini"
+
 	"github.com/errata-ai/vale/v2/internal/glob"
 )
 
@@ -37,10 +40,49 @@ var (
 // configuration files.
 var ConfigDirs = []string{VocabDir, DictDir, TmplDir, IgnoreDir}
 
+// ConfigNames is a list of all possible configuration file names.
+//
+// NOTE: This is leftover from the early days of Vale; we have now standardized
+// on `.vale.ini` for documentation purposes.
+var configNames = []string{
+	".vale",
+	"_vale",
+	"vale.ini",
+	".vale.ini",
+	"_vale.ini",
+}
+
 // IgnoreFiles returns a list of all user-defined ignore files.
 func IgnoreFiles(stylesPath string) ([]string, error) {
 	ignore := filepath.Join(stylesPath, IgnoreDir)
 	return doublestar.FilepathGlob(filepath.Join(ignore, "**", "*.txt"))
+}
+
+// DefaultConfig returns the path to the default configuration file.
+//
+// We don't create this file automatically because there's no actual notion of
+// a "default" configuration -- it's just a file loation.
+//
+// NOTE: if this file does not exist *and* the user has not specified a
+// project-specific configuration file, Vale raises an error.
+func DefaultConfig() (string, error) {
+	found, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return path.Join(found, "vale", ".vale.ini"), nil
+}
+
+// DefaultStylesPath returns the path to the default styles directory.
+//
+// NOTE: the default styles directory is only used if neither the
+// project-specific nor the global configuration file specify a `StylesPath`.
+func DefaultStylesPath() (string, error) {
+	expected, err := xdg.DataFile("vale/styles")
+	if err != nil {
+		return "", err
+	}
+	return expected, nil
 }
 
 // CLIFlags holds the values that are defined at runtime by the user.

@@ -12,14 +12,6 @@ import (
 	"github.com/errata-ai/vale/v2/internal/glob"
 )
 
-var configNames = []string{
-	".vale",
-	"_vale",
-	"vale.ini",
-	".vale.ini",
-	"_vale.ini",
-}
-
 var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 	"BasedOnStyles": func(lbl string, sec *ini.Section, cfg *Config) error {
 		pat, err := glob.Compile(lbl)
@@ -96,7 +88,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 			}
 			cfg.Paths = []string{basePath, mockPath}
 			cfg.StylesPath = basePath
-		} else {
+		} else if len(paths) > 0 {
 			entry := paths[len(paths)-1]
 			candidate := filepath.FromSlash(entry)
 
@@ -108,6 +100,13 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 					cfg.Flags.Path)
 			}
 
+			cfg.Paths = []string{cfg.StylesPath}
+		} else {
+			found, err := DefaultStylesPath()
+			if err != nil {
+				return err
+			}
+			cfg.StylesPath = found
 			cfg.Paths = []string{cfg.StylesPath}
 		}
 		return nil
@@ -242,12 +241,11 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 	//
 	// In other words, this config file is *always* loaded and is read after
 	// any other sources to allow for project-agnostic customization.
-	configDir, err := os.UserConfigDir()
+	defaultCfg, err := DefaultConfig()
 	if err != nil {
 		return nil, err
 	}
 
-	defaultCfg := path.Join(configDir, "vale", ".vale.ini")
 	if FileExists(defaultCfg) && !cfg.Flags.IgnoreGlobal {
 		err = uCfg.Append(defaultCfg)
 		if err != nil {

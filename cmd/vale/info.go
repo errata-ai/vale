@@ -3,18 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"path"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/olekukonko/tablewriter"
 	"github.com/pterm/pterm"
 	"github.com/spf13/pflag"
 )
-
-func globalConfig() string {
-	configDir, _ := os.UserConfigDir()
-	return pterm.Gray(path.Join(configDir, "vale", ".vale.ini"))
-}
 
 var exampleConfig = `MinAlertLevel = suggestion
 
@@ -36,8 +30,6 @@ To get started, you'll need a configuration file (%s):
 
 	%s
 
-Global config expected in %s.
-
 See %s for more setup information.`,
 	pterm.Bold.Sprintf("Usage"),
 
@@ -48,8 +40,6 @@ See %s for more setup information.`,
 	pterm.Gray(".vale.ini"),
 	pterm.Bold.Sprintf("Example"),
 	pterm.Gray(exampleConfig),
-
-	globalConfig(),
 
 	pterm.Underscore.Sprintf("https://vale.sh"))
 

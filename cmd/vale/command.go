@@ -30,6 +30,7 @@ type CompiledRule struct {
 var commandInfo = map[string]string{
 	"ls-config":  "Print the current configuration to stdout.",
 	"ls-metrics": "Print the given file's internal metrics to stdout.",
+	"ls-dirs":    "Print the default configuration directories to stdout.",
 	"sync":       "Download and install external configuration sources.",
 	"fix":        "Attempt to automatically fix the given alert.",
 }
@@ -38,6 +39,7 @@ var commandInfo = map[string]string{
 var Actions = map[string]func(args []string, flags *core.CLIFlags) error{
 	"ls-config":  printConfig,
 	"ls-metrics": printMetrics,
+	"ls-dirs":    printDirs,
 	"dc":         printConfig,
 	"tag":        runTag,
 	"sync":       sync,
@@ -221,4 +223,24 @@ func runRule(args []string, _ *core.CLIFlags) error {
 
 	PrintJSONAlerts(linted)
 	return nil
+}
+
+func printDirs(_ []string, flags *core.CLIFlags) error {
+	styles, err := core.DefaultStylesPath()
+	if err != nil {
+		return err
+	}
+
+	cfg, err := core.DefaultConfig()
+	if err != nil {
+		return err
+	}
+
+	tableData := pterm.TableData{
+		{"File/directory", "Location"},
+		{"StylesPath", styles},
+		{".vale.ini", cfg},
+	}
+
+	return pterm.DefaultTable.WithHasHeader().WithData(tableData).Render()
 }
