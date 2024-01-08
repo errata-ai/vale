@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 
@@ -70,7 +69,7 @@ func DefaultConfig() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return path.Join(found, "vale", ".vale.ini"), nil
+	return filepath.Join(found, "vale", ".vale.ini"), nil
 }
 
 // DefaultStylesPath returns the path to the default styles directory.
