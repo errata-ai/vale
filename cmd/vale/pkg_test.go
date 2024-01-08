@@ -16,7 +16,9 @@ func mockPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	cfg.StylesPath = os.TempDir()
+	cfg.Paths = []string{cfg.StylesPath}
 
 	err = initPath(cfg)
 	if err != nil {

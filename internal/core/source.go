@@ -71,18 +71,15 @@ func FromString(src string, cfg *Config, dry bool) (*ini.File, error) {
 
 // getConfigAsset returns the path to a given asset if it exists.
 // Otherwise, it returns an empty string.
-func getConfigAsset(stylesPath, target string) string {
-	if stylesPath == "" {
-		return ""
-	}
-
-	for _, dir := range []string{DictDir, IgnoreDir, TmplDir, VocabDir} {
-		path := filepath.Join(stylesPath, dir, target)
-		if FileExists(path) {
-			return path
+func getConfigAsset(target string, paths []string) string {
+	for _, p := range paths {
+		for _, dir := range ConfigDirs {
+			path := filepath.Join(p, dir, target)
+			if FileExists(path) {
+				return path
+			}
 		}
 	}
-
 	return ""
 }
 
@@ -90,19 +87,26 @@ func getConfigAsset(stylesPath, target string) string {
 // user-defined StylesPath.
 func FindAsset(cfg *Config, path string) string {
 	if path == "" {
-		return path
+		return ""
 	}
 
-	inPath := filepath.Join(cfg.StylesPath, path)
-	if FileExists(inPath) {
-		return inPath
+	for _, p := range cfg.Paths {
+		inPath := filepath.Join(p, path)
+		if FileExists(inPath) {
+			return inPath
+		}
 	}
 
-	if p := getConfigAsset(cfg.StylesPath, path); p != "" {
+	if p := getConfigAsset(path, cfg.Paths); p != "" {
 		return p
 	}
 
-	return determinePath(cfg.Flags.Path, path)
+	p := determinePath(cfg.Flags.Path, path)
+	if FileExists(p) {
+		return p
+	}
+
+	return ""
 }
 
 func validateFlags(cfg *Config) error {

@@ -86,7 +86,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 				basePath = determinePath(args[0], filepath.FromSlash(paths[1]))
 				mockPath = determinePath(args[1], filepath.FromSlash(paths[0]))
 			}
-			cfg.Paths = []string{basePath, mockPath}
+			cfg.Paths = append(cfg.Paths, []string{basePath, mockPath}...)
 			cfg.StylesPath = basePath
 		} else if len(paths) > 0 {
 			entry := paths[len(paths)-1]
@@ -100,7 +100,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 					cfg.Flags.Path)
 			}
 
-			cfg.Paths = []string{cfg.StylesPath}
+			cfg.Paths = append(cfg.Paths, cfg.StylesPath)
 		}
 		return nil
 	},
@@ -245,7 +245,7 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 			return nil, NewE100("default/ini", err)
 		}
 		cfg.Flags.Local = true
-		sources = append(sources, []string{defaultCfg, cfg.Root}...)
+		sources = []string{defaultCfg, cfg.Root}
 	} else if base == "" {
 		return nil, NewE100(".vale.ini not found", errors.New("no config file found"))
 	}

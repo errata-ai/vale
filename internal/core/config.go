@@ -25,7 +25,7 @@ var (
 	// can be set via the `--config` flag, the `VALE_CONFIG_PATH` environment
 	// variable, or the default search process.
 	//
-	// NOTE: The config pipeline is stored in the top-level `.config`
+	// NOTE: The config pipeline is stored in the top-level `.vale-config`
 	// directory. See `cmd/vale/sync.go`.
 	ConfigDir = "config"
 
@@ -81,6 +81,12 @@ func DefaultStylesPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	err = os.MkdirAll(expected, os.ModePerm)
+	if err != nil {
+		return "", err
+	}
+
 	return expected, nil
 }
 
@@ -172,13 +178,17 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.Stylesheets = make(map[string]string)
 	cfg.TokenIgnores = make(map[string][]string)
 	cfg.FormatToLang = make(map[string]string)
+	cfg.Paths = []string{""}
 
 	found, err := DefaultStylesPath()
 	if err != nil {
 		return &cfg, err
 	}
-	cfg.StylesPath = found
-	cfg.Paths = []string{found}
+
+	if !flags.IgnoreGlobal {
+		cfg.StylesPath = found
+		cfg.Paths = []string{found}
+	}
 
 	return &cfg, nil
 }
