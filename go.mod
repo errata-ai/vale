@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/adrg/strutil v0.3.0
+	github.com/adrg/xdg v0.4.0
 	github.com/antonmedv/expr v1.12.0
 	github.com/bmatcuk/doublestar/v4 v4.6.0
 	github.com/d5/tengo/v2 v2.10.0
@@ -30,7 +31,6 @@ require (
 require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
-	github.com/adrg/xdg v0.4.0 // indirect
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/atomicgo/cursor v0.0.1 // indirect
 	github.com/dsnet/compress v0.0.2-0.20210315054119-f66993602bf5 // indirect
