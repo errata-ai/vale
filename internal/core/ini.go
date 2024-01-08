@@ -101,13 +101,6 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 			}
 
 			cfg.Paths = []string{cfg.StylesPath}
-		} else {
-			found, err := DefaultStylesPath()
-			if err != nil {
-				return err
-			}
-			cfg.StylesPath = found
-			cfg.Paths = []string{cfg.StylesPath}
 		}
 		return nil
 	},

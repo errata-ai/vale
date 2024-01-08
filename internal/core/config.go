@@ -172,8 +172,14 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.SecToPat = make(map[string]glob.Glob)
 	cfg.Stylesheets = make(map[string]string)
 	cfg.TokenIgnores = make(map[string][]string)
-	cfg.Paths = []string{""}
 	cfg.FormatToLang = make(map[string]string)
+
+	found, err := DefaultStylesPath()
+	if err != nil {
+		return &cfg, err
+	}
+	cfg.StylesPath = found
+	cfg.Paths = []string{found}
 
 	return &cfg, nil
 }
