@@ -164,12 +164,10 @@ func loadStdin(src string, cfg *Config, dry bool) (*ini.File, error) {
 	if err != nil {
 		return nil, NewE100("loadStdin", err)
 	}
-	return processConfig(uCfg, cfg, []string{}, dry)
+	return processConfig(uCfg, cfg, dry)
 }
 
 func loadINI(cfg *Config, dry bool) (*ini.File, error) {
-	var sources []string
-
 	uCfg := ini.Empty(ini.LoadOptions{
 		AllowShadows:             true,
 		Loose:                    true,
@@ -183,11 +181,15 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 	cfg.RootINI = base
 
 	if cfg.Flags.Sources != "" {
-		// NOTE: This case shouldn't be accessible from the CLI.
+		// NOTE: This case shouldn't be accessible from the CLI, but it can
+		// still be triggered by packages that include config files.
+		var sources []string
+
 		for _, source := range strings.Split(cfg.Flags.Sources, ",") {
 			abs, _ := filepath.Abs(source)
 			sources = append(sources, abs)
 		}
+
 		// We have multiple sources -- e.g., local config + remote package(s).
 		//
 		// See fixtures/config.feature#451 for an explanation of how this has
@@ -202,23 +204,21 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		if err != nil {
 			return nil, NewE100("invalid --config", err)
 		}
-		cfg.Root = filepath.Dir(cfg.Flags.Path)
+		cfg.ConfigFiles = append(cfg.ConfigFiles, cfg.Flags.Path)
 	} else if fromEnv, hasEnv := os.LookupEnv("VALE_CONFIG_PATH"); hasEnv {
 		// We've been given a value through `VALE_CONFIG_PATH`.
 		err = uCfg.Append(fromEnv)
 		if err != nil {
 			return nil, NewE100("invalid VALE_CONFIG_PATH", err)
 		}
-		cfg.Root = filepath.Dir(fromEnv)
-		cfg.Flags.Path = fromEnv
-	} else {
+		cfg.ConfigFiles = append(cfg.ConfigFiles, fromEnv)
+	} else if base != "" {
 		// We're using a config file found using a local search process.
 		err = uCfg.Append(base)
 		if err != nil {
 			return nil, NewE100(".vale.ini not found", err)
 		}
-		cfg.Root = filepath.Dir(base)
-		cfg.Flags.Path = base
+		cfg.ConfigFiles = append(cfg.ConfigFiles, base)
 	}
 
 	if StringInSlice(cfg.Flags.AlertLevel, AlertLevels) {
@@ -239,19 +239,19 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		return nil, err
 	}
 
-	if FileExists(defaultCfg) && !cfg.Flags.IgnoreGlobal {
+	if FileExists(defaultCfg) && !cfg.Flags.IgnoreGlobal && !dry {
 		err = uCfg.Append(defaultCfg)
 		if err != nil {
 			return nil, NewE100("default/ini", err)
 		}
 		cfg.Flags.Local = true
-		sources = []string{defaultCfg, cfg.Root}
+		cfg.ConfigFiles = append(cfg.ConfigFiles, defaultCfg)
 	} else if base == "" {
 		return nil, NewE100(".vale.ini not found", errors.New("no config file found"))
 	}
 
 	uCfg.BlockMode = false
-	return processConfig(uCfg, cfg, sources, dry)
+	return processConfig(uCfg, cfg, dry)
 }
 
 // loadConfig loads the .vale file. It checks the ancestors of the current
@@ -298,8 +298,13 @@ func loadConfig(names []string) (string, error) {
 }
 
 func processSources(cfg *Config, sources []string) (*ini.File, error) {
-	var uCfg *ini.File
 	var err error
+
+	uCfg := ini.Empty(ini.LoadOptions{
+		AllowShadows:             true,
+		Loose:                    true,
+		SpaceBeforeInlineComment: true,
+	})
 
 	if len(sources) == 0 {
 		return uCfg, errors.New("no sources provided")
@@ -320,7 +325,7 @@ func processSources(cfg *Config, sources []string) (*ini.File, error) {
 	return uCfg, err
 }
 
-func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) (*ini.File, error) {
+func processConfig(uCfg *ini.File, cfg *Config, dry bool) (*ini.File, error) {
 	core := uCfg.Section("")
 	global := uCfg.Section("*")
 
@@ -330,7 +335,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) (*ini.
 	// Default settings
 	for _, k := range core.KeyStrings() {
 		if f, found := coreOpts[k]; found {
-			if err := f(core, cfg, paths); err != nil && !dry {
+			if err := f(core, cfg, cfg.ConfigFiles); err != nil && !dry {
 				return nil, err
 			}
 		} else if _, found = syntaxOpts[k]; found {
@@ -352,7 +357,7 @@ func processConfig(uCfg *ini.File, cfg *Config, paths []string, dry bool) (*ini.
 	// Global settings
 	for _, k := range global.KeyStrings() {
 		if f, found := globalOpts[k]; found {
-			f(global, cfg, paths)
+			f(global, cfg, cfg.ConfigFiles)
 		} else if _, found = syntaxOpts[k]; found {
 			msg := fmt.Sprintf("'%s' is a syntax-specific option", k)
 			return nil, NewE201FromTarget(msg, k, cfg.RootINI)

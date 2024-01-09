@@ -85,25 +85,32 @@ func sync(_ []string, flags *core.CLIFlags) error {
 		return err
 	}
 
-	pkgs, err := core.GetPackages(cfg.Flags.Path)
-	if err != nil {
-		return err
-	}
-
 	p, err := pterm.DefaultProgressbar.WithTotal(
-		len(pkgs)).WithTitle("Downloading packages").Start()
+		len(cfg.ConfigFiles)).WithTitle("Downloading packages for config files").Start()
 
-	if err != nil {
-		return err
-	}
-
-	for idx, pkg := range pkgs {
-		if err = readPkg(pkg, cfg.StylesPath, idx); err != nil {
+	for _, cfgPath := range cfg.ConfigFiles {
+		pkgs, err := core.GetPackages(cfgPath)
+		if err != nil {
 			return err
 		}
-		name := fileNameWithoutExt(pkg)
 
-		pterm.Success.Println("Downloaded package '" + name + "'")
+		if err != nil {
+			return err
+		}
+
+		stylesPath, err := core.GetStylesPath(cfgPath)
+		if err != nil {
+			return err
+		}
+
+		for idx, pkg := range pkgs {
+			if err = readPkg(pkg, stylesPath, idx); err != nil {
+				return err
+			}
+			name := fileNameWithoutExt(pkg)
+			pterm.Success.Println("Downloaded package '" + name + "'")
+		}
+
 		p.Increment()
 	}
 

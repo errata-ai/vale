@@ -225,8 +225,6 @@ func makeSpeller(s *Spelling, cfg *core.Config, rulePath string) (*spell.Checker
 			s.Dicpath,
 			// 2. Relative to StylesPath
 			filepath.Join(cfg.StylesPath, s.Dicpath),
-			// 3. Relative to config file
-			filepath.Join(cfg.Root, s.Dicpath),
 			// 4. Relative to cwd
 			filepath.Join(cwd, s.Dicpath),
 		}

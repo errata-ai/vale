@@ -148,7 +148,7 @@ type Config struct {
 	SecToPat     map[string]glob.Glob `json:"-"`
 	Styles       []string             `json:"-"`
 	Paths        []string             `json:"-"`
-	Root         string               `json:"-"`
+	ConfigFiles  []string             `json:"-"`
 
 	NLPEndpoint string // An external API to call for NLP-related work.
 
@@ -179,6 +179,7 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.TokenIgnores = make(map[string][]string)
 	cfg.FormatToLang = make(map[string]string)
 	cfg.Paths = []string{""}
+	cfg.ConfigFiles = []string{}
 
 	found, err := DefaultStylesPath()
 	if err != nil {
@@ -241,6 +242,21 @@ func GetPackages(src string) ([]string, error) {
 	return core.Key("Packages").Strings(","), nil
 }
 
+func GetStylesPath(src string) (string, error) {
+	uCfg, err := ini.Load(src)
+	if err != nil {
+		return "", err
+	}
+
+	fallback, err := DefaultStylesPath()
+	if err != nil {
+		return "", err
+	}
+
+	core := uCfg.Section("")
+	return core.Key("StylesPath").MustString(fallback), nil
+}
+
 func pipeConfig(cfg *Config) ([]string, error) {
 	var sources []string
 
@@ -257,7 +273,6 @@ func pipeConfig(cfg *Config) ([]string, error) {
 			}
 			sources = append(sources, filepath.Join(pipeline, config.Name()))
 		}
-		sources = append(sources, cfg.Flags.Path)
 	}
 
 	return sources, nil
