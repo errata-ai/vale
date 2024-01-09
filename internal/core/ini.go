@@ -55,36 +55,37 @@ var syntaxOpts = map[string]func(string, *ini.Section, *Config) error{
 	},
 }
 
-var globalOpts = map[string]func(*ini.Section, *Config, []string){
-	"BasedOnStyles": func(sec *ini.Section, cfg *Config, _ []string) {
+var globalOpts = map[string]func(*ini.Section, *Config){
+	"BasedOnStyles": func(sec *ini.Section, cfg *Config) {
 		cfg.GBaseStyles = mergeValues(sec.Key("BasedOnStyles").StringsWithShadows(","))
 		cfg.Styles = append(cfg.Styles, cfg.GBaseStyles...)
 	},
-	"IgnorePatterns": func(sec *ini.Section, cfg *Config, _ []string) {
+	"IgnorePatterns": func(sec *ini.Section, cfg *Config) {
 		cfg.BlockIgnores["*"] = sec.Key("IgnorePatterns").Strings(",")
 	},
-	"BlockIgnores": func(sec *ini.Section, cfg *Config, _ []string) {
+	"BlockIgnores": func(sec *ini.Section, cfg *Config) {
 		cfg.BlockIgnores["*"] = mergeValues(sec.Key("BlockIgnores").StringsWithShadows(","))
 	},
-	"TokenIgnores": func(sec *ini.Section, cfg *Config, _ []string) {
+	"TokenIgnores": func(sec *ini.Section, cfg *Config) {
 		cfg.TokenIgnores["*"] = mergeValues(sec.Key("TokenIgnores").StringsWithShadows(","))
 	},
-	"Lang": func(sec *ini.Section, cfg *Config, _ []string) {
+	"Lang": func(sec *ini.Section, cfg *Config) {
 		cfg.FormatToLang["*"] = sec.Key("Lang").String()
 	},
 }
 
-var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
-	"StylesPath": func(sec *ini.Section, cfg *Config, args []string) error {
+var coreOpts = map[string]func(*ini.Section, *Config) error{
+	"StylesPath": func(sec *ini.Section, cfg *Config) error {
 		paths := sec.Key("StylesPath").ValueWithShadows()
-		if cfg.Flags.Local && len(args) == 2 {
+		files := cfg.ConfigFiles
+		if cfg.Flags.Local && len(files) == 2 {
 			// This case handles the situation where both configs define the
 			// same StylesPath (e.g., `StylesPath = styles`).
-			basePath := determinePath(args[0], filepath.FromSlash(paths[0]))
-			mockPath := determinePath(args[1], filepath.FromSlash(paths[0]))
+			basePath := determinePath(files[0], filepath.FromSlash(paths[0]))
+			mockPath := determinePath(files[1], filepath.FromSlash(paths[0]))
 			if len(paths) == 2 {
-				basePath = determinePath(args[0], filepath.FromSlash(paths[1]))
-				mockPath = determinePath(args[1], filepath.FromSlash(paths[0]))
+				basePath = determinePath(files[0], filepath.FromSlash(paths[1]))
+				mockPath = determinePath(files[1], filepath.FromSlash(paths[0]))
 			}
 			cfg.Paths = append(cfg.Paths, []string{basePath, mockPath}...)
 			cfg.StylesPath = basePath
@@ -104,7 +105,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		}
 		return nil
 	},
-	"MinAlertLevel": func(sec *ini.Section, cfg *Config, _ []string) error {
+	"MinAlertLevel": func(sec *ini.Section, cfg *Config) error {
 		if !StringInSlice(cfg.Flags.AlertLevel, AlertLevels) {
 			level := sec.Key("MinAlertLevel").String() // .In("suggestion", AlertLevels)
 			if index, found := LevelToInt[level]; found {
@@ -118,27 +119,27 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		}
 		return nil
 	},
-	"IgnoredScopes": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
+	"IgnoredScopes": func(sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.IgnoredScopes = mergeValues(sec.Key("IgnoredScopes").StringsWithShadows(","))
 		return nil
 	},
-	"WordTemplate": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
+	"WordTemplate": func(sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.WordTemplate = sec.Key("WordTemplate").String()
 		return nil
 	},
-	"DictionaryPath": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
+	"DictionaryPath": func(sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.DictionaryPath = sec.Key("DictionaryPath").String()
 		return nil
 	},
-	"SkippedScopes": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
+	"SkippedScopes": func(sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.SkippedScopes = mergeValues(sec.Key("SkippedScopes").StringsWithShadows(","))
 		return nil
 	},
-	"IgnoredClasses": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
+	"IgnoredClasses": func(sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.IgnoredClasses = mergeValues(sec.Key("IgnoredClasses").StringsWithShadows(","))
 		return nil
 	},
-	"Vocab": func(sec *ini.Section, cfg *Config, _ []string) error {
+	"Vocab": func(sec *ini.Section, cfg *Config) error {
 		cfg.Vocab = mergeValues(sec.Key("Vocab").StringsWithShadows(","))
 		for _, v := range cfg.Vocab {
 			if err := loadVocab(v, cfg); err != nil {
@@ -147,7 +148,7 @@ var coreOpts = map[string]func(*ini.Section, *Config, []string) error{
 		}
 		return nil
 	},
-	"NLPEndpoint": func(sec *ini.Section, cfg *Config, _ []string) error { //nolint:unparam
+	"NLPEndpoint": func(sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.NLPEndpoint = sec.Key("NLPEndpoint").MustString("")
 		return nil
 	},
@@ -335,7 +336,7 @@ func processConfig(uCfg *ini.File, cfg *Config, dry bool) (*ini.File, error) {
 	// Default settings
 	for _, k := range core.KeyStrings() {
 		if f, found := coreOpts[k]; found {
-			if err := f(core, cfg, cfg.ConfigFiles); err != nil && !dry {
+			if err := f(core, cfg); err != nil && !dry {
 				return nil, err
 			}
 		} else if _, found = syntaxOpts[k]; found {
@@ -357,7 +358,7 @@ func processConfig(uCfg *ini.File, cfg *Config, dry bool) (*ini.File, error) {
 	// Global settings
 	for _, k := range global.KeyStrings() {
 		if f, found := globalOpts[k]; found {
-			f(global, cfg, cfg.ConfigFiles)
+			f(global, cfg)
 		} else if _, found = syntaxOpts[k]; found {
 			msg := fmt.Sprintf("'%s' is a syntax-specific option", k)
 			return nil, NewE201FromTarget(msg, k, cfg.RootINI)

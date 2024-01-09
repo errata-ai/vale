@@ -85,32 +85,32 @@ func sync(_ []string, flags *core.CLIFlags) error {
 		return err
 	}
 
+	// NOTE: sync should *only* run for a single config file. In practice, this
+	// means that we sync only using the local search process.
+	pkgs, err := core.GetPackages(cfg.RootINI)
+	if err != nil {
+		return err
+	}
+
 	p, err := pterm.DefaultProgressbar.WithTotal(
-		len(cfg.ConfigFiles)).WithTitle("Downloading packages for config files").Start()
+		len(pkgs)).WithTitle("Downloading packages").Start()
 
-	for _, cfgPath := range cfg.ConfigFiles {
-		pkgs, err := core.GetPackages(cfgPath)
-		if err != nil {
+	if err != nil {
+		return err
+	}
+
+	stylesPath, err := core.GetStylesPath(cfg.RootINI)
+	if err != nil {
+		return err
+	}
+
+	for idx, pkg := range pkgs {
+		if err = readPkg(pkg, stylesPath, idx); err != nil {
 			return err
 		}
+		name := fileNameWithoutExt(pkg)
 
-		if err != nil {
-			return err
-		}
-
-		stylesPath, err := core.GetStylesPath(cfgPath)
-		if err != nil {
-			return err
-		}
-
-		for idx, pkg := range pkgs {
-			if err = readPkg(pkg, stylesPath, idx); err != nil {
-				return err
-			}
-			name := fileNameWithoutExt(pkg)
-			pterm.Success.Println("Downloaded package '" + name + "'")
-		}
-
+		pterm.Success.Println("Downloaded package '" + name + "'")
 		p.Increment()
 	}
 
