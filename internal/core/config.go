@@ -3,6 +3,7 @@ package core
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -65,11 +66,11 @@ func IgnoreFiles(stylesPath string) ([]string, error) {
 // NOTE: if this file does not exist *and* the user has not specified a
 // project-specific configuration file, Vale raises an error.
 func DefaultConfig() (string, error) {
-	found, err := os.UserConfigDir()
-	if err != nil {
-		return "", err
+	root := xdg.ConfigHome
+	if root == "" {
+		return "", errors.New("unable to find XDG_CONFIG_HOME")
 	}
-	return filepath.Join(found, "vale", ".vale.ini"), nil
+	return filepath.Join(root, "vale", ".vale.ini"), nil
 }
 
 // DefaultStylesPath returns the path to the default styles directory.
@@ -77,17 +78,18 @@ func DefaultConfig() (string, error) {
 // NOTE: the default styles directory is only used if neither the
 // project-specific nor the global configuration file specify a `StylesPath`.
 func DefaultStylesPath() (string, error) {
-	expected, err := xdg.DataFile("vale/styles")
+	root := xdg.DataHome
+	if root == "" {
+		return "", errors.New("unable to find XDG_DATA_HOME")
+	}
+	styles := filepath.Join(root, "vale", "styles")
+
+	err := os.MkdirAll(styles, os.ModePerm)
 	if err != nil {
 		return "", err
 	}
 
-	err = os.MkdirAll(expected, os.ModePerm)
-	if err != nil {
-		return "", err
-	}
-
-	return expected, nil
+	return styles, nil
 }
 
 // CLIFlags holds the values that are defined at runtime by the user.
