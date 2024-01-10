@@ -208,7 +208,7 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		}
 		cfg.Flags.Local = true
 		cfg.ConfigFiles = append(cfg.ConfigFiles, defaultCfg)
-	} else if base == "" {
+	} else if base == "" && len(cfg.ConfigFiles) == 0 {
 		return nil, NewE100(".vale.ini not found", errors.New("no config file found"))
 	}
 

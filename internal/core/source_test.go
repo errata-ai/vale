@@ -35,10 +35,6 @@ func TestNoBaseConfig(t *testing.T) {
 // TestFlagBase tests that we respect the `--config` option for setting a base
 // config.
 func TestFlagBase(t *testing.T) {
-	if !FileExists(knownConfig) {
-		t.Fatal("Expected", knownConfig, "to exist")
-	}
-
 	cfg, err := NewConfig(&CLIFlags{Path: knownConfig})
 	if err != nil {
 		t.Fatal(err)
@@ -63,9 +59,6 @@ func TestFlagBase(t *testing.T) {
 // TestEnvBase tests that we respect the `VALE_CONFIG_PATH` option for setting
 // a base config.
 func TestEnvBase(t *testing.T) {
-	if !FileExists(knownConfig) {
-		t.Fatal("Expected", knownConfig, "to exist")
-	}
 	os.Setenv("VALE_CONFIG_PATH", knownConfig)
 
 	cfg, err := NewConfig(&CLIFlags{})
