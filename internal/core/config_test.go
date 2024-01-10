@@ -35,6 +35,9 @@ func TestGetIgnores(t *testing.T) {
 	}
 }
 
+// TestFindAsset tests that we find an asset on the user-specified StylesPath.
+//
+// This was the standard behavior in v2.0.
 func TestFindAsset(t *testing.T) {
 	cfg, err := NewConfig(&CLIFlags{})
 	if err != nil {
@@ -54,6 +57,8 @@ func TestFindAsset(t *testing.T) {
 	}
 }
 
+// TestFindAssetDefault tests that we find an asset on the default StylesPath
+// when there's no user-specified StylesPath.
 func TestFindAssetDefault(t *testing.T) {
 	cfg, err := NewConfig(&CLIFlags{})
 	if err != nil {
@@ -87,6 +92,8 @@ func TestFindAssetDefault(t *testing.T) {
 	}
 }
 
+// TestFallbackToDefault tests that we find an asset on the default StylesPath
+// when there's a user-specified StylesPath, but the asset isn't there.
 func TestFallbackToDefault(t *testing.T) {
 	cfg, err := NewConfig(&CLIFlags{})
 	if err != nil {
