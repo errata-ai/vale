@@ -196,10 +196,7 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 	//
 	// In other words, this config file is *always* loaded and is read after
 	// any other sources to allow for project-agnostic customization.
-	defaultCfg, err := DefaultConfig()
-	if err != nil {
-		return nil, err
-	}
+	defaultCfg, _ := DefaultConfig()
 
 	if FileExists(defaultCfg) && !cfg.Flags.IgnoreGlobal && !dry {
 		err = uCfg.Append(defaultCfg)

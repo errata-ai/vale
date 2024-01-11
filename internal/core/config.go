@@ -176,12 +176,8 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.Paths = []string{""}
 	cfg.ConfigFiles = []string{}
 
-	found, err := DefaultStylesPath()
-	if err != nil {
-		return &cfg, err
-	}
-
-	if !flags.IgnoreGlobal {
+	found, _ := DefaultStylesPath()
+	if !flags.IgnoreGlobal && IsDir(found) {
 		cfg.StylesPath = found
 		cfg.Paths = []string{found}
 	}
@@ -242,11 +238,7 @@ func GetStylesPath(src string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	fallback, err := DefaultStylesPath()
-	if err != nil {
-		return "", err
-	}
+	fallback, _ := DefaultStylesPath()
 
 	core := uCfg.Section("")
 	return core.Key("StylesPath").MustString(fallback), nil
