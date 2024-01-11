@@ -233,20 +233,24 @@ func runRule(args []string, _ *core.CLIFlags) error {
 }
 
 func printDirs(_ []string, flags *core.CLIFlags) error {
-	styles, err := core.DefaultStylesPath()
-	if err != nil {
-		return err
+	styles, _ := core.DefaultStylesPath()
+
+	stylesFound := pterm.FgGreen.Sprint("✓")
+	if !core.IsDir(styles) {
+		stylesFound = pterm.FgRed.Sprint("✗")
 	}
 
-	cfg, err := core.DefaultConfig()
-	if err != nil {
-		return err
+	cfg, _ := core.DefaultConfig()
+
+	configFound := pterm.FgGreen.Sprint("✓")
+	if !core.FileExists(cfg) {
+		configFound = pterm.FgRed.Sprint("✗")
 	}
 
 	tableData := pterm.TableData{
-		{"Asset", "Location"},
-		{"StylesPath", styles},
-		{".vale.ini", cfg},
+		{"Asset", "Location", "Found"},
+		{"StylesPath", styles, stylesFound},
+		{".vale.ini", cfg, configFound},
 	}
 
 	return pterm.DefaultTable.WithHasHeader().WithData(tableData).Render()
