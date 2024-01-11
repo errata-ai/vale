@@ -90,7 +90,9 @@ var coreOpts = map[string]func(*ini.Section, *Config) error{
 			entry := paths[len(paths)-1]
 			candidate := filepath.FromSlash(entry)
 
-			cfg.StylesPath = determinePath(cfg.Flags.Path, candidate)
+			cfgFile := cfg.ConfigFiles[len(cfg.ConfigFiles)-1]
+			cfg.StylesPath = determinePath(cfgFile, candidate)
+
 			if !FileExists(cfg.StylesPath) {
 				return NewE201FromTarget(
 					fmt.Sprintf("The path '%s' does not exist.", cfg.StylesPath),

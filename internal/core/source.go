@@ -39,7 +39,7 @@ func ReadPipeline(flags *CLIFlags, dry bool) (*Config, error) {
 	if len(sources) > 0 {
 		config.Flags.Sources = strings.Join(sources, ",")
 
-		_, err = FromFile(config, dry)
+		_, err = FromFile(config, true)
 		if err != nil {
 			return config, err
 		}

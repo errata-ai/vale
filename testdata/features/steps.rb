@@ -15,6 +15,12 @@ When(/^I run command "(.*)"$/) do |c|
   step %(I run `#{cmd} #{c}`)
 end
 
+When(/^I sync pkg "(.*)"$/) do |p|
+  step %(I cd to "../../fixtures/pkg/#{p}")
+  step %(I run `vale sync`)
+  step %(I run `#{cmd} test.md`)
+end
+
 When(/^I fix "(.*)"$/) do |c|
   step %(I cd to "../../fixtures/actions")
   step %(I run `#{cmd} fix #{c}`)
