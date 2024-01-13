@@ -7,7 +7,7 @@ import (
 	"github.com/errata-ai/vale/v2/internal/nlp"
 )
 
-func makeRule(tokens []string) (*Existence, error) {
+func makeExistence(tokens []string) (*Existence, error) {
 	def := baseCheck{"tokens": tokens}
 
 	cfg, err := core.NewConfig(&core.CLIFlags{})
@@ -24,7 +24,7 @@ func makeRule(tokens []string) (*Existence, error) {
 }
 
 func TestExistence(t *testing.T) {
-	rule, err := makeRule([]string{"test"})
+	rule, err := makeExistence([]string{"test"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,12 +48,12 @@ func TestExistence(t *testing.T) {
 func FuzzExistenceInit(f *testing.F) {
 	f.Add("hello")
 	f.Fuzz(func(t *testing.T, s string) {
-		_, _ = makeRule([]string{s})
+		_, _ = makeExistence([]string{s})
 	})
 }
 
 func FuzzExistence(f *testing.F) {
-	rule, err := makeRule([]string{"test"})
+	rule, err := makeExistence([]string{"test"})
 	if err != nil {
 		f.Fatal(err)
 	}

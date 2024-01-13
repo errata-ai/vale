@@ -2,11 +2,13 @@ package check
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/errata-ai/regexp2"
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
+	"golang.org/x/exp/maps"
 )
 
 // Substitution switches the values of Swap for its keys.
@@ -49,8 +51,15 @@ func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitu
 		func() bool { return !rule.Nonword },
 		func() string { return "" }, true)
 
+	terms := maps.Keys(rule.Swap)
+	sort.Slice(terms, func(p, q int) bool {
+		return len(terms[p]) > len(terms[q])
+	})
+
 	replacements := []string{}
-	for regexstr, replacement := range rule.Swap {
+	for _, regexstr := range terms {
+		replacement := rule.Swap[regexstr]
+
 		opens := strings.Count(regexstr, "(")
 		if opens != strings.Count(regexstr, "(?") &&
 			opens != strings.Count(regexstr, `\(`) {
