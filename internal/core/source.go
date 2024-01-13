@@ -11,6 +11,9 @@ import (
 	"github.com/errata-ai/ini"
 )
 
+// ConfigSrc is a source of configuration values.
+//
+// This could be a local file, a string, or a remote URL.
 type ConfigSrc int
 
 const (
@@ -18,6 +21,12 @@ const (
 	StringSrc
 )
 
+// ReadPipeline loads Vale's configuration according to the local search
+// process.
+//
+// A `dry` run means that we can't expect the `StylesPath` to fully formed yet.
+// For example, some assets may not have been downloaded yet via the `sync`
+// command.
 func ReadPipeline(flags *CLIFlags, dry bool) (*Config, error) {
 	config, err := NewConfig(flags)
 	if err != nil {

@@ -10,8 +10,6 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/karrick/godirwalk"
-
 	"github.com/errata-ai/vale/v2/internal/nlp"
 )
 
@@ -246,75 +244,6 @@ func normalizePath(path string) string {
 		path = filepath.Join(homedir, path[2:])
 	}
 	return path
-}
-
-func determinePath(configPath string, keyPath string) string {
-	// expand tilde at this point as this is where user-provided paths are provided
-	keyPath = normalizePath(keyPath)
-	if !IsDir(configPath) {
-		configPath = filepath.Dir(configPath)
-	}
-	sep := string(filepath.Separator)
-	abs, _ := filepath.Abs(keyPath)
-	rel := strings.TrimRight(keyPath, sep)
-	if abs != rel || !strings.Contains(keyPath, sep) {
-		// The path was relative
-		return filepath.Join(configPath, keyPath)
-	}
-	return abs
-}
-
-func mergeValues(shadows []string) []string {
-	values := []string{}
-	for _, v := range shadows {
-		entry := strings.TrimSpace(v)
-		if entry != "" && !StringInSlice(entry, values) {
-			values = append(values, entry)
-		}
-	}
-	return values
-}
-
-func validateLevel(key, val string, cfg *Config) bool {
-	options := []string{"YES", "suggestion", "warning", "error"}
-	if val == "NO" || !StringInSlice(val, options) {
-		return false
-	} else if val != "YES" {
-		cfg.RuleToLevel[key] = val
-	}
-	return true
-}
-
-func loadVocab(root string, cfg *Config) error {
-	target := ""
-	for _, p := range cfg.Paths {
-		opt := filepath.Join(p, VocabDir, root)
-		if IsDir(opt) {
-			target = opt
-			break
-		}
-	}
-
-	if target == "" {
-		return NewE100("vocab", fmt.Errorf(
-			"'%s/%s' directory does not exist", VocabDir, root))
-	}
-
-	err := godirwalk.Walk(target, &godirwalk.Options{
-		Callback: func(fp string, de *godirwalk.Dirent) error {
-			name := de.Name()
-			if name == "accept.txt" {
-				return cfg.AddWordListFile(fp, true)
-			} else if name == "reject.txt" {
-				return cfg.AddWordListFile(fp, false)
-			}
-			return nil
-		},
-		Unsorted:            true,
-		AllowNonDirectory:   true,
-		FollowSymbolicLinks: true})
-
-	return err
 }
 
 func TextToContext(text string, meta *nlp.Info) []nlp.TaggedWord {
