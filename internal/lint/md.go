@@ -33,7 +33,7 @@ var reLinkDef = regexp.MustCompile(`\[(?:[^]]+)\]:`)
 func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
 
-	s, err := l.applyPatterns(f.Content, "\n```\n$1\n```\n", "`$1`", ".md")
+	s, err := l.applyPatterns(f.Content, "\n```\n$1\n```\n", "`$1`", f.Path)
 	if err != nil {
 		return err
 	}

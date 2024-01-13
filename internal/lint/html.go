@@ -47,7 +47,7 @@ func (l *Linter) applyPatterns(content, block, inline, ext string) (string, erro
 						r,
 						l.Manager.Config.Flags.Path,
 					)
-				} else if ext == ".rst" {
+				} else if strings.HasSuffix(ext, ".rst") {
 					// HACK: We need to add padding for the literal block.
 					for _, c := range pat.FindAllStringSubmatch(s, -1) {
 						sec := fmt.Sprintf(block, core.Indent(c[0], "    "))
