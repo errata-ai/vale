@@ -6,9 +6,10 @@ import (
 	"strings"
 
 	"github.com/errata-ai/regexp2"
+	"golang.org/x/exp/maps"
+
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
-	"golang.org/x/exp/maps"
 )
 
 // Substitution switches the values of Swap for its keys.
@@ -22,11 +23,12 @@ type Substitution struct {
 	pattern    *regexp2.Regexp
 	Ignorecase bool
 	Nonword    bool
+	Vocab      bool
 }
 
 // NewSubstitution creates a new `substitution`-based rule.
 func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitution, error) {
-	rule := Substitution{}
+	rule := Substitution{Vocab: true}
 
 	err := decodeRule(generic, &rule)
 	if err != nil {
@@ -39,7 +41,7 @@ func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitu
 	}
 	tokens := ""
 
-	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
+	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens, rule.Vocab)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}

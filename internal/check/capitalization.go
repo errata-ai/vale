@@ -5,7 +5,6 @@ import (
 
 	"github.com/errata-ai/regexp2"
 	"github.com/jdkato/twine/strcase"
-	"golang.org/x/exp/maps"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
@@ -30,12 +29,14 @@ type Capitalization struct {
 	// (un)capitalized for a sentence to be considered correct.
 	Threshold float64
 
+	Vocab bool
+
 	exceptRe *regexp2.Regexp
 }
 
 // NewCapitalization creates a new `capitalization`-based rule.
 func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capitalization, error) {
-	rule := Capitalization{}
+	rule := Capitalization{Vocab: true}
 
 	err := decodeRule(generic, &rule)
 	if err != nil {
@@ -47,7 +48,7 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 		return rule, err
 	}
 
-	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
+	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens, rule.Vocab)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
@@ -59,7 +60,7 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 		rule.Threshold = 0.8
 	}
 
-	rule.Exceptions = append(rule.Exceptions, maps.Keys(cfg.AcceptedTokens)...)
+	rule.Exceptions = append(rule.Exceptions, cfg.AcceptedTokens...)
 	if rule.Match == "$title" {
 		var tc *strcase.TitleConverter
 		if rule.Style == "Chicago" {

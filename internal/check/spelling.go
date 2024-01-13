@@ -70,7 +70,7 @@ func addExceptions(s *Spelling, generic baseCheck, cfg *core.Config) error { //n
 		delete(generic, "ignore")
 	}
 
-	for term := range cfg.AcceptedTokens {
+	for _, term := range cfg.AcceptedTokens {
 		s.Exceptions = append(s.Exceptions, term)
 		s.exceptRe = regexp2.MustCompileStd(
 			ignoreCase + strings.Join(s.Exceptions, "|"))

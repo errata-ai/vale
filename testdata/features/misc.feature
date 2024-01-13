@@ -18,8 +18,12 @@ Feature: Misc
         Then the output should contain exactly:
             """
             test.md:3:5:Vale.Avoid:Avoid using 'Mac OS X'.
+            test.md:5:6:Vale.Terms:Use 'Definately' instead of 'definately'.
             test.md:7:29:Vale.Terms:Use 'IDEA' instead of 'idea'.
             test.md:13:1:Vale.Terms:Use 'Documentarians' instead of 'documentarians'.
+            test.md:15:5:Vale.Terms:Use 'MyProduct' instead of 'Myproduct'.
+            test.md:17:5:Vale.Terms:Use 'MyProduct Enterprise' instead of 'Myproduct enterprise'.
+            test.md:19:5:Vale.Terms:Use 'MyProduct Enterprise' instead of 'MyProduct enterprise'.
             """
 
     Scenario: Line Endings

@@ -15,12 +15,13 @@ type Conditional struct {
 	Second     string
 	exceptRe   *regexp2.Regexp
 	Ignorecase bool
+	Vocab      bool
 }
 
 // NewConditional creates a new `conditional`-based rule.
 func NewConditional(cfg *core.Config, generic baseCheck, path string) (Conditional, error) {
 	var expression []*regexp2.Regexp
-	rule := Conditional{}
+	rule := Conditional{Vocab: true}
 
 	err := decodeRule(generic, &rule)
 	if err != nil {
@@ -32,7 +33,7 @@ func NewConditional(cfg *core.Config, generic baseCheck, path string) (Condition
 		return rule, err
 	}
 
-	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
+	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens, rule.Vocab)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}

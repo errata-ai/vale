@@ -134,8 +134,8 @@ type Config struct {
 	WordTemplate   string                     // The template used in YAML -> regexp list conversions
 	RootINI        string                     // the path to the project's .vale.ini file
 
-	AcceptedTokens map[string]struct{} `json:"-"` // Project-specific vocabulary (okay)
-	RejectedTokens map[string]struct{} `json:"-"` // Project-specific vocabulary (avoid)
+	AcceptedTokens []string `json:"-"` // Project-specific vocabulary (okay)
+	RejectedTokens []string `json:"-"` // Project-specific vocabulary (avoid)
 
 	DictionaryPath string // Location to search for dictionaries.
 
@@ -158,14 +158,12 @@ type Config struct {
 func NewConfig(flags *CLIFlags) (*Config, error) {
 	var cfg Config
 
-	cfg.AcceptedTokens = make(map[string]struct{})
 	cfg.BlockIgnores = make(map[string][]string)
 	cfg.Flags = flags
 	cfg.Formats = make(map[string]string)
 	cfg.Asciidoctor = make(map[string]string)
 	cfg.GChecks = make(map[string]bool)
 	cfg.MinAlertLevel = 1
-	cfg.RejectedTokens = make(map[string]struct{})
 	cfg.RuleToLevel = make(map[string]string)
 	cfg.SBaseStyles = make(map[string][]string)
 	cfg.SChecks = make(map[string]map[string]bool)
@@ -202,13 +200,9 @@ func (c *Config) addWordList(r io.Reader, accept bool) error {
 		if len(word) == 0 || strings.HasPrefix(word, "# ") { //nolint:gocritic
 			continue
 		} else if accept {
-			if _, ok := c.AcceptedTokens[word]; !ok {
-				c.AcceptedTokens[word] = struct{}{}
-			}
+			c.AcceptedTokens = append(c.AcceptedTokens, word)
 		} else {
-			if _, ok := c.RejectedTokens[word]; !ok {
-				c.RejectedTokens[word] = struct{}{}
-			}
+			c.RejectedTokens = append(c.RejectedTokens, word)
 		}
 	}
 	return scanner.Err()

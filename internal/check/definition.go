@@ -77,6 +77,7 @@ var defaultRules = map[string]map[string]interface{}{
 		"scope":      "text",
 		"ignorecase": true,
 		"swap":       map[string]string{},
+		"vocab":      false,
 		"path":       "internal",
 	},
 	"Repetition": {
@@ -319,9 +320,11 @@ func matchToken(expected, observed string, ignorecase bool) bool {
 	return r.MatchStringStd(observed)
 }
 
-func updateExceptions(previous []string, current map[string]struct{}) (*regexp2.Regexp, error) {
-	for term := range current {
-		previous = append(previous, term)
+func updateExceptions(previous []string, current []string, vocab bool) (*regexp2.Regexp, error) {
+	if vocab {
+		for _, term := range current {
+			previous = append(previous, term)
+		}
 	}
 
 	// NOTE: This is required to ensure that we have greedy alternation.

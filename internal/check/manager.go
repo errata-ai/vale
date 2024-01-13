@@ -264,7 +264,7 @@ func (mgr *Manager) loadStyles(styles []string) error {
 func (mgr *Manager) loadVocabRules() {
 	if len(mgr.Config.AcceptedTokens) > 0 {
 		vocab := defaultRules["Terms"]
-		for term := range mgr.Config.AcceptedTokens {
+		for _, term := range mgr.Config.AcceptedTokens {
 			if core.IsPhrase(term) {
 				vocab["swap"].(map[string]string)[strings.ToLower(term)] = term
 			}
@@ -278,7 +278,7 @@ func (mgr *Manager) loadVocabRules() {
 
 	if len(mgr.Config.RejectedTokens) > 0 {
 		avoid := defaultRules["Avoid"]
-		for term := range mgr.Config.RejectedTokens {
+		for _, term := range mgr.Config.RejectedTokens {
 			avoid["tokens"] = append(avoid["tokens"].([]string), term)
 		}
 		if level, ok := mgr.Config.RuleToLevel["Vale.Avoid"]; ok {

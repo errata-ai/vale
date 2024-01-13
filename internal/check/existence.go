@@ -21,11 +21,12 @@ type Existence struct {
 	Append     bool
 	IgnoreCase bool
 	Nonword    bool
+	Vocab      bool
 }
 
 // NewExistence creates a new `Rule` that extends `Existence`.
 func NewExistence(cfg *core.Config, generic baseCheck, path string) (Existence, error) {
-	rule := Existence{}
+	rule := Existence{Vocab: true}
 
 	err := decodeRule(generic, &rule)
 	if err != nil {
@@ -37,7 +38,7 @@ func NewExistence(cfg *core.Config, generic baseCheck, path string) (Existence, 
 		return rule, err
 	}
 
-	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens)
+	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens, rule.Vocab)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
 	}
