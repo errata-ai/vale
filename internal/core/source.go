@@ -26,7 +26,7 @@ func ReadPipeline(flags *CLIFlags, dry bool) (*Config, error) {
 		return config, err
 	}
 
-	_, err = FromFile(config, false)
+	_, err = FromFile(config, dry)
 	if err != nil {
 		return config, err
 	}
