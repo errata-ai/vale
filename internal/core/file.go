@@ -30,6 +30,7 @@ type File struct {
 	Format     string            // 'code', 'markup' or 'prose'
 	NormedExt  string            // the normalized extension (see util/format.go)
 	Path       string            // the full path
+	NormedPath string            // the normalized path
 	Transform  string            // XLST transform
 	RealExt    string            // actual file extension
 	Checks     map[string]bool   // syntax-specific checks assigned in .vale
@@ -120,7 +121,7 @@ func NewFile(src string, config *Config) (*File, error) {
 		simple: config.Flags.Simple, Transform: transform,
 		limits: make(map[string]int), Path: src, Metrics: make(map[string]int),
 		NLP:    nlp.Info{Endpoint: config.NLPEndpoint, Lang: lang},
-		Lookup: lookup,
+		Lookup: lookup, NormedPath: ReplaceExt(src, config.Formats),
 	}
 
 	return &file, nil

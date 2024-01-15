@@ -81,7 +81,7 @@ func (l *Linter) lintADoc(f *core.File) error {
 		return core.NewE100("lintAdoc", errors.New("asciidoctor not found"))
 	}
 
-	s, err := l.applyPatterns(f.Content, "\n----\n$1\n----\n", "`$1`", f.Path)
+	s, err := l.applyPatterns(f.Content, "\n----\n$1\n----\n", "`$1`", f.NormedPath)
 	if err != nil {
 		return err
 	}

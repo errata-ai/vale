@@ -347,15 +347,8 @@ func (l *Linter) match(s string) bool {
 }
 
 func (l *Linter) skip(fp string) bool {
-	var ext string
+	fp = filepath.ToSlash(core.ReplaceExt(fp, l.Manager.Config.Formats))
 
-	old := filepath.Ext(fp)
-	if normed, found := l.Manager.Config.Formats[strings.Trim(old, ".")]; found {
-		ext = "." + normed
-		fp = fp[0:len(fp)-len(old)] + ext
-	}
-
-	fp = filepath.ToSlash(fp)
 	if !l.match(fp) {
 		return true
 	} else if l.nonGlobal {

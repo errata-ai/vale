@@ -302,3 +302,20 @@ func HasAnySuffix(s string, suffixes []string) bool {
 	}
 	return false
 }
+
+// ReplaceExt replaces the extension of `fp` with `ext` if the extension of
+// `fp` is in `formats`.
+//
+// This is used in places where we need to normalize file extensions (e.g.,
+// `foo.mdx` -> `foo.md`) in order to respect format associations.
+func ReplaceExt(fp string, formats map[string]string) string {
+	var ext string
+
+	old := filepath.Ext(fp)
+	if normed, found := formats[strings.Trim(old, ".")]; found {
+		ext = "." + normed
+		fp = fp[0:len(fp)-len(old)] + ext
+	}
+
+	return fp
+}

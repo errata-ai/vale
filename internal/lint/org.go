@@ -34,7 +34,7 @@ func (l Linter) lintOrg(f *core.File) error {
 	s := reOrgAttribute.ReplaceAllString(f.Content, "\n=$1=\n")
 	s = reOrgProps.ReplaceAllString(s, orgExample)
 
-	s, err := l.applyPatterns(s, orgExample, "=$1=", f.Path)
+	s, err := l.applyPatterns(s, orgExample, "=$1=", f.NormedPath)
 	if err != nil {
 		return err
 	}

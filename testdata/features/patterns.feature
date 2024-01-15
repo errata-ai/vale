@@ -1,4 +1,15 @@
 Feature: IgnorePatterns
+
+    Scenario: MDX
+        When I test patterns for "test.mdx"
+        Then the output should contain exactly:
+            """
+            test.mdx:1:19:vale.Redundancy:'ACT test' is redundant
+            test.mdx:7:19:vale.Redundancy:'ACT test' is redundant
+            test.mdx:17:1:vale.Redundancy:'ACT test' is redundant
+            """
+        And the exit status should be 0
+
     Scenario: Markdown
         When I test patterns for "test.md"
         Then the output should contain exactly:
