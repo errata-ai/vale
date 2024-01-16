@@ -265,7 +265,7 @@ func newDictConfig(file io.Reader) (*dictConfig, error) { //nolint:funlen
 				pat := parts[4]
 				if pat != "." {
 					if a.Type == Prefix {
-						pat += "^"
+						pat = "^" + pat
 					} else {
 						pat += "$"
 					}

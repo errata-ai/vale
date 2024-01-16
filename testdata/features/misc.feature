@@ -98,6 +98,9 @@ Feature: Misc
             test.html:14:96:Spelling.Ignores:Did you really mean 'TODO'?
             test.md:3:1:Spelling.Ignore:'HTTPie' is a typo!
             test.md:3:96:Spelling.Ignore:'human-friendly' is a typo!
+            test.txt:2:1:Spelling.GB:'This' is a typo!
+            test.txt:2:6:Spelling.GB:'is' is a typo!
+            test.txt:2:9:Spelling.GB:'a' is a typo!
             """
 
     Scenario: v3.0 Spelling
