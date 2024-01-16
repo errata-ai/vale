@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/karrick/godirwalk"
+	"golang.org/x/exp/maps"
 
 	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/errata-ai/vale/v2/internal/nlp"
@@ -194,6 +195,10 @@ func (mgr *Manager) addCheck(file []byte, chkName, path string) error {
 }
 
 func (mgr *Manager) loadDefaultRules() error {
+	if !mgr.needsStyle("Vale") {
+		return nil
+	}
+
 	for _, style := range defaultStyles {
 		if core.StringInSlice(style, mgr.styles) {
 			return fmt.Errorf("'%v' collides with built-in style", style)
@@ -292,4 +297,34 @@ func (mgr *Manager) loadVocabRules() {
 func (mgr *Manager) hasStyle(name string) bool {
 	styles := append(mgr.styles, defaultStyles...) //nolint:gocritic
 	return core.StringInSlice(name, styles)
+}
+
+func (mgr *Manager) needsStyle(name string) bool {
+	cfg := mgr.Config
+
+	if core.StringInSlice(name, cfg.GBaseStyles) {
+		return true
+	}
+
+	for _, s := range maps.Keys(cfg.GChecks) {
+		if strings.HasPrefix(s, name) {
+			return true
+		}
+	}
+
+	for _, s := range cfg.SBaseStyles {
+		if core.StringInSlice(name, s) {
+			return true
+		}
+	}
+
+	for _, s := range cfg.SChecks {
+		for _, chk := range maps.Keys(s) {
+			if strings.HasPrefix(chk, name) {
+				return true
+			}
+		}
+	}
+
+	return false
 }
