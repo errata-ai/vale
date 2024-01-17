@@ -46,17 +46,21 @@ func TestGenderBias(t *testing.T) {
 	}
 }
 
-func benchmarkLint(path string, b *testing.B) {
+func initLinter() (*Linter, error) {
 	cfg, err := core.NewConfig(&core.CLIFlags{})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	cfg.MinAlertLevel = 0
 	cfg.GBaseStyles = []string{"Vale"}
 	cfg.Flags.InExt = ".txt" // default value
 
-	linter, err := NewLinter(cfg)
+	return NewLinter(cfg)
+}
+
+func benchmarkLint(path string, b *testing.B) {
+	linter, err := initLinter()
 	if err != nil {
 		b.Fatal(err)
 	}

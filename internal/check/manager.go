@@ -209,10 +209,10 @@ func (mgr *Manager) loadDefaultRules() error {
 	if level, ok := mgr.Config.RuleToLevel["Vale.Repetition"]; ok {
 		repetition["level"] = level
 	}
+	repetition["path"] = "internal"
 
 	rule, err := buildRule(mgr.Config, repetition)
 	if err != nil {
-		fmt.Println(repetition)
 		return err
 	}
 	mgr.rules["Vale.Repetition"] = rule
@@ -221,6 +221,7 @@ func (mgr *Manager) loadDefaultRules() error {
 	if level, ok := mgr.Config.RuleToLevel["Vale.Spelling"]; ok {
 		spelling["level"] = level
 	}
+	spelling["path"] = "internal"
 
 	rule, err = buildRule(mgr.Config, spelling)
 	if err != nil {
