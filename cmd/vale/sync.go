@@ -15,24 +15,6 @@ import (
 
 var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library.json"
 
-func newVocab(path, name string) error {
-	var ferr error
-
-	root := filepath.Join(path, core.VocabDir, name)
-	if _, err := os.Stat(root); os.IsNotExist(err) {
-		ferr = os.MkdirAll(root, os.ModePerm)
-		if ferr != nil {
-			return ferr
-		}
-	}
-
-	for _, f := range []string{"accept.txt", "reject.txt"} {
-		ferr = os.WriteFile(filepath.Join(root, f), []byte{}, os.ModePerm)
-	}
-
-	return ferr
-}
-
 func initPath(cfg *core.Config) error {
 	if !core.IsDir(cfg.StylesPath) {
 		if err := os.MkdirAll(cfg.StylesPath, os.ModePerm); err != nil {

@@ -322,9 +322,7 @@ func matchToken(expected, observed string, ignorecase bool) bool {
 
 func updateExceptions(previous []string, current []string, vocab bool) (*regexp2.Regexp, error) {
 	if vocab {
-		for _, term := range current {
-			previous = append(previous, term)
-		}
+		previous = append(previous, current...)
 	}
 
 	// NOTE: This is required to ensure that we have greedy alternation.

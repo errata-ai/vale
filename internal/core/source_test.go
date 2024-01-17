@@ -59,7 +59,7 @@ func TestFlagBase(t *testing.T) {
 // TestEnvBase tests that we respect the `VALE_CONFIG_PATH` option for setting
 // a base config.
 func TestEnvBase(t *testing.T) {
-	os.Setenv("VALE_CONFIG_PATH", knownConfig)
+	t.Setenv("VALE_CONFIG_PATH", knownConfig)
 
 	cfg, err := NewConfig(&CLIFlags{})
 	if err != nil {
@@ -80,6 +80,4 @@ func TestEnvBase(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	os.Unsetenv("VALE_CONFIG_PATH")
 }

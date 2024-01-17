@@ -45,7 +45,9 @@ func TestIsDeterministic(t *testing.T) {
 		actual, err := rule.Run(nlp.NewBlock(text, text, "text"), &core.File{})
 		if err != nil {
 			t.Fatal(err)
-		} else if len(actual) != 1 {
+		}
+
+		if len(actual) != 1 {
 			t.Fatalf("expected 1 alert, found %d", len(actual))
 		} else if actual[0].Match != "EMnify IoT SuperNetwork" {
 			t.Fatalf("Loop %d: expected 'EMnify IoT SuperNetwork', found '%s'", i, actual[0].Match)

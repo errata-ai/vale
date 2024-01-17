@@ -232,7 +232,7 @@ func runRule(args []string, _ *core.CLIFlags) error {
 	return nil
 }
 
-func printDirs(_ []string, flags *core.CLIFlags) error {
+func printDirs(_ []string, _ *core.CLIFlags) error {
 	styles, _ := core.DefaultStylesPath()
 
 	stylesFound := pterm.FgGreen.Sprint("✓")
