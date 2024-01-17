@@ -6,7 +6,8 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/errata-ai/vale/v2/internal/core"
+
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 // ProcessedFile represents a file that Vale has linted.

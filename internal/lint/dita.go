@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 func (l Linter) lintDITA(file *core.File) error {

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 // PrintLineAlerts prints Alerts in <path>:<line>:<col>:<check>:<message> format.

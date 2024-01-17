@@ -7,8 +7,9 @@ import (
 	"strings"
 
 	"github.com/errata-ai/ini"
-	"github.com/errata-ai/vale/v2/internal/glob"
 	"github.com/karrick/godirwalk"
+
+	"github.com/errata-ai/vale/v3/internal/glob"
 )
 
 func determinePath(configPath string, keyPath string) string {

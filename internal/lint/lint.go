@@ -10,10 +10,10 @@ import (
 	"github.com/karrick/godirwalk"
 	"github.com/remeh/sizedwaitgroup"
 
-	"github.com/errata-ai/vale/v2/internal/check"
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/glob"
-	"github.com/errata-ai/vale/v2/internal/nlp"
+	"github.com/errata-ai/vale/v3/internal/check"
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/glob"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 // A Linter lints a File.

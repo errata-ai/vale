@@ -3,7 +3,7 @@ package check
 import (
 	"testing"
 
-	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 func TestSelectors(t *testing.T) {

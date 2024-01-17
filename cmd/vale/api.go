@@ -7,9 +7,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/mholt/archiver/v3"
 	"github.com/spf13/pflag"
+
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 // Style represents an externally-hosted style.

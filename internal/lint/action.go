@@ -10,8 +10,8 @@ import (
 
 	"github.com/jdkato/twine/strcase"
 
-	"github.com/errata-ai/vale/v2/internal/check"
-	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v3/internal/check"
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 // Solution is a potential solution to an alert.

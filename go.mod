@@ -1,4 +1,4 @@
-module github.com/errata-ai/vale/v2
+module github.com/errata-ai/vale/v3
 
 go 1.20
 

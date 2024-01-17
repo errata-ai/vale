@@ -3,7 +3,7 @@ package main
 import (
 	"sort"
 
-	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 // PrintAlerts prints the given alerts in the user-specified format.

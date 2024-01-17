@@ -5,7 +5,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/errata-ai/vale/v2/internal/nlp"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 // initialPosition calculates the position of a match (given by the location in

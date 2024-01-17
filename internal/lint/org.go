@@ -4,8 +4,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/errata-ai/vale/v2/internal/core"
 	"github.com/niklasfasching/go-org/org"
+
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 var orgConverter = org.New()

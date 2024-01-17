@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 // Comment represents an in-code comment (line or block).

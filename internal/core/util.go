@@ -10,7 +10,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/errata-ai/vale/v2/internal/nlp"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 var defaultIgnoreDirectories = []string{

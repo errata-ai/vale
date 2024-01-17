@@ -5,9 +5,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/errata-ai/vale/v2/internal/core"
-
 	"github.com/antonmedv/expr"
+
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 func filter(mgr *Manager) (map[string]Rule, error) {

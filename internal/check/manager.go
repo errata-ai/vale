@@ -10,8 +10,8 @@ import (
 	"github.com/karrick/godirwalk"
 	"golang.org/x/exp/maps"
 
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/nlp"
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 // Manager controls the loading and validating of the check extension points.
@@ -212,6 +212,7 @@ func (mgr *Manager) loadDefaultRules() error {
 
 	rule, err := buildRule(mgr.Config, repetition)
 	if err != nil {
+		fmt.Println(repetition)
 		return err
 	}
 	mgr.rules["Vale.Repetition"] = rule

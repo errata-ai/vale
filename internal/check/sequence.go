@@ -8,8 +8,8 @@ import (
 	"github.com/jdkato/twine/nlp/tag"
 	"github.com/mitchellh/mapstructure"
 
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/nlp"
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 // NLPToken represents a token of text with NLP-related attributes.

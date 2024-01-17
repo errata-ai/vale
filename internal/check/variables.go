@@ -6,7 +6,7 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/jdkato/twine/strcase"
 
-	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 var reNumberList = regexp2.MustCompileStd(`\d+\.`)

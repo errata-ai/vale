@@ -5,9 +5,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/lint"
 	"github.com/spf13/pflag"
+
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/lint"
 )
 
 // version is set during the release build process.

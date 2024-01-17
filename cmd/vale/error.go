@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 type valeError struct {

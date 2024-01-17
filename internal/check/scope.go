@@ -3,8 +3,8 @@ package check
 import (
 	"strings"
 
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/nlp"
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 var allowedScopes = []string{

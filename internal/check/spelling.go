@@ -11,9 +11,9 @@ import (
 	"github.com/errata-ai/regexp2"
 	"github.com/mitchellh/mapstructure"
 
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/nlp"
-	"github.com/errata-ai/vale/v2/internal/spell"
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/nlp"
+	"github.com/errata-ai/vale/v3/internal/spell"
 )
 
 var defaultFilters = []*regexp.Regexp{

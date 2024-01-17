@@ -5,8 +5,8 @@ import (
 
 	"github.com/jdkato/twine/summarize"
 
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/nlp"
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 // Readability checks the reading grade level of text.

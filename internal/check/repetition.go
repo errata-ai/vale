@@ -4,8 +4,9 @@ import (
 	"strings"
 
 	"github.com/errata-ai/regexp2"
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/nlp"
+
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 // Repetition looks for repeated uses of Tokens.

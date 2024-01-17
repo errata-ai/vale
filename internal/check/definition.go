@@ -8,11 +8,11 @@ import (
 	"strings"
 
 	"github.com/errata-ai/regexp2"
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/nlp"
 	"github.com/mitchellh/mapstructure"
-
 	"gopkg.in/yaml.v2"
+
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 var inlineScopes = []string{"code", "link", "strong", "emphasis"}

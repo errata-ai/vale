@@ -10,7 +10,7 @@ import (
 	"github.com/mholt/archiver/v3"
 	cp "github.com/otiai10/copy"
 
-	"github.com/errata-ai/vale/v2/internal/core"
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library.json"

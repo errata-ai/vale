@@ -5,9 +5,10 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/errata-ai/vale/v2/internal/core"
-	"github.com/errata-ai/vale/v2/internal/nlp"
 	"golang.org/x/net/html"
+
+	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
 // skipTags are tags that we don't want to lint.
