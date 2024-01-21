@@ -2,6 +2,7 @@ package lint
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -44,6 +45,34 @@ func NewLinter(cfg *core.Config) (*Linter, error) {
 
 		client:    http.DefaultClient,
 		nonGlobal: globalStyles+globalChecks == 0}, err
+}
+
+// Transform applies the configured transformations to text and returns the
+// result.
+//
+// This is used by the `vale` command to apply transformations to text before
+// linting it.
+//
+// Transformations include block and token ignores, as well as some built-in
+// replacements.
+func (l *Linter) Transform(path string) (string, error) {
+	f, err := core.NewFile(path, l.Manager.Config)
+	if err != nil {
+		return "", err
+	}
+
+	switch f.NormedExt {
+	case ".adoc":
+		return l.applyPatterns(f.Content, "\n----\n$1\n----\n", "`$1`", f.NormedPath)
+	case ".md":
+		return l.applyPatterns(f.Content, "\n```\n$1\n```\n", "`$1`", f.NormedPath)
+	case ".rst":
+		return l.applyPatterns(f.Content, "\n::\n\n%s\n", "``$1``", f.NormedPath)
+	case ".org":
+		return l.applyPatterns(f.Content, orgExample, "=$1=", f.NormedPath)
+	default:
+		return f.Content, fmt.Errorf("ignore patterns are not supported in '%s' files", f.NormedExt)
+	}
 }
 
 // LintString src according to its format.

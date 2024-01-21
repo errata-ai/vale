@@ -46,8 +46,9 @@ var Actions = map[string]func(args []string, flags *core.CLIFlags) error{
 	"fix":        fix,
 
 	// private
-	"compile": compileRule,
-	"run":     runRule,
+	"compile":   compileRule,
+	"run":       runRule,
+	"transform": transform,
 }
 
 func fix(args []string, flags *core.CLIFlags) error {
@@ -254,4 +255,30 @@ func printDirs(_ []string, _ *core.CLIFlags) error {
 	}
 
 	return pterm.DefaultTable.WithHasHeader().WithData(tableData).Render()
+}
+
+func transform(args []string, flags *core.CLIFlags) error {
+	if len(args) != 1 {
+		return core.NewE100("transform", errors.New("one argument expected"))
+	} else if !core.FileExists(args[0]) {
+		return fmt.Errorf("file not found: %s", args[0])
+	}
+
+	cfg, err := core.ReadPipeline(flags, false)
+	if err != nil {
+		return err
+	}
+
+	linter, err := lint.NewLinter(cfg)
+	if err != nil {
+		return err
+	}
+
+	out, err := linter.Transform(args[0])
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(out)
+	return nil
 }
