@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -62,4 +63,15 @@ func sendResponse(msg string, err error) error {
 func fileNameWithoutExt(fileName string) string {
 	base := filepath.Base(fileName)
 	return strings.TrimSuffix(base, filepath.Ext(base))
+}
+
+func platformAndArch() string {
+	platform := strings.Title(runtime.GOOS) //nolint:staticcheck
+
+	arch := strings.ToLower(runtime.GOARCH)
+	if arch == "amd64" {
+		arch = "x86_64"
+	}
+
+	return fmt.Sprintf("%s_%s", platform, arch)
 }

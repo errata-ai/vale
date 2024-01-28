@@ -40,15 +40,18 @@ var Actions = map[string]func(args []string, flags *core.CLIFlags) error{
 	"ls-config":  printConfig,
 	"ls-metrics": printMetrics,
 	"ls-dirs":    printDirs,
-	"dc":         printConfig,
-	"tag":        runTag,
 	"sync":       sync,
-	"fix":        fix,
 
 	// private
-	"compile":   compileRule,
-	"run":       runRule,
-	"transform": transform,
+	"host-install":   installNativeHost,
+	"host-uninstall": uninstallNativeHost,
+	"compile":        compileRule,
+	"run":            runRule,
+	"transform":      transform,
+	"ls-path":        pathInfo,
+	"fix":            fix,
+	"tag":            runTag,
+	"dc":             printConfig,
 }
 
 func fix(args []string, flags *core.CLIFlags) error {
@@ -281,4 +284,16 @@ func transform(args []string, flags *core.CLIFlags) error {
 
 	fmt.Println(out)
 	return nil
+}
+
+func pathInfo(_ []string, flags *core.CLIFlags) error {
+	system := map[string][]string{}
+
+	cfg, err := core.ReadPipeline(flags, false)
+	if err != nil {
+		return err
+	}
+
+	system["configs"] = append(system["configs"], cfg.ConfigFiles...)
+	return printJSON(system)
 }
