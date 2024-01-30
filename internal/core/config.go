@@ -254,6 +254,7 @@ func pipeConfig(cfg *Config) ([]string, error) {
 			}
 			sources = append(sources, filepath.Join(pipeline, config.Name()))
 		}
+		sources = append(sources, cfg.ConfigFiles...)
 	}
 
 	return sources, nil
