@@ -199,7 +199,7 @@ func (l *Linter) startAdocServer(exe string, attrs map[string]string) error {
 	return nil
 }
 
-func callAdoc(f *core.File, text, exe string, attrs map[string]string) (string, error) {
+func callAdoc(_ *core.File, text, exe string, attrs map[string]string) (string, error) {
 	var out bytes.Buffer
 	var eut bytes.Buffer
 
