@@ -223,7 +223,7 @@ func callAdoc(f *core.File, text, exe string, attrs map[string]string) (string, 
 	cmd.Stderr = &eut
 
 	if err := cmd.Run(); err != nil {
-		return "", core.NewE100(f.Path, errors.New(eut.String()))
+		return "", errors.New(eut.String())
 	}
 
 	return out.String(), nil
