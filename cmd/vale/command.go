@@ -251,10 +251,20 @@ func printDirs(_ []string, _ *core.CLIFlags) error {
 		configFound = pterm.FgRed.Sprint("✗")
 	}
 
+	native, _ := getNativeConfig()
+	nativeDir := filepath.Dir(native)
+	nativeExe := filepath.Join(nativeDir, getExecName("vale-native"))
+
+	nativeFound := pterm.FgGreen.Sprint("✓")
+	if !core.FileExists(native) {
+		nativeFound = pterm.FgRed.Sprint("✗")
+	}
+
 	tableData := pterm.TableData{
 		{"Asset", "Location", "Found"},
 		{"StylesPath", styles, stylesFound},
 		{".vale.ini", cfg, configFound},
+		{"vale-native", nativeExe, nativeFound},
 	}
 
 	return pterm.DefaultTable.WithHasHeader().WithData(tableData).Render()
