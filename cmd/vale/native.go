@@ -339,7 +339,7 @@ func uninstallNativeHost(args []string, _ *core.CLIFlags) error {
 	p.Increment()
 
 	p.UpdateTitle(steps[1])
-	manifestFile := filepath.Join(locations["manifestDir"], nativeHostName)
+	manifestFile := filepath.Join(locations["manifestDir"], nativeHostName+".json")
 
 	if core.FileExists(manifestFile) {
 		err = os.Remove(manifestFile)
