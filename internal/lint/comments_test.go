@@ -3,6 +3,7 @@ package lint
 import (
 	"bytes"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -20,12 +21,21 @@ func toMarkup(comments []Comment) string {
 }
 
 func TestComments(t *testing.T) {
+	var cleaned []fs.DirEntry
+
 	cases, err := os.ReadDir("../../testdata/comments/in")
 	if err != nil {
 		t.Error(err)
 	}
 
-	for i, f := range cases {
+	for _, f := range cases {
+		if f.Name() == ".DS_Store" {
+			continue
+		}
+		cleaned = append(cleaned, f)
+	}
+
+	for i, f := range cleaned {
 		b, err1 := os.ReadFile(fmt.Sprintf("../../testdata/comments/in/%s", f.Name()))
 		if err1 != nil {
 			t.Error(err1)
@@ -39,7 +49,8 @@ func TestComments(t *testing.T) {
 		markup := toMarkup(comments)
 
 		if markup != string(b2) {
-			err = os.WriteFile(fmt.Sprintf("%d.txt", i), []byte(markup), os.ModePerm)
+			bin := filepath.Join("..", "..", "bin", fmt.Sprintf("%d.txt", i))
+			err = os.WriteFile(bin, []byte(markup), os.ModePerm)
 			if err != nil {
 				t.Error(err)
 			}

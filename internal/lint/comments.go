@@ -17,6 +17,17 @@ type Comment struct {
 	Scope  string
 }
 
+// NOTE: This is different from `internal/core/format.go` because we need to
+// handle each comment type separately in order to strip the prefixes
+// (e.g., "//" or "/*") from the matched text.
+//
+// It's also important to note that this is certainly the *wrong* way to do
+// this. We should handle code the same way we do markup -- by offloading the
+// parsing duties to dedicated libraries.
+//
+// In practice, the best option is probably to use `tree-sitter` (see the
+// relevant branch). However, the dependency is requires `CGO_ENABLED` and
+// nearly triples the size of the compiled binary. So ... we'll see.
 var patterns = map[string]map[string][]*regexp.Regexp{
 	".c": {
 		"inline": []*regexp.Regexp{
@@ -123,6 +134,37 @@ var patterns = map[string]map[string][]*regexp.Regexp{
 			regexp.MustCompile(`(.*-\})`),
 		},
 	},
+	".jl": {
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)#(.+)`),
+		},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)^(^#=)`),
+			regexp.MustCompile(`(?ms)^(?:@doc )?(?:raw)?["']{3}(.+)`),
+		},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(^=#)`),
+			regexp.MustCompile(`(.*["']{3})`),
+		},
+	},
+	".ps1": {
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)#(.+)`),
+		},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)^(?:<#)(.+)`),
+		},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(.*#>)`),
+		},
+	},
+}
+
+func trimLeading(lang, line string) string {
+	if core.StringInSlice(lang, []string{".jl"}) {
+		return line
+	}
+	return strings.TrimLeft(line, " ")
 }
 
 func getSubMatch(r *regexp.Regexp, s string) string {
@@ -191,7 +233,7 @@ func getComments(content, ext string) []Comment {
 				block.Reset()
 				inBlock = false
 			} else {
-				block.WriteString(strings.TrimLeft(line, " "))
+				block.WriteString(trimLeading(ext, line))
 			}
 		} else if match := doMatch(byLang["inline"], line); len(match) > 0 {
 			// We've found an inline comment.
