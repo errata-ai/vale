@@ -212,10 +212,7 @@ func callAdoc(f *core.File, text, exe string, attrs map[string]string) (string, 
 	}
 
 	adocArgs = append(adocArgs, parseAttributes(attrs)...)
-	adocArgs = append(adocArgs, []string{"--quiet",
-		"--safe-mode",
-		"secure",
-		"-"}...)
+	adocArgs = append(adocArgs, []string{"--safe-mode", "secure", "-"}...)
 
 	cmd := exec.Command(exe, adocArgs...)
 	cmd.Stdin = strings.NewReader(text)
