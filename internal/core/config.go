@@ -227,17 +227,6 @@ func GetPackages(src string) ([]string, error) {
 	return core.Key("Packages").Strings(","), nil
 }
 
-func GetStylesPath(src string) (string, error) {
-	uCfg, err := ini.Load(src)
-	if err != nil {
-		return "", err
-	}
-	fallback, _ := DefaultStylesPath()
-
-	core := uCfg.Section("")
-	return core.Key("StylesPath").MustString(fallback), nil
-}
-
 func pipeConfig(cfg *Config) ([]string, error) {
 	var sources []string
 

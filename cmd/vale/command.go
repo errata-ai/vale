@@ -91,19 +91,20 @@ func sync(_ []string, flags *core.CLIFlags) error {
 
 	// NOTE: sync should *only* run for a single config file. In practice, this
 	// means that we sync only using the local search process.
-	pkgs, err := core.GetPackages(cfg.RootINI)
+	rootINI := cfg.ConfigFiles[0]
+
+	pkgs, err := core.GetPackages(rootINI)
 	if err != nil {
 		return err
 	}
 
+	// The first entry is always the default `StylesPath`.
+	stylesPath := cfg.Paths[len(cfg.Paths)-1]
+
+	title := fmt.Sprintf("Syncing %d package(s) to '%s'", len(pkgs), stylesPath)
 	p, err := pterm.DefaultProgressbar.WithTotal(
-		len(pkgs)).WithTitle("Downloading packages").Start()
+		len(pkgs)).WithTitle(title).Start()
 
-	if err != nil {
-		return err
-	}
-
-	stylesPath, err := core.GetStylesPath(cfg.RootINI)
 	if err != nil {
 		return err
 	}
