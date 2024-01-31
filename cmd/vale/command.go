@@ -262,7 +262,7 @@ func printDirs(_ []string, _ *core.CLIFlags) error {
 	}
 
 	tableData := pterm.TableData{
-		{"Asset", "Location", "Found"},
+		{"Asset", "Default Location", "Found"},
 		{"StylesPath", styles, stylesFound},
 		{".vale.ini", cfg, configFound},
 		{"vale-native", nativeExe, nativeFound},
