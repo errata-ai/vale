@@ -317,11 +317,11 @@ func (f *File) QueryComments(check string) bool {
 		return true
 	}
 	if style, _, ok := strings.Cut(check, "."); ok {
-		if status, _ := f.Comments[style]; status {
+		if status := f.Comments[style]; status {
 			return true
 		}
 	}
-	if status, _ := f.Comments[check]; status {
+	if status := f.Comments[check]; status {
 		return true
 	}
 	return false
