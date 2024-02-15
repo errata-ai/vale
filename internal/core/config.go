@@ -30,6 +30,9 @@ var (
 	// directory. See `cmd/vale/sync.go`.
 	ConfigDir = "config"
 
+	// PipeDir is the default location for Vale's configuration pipeline.
+	PipeDir = ".vale-config"
+
 	VocabDir  = filepath.Join(ConfigDir, "vocabularies")
 	DictDir   = filepath.Join(ConfigDir, "dictionaries")
 	TmplDir   = filepath.Join(ConfigDir, "templates")

@@ -16,12 +16,22 @@ import (
 var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library.json"
 
 func initPath(cfg *core.Config) error {
-	if !core.IsDir(cfg.StylesPath) {
+	// The first entry is always the default `StylesPath`.
+	stylesPath := cfg.Paths[len(cfg.Paths)-1]
+
+	if !core.IsDir(stylesPath) {
 		if err := os.MkdirAll(cfg.StylesPath, os.ModePerm); err != nil {
 			e := fmt.Errorf("unable to initialize StylesPath (value = '%s')", cfg.StylesPath)
 			return core.NewE100("initPath", e)
 		}
 	}
+
+	// Remove any existing .vale-config directory.
+	err := os.RemoveAll(filepath.Join(stylesPath, core.PipeDir))
+	if err != nil {
+		return core.NewE100("initPath", err)
+	}
+
 	return nil
 }
 
@@ -97,7 +107,7 @@ func download(name, url, styles string, index int) error {
 func installPkg(dir, name, styles string, index int) error {
 	root := filepath.Join(dir, name)
 	path := filepath.Join(root, "styles")
-	pipe := filepath.Join(styles, ".vale-config")
+	pipe := filepath.Join(styles, core.PipeDir)
 	cfg := filepath.Join(root, ".vale.ini")
 
 	if !core.IsDir(path) && !core.FileExists(cfg) {
