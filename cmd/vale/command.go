@@ -31,6 +31,7 @@ var commandInfo = map[string]string{
 	"ls-config":  "Print the current configuration to stdout.",
 	"ls-metrics": "Print the given file's internal metrics to stdout.",
 	"ls-dirs":    "Print the default configuration directories to stdout.",
+	"ls-vars":    "Print the supported enviroment variables to stdout.",
 	"sync":       "Download and install external configuration sources.",
 	"fix":        "Attempt to automatically fix the given alert.",
 }
@@ -40,6 +41,7 @@ var Actions = map[string]func(args []string, flags *core.CLIFlags) error{
 	"ls-config":  printConfig,
 	"ls-metrics": printMetrics,
 	"ls-dirs":    printDirs,
+	"ls-vars":    printVars,
 	"sync":       sync,
 
 	// private
@@ -237,6 +239,18 @@ func runRule(args []string, _ *core.CLIFlags) error {
 	return nil
 }
 
+func printVars(_ []string, _ *core.CLIFlags) error {
+	tableData := pterm.TableData{
+		{"Variable", "Description"},
+	}
+
+	for v, info := range core.ConfigVars {
+		tableData = append(tableData, []string{pterm.Gray(v), info})
+	}
+
+	return pterm.DefaultTable.WithHasHeader().WithData(tableData).Render()
+}
+
 func printDirs(_ []string, _ *core.CLIFlags) error {
 	styles, _ := core.DefaultStylesPath()
 
@@ -263,9 +277,9 @@ func printDirs(_ []string, _ *core.CLIFlags) error {
 
 	tableData := pterm.TableData{
 		{"Asset", "Default Location", "Found"},
-		{"StylesPath", styles, stylesFound},
-		{".vale.ini", cfg, configFound},
-		{"vale-native", nativeExe, nativeFound},
+		{pterm.Gray("StylesPath"), styles, stylesFound},
+		{pterm.Gray(".vale.ini"), cfg, configFound},
+		{pterm.Gray("vale-native"), nativeExe, nativeFound},
 	}
 
 	return pterm.DefaultTable.WithHasHeader().WithData(tableData).Render()

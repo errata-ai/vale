@@ -12,6 +12,7 @@ import (
 	"github.com/adrg/xdg"
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/errata-ai/ini"
+	"github.com/pterm/pterm"
 
 	"github.com/errata-ai/vale/v3/internal/glob"
 )
@@ -42,6 +43,12 @@ var (
 // ConfigDirs is a list of all directories that contain user-defined, non-style
 // configuration files.
 var ConfigDirs = []string{VocabDir, DictDir, TmplDir, IgnoreDir}
+
+// ConfigVars is a list of all supported environment variables.
+var ConfigVars = map[string]string{
+	"VALE_CONFIG_PATH": fmt.Sprintf("Override the default search process by specifying a %s file.", pterm.Gray(".vale.ini")),
+	"VALE_STYLES_PATH": fmt.Sprintf("Specify the location of the default %s.", pterm.Gray("StylesPath")),
+}
 
 // ConfigNames is a list of all possible configuration file names.
 //
@@ -81,10 +88,15 @@ func DefaultConfig() (string, error) {
 // NOTE: the default styles directory is only used if neither the
 // project-specific nor the global configuration file specify a `StylesPath`.
 func DefaultStylesPath() (string, error) {
+	if fromEnv, hasEnv := os.LookupEnv("VALE_STYLES_PATH"); hasEnv {
+		return fromEnv, nil
+	}
+
 	styles, err := xdg.DataFile("vale/styles/config.yml")
 	if err != nil {
 		return "", fmt.Errorf("failed to find default styles: %w", err)
 	}
+
 	return filepath.Dir(styles), nil
 }
 
