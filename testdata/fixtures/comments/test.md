@@ -6,7 +6,6 @@ This is some text ACT test
 
 <!-- vale on -->
 
-
 <!-- vale vale.Redundancy = NO -->
 
 This is some text ACT test

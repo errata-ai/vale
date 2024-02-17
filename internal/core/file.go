@@ -16,9 +16,7 @@ import (
 	"github.com/errata-ai/vale/v3/internal/nlp"
 )
 
-var commentControlRE = regexp.MustCompile(`^vale (.+\..+|[^.]+) = (YES|NO|on|off)$`)
-
-var commentStyleRE = regexp.MustCompile(`^vale styles? = (.*)$`)
+var commentControlRE = regexp.MustCompile(`^vale (.+\..+) = (YES|NO)$`)
 
 // A File represents a linted text file.
 type File struct {
@@ -298,33 +296,19 @@ func (f *File) UpdateComments(comment string) {
 	} else if commentControlRE.MatchString(comment) {
 		check := commentControlRE.FindStringSubmatch(comment)
 		if len(check) == 3 {
-			f.Comments[check[1]] = (check[2] == "NO" || check[2] == "off")
-		}
-	} else if commentStyleRE.MatchString(comment) {
-		for _, style := range f.BaseStyles {
-			f.Comments[style] = true
-		}
-		check := commentStyleRE.FindStringSubmatch(comment)
-		for _, style := range strings.Split(check[1], ", ") {
-			f.Comments[style] = false
+			f.Comments[check[1]] = check[2] == "NO"
 		}
 	}
 }
 
 // QueryComments checks if there has been an in-text comment for this check.
 func (f *File) QueryComments(check string) bool {
-	if f.Comments["off"] {
-		return true
-	}
-	if style, _, ok := strings.Cut(check, "."); ok {
-		if status := f.Comments[style]; status {
-			return true
+	if !f.Comments["off"] {
+		if status, ok := f.Comments[check]; ok {
+			return status
 		}
 	}
-	if status := f.Comments[check]; status {
-		return true
-	}
-	return false
+	return f.Comments["off"]
 }
 
 // ResetComments resets the state of all checks back to active.
