@@ -241,15 +241,15 @@ func runRule(args []string, _ *core.CLIFlags) error {
 
 func printVars(_ []string, _ *core.CLIFlags) error {
 	tableData := pterm.TableData{
-		{"Variable", "Description", "Set"},
+		{"Variable", "Description", "Value"},
 	}
 
-	for v, info := range core.ConfigVars {
-		found := pterm.FgGreen.Sprint("✓")
-		if _, ok := os.LookupEnv(v); !ok {
-			found = pterm.FgRed.Sprint("✗")
+	for name, info := range core.ConfigVars {
+		found := pterm.FgRed.Sprint("✗")
+		if value, ok := os.LookupEnv(name); ok {
+			found = value
 		}
-		tableData = append(tableData, []string{pterm.Gray(v), info, found})
+		tableData = append(tableData, []string{pterm.Gray(name), info, found})
 	}
 
 	return pterm.DefaultTable.WithHasHeader().WithData(tableData).Render()
