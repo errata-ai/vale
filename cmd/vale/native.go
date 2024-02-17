@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/adrg/xdg"
 	"github.com/pterm/pterm"
@@ -27,7 +28,7 @@ var supportedBrowsers = []string{
 }
 
 var extensionByBrowser = map[string]string{
-	"chrome": "chrome-extension://gicakheakmadhhfbpikggnapkabikmne/",
+	"chrome": "chrome-extension://kfmjcegeklidlnjoechfggipjjjahedj/",
 }
 
 var (
@@ -219,7 +220,7 @@ func installHost(manifestJSON []byte, manifestFile, browser string) error {
 	}
 }
 
-func installNativeHost(args []string, _ *core.CLIFlags) error {
+func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 	if len(args) != 1 {
 		return core.NewE100("host-install", errMissingBrowser)
 	}
@@ -283,11 +284,17 @@ func installNativeHost(args []string, _ *core.CLIFlags) error {
 	if !found {
 		return core.NewE100("host-install", errMissingExt)
 	}
+	allowed := []string{extension}
+
+	devID := fmt.Sprintf("VALE_DEV_%s_ID", strings.ToUpper(browser))
+	if id, set := os.LookupEnv(devID); set {
+		allowed = append(allowed, id)
+	}
 
 	if browser == "firefox" {
-		manifestData.AllowedExtensions = []string{extension}
+		manifestData.AllowedExtensions = allowed
 	} else {
-		manifestData.AllowedOrigins = []string{extension}
+		manifestData.AllowedOrigins = allowed
 	}
 
 	manifestJSON, err := json.MarshalIndent(manifestData, "", "  ")
