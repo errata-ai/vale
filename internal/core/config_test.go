@@ -13,16 +13,13 @@ func TestInitCfg(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	path := cfg.StylesPath()
 
 	// In v3.0, these should have defaults.
-	if cfg.StylesPath == "" {
+	if path == "" {
 		t.Fatal("StylesPath is empty")
-	} else if len(cfg.Paths) == 0 {
-		t.Fatal("Paths are empty")
-	}
-
-	if !IsDir(cfg.StylesPath) {
-		t.Fatalf("%s is not a directory", cfg.StylesPath)
+	} else if !IsDir(path) {
+		t.Fatalf("%s is not a directory", path)
 	}
 }
 
@@ -43,8 +40,7 @@ func TestFindAsset(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	cfg.StylesPath = filepath.Join(testData, "styles")
-	cfg.Paths = append(cfg.Paths, cfg.StylesPath)
+	cfg.AddStylesPath(filepath.Join(testData, "styles"))
 
 	found := FindAsset(cfg, "line.tmpl")
 	if found == "" {
@@ -99,10 +95,9 @@ func TestFallbackToDefault(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	local := filepath.Join(testData, "styles")
 
-	cfg.StylesPath = local
-	cfg.Paths = append(cfg.Paths, local)
+	local := filepath.Join(testData, "styles")
+	cfg.AddStylesPath(local)
 
 	expected, err := DefaultStylesPath()
 	if err != nil {

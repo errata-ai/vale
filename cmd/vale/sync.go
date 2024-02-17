@@ -17,11 +17,11 @@ var library = "https://raw.githubusercontent.com/errata-ai/styles/master/library
 
 func initPath(cfg *core.Config) error {
 	// The first entry is always the default `StylesPath`.
-	stylesPath := cfg.Paths[len(cfg.Paths)-1]
+	stylesPath := cfg.StylesPath()
 
 	if !core.IsDir(stylesPath) {
-		if err := os.MkdirAll(cfg.StylesPath, os.ModePerm); err != nil {
-			e := fmt.Errorf("unable to initialize StylesPath (value = '%s')", cfg.StylesPath)
+		if err := os.MkdirAll(cfg.StylesPath(), os.ModePerm); err != nil {
+			e := fmt.Errorf("unable to initialize StylesPath (value = '%s')", cfg.StylesPath())
 			return core.NewE100("initPath", e)
 		}
 	}

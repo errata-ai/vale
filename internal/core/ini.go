@@ -41,7 +41,7 @@ func mergeValues(shadows []string) []string {
 
 func loadVocab(root string, cfg *Config) error {
 	target := ""
-	for _, p := range cfg.Paths {
+	for _, p := range cfg.SearchPaths() {
 		opt := filepath.Join(p, VocabDir, root)
 		if IsDir(opt) {
 			target = opt
@@ -145,6 +145,8 @@ var globalOpts = map[string]func(*ini.Section, *Config){
 
 var coreOpts = map[string]func(*ini.Section, *Config) error{
 	"StylesPath": func(sec *ini.Section, cfg *Config) error {
+		// NOTE: The order of these paths is important. They represent the load
+		// order of the configuration files -- not `cfg.Paths`.
 		paths := sec.Key("StylesPath").ValueWithShadows()
 		files := cfg.ConfigFiles
 		if cfg.Flags.Local && len(files) == 2 {
@@ -153,26 +155,26 @@ var coreOpts = map[string]func(*ini.Section, *Config) error{
 			basePath := determinePath(files[0], filepath.FromSlash(paths[0]))
 			mockPath := determinePath(files[1], filepath.FromSlash(paths[0]))
 			if len(paths) == 2 {
-				basePath = determinePath(files[0], filepath.FromSlash(paths[1]))
-				mockPath = determinePath(files[1], filepath.FromSlash(paths[0]))
+				basePath = determinePath(files[0], filepath.FromSlash(paths[0]))
+				mockPath = determinePath(files[1], filepath.FromSlash(paths[1]))
 			}
-			cfg.Paths = append(cfg.Paths, []string{basePath, mockPath}...)
-			cfg.StylesPath = basePath
+			cfg.AddStylesPath(basePath)
+			cfg.AddStylesPath(mockPath)
 		} else if len(paths) > 0 {
 			entry := paths[len(paths)-1]
 			candidate := filepath.FromSlash(entry)
 
 			cfgFile := cfg.ConfigFiles[len(cfg.ConfigFiles)-1]
-			cfg.StylesPath = determinePath(cfgFile, candidate)
+			path := determinePath(cfgFile, candidate)
 
-			if !FileExists(cfg.StylesPath) {
+			if !FileExists(path) {
 				return NewE201FromTarget(
-					fmt.Sprintf("The path '%s' does not exist.", cfg.StylesPath),
+					fmt.Sprintf("The path '%s' does not exist.", path),
 					entry,
 					cfg.Flags.Path)
 			}
 
-			cfg.Paths = append(cfg.Paths, cfg.StylesPath)
+			cfg.AddStylesPath(path)
 		}
 		return nil
 	},
@@ -196,10 +198,6 @@ var coreOpts = map[string]func(*ini.Section, *Config) error{
 	},
 	"WordTemplate": func(sec *ini.Section, cfg *Config) error { //nolint:unparam
 		cfg.WordTemplate = sec.Key("WordTemplate").String()
-		return nil
-	},
-	"DictionaryPath": func(sec *ini.Section, cfg *Config) error { //nolint:unparam
-		cfg.DictionaryPath = sec.Key("DictionaryPath").String()
 		return nil
 	},
 	"SkippedScopes": func(sec *ini.Section, cfg *Config) error { //nolint:unparam

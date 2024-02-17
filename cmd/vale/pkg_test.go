@@ -16,16 +16,14 @@ func mockPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	cfg.StylesPath = os.TempDir()
-	cfg.Paths = []string{cfg.StylesPath}
+	cfg.AddStylesPath(os.TempDir())
 
 	err = initPath(cfg)
 	if err != nil {
 		return "", err
 	}
 
-	return cfg.StylesPath, nil
+	return cfg.StylesPath(), nil
 }
 
 func TestNoPkgFound(t *testing.T) {

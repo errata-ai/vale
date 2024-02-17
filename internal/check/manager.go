@@ -59,7 +59,7 @@ func NewManager(config *core.Config) (*Manager, error) {
 			// If this rule isn't part of an already-loaded style, we load it
 			// individually.
 			fName := parts[1] + ".yml"
-			for _, p := range mgr.Config.Paths {
+			for _, p := range mgr.Config.SearchPaths() {
 				path = filepath.Join(p, parts[0], fName)
 				if !core.FileExists(path) {
 					continue
@@ -239,7 +239,7 @@ func (mgr *Manager) loadStyles(styles []string) error {
 	var found []string
 	var need []string
 
-	for _, baseDir := range mgr.Config.Paths {
+	for _, baseDir := range mgr.Config.SearchPaths() {
 		for _, style := range styles {
 			p := filepath.Join(baseDir, style)
 			if mgr.hasStyle(style) {

@@ -90,12 +90,12 @@ func install(args []string, flags *core.CLIFlags) error {
 		return err
 	}
 
-	style := filepath.Join(cfg.StylesPath, args[0])
+	style := filepath.Join(cfg.StylesPath(), args[0])
 	if core.IsDir(style) {
 		os.RemoveAll(style) // Remove existing version
 	}
 
-	err = fetch(args[1], cfg.StylesPath)
+	err = fetch(args[1], cfg.StylesPath())
 	if err != nil {
 		return sendResponse(
 			fmt.Sprintf("Failed to install '%s'", args[1]),

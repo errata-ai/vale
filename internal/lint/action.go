@@ -61,7 +61,7 @@ func suggest(alert core.Alert, cfg *core.Config) ([]string, error) {
 	var suggestions = []string{}
 
 	name := strings.Split(alert.Check, ".")
-	path := filepath.Join(cfg.StylesPath, name[0], name[1]+".yml")
+	path := filepath.Join(cfg.StylesPath(), name[0], name[1]+".yml")
 
 	mgr, err := check.NewManager(cfg)
 	if err != nil {

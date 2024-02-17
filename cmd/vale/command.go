@@ -99,9 +99,7 @@ func sync(_ []string, flags *core.CLIFlags) error {
 	if err != nil {
 		return err
 	}
-
-	// The first entry is always the default `StylesPath`.
-	stylesPath := cfg.Paths[len(cfg.Paths)-1]
+	stylesPath := cfg.StylesPath()
 
 	title := fmt.Sprintf("Syncing %d package(s) to '%s'", len(pkgs), stylesPath)
 	p, err := pterm.DefaultProgressbar.WithTotal(

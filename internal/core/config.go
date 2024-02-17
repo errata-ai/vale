@@ -144,21 +144,18 @@ type Config struct {
 	SChecks        map[string]map[string]bool // Syntax-specific checks
 	SkippedScopes  []string                   // A list of HTML blocks to ignore
 	Stylesheets    map[string]string          // XSLT stylesheet
-	StylesPath     string                     // Directory with Rule.yml files
 	TokenIgnores   map[string][]string        // A list of tokens to ignore
 	WordTemplate   string                     // The template used in YAML -> regexp list conversions
 	RootINI        string                     // the path to the project's .vale.ini file
+	Paths          []string                   // A list of paths to search for styles
+	ConfigFiles    []string                   // A list of configuration files to load
 
 	AcceptedTokens []string `json:"-"` // Project-specific vocabulary (okay)
 	RejectedTokens []string `json:"-"` // Project-specific vocabulary (avoid)
 
-	DictionaryPath string // Location to search for dictionaries.
-
 	FallbackPath string               `json:"-"`
 	SecToPat     map[string]glob.Glob `json:"-"`
 	Styles       []string             `json:"-"`
-	Paths        []string             `json:"-"`
-	ConfigFiles  []string             `json:"-"`
 
 	NLPEndpoint string // An external API to call for NLP-related work.
 
@@ -186,16 +183,48 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 	cfg.Stylesheets = make(map[string]string)
 	cfg.TokenIgnores = make(map[string][]string)
 	cfg.FormatToLang = make(map[string]string)
-	cfg.Paths = []string{""}
+	cfg.Paths = []string{}
 	cfg.ConfigFiles = []string{}
 
 	found, _ := DefaultStylesPath()
 	if !flags.IgnoreGlobal && IsDir(found) {
-		cfg.StylesPath = found
-		cfg.Paths = []string{found}
+		cfg.AddStylesPath(found)
 	}
 
 	return &cfg, nil
+}
+
+// AddConfigFile adds a new configuration file to the current list.
+func (c *Config) addConfigFile(name string) {
+	if !StringInSlice(name, c.ConfigFiles) {
+		c.ConfigFiles = append(c.ConfigFiles, name)
+	}
+}
+
+// AddStylesPath adds a new path to the current list.
+func (c *Config) AddStylesPath(path string) {
+	if !StringInSlice(path, c.Paths) && path != "" {
+		c.Paths = append(c.Paths, path)
+	}
+}
+
+// GetStylesPath returns the last path in the list.
+//
+// This represents the user's project-specific styles directory -- i.e., the
+// last one that was added.
+func (c *Config) StylesPath() string {
+	if len(c.Paths) > 0 {
+		return c.Paths[len(c.Paths)-1]
+	}
+	return ""
+}
+
+func (c *Config) SearchPaths() []string {
+	if len(c.Paths) == 0 {
+		// This represents the 'no value set' case.
+		return []string{""}
+	}
+	return c.Paths
 }
 
 // AddWordListFile adds vocab terms from a provided file.
@@ -224,7 +253,6 @@ func (c *Config) addWordList(r io.Reader, accept bool) error {
 }
 
 func (c *Config) String() string {
-	c.StylesPath = filepath.ToSlash(c.StylesPath)
 	b, _ := json.MarshalIndent(c, "", "  ")
 	return string(b)
 }
@@ -245,7 +273,7 @@ func GetPackages(src string) ([]string, error) {
 func pipeConfig(cfg *Config) ([]string, error) {
 	var sources []string
 
-	pipeline := filepath.Join(cfg.StylesPath, ".vale-config")
+	pipeline := filepath.Join(cfg.StylesPath(), ".vale-config")
 	if IsDir(pipeline) && len(cfg.Flags.Sources) == 0 {
 		configs, err := os.ReadDir(pipeline)
 		if err != nil {

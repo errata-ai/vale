@@ -113,7 +113,7 @@ func NewSpelling(cfg *core.Config, generic baseCheck, path string) (Spelling, er
 		//
 		// We **can't** add vocabularies here because `AddWordListFile`
 		// doesn't support regex.
-		ignored, readErr := core.IgnoreFiles(cfg.StylesPath)
+		ignored, readErr := core.IgnoreFiles(cfg.StylesPath())
 		if readErr != nil {
 			return rule, readErr
 		}
@@ -132,9 +132,9 @@ func NewSpelling(cfg *core.Config, generic baseCheck, path string) (Spelling, er
 				// 1. An absolute path (similar to $DICPATH)
 				fullPath,
 				// 2. Relative to StylesPath
-				filepath.Join(cfg.StylesPath, ignore),
+				filepath.Join(cfg.StylesPath(), ignore),
 				// 3. Relative to config/ignore
-				filepath.Join(cfg.StylesPath, core.IgnoreDir, ignore),
+				filepath.Join(cfg.StylesPath(), core.IgnoreDir, ignore),
 			}
 
 			for _, p := range paths {
@@ -224,7 +224,7 @@ func makeSpeller(s *Spelling, cfg *core.Config, rulePath string) (*spell.Checker
 			// 1. An absolute path (similar to $DICPATH)
 			s.Dicpath,
 			// 2. Relative to StylesPath
-			filepath.Join(cfg.StylesPath, s.Dicpath),
+			filepath.Join(cfg.StylesPath(), s.Dicpath),
 			// 4. Relative to cwd
 			filepath.Join(cwd, s.Dicpath),
 		}
@@ -253,7 +253,7 @@ func makeSpeller(s *Spelling, cfg *core.Config, rulePath string) (*spell.Checker
 		// NOTE: New in v3.0 -- if we aren't given a `dicpath` or specific
 		// dictionaries, we use the default one.
 		options = append(options, spell.WithDefaultPath(
-			filepath.Join(cfg.StylesPath, core.DictDir)))
+			filepath.Join(cfg.StylesPath(), core.DictDir)))
 	}
 
 	return spell.NewChecker(options...)

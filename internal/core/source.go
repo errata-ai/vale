@@ -102,14 +102,14 @@ func FindAsset(cfg *Config, path string) string {
 		return ""
 	}
 
-	for _, p := range cfg.Paths {
+	for _, p := range cfg.SearchPaths() {
 		inPath := filepath.Join(p, path)
 		if FileExists(inPath) {
 			return inPath
 		}
 	}
 
-	if p := getConfigAsset(path, cfg.Paths); p != "" {
+	if p := getConfigAsset(path, cfg.SearchPaths()); p != "" {
 		return p
 	}
 
