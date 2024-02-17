@@ -175,21 +175,21 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 		if err != nil {
 			return nil, NewE100("invalid --config", err)
 		}
-		cfg.ConfigFiles = append(cfg.ConfigFiles, cfg.Flags.Path)
+		cfg.AddConfigFile(cfg.Flags.Path)
 	} else if fromEnv, hasEnv := os.LookupEnv("VALE_CONFIG_PATH"); hasEnv {
 		// We've been given a value through `VALE_CONFIG_PATH`.
 		err = uCfg.Append(fromEnv)
 		if err != nil {
 			return nil, NewE100("invalid VALE_CONFIG_PATH", err)
 		}
-		cfg.ConfigFiles = append(cfg.ConfigFiles, fromEnv)
+		cfg.AddConfigFile(fromEnv)
 	} else if base != "" {
 		// We're using a config file found using a local search process.
 		err = uCfg.Append(base)
 		if err != nil {
 			return nil, NewE100(".vale.ini not found", err)
 		}
-		cfg.ConfigFiles = append(cfg.ConfigFiles, base)
+		cfg.AddConfigFile(base)
 	}
 
 	if StringInSlice(cfg.Flags.AlertLevel, AlertLevels) {
@@ -213,7 +213,7 @@ func loadINI(cfg *Config, dry bool) (*ini.File, error) {
 			return nil, NewE100("default/ini", err)
 		}
 		cfg.Flags.Local = true
-		cfg.ConfigFiles = append(cfg.ConfigFiles, defaultCfg)
+		cfg.AddConfigFile(defaultCfg)
 	} else if base == "" && len(cfg.ConfigFiles) == 0 {
 		return nil, NewE100(".vale.ini not found", errors.New("no config file found"))
 	}

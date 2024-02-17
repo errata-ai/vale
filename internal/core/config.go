@@ -195,7 +195,7 @@ func NewConfig(flags *CLIFlags) (*Config, error) {
 }
 
 // AddConfigFile adds a new configuration file to the current list.
-func (c *Config) addConfigFile(name string) {
+func (c *Config) AddConfigFile(name string) {
 	if !StringInSlice(name, c.ConfigFiles) {
 		c.ConfigFiles = append(c.ConfigFiles, name)
 	}
