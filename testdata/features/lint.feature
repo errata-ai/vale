@@ -22,6 +22,15 @@ Feature: Lint
             test.jl:47:3:vale.Annotations:'XXX' left in text
             """
 
+    Scenario: Lint a proto file
+        When I lint "test.proto"
+        Then the output should contain exactly:
+            """
+            test.proto:13:6:vale.Annotations:'NOTE' left in text
+            test.proto:22:4:vale.Annotations:'XXX' left in text
+            test.proto:31:1:vale.Annotations:'NOTE' left in text
+            """
+
     Scenario: Lint an Org file
         When I lint "test.org"
         Then the output should contain exactly:
