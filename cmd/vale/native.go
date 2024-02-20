@@ -67,19 +67,14 @@ func getManifestDirs() (map[string]string, error) {
 		return nil, err
 	}
 
-	config, err := os.UserConfigDir()
-	if err != nil {
-		return nil, err
-	}
-
 	manifests := map[string]string{}
 	switch runtime.GOOS {
 	case "linux":
 		manifests = map[string]string{
-			"chrome":   filepath.Join(home, config, "google-chrome", "NativeMessagingHosts"),
-			"firefox":  filepath.Join(home, ".mozilla", "native-messaging-hosts"),
-			"opera":    filepath.Join(home, config, "google-chrome", "NativeMessagingHosts"),
-			"chromium": filepath.Join(home, config, "chromium", "NativeMessagingHosts"),
+			"chrome":   filepath.Join(home, ".config/google-chrome/NativeMessagingHosts"),
+			"firefox":  filepath.Join(home, ".mozilla/native-messaging-hosts"),
+			"opera":    filepath.Join(home, ".config/google-chrome/NativeMessagingHosts"),
+			"chromium": filepath.Join(home, ".config/chromium/NativeMessagingHosts"),
 		}
 	case "darwin":
 		manifests = map[string]string{
