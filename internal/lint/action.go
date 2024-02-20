@@ -102,27 +102,58 @@ func convert(alert core.Alert, _ *core.Config) ([]string, error) {
 func edit(alert core.Alert, _ *core.Config) ([]string, error) {
 	match := alert.Match
 
+	if len(alert.Action.Params) == 0 {
+		return []string{}, errors.New("no parameters")
+	}
+
 	switch name := alert.Action.Params[0]; name {
 	case "regex":
+		if len(alert.Action.Params) != 3 {
+			return []string{}, errors.New("invalid number of parameters")
+		}
+
 		regex, err := regexp.Compile(alert.Action.Params[1])
 		if err != nil {
 			return []string{}, err
 		}
+
 		match = regex.ReplaceAllString(match, alert.Action.Params[2])
 	case "trim_right":
+		if len(alert.Action.Params) != 2 {
+			return []string{}, errors.New("invalid number of parameters")
+		}
 		match = strings.TrimRight(match, alert.Action.Params[1])
 	case "trim_left":
+		if len(alert.Action.Params) != 2 {
+			return []string{}, errors.New("invalid number of parameters")
+		}
 		match = strings.TrimLeft(match, alert.Action.Params[1])
 	case "trim":
+		if len(alert.Action.Params) != 2 {
+			return []string{}, errors.New("invalid number of parameters")
+		}
 		match = strings.Trim(match, alert.Action.Params[1])
 	case "truncate":
+		if len(alert.Action.Params) != 2 {
+			return []string{}, errors.New("invalid number of parameters")
+		}
 		match = strings.Split(match, alert.Action.Params[1])[0]
 	case "split":
+		if len(alert.Action.Params) != 3 {
+			return []string{}, errors.New("invalid number of parameters")
+		}
+
 		index, err := strconv.Atoi(alert.Action.Params[2])
 		if err != nil {
 			return []string{}, err
 		}
-		match = strings.Split(match, alert.Action.Params[1])[index]
+
+		parts := strings.Split(match, alert.Action.Params[1])
+		if index >= len(parts) {
+			return []string{}, errors.New("index out of range")
+		}
+
+		match = parts[index]
 	}
 
 	return []string{strings.TrimSpace(match)}, nil
