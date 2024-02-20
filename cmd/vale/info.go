@@ -69,7 +69,8 @@ var hidden = []string{
 	"verify",
 	"transform",
 	"ls-path",
-	"setup-host",
+	"host-install",
+	"host-uninstall",
 }
 
 // PrintIntro shows basic usage / getting started info.
