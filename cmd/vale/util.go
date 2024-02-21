@@ -8,6 +8,10 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/pterm/pterm"
+
+	"github.com/errata-ai/vale/v3/internal/core"
 )
 
 // Response is returned after an action.
@@ -15,6 +19,11 @@ type Response struct {
 	Msg     string
 	Error   string
 	Success bool
+}
+
+func progressError(context string, err error, p *pterm.ProgressbarPrinter) error {
+	_, _ = p.Stop()
+	return core.NewE100(context, err)
 }
 
 func pluralize(s string, n int) string {

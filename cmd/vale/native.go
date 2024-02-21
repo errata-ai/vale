@@ -119,15 +119,15 @@ func getLocation(browser string) (map[string]string, error) {
 	}, nil
 }
 
-func writeNativeConfig() error {
+func writeNativeConfig() (string, error) {
 	cfgFile, err := getNativeConfig()
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	exe, err := exec.LookPath("vale")
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	cfg := map[string]string{
@@ -136,10 +136,10 @@ func writeNativeConfig() error {
 
 	jsonCfg, err := json.Marshal(cfg)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return os.WriteFile(cfgFile, jsonCfg, os.ModePerm)
+	return cfgFile, os.WriteFile(cfgFile, jsonCfg, os.ModePerm)
 }
 
 func installNativeHostUnix(manifestData []byte, manifestFile string) error {
@@ -229,24 +229,21 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(steps)).WithTitle("Installing host").Start()
 
 	p.UpdateTitle(steps[0])
-	err := writeNativeConfig()
+	cfgFile, err := writeNativeConfig()
 	if err != nil {
-		p.Stop()
-		return core.NewE100("host-install", err)
+		return progressError("host-install", err, p)
 	}
-	pterm.Success.Println(steps[0])
+	pterm.Success.Println(fmt.Sprintf("wrote '%s'", cfgFile))
 	p.Increment()
 
 	locations, err := getLocation(browser)
 	if err != nil {
-		p.Stop()
-		return core.NewE100("host-install", err)
+		return progressError("host-install", err, p)
 	}
 
 	hostURL, err := hostDownloadURL()
 	if err != nil {
-		p.Stop()
-		return core.NewE100("host-install", err)
+		return progressError("host-install", err, p)
 	}
 	exeName := getExecName("vale-native")
 
@@ -256,8 +253,7 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 		if core.FileExists(fp) {
 			err = os.Remove(fp)
 			if err != nil {
-				p.Stop()
-				return core.NewE100("host-install", err)
+				return progressError("host-install", err, p)
 			}
 		}
 	}
@@ -265,10 +261,9 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 	p.UpdateTitle(steps[1])
 	err = fetch(hostURL, locations["appDir"])
 	if err != nil {
-		p.Stop()
-		return core.NewE100("host-install", err)
+		return progressError("host-install", err, p)
 	}
-	pterm.Success.Println(steps[1])
+	pterm.Success.Println(fmt.Sprintf("fetched '%s'", hostURL))
 	p.Increment()
 
 	manifestData := manifest{
@@ -282,8 +277,7 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 
 	extension, found := extensionByBrowser[browser]
 	if !found {
-		p.Stop()
-		return core.NewE100("host-install", errMissingExt)
+		return progressError("host-install", errMissingExt, p)
 	}
 	allowed := []string{extension}
 
@@ -300,17 +294,15 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 
 	manifestJSON, err := json.MarshalIndent(manifestData, "", "  ")
 	if err != nil {
-		p.Stop()
-		return core.NewE100("host-install", err)
+		return progressError("host-install", err, p)
 	}
 
 	p.UpdateTitle(steps[2])
 	err = installHost(manifestJSON, manifestFile, browser)
 	if err != nil {
-		p.Stop()
-		return core.NewE100("host-install", err)
+		return progressError("host-install", err, p)
 	}
-	pterm.Success.Println(steps[2])
+	pterm.Success.Println(fmt.Sprintf("installed '%s'", manifestFile))
 	p.Increment()
 
 	return nil
@@ -331,8 +323,7 @@ func uninstallNativeHost(args []string, _ *core.CLIFlags) error {
 
 	locations, err := getLocation(browser)
 	if err != nil {
-		p.Stop()
-		return core.NewE100("host-uninstall", err)
+		return progressError("host-uninstall", err, p)
 	}
 	p.UpdateTitle(steps[0])
 
@@ -342,8 +333,7 @@ func uninstallNativeHost(args []string, _ *core.CLIFlags) error {
 		if core.FileExists(fp) {
 			err = os.Remove(filepath.Join(locations["appDir"], file))
 			if err != nil {
-				p.Stop()
-				return core.NewE100("host-uninstall", err)
+				return progressError("host-uninstall", err, p)
 			}
 		}
 	}
@@ -356,15 +346,13 @@ func uninstallNativeHost(args []string, _ *core.CLIFlags) error {
 	if core.FileExists(manifestFile) {
 		err = os.Remove(manifestFile)
 		if err != nil {
-			p.Stop()
-			return core.NewE100("host-uninstall", err)
+			return progressError("host-uninstall", err, p)
 		}
 	}
 
 	err = unsetManifestRegistry(browser)
 	if err != nil {
-		p.Stop()
-		return core.NewE100("host-uninstall", err)
+		return progressError("host-uninstall", err, p)
 	}
 
 	pterm.Success.Println(steps[1])
