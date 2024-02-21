@@ -145,7 +145,7 @@ func writeNativeConfig() error {
 func installNativeHostUnix(manifestData []byte, manifestFile string) error {
 	err := os.WriteFile(manifestFile, manifestData, os.ModePerm)
 	if err != nil {
-		return core.NewE100("host-install", err)
+		return err
 	}
 	return nil
 }
@@ -153,25 +153,25 @@ func installNativeHostUnix(manifestData []byte, manifestFile string) error {
 func installNativeHostWindows(manifestData []byte, manifestFile, browser string) error {
 	cfg, err := getNativeConfig()
 	if err != nil {
-		return core.NewE100("host-install", err)
+		return err
 	}
 
 	manifestDir := filepath.Join(filepath.Dir(cfg), "manifest", browser)
 
 	err = os.MkdirAll(manifestDir, os.ModePerm)
 	if err != nil {
-		return core.NewE100("host-install", err)
+		return err
 	}
 	subdir := filepath.Join(manifestDir, manifestFile)
 
 	err = os.WriteFile(subdir, manifestData, os.ModePerm)
 	if err != nil {
-		return core.NewE100("host-install", err)
+		return err
 	}
 
 	err = setManifestRegistry(browser, subdir)
 	if err != nil {
-		return core.NewE100("host-install", err)
+		return err
 	}
 
 	return nil
@@ -211,7 +211,7 @@ func installHost(manifestJSON []byte, manifestFile, browser string) error {
 	case "windows":
 		return installNativeHostWindows(manifestJSON, manifestFile, browser)
 	default:
-		return core.NewE100("host-install", fmt.Errorf("unsupported OS: %s", runtime.GOOS))
+		return fmt.Errorf("unsupported OS: %s", runtime.GOOS)
 	}
 }
 
@@ -231,6 +231,7 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 	p.UpdateTitle(steps[0])
 	err := writeNativeConfig()
 	if err != nil {
+		p.Stop()
 		return core.NewE100("host-install", err)
 	}
 	pterm.Success.Println(steps[0])
@@ -238,11 +239,13 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 
 	locations, err := getLocation(browser)
 	if err != nil {
+		p.Stop()
 		return core.NewE100("host-install", err)
 	}
 
 	hostURL, err := hostDownloadURL()
 	if err != nil {
+		p.Stop()
 		return core.NewE100("host-install", err)
 	}
 	exeName := getExecName("vale-native")
@@ -253,6 +256,7 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 		if core.FileExists(fp) {
 			err = os.Remove(fp)
 			if err != nil {
+				p.Stop()
 				return core.NewE100("host-install", err)
 			}
 		}
@@ -261,6 +265,7 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 	p.UpdateTitle(steps[1])
 	err = fetch(hostURL, locations["appDir"])
 	if err != nil {
+		p.Stop()
 		return core.NewE100("host-install", err)
 	}
 	pterm.Success.Println(steps[1])
@@ -277,6 +282,7 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 
 	extension, found := extensionByBrowser[browser]
 	if !found {
+		p.Stop()
 		return core.NewE100("host-install", errMissingExt)
 	}
 	allowed := []string{extension}
@@ -294,12 +300,14 @@ func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
 
 	manifestJSON, err := json.MarshalIndent(manifestData, "", "  ")
 	if err != nil {
+		p.Stop()
 		return core.NewE100("host-install", err)
 	}
 
 	p.UpdateTitle(steps[2])
 	err = installHost(manifestJSON, manifestFile, browser)
 	if err != nil {
+		p.Stop()
 		return core.NewE100("host-install", err)
 	}
 	pterm.Success.Println(steps[2])
@@ -323,6 +331,7 @@ func uninstallNativeHost(args []string, _ *core.CLIFlags) error {
 
 	locations, err := getLocation(browser)
 	if err != nil {
+		p.Stop()
 		return core.NewE100("host-uninstall", err)
 	}
 	p.UpdateTitle(steps[0])
@@ -333,6 +342,7 @@ func uninstallNativeHost(args []string, _ *core.CLIFlags) error {
 		if core.FileExists(fp) {
 			err = os.Remove(filepath.Join(locations["appDir"], file))
 			if err != nil {
+				p.Stop()
 				return core.NewE100("host-uninstall", err)
 			}
 		}
@@ -346,12 +356,14 @@ func uninstallNativeHost(args []string, _ *core.CLIFlags) error {
 	if core.FileExists(manifestFile) {
 		err = os.Remove(manifestFile)
 		if err != nil {
+			p.Stop()
 			return core.NewE100("host-uninstall", err)
 		}
 	}
 
 	err = unsetManifestRegistry(browser)
 	if err != nil {
+		p.Stop()
 		return core.NewE100("host-uninstall", err)
 	}
 
