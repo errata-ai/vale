@@ -41,5 +41,5 @@ func init() {
 	pflag.BoolVar(&Flags.Sorted, "sort", false, "sort files by their name in output")
 	pflag.BoolVar(&Flags.Normalize, "normalize", false, "replace each path separator with a slash ('/')")
 	pflag.BoolVar(&Flags.Relative, "relative", false, "return relative paths")
-	pflag.BoolVar(&Flags.IgnoreGlobal, "no-global", false, "ignore global configuration")
+	pflag.BoolVar(&Flags.IgnoreGlobal, "no-global", false, "Don't load the global configuration.")
 }

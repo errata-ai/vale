@@ -59,7 +59,6 @@ var hidden = []string{
 	"sources",
 	"built",
 	"minAlertLevel",
-	"no-global",
 
 	// API stuff
 	"tag",
