@@ -105,6 +105,7 @@ var FormatByExtension = map[string][]string{
 	`\.(?:dita)$`:                                 {".dita", "markup"},
 	`\.(?:org)$`:                                  {".org", "markup"},
 	`\.(?:jl)$`:                                   {".jl", "code"},
+	`\.(?:proto)$`:                                {".c", "code"},
 }
 
 // FormatFromExt takes a file extension and returns its [normExt, format]

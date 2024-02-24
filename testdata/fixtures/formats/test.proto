@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package foo.bar.v1;
+
+import "google/api/annotations.proto";
+
+option java_package = "com.company.foo.bar.v1";
+option java_outer_classname = "ApiProtoXXX";
+
+
+// The foo service
+service FooService {
+  // NOTE: this is a RPC comment
+  rpc GetBar(GetBarRequest) returns (GetBarResponse) {
+    option (google.api.http) = {
+      get: "/v1/{name=bars/*}"
+    };
+    option (google.api.method_signature) = "name";
+  }
+}
+
+/* XXX: this is also a comment */
+message GetBarRequest {
+    // Note: Field comment inside a message.
+    string name = 1;
+}
+
+/*
+Comment.
+
+NOTE: I am a multilinek comment, so I span
+over multiple lines
+*/
+message GetBarResponse {
+    string todo = 1;
+}
+
+// The following should not get matched
+message XXX {
+
+}
