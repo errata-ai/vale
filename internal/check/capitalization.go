@@ -55,7 +55,11 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 	rule.exceptRe = re
 
 	// NOTE: This is OK since setting `Threshold` to 0 would mean that the rule
-	// would never trigger.
+	// would never trigger. In other words, we wouldn't want the default to be
+	// 0 because that would be equivalent to disabling the rule.
+	//
+	// Also, we chose a default of 0.8 because it matches the behavior of the
+	// original implementation (pre-threshold).
 	if rule.Threshold == 0 {
 		rule.Threshold = 0.8
 	}
