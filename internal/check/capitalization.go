@@ -60,7 +60,10 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 		rule.Threshold = 0.8
 	}
 
-	rule.Exceptions = append(rule.Exceptions, cfg.AcceptedTokens...)
+	if rule.Vocab {
+		rule.Exceptions = append(rule.Exceptions, cfg.AcceptedTokens...)
+	}
+
 	if rule.Match == "$title" {
 		var tc *strcase.TitleConverter
 		if rule.Style == "Chicago" {
