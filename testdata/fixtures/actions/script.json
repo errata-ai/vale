@@ -1,0 +1,19 @@
+{
+  "Action": {
+    "Name": "suggest",
+    "Params": [
+      "CamelToSnake.tengo"
+    ]
+  },
+  "Span": [
+    8,
+    13
+  ],
+  "Check": "Test.Test",
+  "Description": "",
+  "Link": "",
+  "Message": "'FooBar' should be in snake_case.",
+  "Severity": "error",
+  "Match": "FooBar",
+  "Line": 8
+}

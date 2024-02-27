@@ -64,10 +64,56 @@ var configNames = []string{
 	"_vale.ini",
 }
 
+// FindConfigAsset tries to locate a Vale-related resource by looking in the
+// user-defined StylesPath(s).
+func FindConfigAsset(cfg *Config, name, dir string) string {
+	return getConfigAsset(name, cfg.SearchPaths(), []string{dir})
+}
+
+// FindAsset tries to locate a Vale-related resource by looking in the
+// user-defined StylesPath.
+func FindAsset(cfg *Config, path string) string {
+	if path == "" {
+		return ""
+	}
+
+	for _, p := range cfg.SearchPaths() {
+		inPath := filepath.Join(p, path)
+		if FileExists(inPath) {
+			return inPath
+		}
+	}
+
+	if p := getConfigAsset(path, cfg.SearchPaths(), ConfigDirs); p != "" {
+		return p
+	}
+
+	p := determinePath(cfg.Flags.Path, path)
+	if FileExists(p) {
+		return p
+	}
+
+	return ""
+}
+
 // IgnoreFiles returns a list of all user-defined ignore files.
 func IgnoreFiles(stylesPath string) ([]string, error) {
 	ignore := filepath.Join(stylesPath, IgnoreDir)
 	return doublestar.FilepathGlob(filepath.Join(ignore, "**", "*.txt"))
+}
+
+// getConfigAsset returns the path to a given asset if it exists.
+// Otherwise, it returns an empty string.
+func getConfigAsset(target string, paths, dirs []string) string {
+	for _, p := range paths {
+		for _, dir := range dirs {
+			path := filepath.Join(p, dir, target)
+			if FileExists(path) {
+				return path
+			}
+		}
+	}
+	return ""
 }
 
 // DefaultConfig returns the path to the default configuration file.

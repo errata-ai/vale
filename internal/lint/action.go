@@ -3,11 +3,14 @@ package lint
 import (
 	"encoding/json"
 	"errors"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 
+	"github.com/d5/tengo/v2"
+	"github.com/d5/tengo/v2/stdlib"
 	"github.com/jdkato/twine/strcase"
 
 	"github.com/errata-ai/vale/v3/internal/check"
@@ -58,6 +61,58 @@ func processAlert(alert core.Alert, cfg *core.Config) ([]string, error) {
 }
 
 func suggest(alert core.Alert, cfg *core.Config) ([]string, error) {
+	if len(alert.Action.Params) == 0 {
+		return []string{}, errors.New("no parameters")
+	}
+	name := alert.Action.Params[0]
+
+	switch name {
+	case "spellings":
+		return spelling(alert, cfg)
+	default:
+		return script(name, alert, cfg)
+	}
+}
+
+func script(name string, alert core.Alert, cfg *core.Config) ([]string, error) {
+	var suggestions = []string{}
+
+	file := core.FindConfigAsset(cfg, name, core.ActionDir)
+	if file == "" {
+		return suggestions, errors.New("script not found")
+	}
+
+	source, err := os.ReadFile(file)
+	if err != nil {
+		return suggestions, err
+	}
+
+	script := tengo.NewScript(source)
+	script.SetImports(stdlib.GetModuleMap("text", "fmt", "math"))
+
+	err = script.Add("match", alert.Match)
+	if err != nil {
+		return suggestions, err
+	}
+
+	compiled, err := script.Compile()
+	if err != nil {
+		return suggestions, err
+	}
+
+	if err = compiled.Run(); err != nil {
+		return suggestions, err
+	}
+
+	computed := compiled.Get("suggestions").Array()
+	for _, s := range computed {
+		suggestions = append(suggestions, s.(string))
+	}
+
+	return suggestions, nil
+}
+
+func spelling(alert core.Alert, cfg *core.Config) ([]string, error) {
 	var suggestions = []string{}
 
 	name := strings.Split(alert.Check, ".")

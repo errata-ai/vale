@@ -31,11 +31,14 @@ func NewScript(cfg *core.Config, generic baseCheck, path string) (Script, error)
 	}
 
 	if strings.HasSuffix(rule.Script, ".tengo") {
-		b, scriptErr := os.ReadFile(core.FindAsset(cfg, rule.Script))
+		file := core.FindConfigAsset(cfg, rule.Script, core.ScriptDir)
+
+		b, scriptErr := os.ReadFile(file)
 		if scriptErr != nil {
 			return rule, core.NewE201FromTarget(
 				scriptErr.Error(), rule.Script, path)
 		}
+
 		rule.Script = string(b)
 	}
 
