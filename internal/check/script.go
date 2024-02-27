@@ -1,6 +1,9 @@
 package check
 
 import (
+	"os"
+	"strings"
+
 	"github.com/d5/tengo/v2"
 	"github.com/d5/tengo/v2/stdlib"
 
@@ -19,12 +22,21 @@ type Script struct {
 }
 
 // NewScript creates a new `script`-based rule.
-func NewScript(_ *core.Config, generic baseCheck, path string) (Script, error) {
+func NewScript(cfg *core.Config, generic baseCheck, path string) (Script, error) {
 	rule := Script{}
 
 	err := decodeRule(generic, &rule)
 	if err != nil {
 		return rule, readStructureError(err, path)
+	}
+
+	if strings.HasSuffix(rule.Script, ".tengo") {
+		b, scriptErr := os.ReadFile(core.FindAsset(cfg, rule.Script))
+		if scriptErr != nil {
+			return rule, core.NewE201FromTarget(
+				scriptErr.Error(), rule.Script, path)
+		}
+		rule.Script = string(b)
 	}
 
 	rule.path = path
