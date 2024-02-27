@@ -9,3 +9,7 @@ Some text
 ## An unimportant Heading
 
 Some text
+
+## a. An unimportant heading
+
+## B. An unimportant heading

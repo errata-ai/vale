@@ -24,12 +24,15 @@ type Capitalization struct {
 	// `indicators` (`array`): An array of suffixes that indicate the next
 	// token should be ignored.
 	Indicators []string
-
 	// `threshold` (`float`): The minimum proportion of words that must be
 	// (un)capitalized for a sentence to be considered correct.
 	Threshold float64
-
+	// `vocab` (`boolean`): If `true`, use the user's `Vocab` as a list of
+	// exceptions.
 	Vocab bool
+	// `prefix` (`string`): A prefix to be ignored when checking for
+	// capitalization.
+	Prefix string
 
 	exceptRe *regexp2.Regexp
 }
@@ -74,11 +77,13 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 			tc = strcase.NewTitleConverter(
 				strcase.ChicagoStyle,
 				strcase.UsingVocab(rule.Exceptions),
+				strcase.UsingPrefix(rule.Prefix),
 			)
 		} else {
 			tc = strcase.NewTitleConverter(
 				strcase.APStyle,
 				strcase.UsingVocab(rule.Exceptions),
+				strcase.UsingPrefix(rule.Prefix),
 			)
 		}
 		rule.Check = func(s string, re *regexp2.Regexp) bool {
@@ -87,6 +92,7 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 	} else if rule.Match == "$sentence" {
 		sc := strcase.NewSentenceConverter(
 			strcase.UsingVocab(rule.Exceptions),
+			strcase.UsingPrefix(rule.Prefix),
 			strcase.UsingIndicator(wasIndicator(rule.Indicators)),
 		)
 		rule.Check = func(s string, re *regexp2.Regexp) bool {

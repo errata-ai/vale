@@ -9,3 +9,4 @@ exceptions:
   - Title
 indicators:
   - ":"
+prefix: '^[a-z]\.\s'
