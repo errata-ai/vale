@@ -63,20 +63,20 @@ func getNativeConfig() (string, error) {
 
 	switch runtime.GOOS {
 	case "windows":
-		cfg, err := xdg.ConfigFile("vale/native/config.json")
-		if err != nil {
-			return "", err
+		cfg, notFound := xdg.ConfigFile("vale/native/config.json")
+		if notFound != nil {
+			return "", notFound
 		}
 		return cfg, nil
 	case "linux":
 		path := filepath.Join(home, ".config/vale/native/config.json")
-		if err := mkdir(filepath.Dir(path)); err != nil {
+		if err = mkdir(filepath.Dir(path)); err != nil {
 			return "", err
 		}
 		return path, nil
 	case "darwin":
 		path := filepath.Join(home, "Library/Application Support/vale/native/config.json")
-		if err := mkdir(filepath.Dir(path)); err != nil {
+		if err = mkdir(filepath.Dir(path)); err != nil {
 			return "", err
 		}
 		return path, nil
