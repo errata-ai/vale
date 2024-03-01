@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -83,4 +84,8 @@ func platformAndArch() string {
 	}
 
 	return fmt.Sprintf("%s_%s", platform, arch)
+}
+
+func mkdir(dir string) error {
+	return os.MkdirAll(dir, os.ModeDir|0700)
 }

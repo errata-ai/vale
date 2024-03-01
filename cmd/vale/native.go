@@ -46,12 +46,43 @@ type manifest struct {
 	AllowedOrigins    []string `json:"allowed_origins,omitempty"`
 }
 
+// getNativeConfig returns the path to the native host's config file.
+//
+// NOTE: When the browser (e.g., Chrome) launches the native host, it does
+// not have access to the user's shell environment. This is actually why we
+// need a config file at all -- to tell the host where to find the Vale
+// binary.
+//
+// The problem is, however, that we can't rely on `XDG_CONFIG_HOME` to be set,
+// so we need to use the default value.
 func getNativeConfig() (string, error) {
-	cfg, err := xdg.ConfigFile("vale/native/config.json")
+	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
-	return cfg, nil
+
+	switch runtime.GOOS {
+	case "windows":
+		cfg, err := xdg.ConfigFile("vale/native/config.json")
+		if err != nil {
+			return "", err
+		}
+		return cfg, nil
+	case "linux":
+		path := filepath.Join(home, ".config/vale/native/config.json")
+		if err := mkdir(filepath.Dir(path)); err != nil {
+			return "", err
+		}
+		return path, nil
+	case "darwin":
+		path := filepath.Join(home, "Library/Application Support/vale/native/config.json")
+		if err := mkdir(filepath.Dir(path)); err != nil {
+			return "", err
+		}
+		return path, nil
+	default:
+		return "", fmt.Errorf("unsupported OS: %s", runtime.GOOS)
+	}
 }
 
 func getExecName(name string) string {
