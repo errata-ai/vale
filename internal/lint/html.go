@@ -31,14 +31,16 @@ func (l *Linter) lintHTML(f *core.File) error {
 	return l.lintHTMLTokens(f, []byte(f.Content), 0)
 }
 
-func (l *Linter) applyPatterns(content, block, inline, ext string) (string, error) {
-	s := reFrontMatter.ReplaceAllString(content, block)
+func (l *Linter) applyPatterns(f *core.File, block, inline string) (string, error) {
+	// TODO: Should we assume this?
+	s := reFrontMatter.ReplaceAllString(f.Content, block)
 
+	exts := []string{f.NormedExt, f.RealExt}
 	for syntax, regexes := range l.Manager.Config.BlockIgnores {
 		sec, err := glob.Compile(syntax)
 		if err != nil {
 			return s, err
-		} else if sec.Match(ext) {
+		} else if sec.MatchAny(exts) {
 			for _, r := range regexes {
 				pat, errc := regexp2.CompileStd(r)
 				if errc != nil { //nolint:gocritic
@@ -47,7 +49,7 @@ func (l *Linter) applyPatterns(content, block, inline, ext string) (string, erro
 						r,
 						l.Manager.Config.Flags.Path,
 					)
-				} else if strings.HasSuffix(ext, ".rst") {
+				} else if strings.HasSuffix(f.NormedExt, ".rst") {
 					// HACK: We need to add padding for the literal block.
 					for _, c := range pat.FindAllStringSubmatch(s, -1) {
 						sec := fmt.Sprintf(block, core.Indent(c[0], "    "))
@@ -71,7 +73,7 @@ func (l *Linter) applyPatterns(content, block, inline, ext string) (string, erro
 		sec, err := glob.Compile(syntax)
 		if err != nil {
 			return s, err
-		} else if sec.Match(ext) {
+		} else if sec.MatchAny(exts) {
 			for _, r := range regexes {
 				pat, errc := regexp2.CompileStd(r)
 				if errc != nil {

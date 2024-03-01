@@ -32,13 +32,17 @@ func (l Linter) lintOrg(f *core.File) error {
 	extendedWriter := &ExtendedHTMLWriter{orgWriter}
 	orgWriter.ExtendingWriter = extendedWriter
 
+	old := f.Content
+
 	s := reOrgAttribute.ReplaceAllString(f.Content, "\n=$1=\n")
 	s = reOrgProps.ReplaceAllString(s, orgExample)
 
-	s, err := l.applyPatterns(s, orgExample, "=$1=", f.NormedPath)
+	f.Content = s
+	s, err := l.Transform(f)
 	if err != nil {
 		return err
 	}
+	f.Content = old
 
 	// We don't want to find matches in `begin_src` lines.
 	body := reOrgSrc.ReplaceAllStringFunc(f.Content, func(m string) string {

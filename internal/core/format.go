@@ -117,7 +117,7 @@ func FormatFromExt(path string, mapping map[string]string) (string, string) {
 	if format, found := mapping[base]; found {
 		if kind == "code" && getFormat("."+format) == "markup" {
 			// NOTE: This is a special case of embedded markup within code.
-			return format, "fragment"
+			return "." + format, "fragment"
 		}
 		base = format
 	}

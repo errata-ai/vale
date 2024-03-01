@@ -55,21 +55,16 @@ func NewLinter(cfg *core.Config) (*Linter, error) {
 //
 // Transformations include block and token ignores, as well as some built-in
 // replacements.
-func (l *Linter) Transform(path string) (string, error) {
-	f, err := core.NewFile(path, l.Manager.Config)
-	if err != nil {
-		return "", err
-	}
-
+func (l *Linter) Transform(f *core.File) (string, error) {
 	switch f.NormedExt {
 	case ".adoc":
-		return l.applyPatterns(f.Content, "\n----\n$1\n----\n", "`$1`", f.NormedPath)
+		return l.applyPatterns(f, "\n----\n$1\n----\n", "`$1`")
 	case ".md":
-		return l.applyPatterns(f.Content, "\n```\n$1\n```\n", "`$1`", f.NormedPath)
+		return l.applyPatterns(f, "\n```\n$1\n```\n", "`$1`")
 	case ".rst":
-		return l.applyPatterns(f.Content, "\n::\n\n%s\n", "``$1``", f.NormedPath)
+		return l.applyPatterns(f, "\n::\n\n%s\n", "``$1``")
 	case ".org":
-		return l.applyPatterns(f.Content, orgExample, "=$1=", f.NormedPath)
+		return l.applyPatterns(f, orgExample, "=$1=")
 	default:
 		return f.Content, fmt.Errorf("ignore patterns are not supported in '%s' files", f.NormedExt)
 	}
@@ -375,14 +370,14 @@ func (l *Linter) match(s string) bool {
 	return l.glob.Match(s)
 }
 
-func (l *Linter) skip(fp string) bool {
-	fp = filepath.ToSlash(core.ReplaceExt(fp, l.Manager.Config.Formats))
+func (l *Linter) skip(old string) bool {
+	ref := filepath.ToSlash(core.ReplaceExt(old, l.Manager.Config.Formats))
 
-	if !l.match(fp) {
+	if !l.match(old) && !l.match(ref) {
 		return true
 	} else if l.nonGlobal {
 		for _, pat := range l.Manager.Config.SecToPat {
-			if pat.Match(fp) {
+			if pat.Match(old) || pat.Match(ref) {
 				return false
 			}
 		}

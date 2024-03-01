@@ -2,6 +2,7 @@ package lint
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/errata-ai/vale/v3/internal/core"
 )
@@ -59,12 +60,16 @@ func (l *Linter) lintFragments(f *core.File) error {
 		f.SetText(comment.Text)
 
 		switch f.NormedExt {
-		case "md":
+		case ".md":
 			err = l.lintMarkdown(f)
-		case "rst":
+		case ".rst":
 			err = l.lintRST(f)
-		case "adoc":
+		case ".adoc":
 			err = l.lintADoc(f)
+		case ".org":
+			err = l.lintOrg(f)
+		default:
+			return fmt.Errorf("unsupported markup format '%s'", f.NormedExt)
 		}
 
 		size := len(f.Alerts)

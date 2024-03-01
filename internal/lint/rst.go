@@ -136,7 +136,7 @@ func (l *Linter) lintRST(f *core.File) error {
 		return core.NewE100("lintRST", errors.New("rst2html not found"))
 	}
 
-	s, err := l.applyPatterns(f.Content, "\n::\n\n%s\n", "``$1``", f.NormedPath)
+	s, err := l.Transform(f)
 	if err != nil {
 		return err
 	}

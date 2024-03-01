@@ -306,7 +306,12 @@ func transform(args []string, flags *core.CLIFlags) error {
 		return err
 	}
 
-	out, err := linter.Transform(args[0])
+	f, err := core.NewFile(args[0], cfg)
+	if err != nil {
+		return err
+	}
+
+	out, err := linter.Transform(f)
 	if err != nil {
 		return err
 	}

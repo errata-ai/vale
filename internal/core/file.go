@@ -62,25 +62,44 @@ func NewFile(src string, config *Config) (*File, error) {
 		src = "stdin" + config.Flags.InExt
 		lookup = true
 	}
+	filepaths := []string{src}
 
-	fp := src
-	old := filepath.Ext(fp)
-	if normed, found := config.Formats[strings.Trim(old, ".")]; found {
-		fp = fp[0:len(fp)-len(old)] + "." + normed
+	normed := ReplaceExt(src, config.Formats)
+	if normed != src {
+		// NOTE: In retrospect, this was a mistake: we should NOT normalize
+		// the extension with respect to the `.vale.ini` file.
+		//
+		// The `.vale.ini` file should reflect the actual file extensions (as
+		// they appear on disk). Unfortunately, changing this behavior entirely
+		// would break backwards compatibility with many configurations.
+		//
+		// So, as a workaround, we check both cases. This means that there are
+		// two cases:
+		//
+		// - No assigned format: No change (no normed path).
+		//
+		// - Assigned format: We can reference the file using the normed path
+		// (old behavior) or the actual path (desired behavior).
+		//
+		// See also `Linter.skip`.
+		filepaths = append(filepaths, normed)
 	}
 
 	baseStyles := config.GBaseStyles
-	for _, sec := range config.StyleKeys {
-		if pat, found := config.SecToPat[sec]; found && pat.Match(fp) {
-			baseStyles = config.SBaseStyles[sec]
-		}
-	}
-
 	checks := make(map[string]bool)
-	for _, sec := range config.RuleKeys {
-		if pat, found := config.SecToPat[sec]; found && pat.Match(fp) {
-			for k, v := range config.SChecks[sec] {
-				checks[k] = v
+
+	for _, fp := range filepaths {
+		for _, sec := range config.StyleKeys {
+			if pat, found := config.SecToPat[sec]; found && pat.Match(fp) {
+				baseStyles = config.SBaseStyles[sec]
+			}
+		}
+
+		for _, sec := range config.RuleKeys {
+			if pat, found := config.SecToPat[sec]; found && pat.Match(fp) {
+				for k, v := range config.SChecks[sec] {
+					checks[k] = v
+				}
 			}
 		}
 	}
@@ -90,7 +109,7 @@ func NewFile(src string, config *Config) (*File, error) {
 		sec, err := glob.Compile(syntax)
 		if err != nil {
 			return &File{}, err
-		} else if sec.Match(fp) {
+		} else if sec.Match(src) {
 			lang = code
 			break
 		}
@@ -121,7 +140,7 @@ func NewFile(src string, config *Config) (*File, error) {
 		simple: config.Flags.Simple, Transform: transform,
 		limits: make(map[string]int), Path: src, Metrics: make(map[string]int),
 		NLP:    nlp.Info{Endpoint: config.NLPEndpoint, Lang: lang},
-		Lookup: lookup, NormedPath: ReplaceExt(src, config.Formats),
+		Lookup: lookup, NormedPath: normed,
 	}
 
 	return &file, nil

@@ -27,6 +27,17 @@ func (g Glob) Match(query string) bool {
 	return p.Match(q) != g.Negated
 }
 
+// MatchAny returns whether or not the Glob g matches any of the strings in
+// query.
+func (g Glob) MatchAny(query []string) bool {
+	for _, q := range query {
+		if g.Match(q) {
+			return true
+		}
+	}
+	return false
+}
+
 // NewGlob creates a Glob from the string pat.
 func NewGlob(pat string) (Glob, error) {
 	negate := false
