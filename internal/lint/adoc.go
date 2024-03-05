@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/errata-ai/vale/v3/internal/core"
 )
@@ -57,7 +58,9 @@ func (l *Linter) lintADoc(f *core.File) error {
 		//
 		// See https://github.com/errata-ai/vale/issues/296.
 		parts := strings.Split(m, ",")
-		span := strings.Repeat("*", len(parts[len(parts)-1])-2+offset)
+		size := utf8.RuneCountInString(parts[len(parts)-1])
+
+		span := strings.Repeat("*", size-2+offset)
 		return "[source, " + span + "]"
 	})
 
@@ -70,7 +73,7 @@ func (l *Linter) lintADoc(f *core.File) error {
 		//
 		// https://docs.asciidoctor.org/asciidoc/latest/comments/
 		parts := strings.Split(m, "//")
-		span := strings.Repeat("*", len(parts[1])-1)
+		span := strings.Repeat("*", utf8.RuneCountInString(parts[1])-1)
 		return "// " + span
 	})
 

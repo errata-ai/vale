@@ -114,6 +114,8 @@ Feature: Misc
         When I test "i18n"
         Then the output should contain exactly:
             """
+            ru.adoc:6:12:RU.RUSwap:Возможно, следует написать 'добавить' вместо 'добавлении'?
+            ru.adoc:7:12:RU.RUSwap:Возможно, следует написать 'добавить' вместо 'добавления'?
             zh.md:6:1:ZH.Simple:Avoid using "根据"
             zh.md:7:43:ZH.Simple:Avoid using "根据"
             """

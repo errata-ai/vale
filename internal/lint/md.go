@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
@@ -55,17 +56,17 @@ func (l Linter) lintMarkdown(f *core.File) error {
 		//
 		// See https://github.com/errata-ai/vale/v2/issues/271.
 		tags := strings.Repeat("`", len(parts)-1)
-		span := strings.Repeat("*", len(parts[len(parts)-1]))
+		span := strings.Repeat("*", utf8.RuneCountInString(parts[len(parts)-1]))
 
 		return tags + span
 	})
 
 	// NOTE: This is required to avoid finding matches inside link references.
 	body = reLinkRef.ReplaceAllStringFunc(body, func(m string) string {
-		return "][" + strings.Repeat("*", len(m)-3) + "]"
+		return "][" + strings.Repeat("*", utf8.RuneCountInString(m)-3) + "]"
 	})
 	body = reLinkDef.ReplaceAllStringFunc(body, func(m string) string {
-		return "[" + strings.Repeat("*", len(m)-3) + "]:"
+		return "[" + strings.Repeat("*", utf8.RuneCountInString(m)-3) + "]:"
 	})
 
 	f.Content = body

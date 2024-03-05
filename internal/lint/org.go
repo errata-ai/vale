@@ -3,6 +3,7 @@ package lint
 import (
 	"regexp"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/niklasfasching/go-org/org"
 
@@ -46,7 +47,7 @@ func (l Linter) lintOrg(f *core.File) error {
 
 	// We don't want to find matches in `begin_src` lines.
 	body := reOrgSrc.ReplaceAllStringFunc(f.Content, func(m string) string {
-		return strings.Repeat("*", len(m))
+		return strings.Repeat("*", utf8.RuneCountInString(m))
 	})
 
 	doc := orgConverter.Parse(strings.NewReader(s), f.Path)
