@@ -1,17 +1,10 @@
 package lint
 
 import (
-	"bytes"
-	"context"
-	"errors"
 	"fmt"
-	"io"
-	"net"
-	"net/http"
 	"os"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/errata-ai/regexp2"
 
@@ -98,61 +91,10 @@ func (l *Linter) applyPatterns(f *core.File, block, inline string) (string, erro
 	return s, nil
 }
 
-func (l *Linter) post(f *core.File, text, url string) (string, error) {
-	req, err := http.NewRequestWithContext(
-		context.Background(),
-		"POST",
-		url,
-		bytes.NewBufferString(text))
-
-	if err != nil {
-		return "", core.NewE100(f.Path, err)
-	}
-
-	req.Header.Set("Content-Type", "text/plain")
-	req.Header.Set("Accept", "text/plain")
-
-	resp, err := l.client.Do(req)
-	if err != nil {
-		return "", core.NewE100(f.Path, err)
-	}
-	defer resp.Body.Close()
-
-	body, _ := io.ReadAll(resp.Body)
-	if resp.StatusCode == 200 {
-		return string(body), nil
-	}
-
-	return "", core.NewE100(f.Path, errors.New("bad status"))
-}
-
 func (l *Linter) lintTxtToHTML(f *core.File) error {
 	html, err := os.ReadFile(l.Manager.Config.Flags.Built)
 	if err != nil {
 		return core.NewE100(f.Path, err)
 	}
 	return l.lintHTMLTokens(f, html, 0)
-}
-
-func ping(domain string) error {
-	c1 := make(chan bool, 1)
-
-	go func() {
-		for {
-			conn, err := net.DialTimeout("tcp", domain, 2*time.Millisecond)
-			if err == nil {
-				c1 <- true
-				conn.Close()
-				break
-			}
-		}
-	}()
-
-	select {
-	case <-c1:
-		return nil
-	case <-time.After(500 * time.Millisecond):
-		// TODO: How long should this be?
-		return errors.New("failed to start server")
-	}
 }

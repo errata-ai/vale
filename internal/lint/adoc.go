@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -27,51 +26,6 @@ var adocSanitizer = strings.NewReplacer(
 var reSource = regexp.MustCompile(`\[source,.+\]`)
 var reComment = regexp.MustCompile(`// .+`)
 
-var homes = []*regexp.Regexp{
-	// Homebrew
-	regexp.MustCompile(`(?m)GEM_HOME="(.+?)"`),
-	// rbenv
-	regexp.MustCompile(`(?m)^exec "(.+?)"`),
-}
-
-var adocDomain = "localhost:7070"
-var adocURL = "http://" + adocDomain
-
-var adocRunning = false
-var adocServer = `require 'socket'
-require 'asciidoctor'
-
-server = TCPServer.new("localhost", 7070)
-
-loop do
-  socket = server.accept
-
-  headers = {}
-  while message = socket.gets
-   line = message.split(' ', 2)
-   break if line[0] == ""
-   headers[line[0].chop] = line[1].chop
-  end
-
-  data = socket.read(headers["Content-Length"].to_i)
-  next if data.strip == "" # TODO: Why?
-
-  data = data.encode("utf-8", :invalid => :replace, :undef => :replace, :replace => '')
-  response = Asciidoctor.convert(data, :header_footer => false, # -s
-                :attributes => %w(ATTRS),
-                :safe => :secure)
-
-  socket.print "HTTP/1.1 200 OK\r\n" +
-               "Content-Type: text/plain\r\n" +
-               "Content-Length: #{response.bytesize}\r\n" +
-               "Connection: close\r\n"
-
-  socket.print "\r\n"
-  socket.print response
-
-  socket.close
-end`
-
 func (l *Linter) lintADoc(f *core.File) error {
 	var html string
 	var err error
@@ -87,25 +41,9 @@ func (l *Linter) lintADoc(f *core.File) error {
 	}
 	s = adocSanitizer.Replace(s)
 
-	attrs := l.Manager.Config.Asciidoctor
-	if !l.HasDir {
-		html, err = callAdoc(f, s, exe, attrs)
-		if err != nil {
-			return core.NewE100(f.Path, err)
-		}
-	} else if err = l.startAdocServer(exe, attrs); err != nil {
-		html, err = callAdoc(f, s, exe, attrs)
-		if err != nil {
-			return core.NewE100(f.Path, err)
-		}
-	} else {
-		html, err = l.post(f, s, adocURL)
-		if err != nil {
-			html, err = callAdoc(f, s, exe, attrs)
-			if err != nil {
-				return core.NewE100(f.Path, err)
-			}
-		}
+	html, err = callAdoc(f, s, exe, l.Manager.Config.Asciidoctor)
+	if err != nil {
+		return core.NewE100(f.Path, err)
 	}
 
 	html = adocSanitizer.Replace(html)
@@ -140,65 +78,6 @@ func (l *Linter) lintADoc(f *core.File) error {
 	return l.lintHTMLTokens(f, []byte(html), 0)
 }
 
-func (l *Linter) startAdocServer(exe string, attrs map[string]string) error {
-	if adocRunning {
-		return nil
-	}
-
-	var adocArgs = []string{
-		"notitle!",
-		"attribute-missing=drop",
-	}
-	adocArgs = append(adocArgs, parseAttributes(attrs)...)
-
-	ruby := core.Which([]string{"ruby", "jruby"})
-	if ruby == "" {
-		return core.NewE100("startAdoc", errors.New("ruby not found"))
-	}
-
-	home, err := findGems(exe)
-	if err != nil {
-		return err
-	} else if home == "" {
-		return errors.New("GEM_HOME parsing failed")
-	}
-
-	adocServer = strings.Replace(
-		adocServer,
-		"ATTRS",
-		strings.Join(adocArgs, " "),
-		1,
-	)
-
-	tmpfile, _ := os.CreateTemp("", "server.*.rb")
-	if _, err = tmpfile.WriteString(adocServer); err != nil {
-		return err
-	}
-
-	if err = tmpfile.Close(); err != nil {
-		return err
-	}
-
-	cmd := exec.Command(ruby, tmpfile.Name())
-	cmd.Env = append(os.Environ(),
-		"GEM_HOME="+home,
-	)
-
-	if err = cmd.Start(); err != nil {
-		return err
-	}
-
-	l.pids = append(l.pids, cmd.Process.Pid)
-	l.temps = append(l.temps, tmpfile)
-
-	if err = ping(adocDomain); err != nil {
-		return err
-	}
-
-	adocRunning = true
-	return nil
-}
-
 func callAdoc(_ *core.File, text, exe string, attrs map[string]string) (string, error) {
 	var out bytes.Buffer
 	var eut bytes.Buffer
@@ -224,32 +103,6 @@ func callAdoc(_ *core.File, text, exe string, attrs map[string]string) (string, 
 	}
 
 	return out.String(), nil
-}
-
-func findGems(exe string) (string, error) {
-	var home string
-
-	for _, v := range []string{"GEM_HOME"} {
-		candidate := os.Getenv(v)
-		if candidate != "" {
-			return candidate, nil
-		}
-	}
-
-	bin, err := os.ReadFile(exe)
-	if err != nil {
-		return home, err
-	}
-
-	f := string(bin)
-	for _, opt := range homes {
-		m := opt.FindStringSubmatch(f)
-		if len(m) > 1 {
-			home = m[1]
-		}
-	}
-
-	return home, nil
 }
 
 func parseAttributes(attrs map[string]string) []string {

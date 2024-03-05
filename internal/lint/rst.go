@@ -3,7 +3,6 @@ package lint
 import (
 	"bytes"
 	"errors"
-	"os"
 	"os/exec"
 	"regexp"
 	"runtime"
@@ -11,11 +10,6 @@ import (
 
 	"github.com/errata-ai/vale/v3/internal/core"
 )
-
-var shebang = regexp.MustCompile(`(?m)^#!(.+)$`)
-
-var rstDomain = "localhost:7069"
-var rstURL = "http://" + rstDomain
 
 // reStructuredText configuration.
 //
@@ -39,90 +33,6 @@ var rstArgs = []string{
 	"--no-footnote-backlinks",
 	"--no-section-numbering",
 }
-var rstRunning = false
-var rstServer = `#!/usr/bin/env python
-import sys
-
-try:
-    import locale
-
-    locale.setlocale(locale.LC_ALL, "")
-except:
-    pass
-
-if sys.version_info[0] < 3:
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
-
-try:
-    from http.server import HTTPServer, BaseHTTPRequestHandler
-except ImportError:
-    from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-
-from docutils import nodes
-from docutils.core import publish_parts
-from docutils.parsers.rst.states import Body
-
-GITHUB_DISPLAY = True
-
-
-def unknown_directive(self, type_name):
-    lineno = self.state_machine.abs_line_number()
-    (
-        indented,
-        indent,
-        offset,
-        blank_finish,
-    ) = self.state_machine.get_first_known_indented(0, strip_indent=False)
-    text = "\n".join(indented)
-    if GITHUB_DISPLAY:
-        cls = ["unknown_directive"]
-        result = [nodes.literal_block(text, text, classes=cls)]
-        return result, blank_finish
-    else:
-        return [nodes.comment(text, text)], blank_finish
-
-
-class S(BaseHTTPRequestHandler):
-    def _set_headers(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-
-    def do_POST(self):
-        """"""
-        self._set_headers()
-
-        Body.unknown_directive = unknown_directive
-
-        content_length = int(self.headers["Content-Length"])
-        post_data = self.rfile.read(content_length)
-
-        overrides = {
-            "leave-comments": True,
-            "file_insertion_enabled": False,
-            "footnote_backlinks": False,
-            "toc_backlinks": False,
-            "sectnum_xform": False,
-            "report_level": 5,
-            "halt_level": 5,
-        }
-
-        html = publish_parts(
-            post_data, settings_overrides=overrides, writer_name="html"
-        )["html_body"]
-
-        self.wfile.write(html.encode("utf-8"))
-
-
-def run(server_class=HTTPServer, handler_class=S, addr="localhost", port=8000):
-    server_address = (addr, port)
-    httpd = server_class(server_address, handler_class)
-    httpd.serve_forever()
-
-
-if __name__ == "__main__":
-    run(addr="127.0.0.1", port=7069)`
 
 func (l *Linter) lintRST(f *core.File) error {
 	var html string
@@ -144,24 +54,9 @@ func (l *Linter) lintRST(f *core.File) error {
 	s = reSphinx.ReplaceAllString(s, ".. code::")
 	s = reCodeBlock.ReplaceAllString(s, "::")
 
-	if !l.HasDir {
-		html, err = callRst(s, rst2html, python)
-		if err != nil {
-			return core.NewE100(f.Path, err)
-		}
-	} else if err = l.startRstServer(rst2html, python); err != nil {
-		html, err = callRst(s, rst2html, python)
-		if err != nil {
-			return core.NewE100(f.Path, err)
-		}
-	} else {
-		html, err = l.post(f, s, rstURL)
-		if err != nil {
-			html, err = callRst(s, rst2html, python)
-			if err != nil {
-				return core.NewE100(f.Path, err)
-			}
-		}
+	html, err = callRst(s, rst2html, python)
+	if err != nil {
+		return core.NewE100(f.Path, err)
 	}
 
 	return l.lintHTMLTokens(f, []byte(html), 0)
@@ -201,55 +96,4 @@ func callRst(text, lib, exe string) (string, error) {
 	}
 
 	return html[bodyStart+7 : bodyEnd], nil
-}
-
-func (l *Linter) startRstServer(lib, _ string) error {
-	if rstRunning {
-		return nil
-	}
-
-	python, err := findPython(lib)
-	if err != nil {
-		return err
-	} else if python == "" {
-		return errors.New("shebang parsing failed")
-	}
-
-	tmpfile, _ := os.CreateTemp("", "server.*.py")
-	if _, err = tmpfile.WriteString(rstServer); err != nil {
-		return err
-	}
-
-	if err = tmpfile.Close(); err != nil {
-		return err
-	}
-
-	cmd := exec.Command(python, tmpfile.Name())
-	if err = cmd.Start(); err != nil {
-		return err
-	}
-
-	l.pids = append(l.pids, cmd.Process.Pid)
-	l.temps = append(l.temps, tmpfile)
-
-	if err = ping(rstDomain); err != nil {
-		return err
-	}
-
-	rstRunning = true
-	return nil
-}
-
-func findPython(exe string) (string, error) {
-	bin, err := os.ReadFile(exe)
-	if err != nil {
-		return "", err
-	}
-
-	m := shebang.FindStringSubmatch(string(bin))
-	if len(m) > 1 {
-		return m[1], nil
-	}
-
-	return "", nil
 }
