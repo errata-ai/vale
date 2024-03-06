@@ -7,6 +7,11 @@ exceptions:
   - Section
   - Level
   - Title
+  - Azure
+  - Axon
+  - Axon Framework
+  - Axon Server
+  - Axon Synapse
 indicators:
   - ":"
 prefix: '^[a-z]\.\s'
