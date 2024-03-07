@@ -15,7 +15,7 @@ type Capitalization struct {
 	Definition `mapstructure:",squash"`
 	// `match` (`string`): $title, $sentence, $lower, $upper, or a pattern.
 	Match string
-	Check func(s string, re *regexp2.Regexp) bool
+	Check func(s string, re *regexp2.Regexp) (string, bool)
 	// `style` (`string`): AP or Chicago; only applies when match is set to
 	// $title.
 	Style string
@@ -86,7 +86,7 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 				strcase.UsingPrefix(rule.Prefix),
 			)
 		}
-		rule.Check = func(s string, re *regexp2.Regexp) bool {
+		rule.Check = func(s string, re *regexp2.Regexp) (string, bool) {
 			return title(s, re, tc, rule.Threshold)
 		}
 	} else if rule.Match == "$sentence" {
@@ -95,7 +95,7 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 			strcase.UsingPrefix(rule.Prefix),
 			strcase.UsingIndicator(wasIndicator(rule.Indicators)),
 		)
-		rule.Check = func(s string, re *regexp2.Regexp) bool {
+		rule.Check = func(s string, re *regexp2.Regexp) (string, bool) {
 			return sentence(s, re, sc, rule.Threshold)
 		}
 	} else if f, ok := varToFunc[rule.Match]; ok {
@@ -105,8 +105,8 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 		if errc != nil {
 			return rule, core.NewE201FromPosition(errc.Error(), path, 1)
 		}
-		rule.Check = func(s string, r *regexp2.Regexp) bool {
-			return re2.MatchStringStd(s) || isMatch(r, s)
+		rule.Check = func(s string, r *regexp2.Regexp) (string, bool) {
+			return re2.String(), re2.MatchStringStd(s) || isMatch(r, s)
 		}
 	}
 
@@ -114,13 +114,15 @@ func NewCapitalization(cfg *core.Config, generic baseCheck, path string) (Capita
 }
 
 // Run checks the capitalization style of the provided text.
-func (o Capitalization) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
+func (c Capitalization) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
-	txt := blk.Text
-	if !o.Check(txt, o.exceptRe) {
-		pos := []int{0, utf8.RuneCountInString(txt)}
-		a, err := makeAlert(o.Definition, pos, txt)
+	expected, matched := c.Check(blk.Text, c.exceptRe)
+	if !matched {
+		pos := []int{0, utf8.RuneCountInString(blk.Text)}
+		a, err := makeAlert(c.Definition, pos, blk.Text)
+		a.Message, a.Description = formatMessages(c.Message,
+			c.Description, blk.Text, expected)
 		if err != nil {
 			return alerts, err
 		}
@@ -131,11 +133,11 @@ func (o Capitalization) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 }
 
 // Fields provides access to the internal rule definition.
-func (o Capitalization) Fields() Definition {
-	return o.Definition
+func (c Capitalization) Fields() Definition {
+	return c.Definition
 }
 
 // Pattern is the internal regex pattern used by this rule.
-func (o Capitalization) Pattern() string {
+func (c Capitalization) Pattern() string {
 	return ""
 }

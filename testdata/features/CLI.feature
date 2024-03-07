@@ -139,7 +139,7 @@ Feature: CLI
         When I use filter "min"
         Then the output should contain exactly:
             """
-            test.md:1:3:demo.Cap:'intro' should be in title case.
+            test.md:1:3:demo.Cap:'intro' should be in title case ('Intro').
             test.md:5:8:Vale.Repetition:'is' is repeated!
             """
         And the exit status should be 1
@@ -148,7 +148,7 @@ Feature: CLI
         When I use filter "scope"
         Then the output should contain exactly:
             """
-            test.md:1:3:demo.Cap:'intro' should be in title case.
+            test.md:1:3:demo.Cap:'intro' should be in title case ('Intro').
             """
         And the exit status should be 1
 

@@ -11,7 +11,7 @@ import (
 
 var reNumberList = regexp2.MustCompileStd(`\d+\.`)
 
-var varToFunc = map[string]func(string, *regexp2.Regexp) bool{
+var varToFunc = map[string]func(string, *regexp2.Regexp) (string, bool){
 	"$lower": lower,
 	"$upper": upper,
 }
@@ -49,15 +49,17 @@ func isMatch(r *regexp2.Regexp, s string) bool {
 	return match
 }
 
-func lower(s string, re *regexp2.Regexp) bool {
-	return s == strings.ToLower(s) || isMatch(re, s)
+func lower(s string, re *regexp2.Regexp) (string, bool) {
+	expected := strings.ToLower(s)
+	return expected, s == expected || isMatch(re, s)
 }
 
-func upper(s string, re *regexp2.Regexp) bool {
-	return s == strings.ToUpper(s) || isMatch(re, s)
+func upper(s string, re *regexp2.Regexp) (string, bool) {
+	expected := strings.ToUpper(s)
+	return expected, s == expected || isMatch(re, s)
 }
 
-func title(s string, except *regexp2.Regexp, tc *strcase.TitleConverter, threshold float64) bool {
+func title(s string, except *regexp2.Regexp, tc *strcase.TitleConverter, threshold float64) (string, bool) {
 	count := 0.0
 	words := 0.0
 
@@ -67,9 +69,10 @@ func title(s string, except *regexp2.Regexp, tc *strcase.TitleConverter, thresho
 	}
 	re := regexp2.MustCompileStd(ps)
 
-	expected := re.FindAllString(tc.Convert(s), -1)
+	expected := tc.Convert(s)
+	expectedTokens := re.FindAllString(expected, -1)
 
-	extent := len(expected)
+	extent := len(expectedTokens)
 	for i, word := range re.FindAllString(s, -1) {
 		if i >= extent { //nolint:gocritic
 			// TODO: Look into this more.
@@ -83,7 +86,7 @@ func title(s string, except *regexp2.Regexp, tc *strcase.TitleConverter, thresho
 			// listed as an exception, but it doesn't feel like a great
 			// solution.
 			count++
-		} else if word == expected[i] || isMatch(except, word) {
+		} else if word == expectedTokens[i] || isMatch(except, word) {
 			count++
 		} else if word == strings.ToUpper(word) {
 			count++
@@ -91,10 +94,10 @@ func title(s string, except *regexp2.Regexp, tc *strcase.TitleConverter, thresho
 		words++
 	}
 
-	return (count / words) >= threshold
+	return expected, (count / words) >= threshold
 }
 
-func sentence(s string, except *regexp2.Regexp, sc *strcase.SentenceConverter, threshold float64) bool {
+func sentence(s string, except *regexp2.Regexp, sc *strcase.SentenceConverter, threshold float64) (string, bool) {
 	count := 0.0
 	words := 0.0
 
@@ -104,20 +107,21 @@ func sentence(s string, except *regexp2.Regexp, sc *strcase.SentenceConverter, t
 	}
 	re := regexp2.MustCompileStd(ps)
 
-	expected := re.FindAllString(sc.Convert(s), -1)
+	expected := sc.Convert(s)
+	expectedTokens := re.FindAllString(expected, -1)
 
-	extent := len(expected)
+	extent := len(expectedTokens)
 	for i, w := range re.FindAllString(s, -1) {
 		if i >= extent { //nolint:gocritic
 			// NOTE: See the comment in `title` above.
 			count++
-		} else if w == expected[i] || isMatch(except, w) {
+		} else if w == expectedTokens[i] || isMatch(except, w) {
 			count++
 		} else if i == 0 && w != strings.Title(strings.ToLower(w)) { //nolint:staticcheck
-			return false
+			return expected, false
 		}
 		words++
 	}
 
-	return (count / words) >= threshold
+	return expected, (count / words) >= threshold
 }

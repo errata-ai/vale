@@ -1,5 +1,5 @@
 extends: capitalization
-message: "'%s' should be in title case."
+message: "'%s' should be in title case ('%s')."
 level: error
 scope: heading
 match: $title
