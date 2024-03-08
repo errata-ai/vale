@@ -150,10 +150,16 @@ var coreOpts = map[string]func(*ini.Section, *Config) error{
 		paths := sec.Key("StylesPath").ValueWithShadows()
 		files := cfg.ConfigFiles
 		if cfg.Flags.Local && len(files) == 2 {
-			// This case handles the situation where both configs define the
-			// same StylesPath (e.g., `StylesPath = styles`).
+			// This represents the case where we have a default `.vale.ini`
+			// file and a local `.vale.ini` file.
+			//
+			// In such a case, there are three options: (1) both files define a
+			// `StylesPath`, (2) only one file defines a `StylesPath`, or (3)
+			// neither file defines a `StylesPath`.
 			basePath := determinePath(files[0], filepath.FromSlash(paths[0]))
 			mockPath := determinePath(files[1], filepath.FromSlash(paths[0]))
+			// ^ This case handles the situation where both configs define the
+			// same StylesPath (e.g., `StylesPath = styles`).
 			if len(paths) == 2 {
 				basePath = determinePath(files[0], filepath.FromSlash(paths[0]))
 				mockPath = determinePath(files[1], filepath.FromSlash(paths[1]))
@@ -161,20 +167,18 @@ var coreOpts = map[string]func(*ini.Section, *Config) error{
 			cfg.AddStylesPath(basePath)
 			cfg.AddStylesPath(mockPath)
 		} else if len(paths) > 0 {
-			entry := paths[len(paths)-1]
-			candidate := filepath.FromSlash(entry)
+			// In this case, we have a local configuration file (no default)
+			// that defines a `StylesPath`.
+			candidate := filepath.FromSlash(paths[len(paths)-1])
+			path := determinePath(cfg.ConfigFile(), candidate)
 
-			cfgFile := cfg.ConfigFiles[len(cfg.ConfigFiles)-1]
-			path := determinePath(cfgFile, candidate)
-
+			cfg.AddStylesPath(path)
 			if !FileExists(path) {
 				return NewE201FromTarget(
 					fmt.Sprintf("The path '%s' does not exist.", path),
-					entry,
+					candidate,
 					cfg.Flags.Path)
 			}
-
-			cfg.AddStylesPath(path)
 		}
 		return nil
 	},

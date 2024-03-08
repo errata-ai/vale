@@ -256,6 +256,17 @@ func (c *Config) AddStylesPath(path string) {
 	}
 }
 
+// ConfigFile returns the last configuration file in the list.
+//
+// This represents the user's project-specific configuration file -- i.e., the
+// last one that was added.
+func (c *Config) ConfigFile() string {
+	if len(c.ConfigFiles) > 0 {
+		return c.ConfigFiles[len(c.ConfigFiles)-1]
+	}
+	return ""
+}
+
 // GetStylesPath returns the last path in the list.
 //
 // This represents the user's project-specific styles directory -- i.e., the
