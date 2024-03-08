@@ -3,8 +3,12 @@ package lint
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"regexp"
 	"strings"
+
+	"github.com/alecthomas/chroma/v2"
+	"github.com/alecthomas/chroma/v2/lexers"
 
 	"github.com/errata-ai/vale/v3/internal/core"
 )
@@ -258,4 +262,42 @@ func getComments(content, ext string) []Comment {
 	}
 
 	return comments
+}
+
+func getCommentsLexer(content, ext string) ([]Comment, error) {
+	var comments []Comment
+
+	lexer := lexers.Match("temp" + ext)
+	if lexer == nil {
+		return comments, errors.New("no lexer found for " + ext)
+	}
+
+	it, err := lexer.Tokenise(nil, content)
+	if err != nil {
+		return comments, err
+	}
+
+	for _, token := range it.Tokens() {
+		if len(token.Value) == 0 {
+			continue
+		}
+		switch token.Type {
+		case chroma.CommentMultiline, chroma.LiteralStringDoc, chroma.LiteralStringDouble, chroma.LiteralStringHeredoc:
+			comments = append(comments, Comment{
+				Text:   token.String(),
+				Line:   0,
+				Offset: 0,
+				Scope:  "text.comment.block",
+			})
+		case chroma.CommentSingle:
+			comments = append(comments, Comment{
+				Text:   token.Value,
+				Line:   0,
+				Offset: 0,
+				Scope:  "text.comment.line",
+			})
+		}
+	}
+
+	return comments, nil
 }

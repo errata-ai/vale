@@ -58,3 +58,33 @@ func TestComments(t *testing.T) {
 		}
 	}
 }
+
+func TestCommentsLexer(t *testing.T) {
+	var cleaned []fs.DirEntry
+
+	cases, err := os.ReadDir("../../testdata/comments/in")
+	if err != nil {
+		t.Error(err)
+	}
+
+	for _, f := range cases {
+		if f.Name() == ".DS_Store" {
+			continue
+		}
+		cleaned = append(cleaned, f)
+	}
+
+	for _, f := range cleaned {
+		b, err1 := os.ReadFile(fmt.Sprintf("../../testdata/comments/in/%s", f.Name()))
+		if err1 != nil {
+			t.Error(err1)
+		}
+
+		comments, err := getCommentsLexer(string(b), filepath.Ext(f.Name()))
+		if err != nil {
+			t.Error(err)
+		}
+
+		fmt.Println(comments)
+	}
+}
