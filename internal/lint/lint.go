@@ -2,7 +2,6 @@ package lint
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -56,18 +55,12 @@ func NewLinter(cfg *core.Config) (*Linter, error) {
 // Transformations include block and token ignores, as well as some built-in
 // replacements.
 func (l *Linter) Transform(f *core.File) (string, error) {
-	switch f.NormedExt {
-	case ".adoc":
-		return l.applyPatterns(f, "\n----\n$1\n----\n", "`$1`")
-	case ".md":
-		return l.applyPatterns(f, "\n```\n$1\n```\n", "`$1`")
-	case ".rst":
-		return l.applyPatterns(f, "\n::\n\n%s\n", "``$1``")
-	case ".org":
-		return l.applyPatterns(f, orgExample, "=$1=")
-	default:
-		return f.Content, fmt.Errorf("ignore patterns are not supported in '%s' files", f.NormedExt)
+	exts := extensionConfig{
+		Normed: f.NormedExt,
+		Real:   f.RealExt,
 	}
+
+	return applyPatterns(l.Manager.Config, exts, f.Content)
 }
 
 // LintString src according to its format.
