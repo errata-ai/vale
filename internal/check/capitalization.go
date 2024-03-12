@@ -119,13 +119,24 @@ func (c Capitalization) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 
 	expected, matched := c.Check(blk.Text, c.exceptRe)
 	if !matched {
+		action := c.Fields().Action
+		if action.Name == "replace" && len(action.Params) == 0 {
+			// We can only do this for non-regex case styles:
+			if c.Match == "$title" || c.Match == "$sentence" {
+				action.Params = []string{expected}
+			}
+		}
 		pos := []int{0, utf8.RuneCountInString(blk.Text)}
+
 		a, err := makeAlert(c.Definition, pos, blk.Text)
-		a.Message, a.Description = formatMessages(c.Message,
-			c.Description, blk.Text, expected)
 		if err != nil {
 			return alerts, err
 		}
+
+		a.Message, a.Description = formatMessages(c.Message,
+			c.Description, blk.Text, expected)
+		a.Action = action
+
 		alerts = append(alerts, a)
 	}
 
