@@ -93,7 +93,7 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 			// (See issue #105 for more info.)
 			//
 			// We no longer support this because the performance (+memory)
-			// overhead is too high. Instead, we reccomend that users use
+			// overhead is too high. Instead, we recommend that users use
 			// `scope: raw` and target the actual markup they want to lint.
 			//
 			// Styles should still be able to support rules that require this
