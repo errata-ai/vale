@@ -103,23 +103,24 @@ func sync(_ []string, flags *core.CLIFlags) error {
 	}
 	stylesPath := cfg.StylesPath()
 
-	title := fmt.Sprintf("Syncing %d package(s) to '%s'", len(pkgs), stylesPath)
-	p, err := pterm.DefaultProgressbar.WithTotal(
-		len(pkgs)).WithTitle(title).Start()
-
+	p, err := pterm.DefaultProgressbar.WithTotal(len(pkgs)).Start()
 	if err != nil {
 		return err
 	}
 
 	for idx, pkg := range pkgs {
+		name := fileNameWithoutExt(pkg)
+
+		p.UpdateTitle("Syncing " + name)
+		p.Increment()
+
 		if err = readPkg(pkg, stylesPath, idx); err != nil {
 			return err
 		}
-		name := fileNameWithoutExt(pkg)
-
-		pterm.Success.Println("Downloaded package '" + name + "'")
-		p.Increment()
 	}
+
+	msg := fmt.Sprintf("Synced %d package(s) to '%s'.", len(pkgs), stylesPath)
+	pterm.Success.Println(msg)
 
 	return nil
 }
