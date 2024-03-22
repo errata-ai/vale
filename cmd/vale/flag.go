@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 
-	"github.com/pterm/pterm"
 	"github.com/spf13/pflag"
 
 	"github.com/errata-ai/vale/v3/internal/core"
@@ -21,15 +20,15 @@ func init() {
 	pflag.StringVar(&Flags.Sources, "sources", "", "A config files to load")
 	pflag.StringVar(&Flags.Filter, "filter", "", "An expression to filter rules by.")
 	pflag.StringVar(&Flags.Glob, "glob", "*",
-		fmt.Sprintf(`A glob pattern (%s)`, pterm.Gray(`--glob='*.{md,txt}.'`)))
+		fmt.Sprintf(`A glob pattern (%s)`, toCodeStyle(`--glob='*.{md,txt}.'`)))
 	pflag.StringVar(&Flags.Path, "config", "",
-		fmt.Sprintf(`A file path (%s).`, pterm.Gray(`--config='some/file/path/.vale.ini'`)))
+		fmt.Sprintf(`A file path (%s).`, toCodeStyle(`--config='some/file/path/.vale.ini'`)))
 	pflag.StringVar(&Flags.Output, "output", "CLI", `An output style ("line", "JSON", or a template file).`)
 	pflag.StringVar(&Flags.InExt, "ext", ".txt",
-		fmt.Sprintf(`An extension to associate with stdin (%s).`, pterm.Gray(`--ext=.md`)))
+		fmt.Sprintf(`An extension to associate with stdin (%s).`, toCodeStyle(`--ext=.md`)))
 
 	pflag.StringVar(&Flags.AlertLevel, "minAlertLevel", "",
-		fmt.Sprintf(`The minimum level to display (%s).`, pterm.Gray(`--minAlertLevel=error`)))
+		fmt.Sprintf(`The minimum level to display (%s).`, toCodeStyle(`--minAlertLevel=error`)))
 
 	pflag.BoolVar(&Flags.Wrap, "no-wrap", false, "Don't wrap CLI output.")
 	pflag.BoolVar(&Flags.NoExit, "no-exit", false, "Don't return a nonzero exit code on errors.")

@@ -250,7 +250,7 @@ func printVars(_ []string, _ *core.CLIFlags) error {
 		if value, ok := os.LookupEnv(name); ok {
 			found = value
 		}
-		tableData = append(tableData, []string{pterm.Gray(name), info, found})
+		tableData = append(tableData, []string{toCodeStyle(name), info, found})
 	}
 
 	return pterm.DefaultTable.WithHasHeader().WithData(tableData).Render()
@@ -282,9 +282,9 @@ func printDirs(_ []string, _ *core.CLIFlags) error {
 
 	tableData := pterm.TableData{
 		{"Asset", "Default Location", "Found"},
-		{pterm.Gray("StylesPath"), styles, stylesFound},
-		{pterm.Gray(".vale.ini"), cfg, configFound},
-		{pterm.Gray("vale-native"), nativeExe, nativeFound},
+		{toCodeStyle("StylesPath"), styles, stylesFound},
+		{toCodeStyle(".vale.ini"), cfg, configFound},
+		{toCodeStyle("vale-native"), nativeExe, nativeFound},
 	}
 
 	return pterm.DefaultTable.WithHasHeader().WithData(tableData).Render()

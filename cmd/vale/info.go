@@ -34,13 +34,13 @@ To get started, you'll need a configuration file (%s):
 See %s for more setup information.`,
 	pterm.Bold.Sprintf("Usage"),
 
-	pterm.Gray("vale [options] [input...]"),
-	pterm.Gray("vale myfile.md myfile1.md mydir1"),
-	pterm.Gray("vale --output=JSON [input...]"),
+	toCodeStyle("vale [options] [input...]"),
+	toCodeStyle("vale myfile.md myfile1.md mydir1"),
+	toCodeStyle("vale --output=JSON [input...]"),
 
-	pterm.Gray(".vale.ini"),
+	toCodeStyle(".vale.ini"),
 	pterm.Bold.Sprintf("Example"),
-	pterm.Gray(exampleConfig),
+	toCodeStyle(exampleConfig),
 
 	pterm.Underscore.Sprintf("https://vale.sh"))
 
@@ -48,7 +48,7 @@ var info = fmt.Sprintf(`%s
 
 (Or use %s for a listing of all CLI options.)`,
 	intro,
-	pterm.Gray("vale --help"))
+	toCodeStyle("vale --help"))
 
 var hidden = []string{
 	"mode-compat",
@@ -80,9 +80,9 @@ func PrintIntro() {
 
 func toFlag(name string) string {
 	if code, ok := shortcodes[name]; ok {
-		return fmt.Sprintf("%s, %s", pterm.Gray("-"+code), pterm.Gray("--"+name))
+		return fmt.Sprintf("%s, %s", toCodeStyle("-"+code), toCodeStyle("--"+name))
 	}
-	return pterm.Gray("--" + name)
+	return toCodeStyle("--" + name)
 }
 
 func init() {
@@ -108,7 +108,7 @@ func init() {
 		fmt.Println(pterm.Bold.Sprintf("Commands:"))
 		for cmd, use := range commandInfo {
 			if !core.StringInSlice(cmd, hidden) {
-				table.Append([]string{pterm.Gray(cmd), use})
+				table.Append([]string{toCodeStyle(cmd), use})
 			}
 		}
 		table.Render()

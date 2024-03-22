@@ -12,7 +12,6 @@ import (
 	"github.com/adrg/xdg"
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/errata-ai/ini"
-	"github.com/pterm/pterm"
 
 	"github.com/errata-ai/vale/v3/internal/glob"
 )
@@ -48,8 +47,8 @@ var ConfigDirs = []string{VocabDir, DictDir, TmplDir, IgnoreDir, ActionDir, Scri
 
 // ConfigVars is a list of all supported environment variables.
 var ConfigVars = map[string]string{
-	"VALE_CONFIG_PATH": fmt.Sprintf("Override the default search process by specifying a %s file.", pterm.Gray(".vale.ini")),
-	"VALE_STYLES_PATH": fmt.Sprintf("Specify the location of the default %s.", pterm.Gray("StylesPath")),
+	"VALE_CONFIG_PATH": "Override the default search process by specifying a .vale.ini file.",
+	"VALE_STYLES_PATH": "Specify the location of the default StylesPath.",
 }
 
 // ConfigNames is a list of all possible configuration file names.

@@ -77,7 +77,7 @@ func NewError(code, title, msg string) error {
 		pterm.BgRed.Sprintf(code),
 		title,
 		msg,
-		pterm.Gray(pterm.Italic.Sprintf("Execution stopped with code 1.")),
+		pterm.Fuzzy.Sprint(pterm.Italic.Sprintf("Execution stopped with code 1.")),
 	)
 }
 

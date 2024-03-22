@@ -89,3 +89,7 @@ func platformAndArch() string {
 func mkdir(dir string) error {
 	return os.MkdirAll(dir, os.ModeDir|0700)
 }
+
+func toCodeStyle(s string) string {
+	return pterm.Fuzzy.Sprint(s)
+}
