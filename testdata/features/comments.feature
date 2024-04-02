@@ -14,9 +14,18 @@ Feature: Comments
     When I test comments for ".rst"
     Then the output should contain exactly:
     """
-    test.rst:16:19:vale.Redundancy:'ACT test' is redundant
-    test.rst:20:19:vale.Redundancy:'ACT test' is redundant
-    test.rst:26:20:demo.Ending-Preposition:Don't end a sentence with 'of.'
+    test.rst:15:19:vale.Redundancy:'ACT test' is redundant
+    test.rst:19:19:vale.Redundancy:'ACT test' is redundant
+    test.rst:25:20:demo.Ending-Preposition:Don't end a sentence with 'of.'
+    """
+
+  Scenario: AsciiDoc
+    When I test comments for ".adoc"
+    Then the output should contain exactly:
+    """
+    test.adoc:15:19:vale.Redundancy:'ACT test' is redundant
+    test.adoc:19:19:vale.Redundancy:'ACT test' is redundant
+    test.adoc:25:20:demo.Ending-Preposition:Don't end a sentence with 'of.'
     """
 
   Scenario: Org Mode

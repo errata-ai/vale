@@ -1,32 +1,32 @@
-.. vale off
+pass:[<!-- vale off -->]
 
 This is some text ACT test
 
 This is some text ACT test
 
-.. vale on
+pass:[<!-- vale on -->]
 
-.. vale vale.Redundancy = NO
-
-This is some text ACT test
-
-.. vale vale.Redundancy = YES
+pass:[<!-- vale vale.Redundancy = NO -->]
 
 This is some text ACT test
 
-.. vale demo.Ending-Preposition = NO
+pass:[<!-- vale vale.Redundancy = YES -->]
+
+This is some text ACT test
+
+pass:[<!-- vale demo.Ending-Preposition = NO -->]
 
 This is some text ACT test. This is a sentance for.
 
 This is a sentance of.
 
-.. vale demo.Ending-Preposition = YES
+pass:[<!-- vale demo.Ending-Preposition = YES -->]
 
 This is a sentance of.
 
 The default types are as follows:
 
-.. vale off
+pass:[<!-- vale off -->]
 
 -  Configurable
 -  Grouped
@@ -34,4 +34,4 @@ The default types are as follows:
 -  Variant
 -  Virtual
 
-.. vale on
+pass:[<!-- vale on -->]
