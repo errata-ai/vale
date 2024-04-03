@@ -3,7 +3,13 @@ package nlp
 import (
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
+
+// StrLen returns the number of runes in a string.
+func StrLen(s string) int {
+	return utf8.RuneCountInString(s)
+}
 
 func hasAnyPrefix(s string, prefixes []string) bool {
 	n := len(s)

@@ -1,8 +1,6 @@
 package check
 
 import (
-	"unicode/utf8"
-
 	"github.com/errata-ai/regexp2"
 	"github.com/jdkato/twine/strcase"
 
@@ -126,7 +124,7 @@ func (c Capitalization) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 				action.Params = []string{expected}
 			}
 		}
-		pos := []int{0, utf8.RuneCountInString(blk.Text)}
+		pos := []int{0, nlp.StrLen(blk.Text)}
 
 		a, err := makeAlert(c.Definition, pos, blk.Text)
 		if err != nil {

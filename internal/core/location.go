@@ -3,7 +3,6 @@ package core
 import (
 	"regexp"
 	"strings"
-	"unicode/utf8"
 
 	"github.com/errata-ai/vale/v3/internal/nlp"
 )
@@ -65,7 +64,7 @@ func initialPosition(ctx, txt string, a Alert) (int, string) {
 		idx++ // We don't want to include the underscore boundary.
 	}
 
-	return utf8.RuneCountInString(ctx[:idx]) + 1, sub
+	return nlp.StrLen(ctx[:idx]) + 1, sub
 }
 
 func guessLocation(ctx, sub, match string) (int, string) {

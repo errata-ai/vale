@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
-	"unicode/utf8"
 
 	"github.com/errata-ai/vale/v3/internal/nlp"
 )
@@ -329,9 +328,4 @@ func ReplaceExt(fp string, formats map[string]string) string {
 	}
 
 	return fp
-}
-
-// StrLen returns the number of runes in a string.
-func StrLen(s string) int {
-	return utf8.RuneCountInString(s)
 }

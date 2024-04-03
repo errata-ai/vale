@@ -8,7 +8,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"unicode/utf8"
 
 	"github.com/jdkato/twine/summarize"
 
@@ -205,10 +204,10 @@ func (f *File) FindLoc(ctx, s string, pad, count int, a Alert) (int, []int) {
 
 	counter := 0
 	for idx, l := range lines {
-		length = utf8.RuneCountInString(l)
+		length = nlp.StrLen(l)
 		if (counter + length) >= pos {
 			loc[0] = (pos - counter) + pad
-			loc[1] = loc[0] + utf8.RuneCountInString(substring) - 1
+			loc[1] = loc[0] + nlp.StrLen(substring) - 1
 			extent := length + pad
 			if loc[1] > extent {
 				loc[1] = extent
@@ -233,11 +232,11 @@ func (f *File) assignLoc(ctx string, blk nlp.Block, pad int, a Alert) (int, []in
 		// and a temporary fix.
 		exact := len(l) > loc[1] && l[loc[0]:loc[1]] == a.Match
 		if exact || idx == blk.Line {
-			length := utf8.RuneCountInString(l)
+			length := nlp.StrLen(l)
 			pos, substring := initialPosition(l, blk.Text, a)
 
 			loc[0] = pos + pad
-			loc[1] = pos + utf8.RuneCountInString(substring) - 1
+			loc[1] = pos + nlp.StrLen(substring) - 1
 
 			extent := length + pad
 			if loc[1] > extent {

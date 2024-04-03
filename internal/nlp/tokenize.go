@@ -119,14 +119,14 @@ func (t *IterTokenizer) doSplit(token string) []string {
 	var tokens []string
 
 	last := 0
-	for token != "" && utf8.RuneCountInString(token) != last {
+	for token != "" && StrLen(token) != last {
 		if t.isSpecial(token) {
 			// We've found a special case (e.g., an emoticon) -- so, we add it as a token without
 			// any further processing.
 			tokens = addToken(token, tokens)
 			break
 		}
-		last = utf8.RuneCountInString(token)
+		last = StrLen(token)
 		lower := strings.ToLower(token)
 		if hasAnyPrefix(token, t.prefixes) {
 			// Remove prefixes -- e.g., $100 -> [$, 100].
