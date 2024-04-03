@@ -29,6 +29,7 @@ Feature: Checks
             test.md:1:1:demo.ZeroOccurrence:No intro
             test.md:1:3:demo.MinCount:Content too short.
             test2.md:1:3:demo.MinCount:Content too short.
+            test3.md:7:37:demo.CharCount:Topic titles should use fewer than 70 characters.
             """
 
     Scenario: SentenceCase

@@ -69,12 +69,25 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 				Check: o.Name, Severity: o.Level, Span: []int{1, 1},
 				Link: o.Link}
 		} else {
-			// NOTE: We take only the first match (`locs[0]`) instead of the
-			// whole scope (`txt`) to avoid having to fall back to string
-			// matching.
+			span := locs[0]
+
+			// We look for the first non-code match.
 			//
-			// See (core/location.go#initialPosition).
-			a, err = makeAlert(o.Definition, locs[0], txt)
+			// Previously, we would just use the first match, but this could
+			// lead to false positives if the first match was in a code-like
+			// token.
+			//
+			// We also can't use the entire scope (`txt`) without risking
+			// having to fall back to string matching.
+			for _, loc := range locs {
+				m, err := re2Loc(txt, loc)
+				if err == nil && !core.IsCode(m) {
+					span = loc
+					break
+				}
+			}
+
+			a, err = makeAlert(o.Definition, span, txt)
 			if err != nil {
 				return alerts, err
 			}

@@ -1,0 +1,6 @@
+extends: occurrence
+message: "Topic titles should use fewer than 70 characters."
+scope: heading & ~heading.h1
+level: warning
+max: 70
+token: .

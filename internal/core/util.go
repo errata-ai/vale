@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/errata-ai/vale/v3/internal/nlp"
 )
@@ -83,6 +84,16 @@ func ToSentence(words []string, andOrOr string) string {
 func IsLetter(s string) bool {
 	for _, r := range s {
 		if !unicode.IsLetter(r) {
+			return false
+		}
+	}
+	return true
+}
+
+// IsCode returns `true` if s is a code-like token.
+func IsCode(s string) bool {
+	for _, r := range s {
+		if r != '*' && r != '@' {
 			return false
 		}
 	}
@@ -318,4 +329,9 @@ func ReplaceExt(fp string, formats map[string]string) string {
 	}
 
 	return fp
+}
+
+// StrLen returns the number of runes in a string.
+func StrLen(s string) int {
+	return utf8.RuneCountInString(s)
 }
