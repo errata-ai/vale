@@ -71,7 +71,7 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 				Check: o.Name, Severity: o.Level, Span: []int{1, 1},
 				Link: o.Link}
 		} else {
-			span := locs[0]
+			span := []int{}
 
 			// We look for the first non-code match.
 			//
@@ -89,6 +89,13 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 					span = loc
 					break
 				}
+			}
+
+			// If we can't find a non-code match, we return early.
+			//
+			// The alternative here is to use `scope: raw`.
+			if len(span) == 0 {
+				return alerts, nil
 			}
 
 			a, err = makeAlert(o.Definition, span, txt)
