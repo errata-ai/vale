@@ -122,10 +122,11 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 		attr = getAttribute(tok, "href")
 		parentClass = getAttribute(tok, "class")
 
-		walker.replaceToks(tok)
 		if err := l.lintTags(f, walker, tok); err != nil {
 			return err
 		}
+
+		walker.replaceToks(tok)
 	}
 
 	return l.lintSizedScopes(f)
