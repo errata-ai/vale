@@ -1,6 +1,8 @@
 package check
 
 import (
+	"strings"
+
 	"github.com/errata-ai/regexp2"
 
 	"github.com/errata-ai/vale/v3/internal/core"
@@ -81,7 +83,9 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 			// having to fall back to string matching.
 			for _, loc := range locs {
 				m, rErr := re2Loc(txt, loc)
-				if rErr == nil && !core.IsCode(m) {
+				if rErr != nil || strings.TrimSpace(m) == "" {
+					continue
+				} else if !core.IsCode(m) {
 					span = loc
 					break
 				}
