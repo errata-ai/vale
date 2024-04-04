@@ -31,6 +31,8 @@ var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
 var reLinkRef = regexp.MustCompile(`\]\[(?:[^]\n]+)\]`)
 var reLinkDef = regexp.MustCompile(`\[(?:[^]\n]+)\]:`)
 
+var reNumericList = regexp.MustCompile(`(?m)^\d+\.`)
+
 func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
 
@@ -67,6 +69,11 @@ func (l Linter) lintMarkdown(f *core.File) error {
 	})
 	body = reLinkDef.ReplaceAllStringFunc(body, func(m string) string {
 		return "[" + strings.Repeat("*", nlp.StrLen(m)-3) + "]:"
+	})
+
+	// NOTE: This is required to avoid finding matches inside ordered lists.
+	body = reNumericList.ReplaceAllStringFunc(body, func(m string) string {
+		return strings.Repeat("*", nlp.StrLen(m))
 	})
 
 	f.Content = body
