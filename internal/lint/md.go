@@ -28,8 +28,8 @@ var goldMd = goldmark.New(
 // might confuse Blackfriday into normal "```".
 var reExInfo = regexp.MustCompile("`{3,}" + `.+`)
 
-var reLinkRef = regexp.MustCompile(`\]\[(?:[^]]+)\]`)
-var reLinkDef = regexp.MustCompile(`\[(?:[^]]+)\]:`)
+var reLinkRef = regexp.MustCompile(`\]\[(?:[^]\n]+)\]`)
+var reLinkDef = regexp.MustCompile(`\[(?:[^]\n]+)\]:`)
 
 func (l Linter) lintMarkdown(f *core.File) error {
 	var buf bytes.Buffer
