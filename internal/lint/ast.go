@@ -84,6 +84,7 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 			walker.activeTag = ""
 		} else if tokt == html.CommentToken {
 			f.UpdateComments(txt)
+			walker.update(txt, tokt)
 		} else if tokt == html.TextToken {
 			skip = skip || shouldBeSkipped(walker.tagHistory, f.NormedExt)
 			// NOTE: We used to create a "temporary" context here to support
