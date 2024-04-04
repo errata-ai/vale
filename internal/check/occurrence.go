@@ -80,8 +80,8 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 			// We also can't use the entire scope (`txt`) without risking
 			// having to fall back to string matching.
 			for _, loc := range locs {
-				m, err := re2Loc(txt, loc)
-				if err == nil && !core.IsCode(m) {
+				m, rErr := re2Loc(txt, loc)
+				if rErr == nil && !core.IsCode(m) {
 					span = loc
 					break
 				}
