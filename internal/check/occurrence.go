@@ -1,6 +1,7 @@
 package check
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/errata-ai/regexp2"
@@ -104,8 +105,8 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 			}
 		}
 
-		a.Message = o.Message
-		a.Description = o.Description
+		a.Message, a.Description = formatMessages(o.Message, o.Description,
+			strconv.Itoa(occurrences))
 		alerts = append(alerts, a)
 	}
 
