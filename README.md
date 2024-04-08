@@ -6,6 +6,10 @@
   <b>Vale</b> is a command-line tool that brings code-like linting to prose. It's <b><a href="#mag-at-a-glance-vale-vs-">fast</a></b>, <b>cross-platform</b> (Windows, macOS, and Linux), and <b>highly customizable</b>.
 </p>
 
+<p align="center">
+  <img width="75%" alt="A demo screenshot." src="https://vale.sh/images/vale/mac.png">
+</p>
+
 <div align="center">
 <table>
 <thead>
