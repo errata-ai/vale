@@ -93,9 +93,11 @@ func sync(_ []string, flags *core.CLIFlags) error {
 		return err
 	}
 
-	// NOTE: sync should *only* run for a single config file. In practice, this
-	// means that we sync only using the local search process.
-	rootINI := cfg.ConfigFiles[0]
+	// NOTE: sync should *only* run for a single config file.
+	rootINI, noRoot := cfg.Root()
+	if noRoot != nil {
+		return core.NewE100("sync", noRoot)
+	}
 
 	pkgs, err := core.GetPackages(rootINI)
 	if err != nil {

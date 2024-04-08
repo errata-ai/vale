@@ -26,7 +26,7 @@ func TestNoBaseConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = FromFile(cfg, true)
+	_, err = FromFile(cfg, false)
 	if err == nil {
 		t.Fatal("Expected error, got nil", cfg.ConfigFiles)
 	}

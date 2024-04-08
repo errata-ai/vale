@@ -257,13 +257,31 @@ func (c *Config) AddStylesPath(path string) {
 
 // ConfigFile returns the last configuration file in the list.
 //
-// This represents the user's project-specific configuration file -- i.e., the
+// This represents the user's project-agnostic configuration file -- i.e., the
 // last one that was added.
 func (c *Config) ConfigFile() string {
 	if len(c.ConfigFiles) > 0 {
 		return c.ConfigFiles[len(c.ConfigFiles)-1]
 	}
 	return ""
+}
+
+// Root returns the first configuration file in the list.
+func (c *Config) Root() (string, error) {
+	if len(c.ConfigFiles) > 0 {
+		return c.ConfigFiles[0], nil
+	}
+
+	root, err := DefaultConfig()
+	if err != nil {
+		return "", err
+	}
+
+	if !FileExists(root) {
+		return "", fmt.Errorf("no .vale.ini file found")
+	}
+
+	return root, nil
 }
 
 // GetStylesPath returns the last path in the list.
