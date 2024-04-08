@@ -17,13 +17,16 @@ type Substitution struct {
 	Definition `mapstructure:",squash"`
 	Exceptions []string
 	repl       []string
-	POS        string
 	Swap       map[string]string
 	exceptRe   *regexp2.Regexp
 	pattern    *regexp2.Regexp
 	Ignorecase bool
 	Nonword    bool
 	Vocab      bool
+	Capitalize bool
+
+	// Deprecated
+	POS string
 }
 
 // NewSubstitution creates a new `substitution`-based rule.
@@ -129,7 +132,7 @@ func (s Substitution) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 					if action.Name == "replace" && len(action.Params) == 0 {
 						action.Params = strings.Split(expected, "|")
 
-						if s.Ignorecase && observed == core.CapFirst(observed) {
+						if s.Capitalize && observed == core.CapFirst(observed) {
 							cased := []string{}
 							for _, param := range action.Params {
 								cased = append(cased, core.CapFirst(param))
@@ -138,7 +141,6 @@ func (s Substitution) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 						}
 
 						expected = core.ToSentence(action.Params, "or")
-
 						// NOTE: For backwards-compatibility, we need to ensure
 						// that we don't double quote.
 						s.Message = convertMessage(s.Message)

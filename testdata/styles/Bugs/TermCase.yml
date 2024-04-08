@@ -1,0 +1,10 @@
+---
+extends: substitution
+ignorecase: true
+level: error
+message: "Use %s rather than %s."
+action:
+  name: replace
+swap:
+  javascript: JavaScript
+  ios: iOS

@@ -91,6 +91,9 @@ Feature: Checks
             test.md:17:14:Bugs.URLCtx:Use 'Term' instead of 'term'
             test.md:19:5:Bugs.KeepCase:Use 'mutual TLS' rather than Mutual TLS.
             test.md:19:36:Bugs.KeepCase:Use 'vNIC' rather than VNIC.
+            test.md:21:1:Bugs.TermCase:Use 'JavaScript' rather than Javascript.
+            test.md:21:53:Bugs.TermCase:Use 'JavaScript' rather than javascript.
+            test.md:23:1:Bugs.TermCase:Use 'iOS' rather than IOS.
             """
 
     Scenario: Sequence
