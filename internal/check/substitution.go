@@ -129,7 +129,7 @@ func (s Substitution) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 					if action.Name == "replace" && len(action.Params) == 0 {
 						action.Params = strings.Split(expected, "|")
 
-						if observed == core.CapFirst(observed) {
+						if s.Ignorecase && observed == core.CapFirst(observed) {
 							cased := []string{}
 							for _, param := range action.Params {
 								cased = append(cased, core.CapFirst(param))

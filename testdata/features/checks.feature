@@ -86,6 +86,11 @@ Feature: Checks
             test.md:5:5:Bugs.Newline:Use 'test' rather than 'linuxptp'.
             test.md:8:5:Bugs.Newline:Use 'test' rather than 'linuxptp'.
             test.md:10:1:Bugs.URLCtx:Use 'Term' instead of 'term'
+            test.md:15:29:Bugs.MatchCase:Consider using 'human kind' instead of 'mankind'.
+            test.md:17:1:Bugs.MatchCase:Consider using 'Human kind' instead of 'Mankind'.
+            test.md:17:14:Bugs.URLCtx:Use 'Term' instead of 'term'
+            test.md:19:5:Bugs.KeepCase:Use 'mutual TLS' rather than Mutual TLS.
+            test.md:19:36:Bugs.KeepCase:Use 'vNIC' rather than VNIC.
             """
 
     Scenario: Sequence
