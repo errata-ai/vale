@@ -43,6 +43,14 @@
 
 ### Other
 
+> Thanks to [DigitalOcean][1] for providing hosting credits for [Vale Studio][2].
+
+<p>
+  <a href="https://www.digitalocean.com/">
+    <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" width="201px">
+  </a>
+</p>
+
 > Thanks to [Appwrite][4] for supporting Vale through their [Open Source Sponsorship program][3].
 
 <p>
