@@ -66,8 +66,7 @@ func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitu
 		replacement := rule.Swap[regexstr]
 
 		opens := strings.Count(regexstr, "(")
-		if opens != strings.Count(regexstr, "(?") &&
-			opens != strings.Count(regexstr, `\(`) {
+		if opens != strings.Count(regexstr, "(?")+strings.Count(regexstr, `\(`) {
 			// We rely on manually-added capture groups to associate a match
 			// with its replacement -- e.g.,
 			//

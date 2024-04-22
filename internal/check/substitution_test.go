@@ -54,3 +54,63 @@ func TestIsDeterministic(t *testing.T) {
 		}
 	}
 }
+
+func TestRegex(t *testing.T) {
+	swap := map[string]interface{}{
+		"extends":    "substitution",
+		"name":       "Vale.Terms",
+		"level":      "error",
+		"message":    "Use '%s' instead of '%s'.",
+		"scope":      "text",
+		"ignorecase": true,
+		"swap": map[string]string{
+			`(?:foo|bar)`: "sub",
+		},
+	}
+	text := "foo"
+	rule, err := makeSubstitution(swap)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	actual, err := rule.Run(nlp.NewBlock(text, text, "text"), &core.File{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := "Use 'sub' instead of 'foo'."
+	message := actual[0].Message
+	if message != expected {
+		t.Fatalf("Expected message `%s`, got `%s`", expected, message)
+	}
+}
+
+func TestRegexEscapedParens(t *testing.T) {
+	swap := map[string]interface{}{
+		"extends":    "substitution",
+		"name":       "Vale.Terms",
+		"level":      "error",
+		"message":    "Use '%s' instead of '%s'.",
+		"scope":      "text",
+		"ignorecase": true,
+		"swap": map[string]string{
+			`(?!\()(?:foo|bar)(?!\))?`: "sub",
+		},
+	}
+	text := "(foo)"
+	rule, err := makeSubstitution(swap)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	actual, err := rule.Run(nlp.NewBlock(text, text, "text"), &core.File{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := "Use 'sub' instead of 'foo'."
+	message := actual[0].Message
+	if message != expected {
+		t.Fatalf("Expected message `%s`, got `%s`", expected, message)
+	}
+}
