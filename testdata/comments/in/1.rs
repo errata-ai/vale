@@ -30,7 +30,7 @@ impl Person {
     /// Gives a friendly hello!
     ///
     /// Says "Hello, [name]" to the `Person` it is called on.
-    pub fn hello(& self) {
+    pub fn hello(&self) {
         println!("Hello, {}!", self.name);
     }
 }

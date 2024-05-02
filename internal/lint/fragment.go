@@ -3,18 +3,29 @@ package lint
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/errata-ai/vale/v3/internal/core"
+	"github.com/errata-ai/vale/v3/internal/lint/code"
 )
 
-func coalesce(comments []Comment) []Comment {
-	var joined []Comment
+func shouldMerge(curr, prev code.Comment) bool {
+	return true
+}
+
+func coalesce(comments []code.Comment) []code.Comment {
+	var joined []code.Comment
 
 	buf := bytes.Buffer{}
 	for i, comment := range comments {
+		offset := comment.Offset
+		if i > 0 {
+			offset += comments[i-1].Offset
+		}
+
 		if comment.Scope == "text.comment.block" { //nolint:gocritic
 			joined = append(joined, comment)
-		} else if i == 0 || comments[i-1].Line != comment.Line-1 {
+		} else if i == 0 || shouldMerge(comment, comments[i-1]) {
 			if buf.Len() > 0 {
 				// We have comments to merge ...
 				last := joined[len(joined)-1]
@@ -35,10 +46,14 @@ func coalesce(comments []Comment) []Comment {
 		buf.Reset()
 	}
 
+	for i, comment := range joined {
+		joined[i].Text = strings.TrimLeft(comment.Text, " ")
+	}
+
 	return joined
 }
 
-func adjustAlerts(last int, ctx Comment, alerts []core.Alert) []core.Alert {
+func adjustAlerts(last int, ctx code.Comment, alerts []core.Alert) []core.Alert {
 	for i := range alerts {
 		if i >= last {
 			alerts[i].Line += ctx.Line - 1
@@ -56,7 +71,8 @@ func (l *Linter) lintFragments(f *core.File) error {
 	l.HasDir = true
 
 	last := 0
-	for _, comment := range coalesce(getComments(f.Content, f.RealExt)) {
+	// coalesce(getComments(f.Content, f.RealExt))
+	for _, comment := range []code.Comment{} {
 		f.SetText(comment.Text)
 
 		switch f.NormedExt {

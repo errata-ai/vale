@@ -1,0 +1,20 @@
+[
+    {
+        "Text": "\nPackage lint implments Vale's syntax-aware linting functionality.\n\nThe package is split into core linting logic (this file), source code\n(code.go), and markup (markup.go).\n",
+        "Line": 1,
+        "Offset": 0,
+        "Scope": "text.comment.block"
+    },
+    {
+        "Text": "Println formats using the default formats for its oprands and writes to standard output. Spaces are always added between operands and a newline is appended. It returns the number of bytes written and any write error encountered.",
+        "Line": 11,
+        "Offset": 0,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "foo bar",
+        "Line": 21,
+        "Offset": 14,
+        "Scope": "text.comment.line"
+    }
+]

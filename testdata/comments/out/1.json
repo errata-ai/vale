@@ -1,0 +1,26 @@
+[
+    {
+        "Text": "A human being is representd here\n",
+        "Line": 3,
+        "Offset": 0,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "A person must have a name, no matter how much Juliet may hate it\n",
+        "Line": 5,
+        "Offset": 4,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "Returns a person with the name given them\n\n # Arguments\n\n * `foof` - A string slice that holds the name of the person\n\n # Examples\n\n ```rust\n // You can have rust code between fences inside the comments\n // If you pass --test to `rustdoc`, it will even test it for you!\n use doc::Person;\n let person = Person::new(\"name\");\n ```\n",
+        "Line": 10,
+        "Offset": 4,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "Gives a friendly hello!\n\n Says \"Hello, [name]\" to the `Person` it is called on.\n",
+        "Line": 30,
+        "Offset": 4,
+        "Scope": "text.comment.line"
+    }
+]

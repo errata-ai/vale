@@ -57,6 +57,7 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.2 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
+	github.com/smacker/go-tree-sitter v0.0.0-20240423010953-8ba036550382 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect

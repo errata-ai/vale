@@ -1,0 +1,26 @@
+[
+    {
+        "Text": "FIXME:",
+        "Line": 1,
+        "Offset": 0,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "XXX: This should be flagged!",
+        "Line": 11,
+        "Offset": 0,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "XXX:",
+        "Line": 13,
+        "Offset": 13,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "NOTE:",
+        "Line": 14,
+        "Offset": 11,
+        "Scope": "text.comment.line"
+    }
+]

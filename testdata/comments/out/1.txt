@@ -1,20 +1,19 @@
-FIXME:
+A human being is representd here
+A person must have a name, no matter how much Juliet may hate it
+Returns a person with the name given them
 
-FIXME:
-XXX: This should be flagged!
-XXX:
-NOTE:
+# Arguments
 
-NOTE:
+* `foof` - A string slice that holds the name of the person
 
+# Examples
 
+```rust
+// You can have rust code between fences inside the comments
+// If you pass --test to `rustdoc`, it will even test it for you!
+use doc::Person;
+let person = Person::new("name");
+```
+Gives a friendly hello!
 
-
-
-XXX:
-
-NOTE:
-NOTE This is the start of a block.
-
-TODO: Assume that a file is modified since an invalid timestamp as per RFC
-2616, section 14.25. GMT
+Says "Hello, [name]" to the `Person` it is called on.
