@@ -1,57 +1,11 @@
 package lint
 
 import (
-	"bytes"
 	"fmt"
-	"strings"
 
 	"github.com/errata-ai/vale/v3/internal/core"
 	"github.com/errata-ai/vale/v3/internal/lint/code"
 )
-
-func shouldMerge(curr, prev code.Comment) bool {
-	return true
-}
-
-func coalesce(comments []code.Comment) []code.Comment {
-	var joined []code.Comment
-
-	buf := bytes.Buffer{}
-	for i, comment := range comments {
-		offset := comment.Offset
-		if i > 0 {
-			offset += comments[i-1].Offset
-		}
-
-		if comment.Scope == "text.comment.block" { //nolint:gocritic
-			joined = append(joined, comment)
-		} else if i == 0 || shouldMerge(comment, comments[i-1]) {
-			if buf.Len() > 0 {
-				// We have comments to merge ...
-				last := joined[len(joined)-1]
-				last.Text += buf.String()
-				joined[len(joined)-1] = last
-				buf.Reset()
-			}
-			joined = append(joined, comment)
-		} else {
-			buf.WriteString(comment.Text)
-		}
-	}
-
-	if buf.Len() > 0 {
-		last := joined[len(joined)-1]
-		last.Text += buf.String()
-		joined[len(joined)-1] = last
-		buf.Reset()
-	}
-
-	for i, comment := range joined {
-		joined[i].Text = strings.TrimLeft(comment.Text, " ")
-	}
-
-	return joined
-}
 
 func adjustAlerts(last int, ctx code.Comment, alerts []core.Alert) []core.Alert {
 	for i := range alerts {

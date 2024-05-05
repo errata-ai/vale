@@ -3,21 +3,19 @@ package code
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 
 	sitter "github.com/smacker/go-tree-sitter"
-	"github.com/smacker/go-tree-sitter/golang"
-	"github.com/smacker/go-tree-sitter/python"
-	"github.com/smacker/go-tree-sitter/rust"
 )
 
 // Language represents a supported programming language.
 //
 // NOTE: What about haskell, less, perl, php, powershell, r, sass, swift?
 type Language struct {
-	Delimiters []string
-	Sitter     *sitter.Language
-	Query      string
+	Delims *regexp.Regexp
+	Parser *sitter.Language
+	Query  string
 }
 
 // Comment represents an in-code comment (line or block).
@@ -31,23 +29,11 @@ type Comment struct {
 func getLanguageFromExt(ext string) (*Language, error) {
 	switch ext {
 	case ".go":
-		return &Language{
-			Delimiters: []string{"//", "/*", "*/"},
-			Sitter:     golang.GetLanguage(),
-			Query:      "(comment)+ @comment",
-		}, nil
+		return Go(), nil
 	case ".rs":
-		return &Language{
-			Delimiters: []string{"///", "//"},
-			Sitter:     rust.GetLanguage(),
-			Query:      "(line_comment)+ @comment",
-		}, nil
+		return Rust(), nil
 	case ".py":
-		return &Language{
-			Delimiters: []string{"#"},
-			Sitter:     python.GetLanguage(),
-			Query:      `(comment) @comment`,
-		}, nil
+		return Python(), nil
 	default:
 		return nil, fmt.Errorf("unsupported extension: '%s'", ext)
 	}
@@ -57,7 +43,7 @@ func getComments(source []byte, lang *Language) ([]Comment, error) {
 	var comments []Comment
 
 	parser := sitter.NewParser()
-	parser.SetLanguage(lang.Sitter)
+	parser.SetLanguage(lang.Parser)
 
 	tree, err := parser.ParseCtx(context.Background(), nil, source)
 	if err != nil {
@@ -65,7 +51,7 @@ func getComments(source []byte, lang *Language) ([]Comment, error) {
 	}
 	n := tree.RootNode()
 
-	q, err := sitter.NewQuery([]byte(lang.Query), lang.Sitter)
+	q, err := sitter.NewQuery([]byte(lang.Query), lang.Parser)
 	if err != nil {
 		return comments, err
 	}
@@ -79,12 +65,9 @@ func getComments(source []byte, lang *Language) ([]Comment, error) {
 			break
 		}
 
+		m = qc.FilterPredicates(m, source)
 		for _, c := range m.Captures {
-			text := c.Node.Content(source)
-
-			for _, d := range lang.Delimiters {
-				text = strings.Trim(text, d)
-			}
+			text := lang.Delims.ReplaceAllString(c.Node.Content(source), "")
 
 			scope := "text.comment.line"
 			if strings.Count(text, "\n") > 1 {
