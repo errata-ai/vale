@@ -78,6 +78,7 @@ linters:
     - bodyclose
     - contextcheck
     - dupl
+    - dupword
     - durationcheck
     - errname
     - errorlint
