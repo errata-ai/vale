@@ -107,6 +107,7 @@ linters:
     - sqlclosecheck
     - stylecheck
     - tenv
+    - thelper
     - tparallel
     - unconvert
     - unparam
