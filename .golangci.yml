@@ -92,6 +92,7 @@ linters:
     - goprintffuncname
     - gosec
     - makezero
+    - mirror
     - nakedret
     - nilerr
     - nilnil
