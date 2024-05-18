@@ -11,7 +11,7 @@ var knownConfig = filepath.Join(testData, "fixtures", "formats", ".vale.ini")
 // TestNoBaseConfig tests that we raise an error if we can't find a base
 // config.
 func TestNoBaseConfig(t *testing.T) {
-	cfg, err := NewConfig(&CLIFlags{})
+	cfg, err := NewConfig(&CLIFlags{IgnoreGlobal: true})
 	if err != nil {
 		t.Fatal(err)
 	}
