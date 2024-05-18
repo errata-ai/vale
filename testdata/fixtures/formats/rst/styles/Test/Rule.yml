@@ -1,0 +1,9 @@
+---
+extends: substitution
+ignorecase: false
+level: error
+message: "Use '%s' rather than '%s'."
+action:
+  name: replace
+swap:
+  BIG needles: BIG Needles

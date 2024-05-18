@@ -66,6 +66,11 @@ When(/^I lint AsciiDoc "(.*)"$/) do |file|
   step %(I run `#{cmd} #{file}`)
 end
 
+When(/^I lint reStructuredText "(.*)"$/) do |file|
+  step %(I cd to "../../fixtures/formats/rst")
+  step %(I run `#{cmd} #{file}`)
+end
+
 When(/^I lint file "([^\s]+)" as "([^\s]+)"$/) do |file, ext|
   step %(I cd to "../../fixtures/formats")
   step %(I run `#{cmd} --ext='#{ext}' #{file}`)

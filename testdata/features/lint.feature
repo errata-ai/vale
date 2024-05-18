@@ -39,6 +39,17 @@ Feature: Lint
             test.org:50:18:vale.Annotations:'TODO' left in text
             """
 
+    Scenario: Lint a reStructuredText file
+        When I lint A "test.rst"
+        Then the output should contain exactly:
+            """
+            test.rst:15:1:Test.Test3:Use 'BIG Needles' rather than 'BIG needles'.
+            test.rst:22:59:Test.Test3:Use 'BIG Needles' rather than 'BIG needles'.
+            test.rst:23:43:Test.Test3:Use 'BIG Needles' rather than 'BIG needles'.
+            test.rst:25:22:Test.Test3:Use 'BIG Needles' rather than 'BIG needles'.
+            test.rst:29:17:Test.Test3:Use 'BIG Needles' rather than 'BIG needles'.
+            """
+
     Scenario: Lint a AsciiDoc file
         When I lint AsciiDoc "test.adoc"
         Then the output should contain exactly:

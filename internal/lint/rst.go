@@ -17,12 +17,10 @@ import (
 // `::` for rst2html, including the use of runtime options (e.g., :caption:).
 var reCodeBlock = regexp.MustCompile(`.. (?:raw|code(?:-block)?):: (?:[\w-]+)(?:\s+:\w+: .+)*`)
 
-// HACK: We replace custom Sphinx directives with `.. code::`.
-//
-// This isn't ideal, but it appears to be necessary.
+// We replace custom directives with `.. code::`.
 //
 // See https://github.com/errata-ai/vale/v2/issues/119.
-var reSphinx = regexp.MustCompile(`.. glossary::`)
+var reSphinx = regexp.MustCompile(`.. (?:glossary|contents)::`)
 var rstArgs = []string{
 	"--quiet",
 	"--halt=5",
