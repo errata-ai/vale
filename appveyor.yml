@@ -5,8 +5,11 @@ environment:
   GOPATH: c:\GOPATH
   GOROOT: C:\go
   GOVERSION: 1.21.0
+  # tree-sitter
+  CGO_ENABLED: 1
+  CC: C:\msys64\mingw64\bin\gcc.exe
 init:
-  - cmd: set PATH=C:\MinGW\bin;%cd%/bin;%PATH%
+  - cmd: set PATH=C:\msys64\mingw64\bin;C:\MinGW\bin;%cd%/bin;%PATH%
 install:
   - set PATH=%GOPATH%\bin;c:\go\bin;C:\Ruby24\bin;%cd%;%PATH%
 
