@@ -6,6 +6,12 @@
         "Scope": "text.comment.line"
     },
     {
+        "Text": "FIXME:",
+        "Line": 5,
+        "Offset": 4,
+        "Scope": "text.comment.line"
+    },
+    {
         "Text": "XXX: This should be flagged!",
         "Line": 13,
         "Offset": 0,
@@ -22,5 +28,17 @@
         "Line": 16,
         "Offset": 12,
         "Scope": "text.comment.line"
+    },
+    {
+        "Text": "NOTE:",
+        "Line": 30,
+        "Offset": 4,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "NOTE This is the start of a block.\n\n    TODO: Assume that a file is modified since an invalid timestamp as per RFC\n    2616, section 14.25. GMT",
+        "Line": 39,
+        "Offset": 4,
+        "Scope": "text.comment.block"
     }
 ]

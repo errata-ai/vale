@@ -2,21 +2,10 @@ package code
 
 import (
 	"context"
-	"fmt"
-	"regexp"
-	"strings"
+	"sort"
 
 	sitter "github.com/smacker/go-tree-sitter"
 )
-
-// Language represents a supported programming language.
-//
-// NOTE: What about haskell, less, perl, php, powershell, r, sass, swift?
-type Language struct {
-	Delims *regexp.Regexp
-	Parser *sitter.Language
-	Query  string
-}
 
 // Comment represents an in-code comment (line or block).
 type Comment struct {
@@ -24,19 +13,6 @@ type Comment struct {
 	Line   int
 	Offset int
 	Scope  string
-}
-
-func getLanguageFromExt(ext string) (*Language, error) {
-	switch ext {
-	case ".go":
-		return Go(), nil
-	case ".rs":
-		return Rust(), nil
-	case ".py":
-		return Python(), nil
-	default:
-		return nil, fmt.Errorf("unsupported extension: '%s'", ext)
-	}
 }
 
 func getComments(source []byte, lang *Language) ([]Comment, error) {
@@ -49,38 +25,20 @@ func getComments(source []byte, lang *Language) ([]Comment, error) {
 	if err != nil {
 		return comments, err
 	}
-	n := tree.RootNode()
+	engine := NewQueryEngine(tree, lang.Delims)
 
-	q, err := sitter.NewQuery([]byte(lang.Query), lang.Parser)
-	if err != nil {
-		return comments, err
+	for _, query := range lang.Queries {
+		q, qErr := sitter.NewQuery([]byte(query), lang.Parser)
+		if qErr != nil {
+			return comments, err
+		}
+		comments = append(comments, engine.run(q, source)...)
 	}
 
-	qc := sitter.NewQueryCursor()
-	qc.Exec(q, n)
-
-	for {
-		m, ok := qc.NextMatch()
-		if !ok {
-			break
-		}
-
-		m = qc.FilterPredicates(m, source)
-		for _, c := range m.Captures {
-			text := lang.Delims.ReplaceAllString(c.Node.Content(source), "")
-
-			scope := "text.comment.line"
-			if strings.Count(text, "\n") > 1 {
-				scope = "text.comment.block"
-			}
-
-			comments = append(comments, Comment{
-				Line:   int(c.Node.StartPoint().Row) + 1,
-				Offset: int(c.Node.StartPoint().Column),
-				Scope:  scope,
-				Text:   text,
-			})
-		}
+	if len(lang.Queries) > 1 {
+		sort.Slice(comments, func(p, q int) bool {
+			return comments[p].Line < comments[q].Line
+		})
 	}
 
 	return comments, nil
