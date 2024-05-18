@@ -8,8 +8,9 @@ import (
 
 func Go() *Language {
 	return &Language{
-		Delims:  regexp.MustCompile(`//\s?|/\*\s?|\s?\*/`),
+		Delims:  regexp.MustCompile(`// ?|/\* ?| ?\*/`),
 		Parser:  golang.GetLanguage(),
 		Queries: []string{`(comment)+ @comment`},
+		Padding: cStyle,
 	}
 }

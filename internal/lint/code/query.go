@@ -1,7 +1,6 @@
 package code
 
 import (
-	"regexp"
 	"strings"
 
 	sitter "github.com/smacker/go-tree-sitter"
@@ -9,14 +8,13 @@ import (
 
 type QueryEngine struct {
 	tree *sitter.Tree
-	// NOTE: Should we strip the delimiters using `#strip!`?
-	delims *regexp.Regexp
+	lang *Language
 }
 
-func NewQueryEngine(tree *sitter.Tree, delims *regexp.Regexp) *QueryEngine {
+func NewQueryEngine(tree *sitter.Tree, lang *Language) *QueryEngine {
 	return &QueryEngine{
-		tree:   tree,
-		delims: delims,
+		tree: tree,
+		lang: lang,
 	}
 }
 
@@ -34,10 +32,11 @@ func (qe *QueryEngine) run(q *sitter.Query, source []byte) []Comment {
 
 		m = qc.FilterPredicates(m, source)
 		for _, c := range m.Captures {
-			text := qe.delims.ReplaceAllString(c.Node.Content(source), "")
+			rText := c.Node.Content(source)
+			cText := qe.lang.Delims.ReplaceAllString(rText, "")
 
 			scope := "text.comment.line"
-			if strings.Count(text, "\n") > 1 {
+			if strings.Count(cText, "\n") > 1 {
 				scope = "text.comment.block"
 			}
 
@@ -45,7 +44,8 @@ func (qe *QueryEngine) run(q *sitter.Query, source []byte) []Comment {
 				Line:   int(c.Node.StartPoint().Row) + 1,
 				Offset: int(c.Node.StartPoint().Column),
 				Scope:  scope,
-				Text:   text,
+				Text:   cText,
+				Source: rText,
 			})
 		}
 	}

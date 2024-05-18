@@ -10,12 +10,14 @@ import (
 // Comment represents an in-code comment (line or block).
 type Comment struct {
 	Text   string
+	Source string
 	Line   int
 	Offset int
 	Scope  string
 }
 
-func getComments(source []byte, lang *Language) ([]Comment, error) {
+// GetComments returns all comments in the given source code.
+func GetComments(source []byte, lang *Language) ([]Comment, error) {
 	var comments []Comment
 
 	parser := sitter.NewParser()
@@ -25,7 +27,7 @@ func getComments(source []byte, lang *Language) ([]Comment, error) {
 	if err != nil {
 		return comments, err
 	}
-	engine := NewQueryEngine(tree, lang.Delims)
+	engine := NewQueryEngine(tree, lang)
 
 	for _, query := range lang.Queries {
 		q, qErr := sitter.NewQuery([]byte(query), lang.Parser)

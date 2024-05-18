@@ -32,12 +32,12 @@ func TestComments(t *testing.T) {
 			t.Error(err1)
 		}
 
-		lang, err2 := getLanguageFromExt(filepath.Ext(f.Name()))
+		lang, err2 := GetLanguageFromExt(filepath.Ext(f.Name()))
 		if err2 != nil {
 			t.Error(err2)
 		}
 
-		comments, err3 := getComments(b, lang)
+		comments, err3 := GetComments(b, lang)
 		if err3 != nil {
 			t.Error(err3)
 		}

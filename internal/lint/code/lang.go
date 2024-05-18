@@ -7,6 +7,8 @@ import (
 	sitter "github.com/smacker/go-tree-sitter"
 )
 
+type padding func(string) int
+
 // Language represents a supported programming language.
 //
 // NOTE: What about haskell, less, perl, php, powershell, r, sass, swift?
@@ -14,9 +16,11 @@ type Language struct {
 	Delims  *regexp.Regexp
 	Parser  *sitter.Language
 	Queries []string
+	Padding padding
 }
 
-func getLanguageFromExt(ext string) (*Language, error) {
+// GetLanguageFromExt returns a Language based on the given file extension.
+func GetLanguageFromExt(ext string) (*Language, error) {
 	switch ext {
 	case ".go":
 		return Go(), nil
