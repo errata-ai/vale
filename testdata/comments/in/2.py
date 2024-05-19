@@ -3,7 +3,13 @@
 
 def FIXME():
     """
-    FIXME:
+    FIXME: this is *mardown*.
+
+    ```python
+    print("FIXME: this is *python*.")
+    ```
+
+    New line.
     """
     print("""
 FIXME: This should *not* be linted.

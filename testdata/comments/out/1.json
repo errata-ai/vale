@@ -14,121 +14,16 @@
         "Scope": "text.comment.line"
     },
     {
-        "Text": "Returns a person with the name given them\n",
-        "Source": "/// Returns a person with the name given them\n",
+        "Text": "Returns a person with the name given them\n\n # Arguments\n\n * `foof` - A string slice that holds the name of the person\n\n # Examples\n\n ```rust\n  You can have rust code between fences inside the comments\n  If you pass --test to `rustdoc`, it will even test it for you!\n use doc::Person;\n let person = Person::new(\"name\");\n ```\n",
+        "Source": "/// Returns a person with the name given them\n\n///\n\n/// # Arguments\n\n///\n\n/// * `foof` - A string slice that holds the name of the person\n\n///\n\n/// # Examples\n\n///\n\n/// ```rust\n\n/// // You can have rust code between fences inside the comments\n\n/// // If you pass --test to `rustdoc`, it will even test it for you!\n\n/// use doc::Person;\n\n/// let person = Person::new(\"name\");\n\n/// ```\n\n",
         "Line": 10,
         "Offset": 4,
         "Scope": "text.comment.line"
     },
     {
-        "Text": "",
-        "Source": "///\n",
-        "Line": 11,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "# Arguments\n",
-        "Source": "/// # Arguments\n",
-        "Line": 12,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "",
-        "Source": "///\n",
-        "Line": 13,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "* `foof` - A string slice that holds the name of the person\n",
-        "Source": "/// * `foof` - A string slice that holds the name of the person\n",
-        "Line": 14,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "",
-        "Source": "///\n",
-        "Line": 15,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "# Examples\n",
-        "Source": "/// # Examples\n",
-        "Line": 16,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "",
-        "Source": "///\n",
-        "Line": 17,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "```rust\n",
-        "Source": "/// ```rust\n",
-        "Line": 18,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "You can have rust code between fences inside the comments\n",
-        "Source": "/// // You can have rust code between fences inside the comments\n",
-        "Line": 19,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "If you pass --test to `rustdoc`, it will even test it for you!\n",
-        "Source": "/// // If you pass --test to `rustdoc`, it will even test it for you!\n",
-        "Line": 20,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "use doc::Person;\n",
-        "Source": "/// use doc::Person;\n",
-        "Line": 21,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "let person = Person::new(\"name\");\n",
-        "Source": "/// let person = Person::new(\"name\");\n",
-        "Line": 22,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "```\n",
-        "Source": "/// ```\n",
-        "Line": 23,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "Gives a friendly hello!\n",
-        "Source": "/// Gives a friendly hello!\n",
+        "Text": "Gives a friendly hello!\n\n Says \"Hello, [name]\" to the `Person` it is called on.\n",
+        "Source": "/// Gives a friendly hello!\n\n///\n\n/// Says \"Hello, [name]\" to the `Person` it is called on.\n\n",
         "Line": 30,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "",
-        "Source": "///\n",
-        "Line": 31,
-        "Offset": 4,
-        "Scope": "text.comment.line"
-    },
-    {
-        "Text": "Says \"Hello, [name]\" to the `Person` it is called on.\n",
-        "Source": "/// Says \"Hello, [name]\" to the `Person` it is called on.\n",
-        "Line": 32,
         "Offset": 4,
         "Scope": "text.comment.line"
     }

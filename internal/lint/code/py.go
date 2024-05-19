@@ -8,7 +8,7 @@ import (
 
 func Python() *Language {
 	return &Language{
-		Delims: regexp.MustCompile(`#\s?|\s*"""\s*|\s*'''\s*`),
+		Delims: regexp.MustCompile(`#|"""|'''`),
 		Parser: python.GetLanguage(),
 		Queries: []string{
 			`(comment)+ @comment`,
@@ -18,11 +18,11 @@ func Python() *Language {
  (#offset! @docstring 0 3 0 -3))`,
 			// Class docstring
 			`((class_definition
-  body: (block . (expression_statement (string) @rst)))
- (#offset! @rst 0 3 0 -3))`,
+  body: (block . (expression_statement (string) @docstring)))
+ (#offset! @docstring 0 3 0 -3))`,
 			// Module docstring
-			`((module . (expression_statement (string) @rst))
- (#offset! @rst 0 3 0 -3))`,
+			`((module . (expression_statement (string) @docstring))
+ (#offset! @docstring 0 3 0 -3))`,
 		},
 	}
 }

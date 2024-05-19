@@ -1,6 +1,7 @@
 package code
 
 import (
+	"bytes"
 	"strings"
 
 	sitter "github.com/smacker/go-tree-sitter"
@@ -38,6 +39,14 @@ func (qe *QueryEngine) run(q *sitter.Query, source []byte) []Comment {
 			scope := "text.comment.line"
 			if strings.Count(cText, "\n") > 1 {
 				scope = "text.comment.block"
+
+				buf := bytes.Buffer{}
+				for _, line := range strings.Split(cText, "\n") {
+					buf.WriteString(strings.TrimLeft(line, " "))
+					buf.WriteString("\n")
+				}
+
+				cText = buf.String()
 			}
 
 			comments = append(comments, Comment{

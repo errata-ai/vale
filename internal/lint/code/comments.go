@@ -1,8 +1,10 @@
 package code
 
 import (
+	"bytes"
 	"context"
 	"sort"
+	"strings"
 
 	sitter "github.com/smacker/go-tree-sitter"
 )
@@ -14,6 +16,67 @@ type Comment struct {
 	Line   int
 	Offset int
 	Scope  string
+}
+
+// doneMerging determines when we should *stop* concatenating line-scoped
+// comments.
+func doneMerging(curr, prev Comment) bool {
+	if prev.Line != curr.Line-1 {
+		// If the comments aren't on consecutive lines, don't merge them.
+		return true
+	} else if prev.Offset != curr.Offset {
+		// If the comments aren't at the same offset, don't merge them.
+		return true
+	}
+	return false
+}
+
+func coalesce(comments []Comment) []Comment {
+	var joined []Comment
+
+	tBuf := bytes.Buffer{}
+	sBuf := bytes.Buffer{}
+
+	for i, comment := range comments {
+		if comment.Scope == "text.comment.block" { //nolint:gocritic
+			joined = append(joined, comment)
+		} else if i == 0 || doneMerging(comment, comments[i-1]) {
+			if tBuf.Len() > 0 {
+				// We have comments to merge ...
+				last := joined[len(joined)-1]
+
+				last.Text += tBuf.String()
+				last.Source += ("\n" + sBuf.String())
+
+				joined[len(joined)-1] = last
+
+				tBuf.Reset()
+				sBuf.Reset()
+			}
+			joined = append(joined, comment)
+		} else {
+			tBuf.WriteString(comment.Text)
+			sBuf.WriteString(comment.Source + "\n")
+		}
+	}
+
+	if tBuf.Len() > 0 {
+		last := joined[len(joined)-1]
+
+		last.Text += tBuf.String()
+		last.Source += ("\n" + sBuf.String())
+
+		joined[len(joined)-1] = last
+
+		tBuf.Reset()
+		sBuf.Reset()
+	}
+
+	for i, comment := range joined {
+		joined[i].Text = strings.TrimLeft(comment.Text, " ")
+	}
+
+	return joined
 }
 
 // GetComments returns all comments in the given source code.
@@ -43,5 +106,5 @@ func GetComments(source []byte, lang *Language) ([]Comment, error) {
 		})
 	}
 
-	return comments, nil
+	return coalesce(comments), nil
 }
