@@ -21,7 +21,7 @@ install:
 
   - cinst ansicon
 
-  - pip install sphinx
+  - pip install docutils
   - gem install asciidoctor
 
   - choco install xsltproc
