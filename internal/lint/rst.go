@@ -5,7 +5,6 @@ import (
 	"errors"
 	"os/exec"
 	"regexp"
-	"runtime"
 	"strings"
 
 	"github.com/errata-ai/vale/v3/internal/core"
@@ -60,17 +59,10 @@ func (l *Linter) lintRST(f *core.File) error {
 	return l.lintHTMLTokens(f, []byte(html), 0)
 }
 
-func callRst(text, lib, exe string) (string, error) {
+func callRst(text, lib, _ string) (string, error) {
 	var out bytes.Buffer
-	var cmd *exec.Cmd
 
-	if strings.HasPrefix(runtime.GOOS, "windows") {
-		// rst2html is executable by default on Windows.
-		cmd = exec.Command(exe, append([]string{lib}, rstArgs...)...) //nolint:gosec
-	} else {
-		cmd = exec.Command(lib, rstArgs...)
-	}
-
+	cmd := exec.Command(lib, rstArgs...)
 	cmd.Stdin = strings.NewReader(text)
 	cmd.Stdout = &out
 
