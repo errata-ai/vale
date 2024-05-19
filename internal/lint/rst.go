@@ -75,7 +75,7 @@ func callRst(text, lib, exe string) (string, error) {
 	cmd.Stdout = &out
 
 	if err := cmd.Run(); err != nil {
-		return "", core.NewE100("callRst", err)
+		return "", err
 	}
 
 	html := out.String()
