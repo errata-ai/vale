@@ -11,19 +11,27 @@ func toJSON(comments []Comment) string {
 }
 
 func cStyle(s string) int {
+	return computePadding(s, []string{"/*", "//"})
+}
+
+func computePadding(s string, makers []string) int {
 	padding := 0
 
-	if strings.HasPrefix(s, "//") || strings.HasPrefix(s, "/*") {
-		padding = 2
-		for i, r := range s {
-			if i < 2 {
-				continue
-			}
+	for _, m := range makers {
+		if strings.HasPrefix(s, m) {
+			l := len(m)
 
-			if r == ' ' {
-				padding++
-			} else {
-				break
+			padding = l
+			for i, r := range s {
+				if i < l {
+					continue
+				}
+
+				if r == ' ' {
+					padding++
+				} else {
+					break
+				}
 			}
 		}
 	}

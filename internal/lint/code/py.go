@@ -24,5 +24,8 @@ func Python() *Language {
 			`((module . (expression_statement (string) @docstring))
  (#offset! @docstring 0 3 0 -3))`,
 		},
+		Padding: func(s string) int {
+			return computePadding(s, []string{"#", `"""`, "'''"})
+		},
 	}
 }
