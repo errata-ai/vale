@@ -12,6 +12,15 @@ Feature: Fragments
             test.py:18:29:Vale.Spelling:Did you really mean 'docmentation'?
             test.py:20:20:Vale.Spelling:Did you really mean 'ducmenation'?
             test.py:24:13:Vale.Spelling:Did you really mean 'parapp'?
+            test.rb:2:23:Vale.Spelling:Did you really mean 'thre'?
+            test.rb:6:6:Vale.Spelling:Did you really mean 'stil'?
+            test.rb:9:36:Vale.Spelling:Did you really mean 'coment'?
+            test.rb:11:16:Vale.Spelling:Did you really mean 'foof'?
+            test.rb:11:21:Vale.Spelling:Did you really mean 'hopl'?
+            test.rb:15:16:Vale.Spelling:Did you really mean 'foof'?
+            test.rb:15:21:Vale.Spelling:Did you really mean 'hopll'?
+            test.rb:17:16:Vale.Spelling:Did you really mean 'foof'?
+            test.rb:17:21:Vale.Spelling:Did you really mean 'hopl'?
             test.rs:3:22:Vale.Spelling:Did you really mean 'representd'?
             test.rs:5:22:Vale.Spelling:Did you really mean 'representd'?
             test.rs:7:39:Vale.Spelling:Did you really mean 'mattter'?

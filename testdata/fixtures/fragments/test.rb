@@ -15,3 +15,5 @@ TODO: add more tests?
 # XXX: this is foof hopll.
 
 # XXX: this is foof hopl.
+
+foof = 1

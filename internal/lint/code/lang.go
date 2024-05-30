@@ -28,6 +28,8 @@ func GetLanguageFromExt(ext string) (*Language, error) {
 		return Rust(), nil
 	case ".py":
 		return Python(), nil
+	case ".rb":
+		return Ruby(), nil
 	default:
 		return nil, fmt.Errorf("unsupported extension: '%s'", ext)
 	}
