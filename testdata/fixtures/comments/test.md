@@ -12,6 +12,24 @@ This is some text ACT test
 
 <!-- vale vale.Redundancy = YES -->
 
+<!-- vale vale.Redundancy["ACT test"] = NO -->
+
+This is some text ACT test
+
+<!-- vale vale.Redundancy["ACT test"] = YES -->
+
+<!-- vale vale.Redundancy["OTHER"] = NO -->
+
+This is some text ACT test
+
+<!-- vale vale.Redundancy["OTHER"] = YES -->
+
+<!-- vale vale.Redundancy["ACT test","OTHER"] = NO -->
+
+This is some text ACT test
+
+<!-- vale vale.Redundancy["ACT test"] = YES -->
+
 This is some text ACT test
 
 <!-- vale demo.Ending-Preposition = NO -->
