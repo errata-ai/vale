@@ -13,7 +13,7 @@ impl Person {
     ///
     /// # Arguments
     ///
-    /// * `foof` - A string slice doof that holds the name of the person
+    /// * `foof` - A string slice doof that holds the nme of the person
     ///
     /// # Exmples
     ///
@@ -32,8 +32,8 @@ impl Person {
     /// Gives a friendly hello!
     ///
     /// Says "Hello, [name]" to the `Person` it is called on.
-    pub fn hello(& self) {
-        println!("Hello, {}!", self.name);
+    pub fn hello(&self) {
+        println!("Hello, {}!", self.name); // doof
     }
 }
 

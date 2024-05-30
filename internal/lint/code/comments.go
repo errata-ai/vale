@@ -3,6 +3,7 @@ package code
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"sort"
 	"strings"
 
@@ -31,6 +32,17 @@ func doneMerging(curr, prev Comment) bool {
 	return false
 }
 
+func addSourceLine(line string, atEnd bool) string {
+	if !strings.HasPrefix(line, "\n") && !atEnd {
+		line = strings.TrimLeft(line, " ")
+		line = fmt.Sprintf("\n%s", line)
+	} else if !strings.HasSuffix(line, "\n") && atEnd {
+		line = strings.TrimLeft(line, " ")
+		line = fmt.Sprintf("%s\n", line)
+	}
+	return line
+}
+
 func coalesce(comments []Comment) []Comment {
 	var joined []Comment
 
@@ -45,8 +57,8 @@ func coalesce(comments []Comment) []Comment {
 				// We have comments to merge ...
 				last := joined[len(joined)-1]
 
-				last.Text += tBuf.String()
-				last.Source += ("\n" + sBuf.String())
+				last.Text += addSourceLine(tBuf.String(), false)
+				last.Source += addSourceLine(sBuf.String(), false)
 
 				joined[len(joined)-1] = last
 
@@ -55,16 +67,16 @@ func coalesce(comments []Comment) []Comment {
 			}
 			joined = append(joined, comment)
 		} else {
-			tBuf.WriteString(comment.Text)
-			sBuf.WriteString(comment.Source + "\n")
+			tBuf.WriteString(addSourceLine(comment.Text, true))
+			sBuf.WriteString(addSourceLine(comment.Source, true))
 		}
 	}
 
 	if tBuf.Len() > 0 {
 		last := joined[len(joined)-1]
 
-		last.Text += tBuf.String()
-		last.Source += ("\n" + sBuf.String())
+		last.Text += addSourceLine(tBuf.String(), false)
+		last.Source += addSourceLine(sBuf.String(), false)
 
 		joined[len(joined)-1] = last
 

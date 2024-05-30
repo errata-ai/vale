@@ -1,29 +1,50 @@
 [
     {
-        "Text": "A human being is representd here\n",
-        "Source": "/// A human being is representd here\n",
-        "Line": 3,
+        "Text": "This module defines the set of command line arguments that ripgrep supports,\nincluding some light validation.\n\nThis module is purposely written in a bare-bones way, since it is included\nin ripgrep's build.rs file as a way to generate a man page and completion\nfiles for common shells.\n\nThe only other place that ripgrep deals with clap is in src/args.rs, which\nis where we read clap's configuration from the end user's arguments and turn\nit into a ripgrep-specific configuration type that is not coupled with clap.\n",
+        "Source": "// This module defines the set of command line arguments that ripgrep supports,\n// including some light validation.\n//\n// This module is purposely written in a bare-bones way, since it is included\n// in ripgrep's build.rs file as a way to generate a man page and completion\n// files for common shells.\n//\n// The only other place that ripgrep deals with clap is in src/args.rs, which\n// is where we read clap's configuration from the end user's arguments and turn\n// it into a ripgrep-specific configuration type that is not coupled with clap.\n",
+        "Line": 1,
         "Offset": 0,
         "Scope": "text.comment.line"
     },
     {
-        "Text": "A person must have a name, no matter how much Juliet may hate it\n",
-        "Source": "/// A person must have a name, no matter how much Juliet may hate it\n",
-        "Line": 5,
+        "Text": "A human being is representd here\n\n A human being is representd here\n",
+        "Source": "/// A human being is representd here\n\n///\n/// A human being is representd here\n",
+        "Line": 13,
+        "Offset": 0,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "A person must have a name, no mattter how much Juliet may hate it\n",
+        "Source": "/// A person must have a name, no mattter how much Juliet may hate it\n",
+        "Line": 17,
         "Offset": 4,
         "Scope": "text.comment.line"
     },
     {
-        "Text": "Returns a person with the name given them\n\n # Arguments\n\n * `foof` - A string slice that holds the name of the person\n\n # Examples\n\n ```rust\n  You can have rust code between fences inside the comments\n  If you pass --test to `rustdoc`, it will even test it for you!\n use doc::Person;\n let person = Person::new(\"name\");\n ```\n",
-        "Source": "/// Returns a person with the name given them\n\n///\n\n/// # Arguments\n\n///\n\n/// * `foof` - A string slice that holds the name of the person\n\n///\n\n/// # Examples\n\n///\n\n/// ```rust\n\n/// // You can have rust code between fences inside the comments\n\n/// // If you pass --test to `rustdoc`, it will even test it for you!\n\n/// use doc::Person;\n\n/// let person = Person::new(\"name\");\n\n/// ```\n\n",
-        "Line": 10,
+        "Text": "Returns a person with the name given them\n\n # Arguments\n\n * `foof` - A string slice doof that holds the nme of the person\n\n # Exmples\n\n ```\n  You can have rust code between fences inside the comments\n  If you pass --test to `rustdoc`, it will even test it for you!\n use doc::Person;\n let person = Person::new(\"name\");\n ```\n",
+        "Source": "/// Returns a person with the name given them\n\n///\n/// # Arguments\n///\n/// * `foof` - A string slice doof that holds the nme of the person\n///\n/// # Exmples\n///\n/// ```\n/// // You can have rust code between fences inside the comments\n/// // If you pass --test to `rustdoc`, it will even test it for you!\n/// use doc::Person;\n/// let person = Person::new(\"name\");\n/// ```\n",
+        "Line": 22,
         "Offset": 4,
         "Scope": "text.comment.line"
     },
     {
         "Text": "Gives a friendly hello!\n\n Says \"Hello, [name]\" to the `Person` it is called on.\n",
-        "Source": "/// Gives a friendly hello!\n\n///\n\n/// Says \"Hello, [name]\" to the `Person` it is called on.\n\n",
-        "Line": 30,
+        "Source": "/// Gives a friendly hello!\n\n///\n/// Says \"Hello, [name]\" to the `Person` it is called on.\n",
+        "Line": 42,
+        "Offset": 4,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "doof",
+        "Source": "// doof",
+        "Line": 46,
+        "Offset": 43,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "We need to specify our version in a static because we've painted clap\ninto a corner. We've told it that every string we give it will be\n'static, but we need to build the vrsion string dynamically. We can\nfake the 'static lifetime with `lazy_static`.\n",
+        "Source": "// We need to specify our version in a static because we've painted clap\n// into a corner. We've told it that every string we give it will be\n// 'static, but we need to build the vrsion string dynamically. We can\n// fake the 'static lifetime with `lazy_static`.\n",
+        "Line": 51,
         "Offset": 4,
         "Scope": "text.comment.line"
     }

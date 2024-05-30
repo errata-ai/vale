@@ -3,6 +3,7 @@ package code
 import (
 	"encoding/json"
 	"strings"
+	"unicode/utf8"
 )
 
 func toJSON(comments []Comment) string {
@@ -19,7 +20,7 @@ func computePadding(s string, makers []string) int {
 
 	for _, m := range makers {
 		if strings.HasPrefix(s, m) {
-			l := len(m)
+			l := utf8.RuneCountInString(m)
 
 			padding = l
 			for i, r := range s {

@@ -7,7 +7,7 @@
         "Scope": "text.comment.block"
     },
     {
-        "Text": "Println formats using the default formats for its oprands and writes to standard output. Spaces are always added between operands and a newline is appended. It returns the number of bytes written and any write error encountered.",
+        "Text": "Println formats using the default formats for its oprands and writes to\nstandard output.\n\nSpaces are always added between operands and a newline is appended.\n\nIt returns the number of bytes written and any write error encountered.\n",
         "Source": "// Println formats using the default formats for its oprands and writes to\n// standard output.\n//\n// Spaces are always added between operands and a newline is appended.\n//\n// It returns the number of bytes written and any write error encountered.\n",
         "Line": 11,
         "Offset": 0,
