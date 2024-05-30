@@ -8,14 +8,21 @@ import (
 )
 
 type QueryEngine struct {
-	tree *sitter.Tree
-	lang *Language
+	tree   *sitter.Tree
+	lang   *Language
+	cutset string
 }
 
 func NewQueryEngine(tree *sitter.Tree, lang *Language) *QueryEngine {
+	cutset := lang.Cutset
+	if cutset == "" {
+		cutset = " "
+	}
+
 	return &QueryEngine{
-		tree: tree,
-		lang: lang,
+		tree:   tree,
+		lang:   lang,
+		cutset: cutset,
 	}
 }
 
@@ -42,7 +49,7 @@ func (qe *QueryEngine) run(q *sitter.Query, source []byte) []Comment {
 
 				buf := bytes.Buffer{}
 				for _, line := range strings.Split(cText, "\n") {
-					buf.WriteString(strings.TrimLeft(line, " "))
+					buf.WriteString(strings.TrimLeft(line, qe.cutset))
 					buf.WriteString("\n")
 				}
 

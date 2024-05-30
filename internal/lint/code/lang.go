@@ -16,6 +16,7 @@ type Language struct {
 	Delims  *regexp.Regexp
 	Parser  *sitter.Language
 	Queries []string
+	Cutset  string
 	Padding padding
 }
 
@@ -34,6 +35,12 @@ func GetLanguageFromExt(ext string) (*Language, error) {
 		return Cpp(), nil
 	case ".c", ".h":
 		return C(), nil
+	case ".js":
+		return JavaScript(), nil
+	case ".ts":
+		return TypeScript(), nil
+	case ".tsx":
+		return Tsx(), nil
 	default:
 		return nil, fmt.Errorf("unsupported extension: '%s'", ext)
 	}

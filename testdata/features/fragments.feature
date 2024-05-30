@@ -10,6 +10,7 @@ Feature: Fragments
             test.go:10:4:Vale.Spelling:Did you really mean 'Println'?
             test.go:12:4:Vale.Spelling:Did you really mean 'Println'?
             test.go:12:54:Vale.Spelling:Did you really mean 'oprands'?
+            test.js:28:4:Vale.Spelling:Did you really mean 'getCases'?
             test.py:3:13:Vale.Spelling:Did you really mean 'parap'?
             test.py:13:35:Vale.Spelling:Did you really mean 'vaiable'?
             test.py:18:29:Vale.Spelling:Did you really mean 'docmentation'?
