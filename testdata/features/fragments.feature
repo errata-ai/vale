@@ -3,6 +3,9 @@ Feature: Fragments
         When I test "fragments"
         Then the output should contain exactly:
             """
+            test.cc:6:14:Vale.Spelling:Did you really mean 'objectmodel'?
+            test.cc:14:17:Vale.Repetition:'the' is repeated!
+            test.cc:47:12:Vale.Repetition:'the' is repeated!
             test.go:2:14:Vale.Spelling:Did you really mean 'implments'?
             test.go:10:4:Vale.Spelling:Did you really mean 'Println'?
             test.go:12:4:Vale.Spelling:Did you really mean 'Println'?

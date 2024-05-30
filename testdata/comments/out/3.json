@@ -1,0 +1,37 @@
+[
+    {
+        "Text": "\n\\class QObject\n\\brief The QObject class is the base class of all Qt objects.\n\n\\ingroup objectmodel\n\n\\reentrant\n\nQObject is the heart of the Qt \\l{Object Model}. The\ncentral feature in this model is a very powerful mechanism\nfor seamless object communication called \\l{signals and\nslots}. You can connect a signal to a slot with connect()\nand destroy the the connection with disconnect(). To avoid\nnever ending notification loops you can temporarily block\nsignals with blockSignals(). The protected functions\nconnectNotify() and disconnectNotify() make it possible to\ntrack connections.\n\nQObjects organize themselves in \\l {Object Trees \u0026\nOwnership} {object trees}. When you create a QObject with\nanother object as parent, the object will automatically\nadd itself to the parent's \\c children() list. The parent\ntakes ownership of the object. It will automatically\ndelete its children in its destructor. You can look for an\nobject by name and optionally type using findChild() or\nfindChildren().\n\nEvery object has an objectName() and its class name can be\nfound via the corresponding metaObject() (see\nQMetaObject::className()). You can determine whether the\nobject's class inherits another class in the QObject\ninheritance hierarchy by using the \\c inherits() function.\n\n",
+        "Source": "/*!\n    \\class QObject\n    \\brief The QObject class is the base class of all Qt objects.\n\n    \\ingroup objectmodel\n\n    \\reentrant\n\n    QObject is the heart of the Qt \\l{Object Model}. The\n    central feature in this model is a very powerful mechanism\n    for seamless object communication called \\l{signals and\n    slots}. You can connect a signal to a slot with connect()\n    and destroy the the connection with disconnect(). To avoid\n    never ending notification loops you can temporarily block\n    signals with blockSignals(). The protected functions\n    connectNotify() and disconnectNotify() make it possible to\n    track connections.\n\n    QObjects organize themselves in \\l {Object Trees \u0026\n    Ownership} {object trees}. When you create a QObject with\n    another object as parent, the object will automatically\n    add itself to the parent's \\c children() list. The parent\n    takes ownership of the object. It will automatically\n    delete its children in its destructor. You can look for an\n    object by name and optionally type using findChild() or\n    findChildren().\n\n    Every object has an objectName() and its class name can be\n    found via the corresponding metaObject() (see\n    QMetaObject::className()). You can determine whether the\n    object's class inherits another class in the QObject\n    inheritance hierarchy by using the \\c inherits() function.\n*/",
+        "Line": 2,
+        "Offset": 0,
+        "Scope": "text.comment.block"
+    },
+    {
+        "Text": "Create and open a text file",
+        "Source": "// Create and open a text file",
+        "Line": 41,
+        "Offset": 2,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "Write to the file",
+        "Source": "// Write to the file",
+        "Line": 44,
+        "Offset": 2,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "Close the the file",
+        "Source": "// Close the the file",
+        "Line": 47,
+        "Offset": 2,
+        "Scope": "text.comment.line"
+    },
+    {
+        "Text": "Call \\c func to start the process.",
+        "Source": "// Call \\c func to start the process.",
+        "Line": 50,
+        "Offset": 2,
+        "Scope": "text.comment.line"
+    }
+]
