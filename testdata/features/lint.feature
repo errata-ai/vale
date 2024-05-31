@@ -7,6 +7,22 @@ Feature: Lint
             """
         And the exit status should be 0
 
+    Scenario: Lint a CSS file
+        When I lint "test.css"
+        Then the output should contain exactly:
+            """
+            test.css:1:4:vale.Annotations:'TODO' left in text
+            test.css:7:19:vale.Annotations:'XXX' left in text
+            """
+
+    Scenario: Lint a YAML file
+        When I lint "test.yml"
+        Then the output should contain exactly:
+            """
+            test.yml:3:19:vale.Annotations:'TODO' left in text
+            test.yml:15:45:vale.Annotations:'XXX' left in text
+            """
+
     Scenario: Lint a Julia file
         When I lint "test.jl"
         Then the output should contain exactly:
@@ -197,7 +213,7 @@ Feature: Lint
             test.jsx:1:4:vale.Annotations:'XXX' left in text
             test.jsx:4:6:vale.Annotations:'NOTE' left in text
             test.jsx:14:3:vale.Annotations:'XXX' left in text
-            test.jsx:18:39:vale.Annotations:'TODO' left in text
+            test.jsx:18:37:vale.Annotations:'TODO' left in text
             """
         And the exit status should be 0
 
