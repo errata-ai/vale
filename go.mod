@@ -1,8 +1,6 @@
 module github.com/errata-ai/vale/v3
 
-go 1.21
-
-toolchain go1.21.6
+go 1.21.6
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
@@ -23,6 +21,7 @@ require (
 	github.com/otiai10/copy v1.7.0
 	github.com/pterm/pterm v0.12.76
 	github.com/remeh/sizedwaitgroup v1.0.0
+	github.com/smacker/go-tree-sitter v0.0.0-20240514083259-c5d1f3f5f99e
 	github.com/spf13/pflag v1.0.5
 	github.com/yuin/goldmark v1.5.6
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
@@ -57,7 +56,6 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.2 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
-	github.com/smacker/go-tree-sitter v0.0.0-20240423010953-8ba036550382 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
