@@ -160,8 +160,6 @@ Feature: Lint
             test.py:11:3:vale.Annotations:'XXX' left in text
             test.py:13:16:vale.Annotations:'XXX' left in text
             test.py:14:14:vale.Annotations:'NOTE' left in text
-            test.py:17:1:vale.Annotations:'NOTE' left in text
-            test.py:23:1:vale.Annotations:'XXX' left in text
             test.py:28:5:vale.Annotations:'NOTE' left in text
             test.py:35:8:vale.Annotations:'NOTE' left in text
             test.py:37:5:vale.Annotations:'TODO' left in text

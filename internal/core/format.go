@@ -26,20 +26,10 @@ var CommentsByNormedExt = map[string]map[string]string{
 		"blockStart": `(/\*.*)`,
 		"blockEnd":   `(.*\*/)`,
 	},
-	".rs": {
-		"inline":     `(//.+)`,
-		"blockStart": `$^`,
-		"blockEnd":   `$^`,
-	},
 	".r": {
 		"inline":     `(#.+)`,
 		"blockStart": `$^`,
 		"blockEnd":   `$^`,
-	},
-	".py": {
-		"inline":     `(#.*)|('{3}.+'{3})|("{3}.+"{3})`,
-		"blockStart": `(?m)^((?:\s{4,})?[r]?["']{3}.*)$`,
-		"blockEnd":   `(.*["']{3})`,
 	},
 	".ps1": {
 		"inline":     `(#.+)`,
@@ -60,11 +50,6 @@ var CommentsByNormedExt = map[string]map[string]string{
 		"inline":     `(-- .+)`,
 		"blockStart": `(\{-.*)`,
 		"blockEnd":   `(.*-\})`,
-	},
-	".rb": {
-		"inline":     `(#.+)`,
-		"blockStart": `(^=begin)`,
-		"blockEnd":   `(^=end)`,
 	},
 	".jl": {
 		"inline":     `(# .+)`,
