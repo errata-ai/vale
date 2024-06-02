@@ -1,16 +1,85 @@
+env:
+  - CGO_ENABLED=1
 builds:
-  - env:
-      - CGO_ENABLED=0
+  - id: vale-darwin-amd64
     main: ./cmd/vale
     binary: vale
+    goarch:
+      - amd64
     goos:
       - darwin
-      - linux
-      - windows
+    env:
+      - CC=o64-clang
+      - CXX=o64-clang++
+    flags:
+      - -trimpath
+
+  - id: vale-darwin-arm64
+    main: ./cmd/vale
+    binary: vale
     goarch:
-      - 386
-      - amd64
       - arm64
+    goos:
+      - darwin
+    env:
+      - CC=o64-clang
+      - CXX=o64-clang++
+    flags:
+      - -trimpath
+
+  - id: vale-linux-amd64
+    main: ./cmd/vale
+    binary: vale
+    goarch:
+      - amd64
+    goos:
+      - linux
+    env:
+      - CC=x86_64-linux-gnu-gcc
+      - CXX=x86_64-linux-gnu-g++
+    flags:
+      - -trimpath
+
+  - id: vale-linux-arm64
+    main: ./cmd/vale
+    binary: vale
+    goarch:
+      - arm64
+    goos:
+      - linux
+    env:
+      - CC=x86_64-linux-gnu-gcc
+      - CXX=x86_64-linux-gnu-g++
+    flags:
+      - -trimpath
+
+  - id: vale-windows-amd64
+    main: ./cmd/vale
+    binary: vale
+    goarch:
+      - amd64
+    goos:
+      - windows
+    env:
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    flags:
+      - -trimpath
+      - -buildmode=exe
+
+  - id: vale-windows-arm64
+    main: ./cmd/vale
+    binary: vale
+    goarch:
+      - arm64
+    goos:
+      - windows
+    env:
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    flags:
+      - -trimpath
+      - -buildmode=exe
 
 archives:
   - format: tar.gz

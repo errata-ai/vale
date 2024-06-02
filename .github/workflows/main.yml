@@ -5,6 +5,8 @@ on: push
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/goreleaser/goreleaser-cross:v1.20.2
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -15,6 +17,19 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: "1.21"
+
+      - name: Install mono
+        run: |
+          apt update && apt install -y sudo
+
+          sudo apt install -y dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          
+          sudo apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-focal main'
+          sudo apt-get install -y mono-complete
+
+          mono --version
 
       - name: Install Chocolatey
         run: |
