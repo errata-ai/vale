@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/goreleaser/goreleaser-cross:v1.20.2
+      options: --user 1001
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -18,32 +19,32 @@ jobs:
         with:
           go-version: "1.21"
 
-      - name: Install mono
-        run: |
-          apt update && apt install -y sudo
+       - name: Install mono
+         run: |
+           apt update && apt install -y sudo
 
-          sudo apt install -y dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+           sudo apt install -y dirmngr gnupg apt-transport-https ca-certificates software-properties-common
 
-          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+           sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
           
-          sudo apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-focal main'
-          sudo apt-get install -y mono-complete
+           sudo apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-focal main'
+           sudo apt-get install -y mono-complete
 
-          mono --version
+           mono --version
 
-      - name: Install Chocolatey
-        run: |
-          mkdir -p /opt/chocolatey
-          wget -q -O - "https://github.com/chocolatey/choco/releases/download/${CHOCOLATEY_VERSION}/chocolatey.v${CHOCOLATEY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
-          echo '#!/bin/bash' >> /usr/local/bin/choco
-          echo 'mono /opt/chocolatey/choco.exe $@' >> /usr/local/bin/choco
-          chmod +x /usr/local/bin/choco
-        env:
-          CHOCOLATEY_VERSION: 1.3.1
+       - name: Install Chocolatey
+         run: |
+           mkdir -p /opt/chocolatey
+           wget -q -O - "https://github.com/chocolatey/choco/releases/download/${CHOCOLATEY_VERSION}/chocolatey.v${CHOCOLATEY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
+           echo '#!/bin/bash' >> /usr/local/bin/choco
+           echo 'mono /opt/chocolatey/choco.exe $@' >> /usr/local/bin/choco
+           chmod +x /usr/local/bin/choco
+         env:
+           CHOCOLATEY_VERSION: 1.3.1
 
-      - name: Test Chocolatey
-        run: |
-          choco help
+       - name: Test Chocolatey
+         run: |
+           choco help
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
