@@ -14,6 +14,8 @@ COPY . /app/
 WORKDIR /app
 
 ARG ltag
+
+RUN apk add build-base
 RUN CGO_ENABLED=1 GOOS=linux go build -ldflags "-s -w -X main.version=$ltag" -o /app/vale ./cmd/vale
 
 FROM alpine
