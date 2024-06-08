@@ -22,8 +22,8 @@ builds:
     goos:
       - darwin
     env:
-      - CC=o64-clang
-      - CXX=o64-clang++
+      - CC=oa64-clang
+      - CXX=oa64-clang++
     flags:
       - -trimpath
 
@@ -48,8 +48,8 @@ builds:
     goos:
       - linux
     env:
-      - CC=x86_64-linux-gnu-gcc
-      - CXX=x86_64-linux-gnu-g++
+      - CC=aarch64-linux-gnu-gcc
+      - CXX=aarch64-linux-gnu-g++
     flags:
       - -trimpath
 
@@ -58,20 +58,6 @@ builds:
     binary: vale
     goarch:
       - amd64
-    goos:
-      - windows
-    env:
-      - CC=x86_64-w64-mingw32-gcc
-      - CXX=x86_64-w64-mingw32-g++
-    flags:
-      - -trimpath
-      - -buildmode=exe
-
-  - id: vale-windows-arm64
-    main: ./cmd/vale
-    binary: vale
-    goarch:
-      - arm64
     goos:
       - windows
     env:
