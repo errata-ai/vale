@@ -1,9 +1,15 @@
+PACKAGE_NAME          := github.com/errata-ai/vale/v3
+GOLANG_CROSS_VERSION  ?= v1.19.5
+
+SYSROOT_DIR     ?= sysroots
+SYSROOT_ARCHIVE ?= sysroots.tar.bz2
+
 LAST_TAG=$(shell git describe --abbrev=0 --tags)
 CURR_SHA=$(shell git rev-parse --verify HEAD)
 
 LDFLAGS=-ldflags "-s -w -X main.version=$(LAST_TAG)"
 
-.PHONY: data test lint install rules setup bench compare release
+.PHONY: data test lint install rules setup bench compare release gr
 
 all: build
 
@@ -56,3 +62,15 @@ docker:
 	--tag jdkato/vale:latest \
 	--push \
 	.
+
+gr:
+	@docker run \
+		--rm \
+		-e CGO_ENABLED=1 \
+		--env-file .release-env \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/$(PACKAGE_NAME) \
+		-v `pwd`/sysroot:/sysroot \
+		-w /go/src/$(PACKAGE_NAME) \
+		ghcr.io/goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
+		release --clean
