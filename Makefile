@@ -1,5 +1,5 @@
 PACKAGE_NAME          := github.com/errata-ai/vale/v3
-GOLANG_CROSS_VERSION  ?= v0.1.0
+GOLANG_CROSS_VERSION  ?= v0.2.0
 
 SYSROOT_DIR     ?= sysroots
 SYSROOT_ARCHIVE ?= sysroots.tar.bz2
