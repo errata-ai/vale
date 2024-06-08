@@ -1,5 +1,5 @@
 PACKAGE_NAME          := github.com/errata-ai/vale/v3
-GOLANG_CROSS_VERSION  ?= v1.19.5
+GOLANG_CROSS_VERSION  ?= v0.1.0
 
 SYSROOT_DIR     ?= sysroots
 SYSROOT_ARCHIVE ?= sysroots.tar.bz2
@@ -9,7 +9,7 @@ CURR_SHA=$(shell git rev-parse --verify HEAD)
 
 LDFLAGS=-ldflags "-s -w -X main.version=$(LAST_TAG)"
 
-.PHONY: data test lint install rules setup bench compare release gr
+.PHONY: data test lint install rules setup bench compare release choco-cross
 
 all: build
 
@@ -63,7 +63,7 @@ docker:
 	--push \
 	.
 
-gr:
+choco-cross:
 	@docker run \
 		--rm \
 		-e CGO_ENABLED=1 \
@@ -72,5 +72,5 @@ gr:
 		-v `pwd`:/go/src/$(PACKAGE_NAME) \
 		-v `pwd`/sysroot:/sysroot \
 		-w /go/src/$(PACKAGE_NAME) \
-		ghcr.io/goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
+		jdkato/choco-cross:${GOLANG_CROSS_VERSION} \
 		release --clean
