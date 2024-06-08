@@ -14,7 +14,7 @@ COPY . /app/
 WORKDIR /app
 
 ARG ltag
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w -X main.version=$ltag" -o /app/vale ./cmd/vale
+RUN CGO_ENABLED=1 GOOS=linux go build -ldflags "-s -w -X main.version=$ltag" -o /app/vale ./cmd/vale
 
 FROM alpine
 
