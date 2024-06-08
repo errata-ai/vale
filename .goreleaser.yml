@@ -86,19 +86,12 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
-    replacements:
-      amd64: 64-bit
-      darwin: macOS
-      linux: Linux
-      windows: Windows
-    # name_template: >-
-    #   {{ .ProjectName }}_
-    #   {{ .Version }}_
-    #   {{- if eq .Os "darwin" }}macOS_
-    #   {{- else }}{{- title .Os }}_{{ end }}
-    #   {{- if eq .Arch "amd64" }}64-bit
-    #   {{- else if eq .Arch "386" }}i386
-    #   {{- else }}{{ .Arch }}{{ end }}
+    name_template: >-
+      vale_{{ .Version }}_
+      {{- if eq .Os "darwin" }}macOS_
+      {{- else }}{{- title .Os }}_{{ end }}
+      {{- if eq .Arch "amd64" }}64-bit
+      {{- else }}{{ .Arch }}{{ end }}
 
 chocolateys:
   - # Your app's package name.
