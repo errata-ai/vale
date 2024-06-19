@@ -116,6 +116,7 @@ Feature: Checks
             test.md:21:5:LanguageTool.APOS_ARE:Did you mean "endpoints" instead of "endpoint's"?
             test.md:25:1:LanguageTool.Metadata:Use data and metadata as plural nouns.
             test.md:29:1:LanguageTool.Metadata:Use data and metadata as plural nouns.
+            test.md:31:17:LanguageTool.ARE_USING:Use 'by using' instead of 'using' when it follows a noun for clarity and grammatical correctness.
             test.txt:3:4:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'write' after 'be' requries 'to'. Did you mean 'be great *to* write'?
             test.txt:9:88:LanguageTool.WOULD_BE_JJ_VB:The infinitive 'come' after 'be' requries 'to'. Did you mean 'be available *to* come'?
             test.txt:11:32:LanguageTool.OF_ALL_TIMES:In this context, the idiom needs to be spelled 'of all time'.
