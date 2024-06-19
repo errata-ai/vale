@@ -19,7 +19,7 @@ install:
   - go version
   - go env
 
-  - cinst ansicon
+  - choco install ansicon
 
   - pip install docutils
   - gem install asciidoctor
