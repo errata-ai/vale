@@ -59,7 +59,7 @@
 
 ## :boom: Key Features
 
-- [x] **Support for markup**: Vale has a rich understanding of many [markup formats](https://docs.errata.ai/vale/scoping#formats), allowing it to avoid syntax-related false positives and intelligently exclude code snippets from prose-related rules.
+- [x] **Support for markup**: Vale has a rich understanding of many [markup formats](https://vale.sh/docs/topics/scoping/#formats), allowing it to avoid syntax-related false positives and intelligently exclude code snippets from prose-related rules.
 
 - [x] A **highly customizable** [extension system](https://vale.sh/docs/topics/styles/): Vale is capable of enforcing _your style_&mdash;be it a standard [editorial style guide](https://github.com/errata-ai/styles#available-styles) or a custom in-house set of rules (see [examples][6]).
 
