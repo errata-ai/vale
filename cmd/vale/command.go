@@ -27,15 +27,15 @@ type CompiledRule struct {
 	Pattern string
 }
 
-var commandInfo = map[string]string{
-	"ls-config":      "Print the current configuration to stdout.",
-	"ls-metrics":     "Print the given file's internal metrics to stdout.",
-	"ls-dirs":        "Print the default configuration directories to stdout.",
-	"ls-vars":        "Print the supported environment variables to stdout.",
-	"sync":           "Download and install external configuration sources.",
-	"host-install":   "Install the Vale native messaging host for the given browser.",
-	"host-uninstall": "Uninstall the Vale native messaging host for the given browser.",
-	"fix":            "Attempt to automatically fix the given alert.",
+var commandInfo = []string{
+	"ls-config       Print the current configuration to stdout.",
+	"ls-metrics      Print the given file's internal metrics to stdout.",
+	"ls-dirs         Print the default configuration directories to stdout.",
+	"ls-vars         Print the supported environment variables to stdout.",
+	"sync            Download and install external configuration sources.",
+	"host-install    Install the Vale native messaging host for the given browser.",
+	"host-uninstall  Uninstall the Vale native messaging host for the given browser.",
+	"fix             Attempt to automatically fix the given alert.",
 }
 
 // Actions are the available CLI commands.

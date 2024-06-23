@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/pterm/pterm"
@@ -106,7 +107,9 @@ func init() {
 		table.ClearRows()
 
 		fmt.Println(pterm.Bold.Sprintf("Commands:"))
-		for cmd, use := range commandInfo {
+		for _, info := range commandInfo {
+			cmd, use, _ := strings.Cut(info, " ")
+			use = strings.Trim(use, " ")
 			if !core.StringInSlice(cmd, hidden) {
 				table.Append([]string{toCodeStyle(cmd), use})
 			}
