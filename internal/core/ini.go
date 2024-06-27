@@ -12,6 +12,8 @@ import (
 	"github.com/errata-ai/vale/v3/internal/glob"
 )
 
+var coreError = "'%s' is a core option; it should be defined above any syntax-specific options (`[...]`)."
+
 func determinePath(configPath string, keyPath string) string {
 	// expand tilde at this point as this is where user-provided paths are provided
 	keyPath = normalizePath(keyPath)
@@ -292,7 +294,9 @@ func processConfig(uCfg *ini.File, cfg *Config, dry bool) (*ini.File, error) {
 
 	// Global settings
 	for _, k := range global.KeyStrings() {
-		if f, found := globalOpts[k]; found {
+		if _, option := coreOpts[k]; option {
+			return nil, NewE201FromTarget(fmt.Sprintf(coreError, k), k, cfg.RootINI)
+		} else if f, found := globalOpts[k]; found {
 			f(global, cfg)
 		} else if _, found = syntaxOpts[k]; found {
 			msg := fmt.Sprintf("'%s' is a syntax-specific option", k)
@@ -317,7 +321,9 @@ func processConfig(uCfg *ini.File, cfg *Config, dry bool) (*ini.File, error) {
 
 		syntaxMap := make(map[string]bool)
 		for _, k := range uCfg.Section(sec).KeyStrings() {
-			if f, found := syntaxOpts[k]; found {
+			if _, option := coreOpts[k]; option {
+				return nil, NewE201FromTarget(fmt.Sprintf(coreError, k), k, cfg.RootINI)
+			} else if f, found := syntaxOpts[k]; found {
 				if err = f(sec, uCfg.Section(sec), cfg); err != nil && !dry {
 					return nil, err
 				}
