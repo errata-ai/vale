@@ -1,4 +1,4 @@
-# Vale: Your style, our editor [![Build status](https://ci.appveyor.com/api/projects/status/snk0oo6ih1nwuf6r?svg=true)](https://ci.appveyor.com/project/jdkato/vale) [![Go Report Card](https://img.shields.io/badge/%F0%9F%93%9D%20%20go%20report-A%2B-75C46B?color=00ACD7)](https://goreportcard.com/report/github.com/errata-ai/vale) [![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub&color=ff69b4)](https://github.com/errata-ai/vale/releases) [![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=orange&logo=docker&logoColor=white)](https://hub.docker.com/r/jdkato/vale) [![Chocolatey](https://img.shields.io/chocolatey/dt/vale?color=white&label=chocolatey&logo=chocolatey)](https://community.chocolatey.org/packages/vale) [![Homebrew](https://img.shields.io/homebrew/installs/dy/vale?color=yellow&label=homebrew&logo=homebrew)](https://formulae.brew.sh/formula/vale)
+# Vale: Your style, our editor [![Build status](https://ci.appveyor.com/api/projects/status/snk0oo6ih1nwuf6r?svg=true)](https://ci.appveyor.com/project/jdkato/vale) [![GitHub All Releases](https://img.shields.io/github/downloads/errata-ai/vale/total?logo=GitHub&color=ff69b4)](https://github.com/errata-ai/vale/releases) [![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=orange&logo=docker&logoColor=white)](https://hub.docker.com/r/jdkato/vale) [![Chocolatey](https://img.shields.io/chocolatey/dt/vale?color=white&label=chocolatey&logo=chocolatey)](https://community.chocolatey.org/packages/vale) [![Homebrew](https://img.shields.io/homebrew/installs/dy/vale?color=yellow&label=homebrew&logo=homebrew)](https://formulae.brew.sh/formula/vale)
 
 <p align="center">
   <b>Vale</b> is a command-line tool that brings code-like linting to prose. It's <b><a href="#mag-at-a-glance-vale-vs-">fast</a></b>, <b>cross-platform</b> (Windows, macOS, and Linux), and <b>highly customizable</b>.
@@ -136,13 +136,10 @@ hyperfine --warmup 3 '<command>'
 
 The corpus IDs in the above plots&mdash;`gitlab` and `ydkjs`&mdash;correspond to the following files:
 
-- A [snapshot](https://gitlab.com/gitlab-org/gitlab/-/tree/7d6a4025a0346f1f50d2825c85742e5a27b39a8b/doc) of GitLab's open-source documentation (1,500 Markdown files).
+- A [snapshot][7] of GitLab's open-source documentation (1,500 Markdown files).
 
-- A [chapter](https://raw.githubusercontent.com/getify/You-Dont-Know-JS/1st-ed/es6%20%26%20beyond/ch2.md) from the open-source book _You Don't Know JS_.
+- A [chapter][8] from the open-source book _You Don't Know JS_.
 
-## :page_facing_up: License
-
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B21090%2Fgithub.com%2Ferrata-ai%2Fvale.svg?type=large)](https://app.fossa.com/projects/custom%2B21090%2Fgithub.com%2Ferrata-ai%2Fvale?ref=badge_large)
 
 [1]: https://www.digitalocean.com/open-source/credits-for-projects
 [2]: https://studio.vale.sh/
@@ -150,3 +147,5 @@ The corpus IDs in the above plots&mdash;`gitlab` and `ydkjs`&mdash;correspond to
 [4]: https://appwrite.io/
 [5]: https://page.famewall.io/vale
 [6]: https://vale.sh/#users
+[7]: https://gitlab.com/gitlab-org/gitlab/-/tree/7d6a4025a0346f1f50d2825c85742e5a27b39a8b/doc
+[8]: https://raw.githubusercontent.com/getify/You-Dont-Know-JS/1st-ed/es6%20%26%20beyond/ch2.md
