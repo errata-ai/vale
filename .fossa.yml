@@ -11,4 +11,6 @@ analyze:
     - name: github.com/errata-ai/vale
       type: go
       target: github.com/errata-ai/vale
-      path: .
+      paths:
+        - cmd
+        - internal
