@@ -41,6 +41,20 @@ var patterns = map[string]map[string][]*regexp.Regexp{
 			regexp.MustCompile(`(.*\*/)`),
 		},
 	},
+	".dart": {
+		"inline": []*regexp.Regexp{
+			regexp.MustCompile(`(?s)/{2,3}\s*(.+)`),
+		},
+		"blockStart": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)/\*{1,2}\s*(.+)`),
+		},
+		"blockEnd": []*regexp.Regexp{
+			regexp.MustCompile(`(.*\*{1,2}/)`),
+		},
+		"inBlock": []*regexp.Regexp{
+			regexp.MustCompile(`(?ms)\s*\*?\s*(.*)`),
+		},
+	},
 	".rs": {
 		"inline": []*regexp.Regexp{
 			regexp.MustCompile(`(?s)/{3}!(.+)`),
@@ -194,6 +208,13 @@ func getComments(content, ext string) []Comment {
 				block.Reset()
 				inBlock = false
 			} else {
+				if byLang["inBlock"] != nil {
+					if match := doMatch(byLang["inBlock"], line); len(match) > 0 {
+						block.WriteString(match)
+						continue
+					}
+				}
+
 				block.WriteString(strings.TrimLeft(line, " "))
 			}
 		} else if match := doMatch(byLang["inline"], line); len(match) > 0 {
