@@ -57,6 +57,11 @@ var CommentsByNormedExt = map[string]map[string]string{
 		"blockStart": `(^=begin)`,
 		"blockEnd":   `(^=end)`,
 	},
+	".dart": {
+		"inline":     `(/{2,3}.+)`,
+		"blockStart": `(\/\*{1,2}.*)`,
+		"blockEnd":   `(.*\*{1,2}\/)`,
+	},
 }
 
 // FormatByExtension associates a file extension with its "normed" extension
@@ -67,6 +72,7 @@ var FormatByExtension = map[string][]string{
 	`\.(?:cpp|cc|c|cp|cxx|c\+\+|h|hpp|h\+\+)$`:    {".c", "code"},
 	`\.(?:cs|csx)$`:                               {".c", "code"},
 	`\.(?:css)$`:                                  {".css", "code"},
+	`\.(?:dart)$`:                                 {".dart", "code"},
 	`\.(?:go)$`:                                   {".c", "code"},
 	`\.(?:html|htm|shtml|xhtml)$`:                 {".html", "markup"},
 	`\.(?:rb|Gemfile|Rakefile|Brewfile|gemspec)$`: {".rb", "code"},
