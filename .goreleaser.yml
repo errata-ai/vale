@@ -67,6 +67,8 @@ builds:
     flags:
       - -trimpath
       - -buildmode=exe
+    ldflags:
+      - -extldflags=-static
 
 archives:
   - format: tar.gz
@@ -182,8 +184,3 @@ chocolateys:
     # to chocolatey repository, leaving the responsability of publishing it to
     # the user.
     skip_publish: false
-
-    dependencies:
-      # Required for treesitter/cgo.
-      - id: mingw
-        version: 13.2.0
