@@ -58,7 +58,7 @@ func NewRepetition(cfg *core.Config, generic baseCheck, path string) (Repetition
 	return rule, nil
 }
 
-// Run executes the the `repetition`-based rule.
+// Run executes the `repetition`-based rule.
 //
 // The rule looks for repeated matches of its regex -- such as "this this".
 func (o Repetition) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {

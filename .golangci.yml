@@ -78,6 +78,7 @@ linters:
     - bodyclose
     - contextcheck
     - dupl
+    - dupword
     - durationcheck
     - errname
     - errorlint
@@ -91,6 +92,7 @@ linters:
     - goprintffuncname
     - gosec
     - makezero
+    - mirror
     - nakedret
     - nilerr
     - nilnil
@@ -105,8 +107,10 @@ linters:
     - sqlclosecheck
     - stylecheck
     - tenv
+    - thelper
     - tparallel
     - unconvert
     - unparam
+    - usestdlibvars
     - wastedassign
     - whitespace

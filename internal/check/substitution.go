@@ -97,7 +97,7 @@ func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitu
 	return rule, nil
 }
 
-// Run executes the the `substitution`-based rule.
+// Run executes the `substitution`-based rule.
 //
 // The rule looks for one pattern and then suggests a replacement.
 func (s Substitution) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
