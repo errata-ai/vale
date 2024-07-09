@@ -10,13 +10,17 @@ FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS build
 
 # Debug shell: $ docker run -it --entrypoint /bin/sh jdkato/vale -s
 
+RUN apk add build-base
+
 COPY . /app/
 WORKDIR /app
 
-ARG ltag
+ENV CGO_ENABLED=1
 
-RUN apk add build-base
-RUN CGO_ENABLED=1 GOOS=linux go build -ldflags "-s -w -X main.version=$ltag" -o /app/vale ./cmd/vale
+ARG ltag
+ARG TARGETOS TARGETARCH
+
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-s -w -X main.version=$ltag" -o /app/vale ./cmd/vale
 
 FROM alpine
 
