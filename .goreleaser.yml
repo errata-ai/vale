@@ -68,6 +68,7 @@ builds:
       - -trimpath
       - -buildmode=exe
     ldflags:
+      - -s -w -X main.version={{.Version}}
       - -extldflags=-static
 
 archives:
