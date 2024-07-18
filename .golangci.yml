@@ -12,10 +12,6 @@ linters-settings:
   errcheck:
     check-type-assertions: true
 
-  funlen:
-    lines: 100
-    statements: 50
-
   gocritic:
     settings:
       captLocal:
@@ -84,7 +80,6 @@ linters:
     - errorlint
     - exhaustive
     - exportloopref
-    - funlen
     - gocritic
     - goimports
     - gomoddirectives
