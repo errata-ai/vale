@@ -77,6 +77,7 @@ Feature: Checks
         When I test "checks/Existence"
         Then the output should contain exactly:
             """
+            test.md:9:28:vale.Spacing:Use exactly one space between sentences and clauses. Check 'e.A' for spacing problems.
             """
 
     Scenario: Substitution
