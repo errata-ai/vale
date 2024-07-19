@@ -25,6 +25,7 @@ type Substitution struct {
 	Vocab      bool
 	Capitalize bool
 
+	msgMap map[string]string
 	// Deprecated
 	POS string
 }
@@ -67,20 +68,13 @@ func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitu
 
 		opens := strings.Count(regexstr, "(")
 		if opens != strings.Count(regexstr, "(?")+strings.Count(regexstr, `\(`) {
-			// We rely on manually-added capture groups to associate a match
-			// with its replacement -- e.g.,
-			//
-			//    `(foo)|(bar)`, [replacement1, replacement2]
-			//
-			// where the first capture group ("foo") corresponds to the first
-			// element of the replacements slice ("replacement1"). This means
-			// that we can only accept non-capture groups from the user (the
-			// indexing would be mixed up otherwise).
-			//
-			// TODO: Should we change this? Perhaps by creating a map of regex
-			// to replacements?
-			return rule, core.NewE201FromTarget(
-				"capture group not supported; use '(?:' instead of '('", regexstr, path)
+			old := regexstr
+			// We have a capture group, so we need to make it non-capturing.
+			regexstr, err = convertCaptureGroups(regexstr)
+			if err != nil {
+				return rule, core.NewE201FromTarget(err.Error(), regexstr, path)
+			}
+			rule.msgMap[regexstr] = old
 		}
 		tokens += `(` + regexstr + `)|`
 		replacements = append(replacements, replacement)
@@ -180,4 +174,9 @@ func convertMessage(s string) string {
 		}
 	}
 	return s
+}
+
+func convertCaptureGroups(msg string) (string, error) {
+	captureOpen := regexp2.MustCompileStd(`(?<!\\)\((?!\?)`)
+	return captureOpen.Replace(msg, "(?:", -1, -1)
 }

@@ -21,6 +21,18 @@ func makeSubstitution(def baseCheck) (*Substitution, error) {
 	return &rule, nil
 }
 
+func TestConvertGroups(t *testing.T) {
+	converted, err := convertCaptureGroups("change in(?: )?to the (.*) directory")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := "change in(?: )?to the (?:.*) directory"
+	if converted != expected {
+		t.Fatalf("Expected '%s', got '%s'", expected, converted)
+	}
+}
+
 func TestIsDeterministic(t *testing.T) {
 	swap := map[string]interface{}{
 		"extends":    "substitution",
