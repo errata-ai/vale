@@ -25,7 +25,7 @@ type Substitution struct {
 	Vocab      bool
 	Capitalize bool
 
-	msgMap map[string]string
+	msgMap []string
 	// Deprecated
 	POS string
 }
@@ -64,17 +64,16 @@ func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitu
 
 	replacements := []string{}
 	for _, regexstr := range terms {
+		rule.msgMap = append(rule.msgMap, regexstr)
 		replacement := rule.Swap[regexstr]
 
 		opens := strings.Count(regexstr, "(")
 		if opens != strings.Count(regexstr, "(?")+strings.Count(regexstr, `\(`) {
-			old := regexstr
 			// We have a capture group, so we need to make it non-capturing.
 			regexstr, err = convertCaptureGroups(regexstr)
 			if err != nil {
 				return rule, core.NewE201FromTarget(err.Error(), regexstr, path)
 			}
-			rule.msgMap[regexstr] = old
 		}
 		tokens += `(` + regexstr + `)|`
 		replacements = append(replacements, replacement)
@@ -114,10 +113,11 @@ func (s Substitution) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 					return alerts, err
 				}
 
-				// Based on the current capture group (`idx`), we can determine
-				// the associated replacement string by using the `repl` slice:
-				expected := s.repl[(idx/2)-1]
 				observed := strings.TrimSpace(converted)
+				expected, msgErr := subMsg(s, (idx/2)-1, observed)
+				if msgErr != nil {
+					return alerts, msgErr
+				}
 
 				same := matchToken(expected, observed, s.Ignorecase)
 				if !same && !isMatch(s.exceptRe, observed) {
@@ -179,4 +179,21 @@ func convertMessage(s string) string {
 func convertCaptureGroups(msg string) (string, error) {
 	captureOpen := regexp2.MustCompileStd(`(?<!\\)\((?!\?)`)
 	return captureOpen.Replace(msg, "(?:", -1, -1)
+}
+
+func subMsg(s Substitution, index int, observed string) (string, error) {
+	// Based on the current capture group (`idx`), we can determine
+	// the associated replacement string by using the `repl` slice:
+	expected := s.repl[index]
+	if s.Capitalize && observed == core.CapFirst(observed) {
+		expected = core.CapFirst(expected)
+	}
+
+	msg := s.msgMap[index]
+	if s.Ignorecase {
+		msg = `(?i)` + msg
+	}
+
+	msgRe := regexp2.MustCompileStd(msg)
+	return msgRe.Replace(observed, expected, -1, -1)
 }
