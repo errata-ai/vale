@@ -93,7 +93,7 @@ func NewSubstitution(cfg *core.Config, generic baseCheck, path string) (Substitu
 // Run executes the `substitution`-based rule.
 //
 // The rule looks for one pattern and then suggests a replacement.
-func (s Substitution) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
+func (s Substitution) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]core.Alert, error) {
 	var alerts []core.Alert
 
 	txt := blk.Text
@@ -139,7 +139,7 @@ func (s Substitution) Run(blk nlp.Block, _ *core.File) ([]core.Alert, error) {
 						s.Message = convertMessage(s.Message)
 					}
 
-					a, aerr := makeAlert(s.Definition, loc, txt)
+					a, aerr := makeAlert(s.Definition, loc, txt, cfg)
 					if aerr != nil {
 						return alerts, aerr
 					}

@@ -280,7 +280,7 @@ func (l *Linter) lintBlock(f *core.File, blk nlp.Block, lines, pad int, lookup b
 
 		info := chk.Fields()
 
-		alerts, err := chk.Run(blk, f)
+		alerts, err := chk.Run(blk, f, l.Manager.Config)
 		if err != nil {
 			return err
 		}

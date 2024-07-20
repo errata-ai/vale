@@ -39,7 +39,7 @@ func TestExistence(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	alerts, _ := rule.Run(nlp.NewBlock("", "This is a test.", ""), file)
+	alerts, _ := rule.Run(nlp.NewBlock("", "This is a test.", ""), file, cfg)
 	if len(alerts) != 1 {
 		t.Errorf("expected one alert, not %v", alerts)
 	}
@@ -70,6 +70,6 @@ func FuzzExistence(f *testing.F) {
 
 	f.Add("hello")
 	f.Fuzz(func(t *testing.T, s string) {
-		_, _ = rule.Run(nlp.NewBlock("", s, ""), file)
+		_, _ = rule.Run(nlp.NewBlock("", s, ""), file, cfg)
 	})
 }

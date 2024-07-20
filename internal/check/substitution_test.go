@@ -54,7 +54,7 @@ func TestIsDeterministic(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		actual, err := rule.Run(nlp.NewBlock(text, text, "text"), &core.File{})
+		actual, err := rule.Run(nlp.NewBlock(text, text, "text"), &core.File{}, &core.Config{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -85,7 +85,7 @@ func TestRegex(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	actual, err := rule.Run(nlp.NewBlock(text, text, "text"), &core.File{})
+	actual, err := rule.Run(nlp.NewBlock(text, text, "text"), &core.File{}, &core.Config{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -115,7 +115,7 @@ func TestRegexEscapedParens(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	actual, err := rule.Run(nlp.NewBlock(text, text, "text"), &core.File{})
+	actual, err := rule.Run(nlp.NewBlock(text, text, "text"), &core.File{}, &core.Config{})
 	if err != nil {
 		t.Fatal(err)
 	}

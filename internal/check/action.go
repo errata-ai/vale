@@ -1,4 +1,4 @@
-package lint
+package check
 
 import (
 	"encoding/json"
@@ -13,7 +13,6 @@ import (
 	"github.com/d5/tengo/v2/stdlib"
 	"github.com/jdkato/twine/strcase"
 
-	"github.com/errata-ai/vale/v3/internal/check"
 	"github.com/errata-ai/vale/v3/internal/core"
 )
 
@@ -43,7 +42,7 @@ func ParseAlert(s string, cfg *core.Config) (Solution, error) {
 		return Solution{}, err
 	}
 
-	suggestions, err := processAlert(body, cfg)
+	suggestions, err := FixAlert(body, cfg)
 	if err != nil {
 		resp.Error = err.Error()
 	}
@@ -52,7 +51,7 @@ func ParseAlert(s string, cfg *core.Config) (Solution, error) {
 	return resp, nil
 }
 
-func processAlert(alert core.Alert, cfg *core.Config) ([]string, error) {
+func FixAlert(alert core.Alert, cfg *core.Config) ([]string, error) {
 	action := alert.Action.Name
 	if f, found := fixers[action]; found {
 		return f(alert, cfg)
@@ -118,7 +117,7 @@ func spelling(alert core.Alert, cfg *core.Config) ([]string, error) {
 	name := strings.Split(alert.Check, ".")
 	path := filepath.Join(cfg.StylesPath(), name[0], name[1]+".yml")
 
-	mgr, err := check.NewManager(cfg)
+	mgr, err := NewManager(cfg)
 	if err != nil {
 		return suggestions, err
 	}
@@ -130,7 +129,7 @@ func spelling(alert core.Alert, cfg *core.Config) ([]string, error) {
 		}
 	}
 
-	rule, ok := mgr.Rules()[alert.Check].(check.Spelling)
+	rule, ok := mgr.Rules()[alert.Check].(Spelling)
 	if !ok {
 		return suggestions, errors.New("unknown check")
 	}
