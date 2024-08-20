@@ -119,7 +119,7 @@ func (s Substitution) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]core
 					return alerts, msgErr
 				}
 
-				same := matchToken(expected, observed, s.Ignorecase)
+				same := matchToken(expected, observed, false)
 				if !same && !isMatch(s.exceptRe, observed) {
 					action := s.Fields().Action
 					if action.Name == "replace" && len(action.Params) == 0 {
