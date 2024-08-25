@@ -1,6 +1,6 @@
 module github.com/errata-ai/vale/v3
 
-go 1.21
+go 1.21.6
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
@@ -12,6 +12,7 @@ require (
 	github.com/errata-ai/ini v1.63.0
 	github.com/errata-ai/regexp2 v1.7.0
 	github.com/gobwas/glob v0.2.3
+	github.com/jdkato/go-tree-sitter-julia v0.0.0-20240531060609-b738d045ba2d
 	github.com/jdkato/twine v0.10.1
 	github.com/karrick/godirwalk v1.16.1
 	github.com/mholt/archiver/v3 v3.5.1
