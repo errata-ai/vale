@@ -8,9 +8,12 @@ import (
 
 func Julia() *Language {
 	return &Language{
-		Delims:  regexp.MustCompile(`#|#=|=#`),
-		Parser:  julia.GetLanguage(),
-		Queries: []string{`(comment)+ @comment`},
+		Delims: regexp.MustCompile(`#|#=|=#`),
+		Parser: julia.GetLanguage(),
+		Queries: []string{
+			`(line_comment)+ @comment`,
+			`(block_comment)+ @comment`,
+		},
 		Padding: func(s string) int {
 			return computePadding(s, []string{"#", `#=`, `=#`})
 		},

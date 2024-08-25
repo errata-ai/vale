@@ -12,7 +12,6 @@ require (
 	github.com/errata-ai/ini v1.63.0
 	github.com/errata-ai/regexp2 v1.7.0
 	github.com/gobwas/glob v0.2.3
-	github.com/jdkato/go-tree-sitter-julia v0.0.0-20240531060609-b738d045ba2d
 	github.com/jdkato/twine v0.10.1
 	github.com/karrick/godirwalk v1.16.1
 	github.com/mholt/archiver/v3 v3.5.1
@@ -45,6 +44,7 @@ require (
 	github.com/gookit/color v1.5.4 // indirect
 	github.com/huandu/xstrings v1.3.3 // indirect
 	github.com/imdario/mergo v0.3.11 // indirect
+	github.com/jdkato/go-tree-sitter-julia v0.1.0 // indirect
 	github.com/klauspost/compress v1.11.4 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
