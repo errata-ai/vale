@@ -71,6 +71,9 @@ func NewManager(config *core.Config) (*Manager, error) {
 		}
 	}
 
+	// Local vocabularies should override any loaded styles.
+	mgr.loadVocabRules();
+
 	mgr.rules, err = filter(&mgr)
 	return &mgr, err
 }
@@ -228,9 +231,6 @@ func (mgr *Manager) loadDefaultRules() error {
 		return err
 	}
 	mgr.rules["Vale.Spelling"] = rule
-
-	// TODO: where should this go?
-	mgr.loadVocabRules()
 
 	return nil
 }
