@@ -189,6 +189,14 @@ func subMsg(s Substitution, index int, observed string) (string, error) {
 		expected = core.CapFirst(expected)
 	}
 
+	// TODO: Why do we need to check for this?
+	//
+	// This feels like a bug in `regexp2`.
+	hasIndex := regexp2.MustCompileStd(`\$\d+`)
+	if !hasIndex.MatchStringStd(expected) {
+		return expected, nil
+	}
+
 	msg := s.msgMap[index]
 	if s.Ignorecase {
 		msg = `(?i)` + msg

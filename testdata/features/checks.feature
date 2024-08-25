@@ -100,6 +100,7 @@ Feature: Checks
             test2.md:3:1:demo.CapSub:Use 'Change to the `/etc` directory' instead of 'Change into the `/etc` directory'.
             test2.md:7:1:demo.CapSub:Use 'Change to the `/home/user` directory' instead of 'Change into the `/home/user` directory'.
             test2.md:9:1:demo.CapSub:Use 'Change to the `/etc/X11` directory' instead of 'Change into the `/etc/X11` directory'.
+            test2.md:11:6:Bugs.WrongExp:Use 'versus' instead of 'vs'.
             """
 
     Scenario: Sequence
