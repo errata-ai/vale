@@ -1,5 +1,6 @@
 # See https://cloud.docker.com/repository/docker/jdkato/vale
-FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS build
+ARG GOLANG_VER=1.21
+FROM golang:${GOLANG_VER}-alpine AS build
 
 # TODO: DITA / XML:
 #    openjdk11 \
@@ -18,9 +19,8 @@ WORKDIR /app
 ENV CGO_ENABLED=1
 
 ARG ltag
-ARG TARGETOS TARGETARCH
 
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-s -w -X main.version=$ltag" -o /app/vale ./cmd/vale
+RUN go build -ldflags "-s -w -X main.version=$ltag" -o /app/vale ./cmd/vale
 
 FROM alpine
 
