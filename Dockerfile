@@ -1,6 +1,8 @@
-# See https://cloud.docker.com/repository/docker/jdkato/vale
+# syntax=docker/dockerfile:1
 ARG GOLANG_VER=1.21
 FROM golang:${GOLANG_VER}-alpine AS build
+
+# See https://cloud.docker.com/repository/docker/jdkato/vale
 
 # TODO: DITA / XML:
 #    openjdk11 \
