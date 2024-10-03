@@ -3,6 +3,7 @@ package check
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -56,7 +57,7 @@ func FixAlert(alert core.Alert, cfg *core.Config) ([]string, error) {
 	if f, found := fixers[action]; found {
 		return f(alert, cfg)
 	}
-	return []string{}, errors.New("unknown action")
+	return []string{}, fmt.Errorf("unknown action '%s'", action)
 }
 
 func suggest(alert core.Alert, cfg *core.Config) ([]string, error) {
@@ -78,7 +79,7 @@ func script(name string, alert core.Alert, cfg *core.Config) ([]string, error) {
 
 	file := core.FindConfigAsset(cfg, name, core.ActionDir)
 	if file == "" {
-		return suggestions, errors.New("script not found")
+		return suggestions, fmt.Errorf("script '%s' not found", name)
 	}
 
 	source, err := os.ReadFile(file)
@@ -131,7 +132,7 @@ func spelling(alert core.Alert, cfg *core.Config) ([]string, error) {
 
 	rule, ok := mgr.Rules()[alert.Check].(Spelling)
 	if !ok {
-		return suggestions, errors.New("unknown check")
+		return suggestions, fmt.Errorf("unknown check '%s'", alert.Check)
 	}
 
 	return rule.Suggest(alert.Match), nil
