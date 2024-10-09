@@ -1,14 +1,13 @@
 name: golangci-lint
 on:
+  pull_request:
   push:
     branches:
       - v3
-  pull_request:
 
 permissions:
   contents: read
-  # Optional: allow read access to pull request. Use with `only-new-issues` option.
-  # pull-requests: read
+  pull-requests: read
 
 jobs:
   golangci:
@@ -38,7 +37,7 @@ jobs:
           # args: --timeout=30m --config=/my/path/.golangci.yml --issues-exit-code=0
 
           # Optional: show only new issues if it's a pull request. The default value is `false`.
-          # only-new-issues: true
+          only-new-issues: true
 
           # Optional: if set to true, then all caching functionality will be completely disabled,
           #           takes precedence over all other caching options.
