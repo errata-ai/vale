@@ -287,7 +287,7 @@ func (l *Linter) lintBlock(f *core.File, blk nlp.Block, lines, pad int, lookup b
 }
 
 func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk nlp.Block) bool {
-	min := l.Manager.Config.MinAlertLevel
+	minLevel := l.Manager.Config.MinAlertLevel
 	run := false
 
 	details := chk.Fields()
@@ -303,7 +303,7 @@ func (l *Linter) shouldRun(name string, f *core.File, chk check.Rule, blk nlp.Bl
 	if f.QueryComments(name) { //nolint:gocritic
 		// It has been disabled via an in-text comment.
 		return false
-	} else if core.LevelToInt[details.Level] < min {
+	} else if core.LevelToInt[details.Level] < minLevel {
 		return false
 	} else if !chkScope.Matches(blk) {
 		return false

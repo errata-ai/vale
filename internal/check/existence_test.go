@@ -47,7 +47,7 @@ func TestExistence(t *testing.T) {
 
 func FuzzExistenceInit(f *testing.F) {
 	f.Add("hello")
-	f.Fuzz(func(t *testing.T, s string) {
+	f.Fuzz(func(_ *testing.T, s string) {
 		_, _ = makeExistence([]string{s})
 	})
 }
@@ -69,7 +69,7 @@ func FuzzExistence(f *testing.F) {
 	}
 
 	f.Add("hello")
-	f.Fuzz(func(t *testing.T, s string) {
+	f.Fuzz(func(_ *testing.T, s string) {
 		_, _ = rule.Run(nlp.NewBlock("", s, ""), file, cfg)
 	})
 }

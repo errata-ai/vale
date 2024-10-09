@@ -1,6 +1,6 @@
 run:
   timeout: 3m
-  go: "1.20"
+  go: "1.23"
 
 # This file contains only configs which differ from defaults.
 # All possible options can be found here https://github.com/golangci/golangci-lint/blob/master/.golangci.reference.yml
@@ -79,7 +79,6 @@ linters:
     - errname
     - errorlint
     - exhaustive
-    - exportloopref
     - gocritic
     - goimports
     - gomoddirectives
