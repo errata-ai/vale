@@ -28,7 +28,7 @@ type extensionConfig struct {
 	Normed, Real string
 }
 
-var blockDelimiters map[string]string = map[string]string{
+var blockDelimiters = map[string]string{
 	".adoc": "\n----\n$1\n----\n",
 	".md":   "\n```\n$1\n```\n",
 	".rst":  "\n::\n\n%s\n",
@@ -79,7 +79,7 @@ func applyBlockPatterns(c *core.Config, exts extensionConfig, content string) (s
 	return s, nil
 }
 
-var inlineDelimiters map[string]string = map[string]string{
+var inlineDelimiters = map[string]string{
 	".adoc": "`$1`",
 	".md":   "`$1`",
 	".rst":  "``$1``",
@@ -140,7 +140,6 @@ func applyCommentPatterns(c *core.Config, exts extensionConfig, content string) 
 
 			content = strings.ReplaceAll(content, delims[0], "<!--")
 			content = strings.ReplaceAll(content, delims[1], "-->")
-
 		}
 	}
 	return content, nil
