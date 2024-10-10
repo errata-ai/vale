@@ -278,6 +278,9 @@ func (l *Linter) lintBlock(f *core.File, blk nlp.Block, lines, pad int, lookup b
 			return err
 		}
 		for i := range alerts {
+			if f.QueryComments(name + "[" + alerts[i].Match + "]") {
+				continue
+			}
 			core.FormatAlert(&alerts[i], info.Limit, info.Level, name)
 			f.AddAlert(alerts[i], blk, lines, pad, lookup)
 		}

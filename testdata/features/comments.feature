@@ -3,11 +3,12 @@ Feature: Comments
     When I test comments for ".md"
     Then the output should contain exactly:
     """
-    test.md:15:19:vale.Redundancy:'ACT test' is redundant
-    test.md:19:19:vale.Redundancy:'ACT test' is redundant
-    test.md:25:20:demo.Ending-Preposition:Don't end a sentence with 'of.'
-    test.md:77:20:demo.Ending-Preposition:Don't end a sentence with 'of.'
-    test.md:87:16:demo.Raw:Link "[must not use `.html`](../index.html)" must use the .md file extension.
+    test.md:23:19:vale.Redundancy:'ACT test' is redundant
+    test.md:33:19:vale.Redundancy:'ACT test' is redundant
+    test.md:37:19:vale.Redundancy:'ACT test' is redundant
+    test.md:43:20:demo.Ending-Preposition:Don't end a sentence with 'of.'
+    test.md:95:20:demo.Ending-Preposition:Don't end a sentence with 'of.'
+    test.md:105:16:demo.Raw:Link "[must not use `.html`](../index.html)" must use the .md file extension.
     """
 
   Scenario: reStructuredText
