@@ -7,12 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version: "1.23"
 
@@ -29,8 +29,8 @@ jobs:
     name: runner / vale
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: errata-ai/vale-action@reviewdog
+      - uses: actions/checkout@v4
+      - uses: errata-ai/vale-action@v2.1.0
         with:
           files: README.md
           debug: true
