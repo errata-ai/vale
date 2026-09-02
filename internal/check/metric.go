@@ -63,7 +63,7 @@ func measuredScope(declared []string) []string {
 }
 
 // Run calculates the readability level of the given text.
-func (o Metric) Run(blk nlp.Block, _ *core.File, _ *core.Config) ([]core.Alert, error) {
+func (o Metric) Run(blk nlp.Block, f *core.File, _ *core.Config) ([]core.Alert, error) {
 	alerts := []core.Alert{}
 
 	// A formula is compiled and run as a Tengo program, so it needs the same
@@ -74,7 +74,12 @@ func (o Metric) Run(blk nlp.Block, _ *core.File, _ *core.Config) ([]core.Alert, 
 
 	parameters := core.BlockMetrics(blk.Text, blk.Metrics)
 	if len(parameters) == 0 {
-		// empty file.
+		// A heading-and-code-fence-only document (or block), or any other one
+		// with no prose "words" at all, has nothing for a readability-style
+		// formula to compute: the built-in values it would need (words,
+		// characters, sentences, ...) are never populated in that case (see
+		// BlockMetrics). Evaluating anyway would fail with an opaque Tengo
+		// "unresolved reference" compile error instead of this graceful no-op.
 		return alerts, nil
 	}
 
@@ -85,6 +90,18 @@ func (o Metric) Run(blk nlp.Block, _ *core.File, _ *core.Config) ([]core.Alert, 
 			parameters[k] = 0.0
 		}
 	}
+
+	// Every loaded check's alert count so far is exposed under the "check"
+	// parameter as an indexable object, rather than flattened into
+	// individual Tengo identifiers -- see checkCounts. A formula reads it as
+	// check["Style.Rule"], which resolves a never-fired check to 0 and a
+	// name that isn't genuinely loaded to a real error, without any risk of
+	// two distinct check names colliding on the same identifier. See #1163.
+	//
+	// "So far" is the whole document only for an unscoped (summary-scoped)
+	// rule, which runs last. A rule declaring a narrower scope runs
+	// mid-walk and sees counts as of that point, not the final total.
+	parameters["check"] = newCheckCounts(f.CheckCounts, f.LoadedChecks)
 
 	// The actual result of our formula.
 	//
