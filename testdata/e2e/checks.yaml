@@ -376,6 +376,42 @@ cases:
     want: |
       test.md:1:30:T.Ambiguous:Avoid ambiguous pronouns.
 
+  - name: sequence/max
+    about: "#1161 -- `max` counts repeated occurrences of a *tagged* pattern
+      within a scope, the same way `min` already does above. A `sequence`
+      rule's declared scope used to always collapse to one sentence at a
+      time, so a paragraph with two real matches split across two sentences
+      never tripped a density alert; each sentence individually only ever
+      had one match."
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.md]
+        T.VerbTricolon = YES
+      styles/T/VerbTricolon.yml: |
+        extends: sequence
+        message: "More than one verb tricolon in this paragraph (%d found)."
+        level: warning
+        scope: paragraph
+        max: 1
+        tokens:
+          - tag: VB.*
+          - pattern: ","
+          - tag: VB.*
+          - pattern: ","
+          - pattern: and
+          - tag: VB.*
+      test.md: |
+        We planned, built, and shipped it. Later we tested, reviewed, and deployed it.
+
+        We planned, built, and shipped it in one clean pass.
+    args: test.md
+    exit: 0
+    want: |
+      test.md:1:4:T.VerbTricolon:More than one verb tricolon in this paragraph (2 found).
+
   - name: sequence
     dir: Sequence
     args: .

@@ -11,6 +11,34 @@ import (
 	"github.com/vale-cli/vale/v3/internal/nlp"
 )
 
+// Prose container scope families that lintProse's own segmentation reaches
+// besides a real body paragraph: a heading, list item, blockquote, table
+// cell/header/caption, or figure caption. Each is prose -- tagged and
+// segmented the same way a paragraph is -- but, unlike a paragraph, it is
+// never wrapped as `paragraph.<scope>` (see #1132): a selector naming the
+// family directly is what reaches its own whole block instead.
+//
+// internal/lint's ast.go builds these blocks (its tagToScope map, and the
+// heading case beside it) and internal/check's sequence.go needs the same
+// family names for an undeclared `max`/`min` rule's default scope (see
+// NewSequence). `check` cannot import `lint` -- the dependency runs the
+// other way -- but both already import `core`, so the names live here once,
+// read by both, rather than as two hand-copied lists a comment merely asked
+// to be kept in sync.
+const (
+	ScopeHeading    = "heading"
+	ScopeList       = "list"
+	ScopeTable      = "table"
+	ScopeBlockquote = "blockquote"
+	ScopeFigure     = "figure"
+)
+
+// ProseContainerScopes lists the constants above together, for a caller that
+// wants all of them at once.
+var ProseContainerScopes = []string{
+	ScopeHeading, ScopeList, ScopeTable, ScopeBlockquote, ScopeFigure,
+}
+
 var defaultIgnoreDirectories = []string{
 	"node_modules", ".git",
 }

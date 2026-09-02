@@ -181,7 +181,7 @@ type Info struct {
 // must not reach them. See #1132.
 func (n *Info) Compute(block *Block, split bool) ([]Block, error) {
 	seg := SentenceTokenizer.Segment
-	if n.Endpoint != "" && n.Lang != "en" {
+	if usesRemoteSegmentation(n) {
 		// We only use external segmentation for non-English text since prose
 		// (our native library) is more efficient.
 		seg = func(text string) []string {
@@ -193,6 +193,19 @@ func (n *Info) Compute(block *Block, split bool) ([]Block, error) {
 		}
 	}
 	return n.doNLP(block, seg, split)
+}
+
+// usesRemoteSegmentation reports whether n should segment sentences via a
+// configured remote endpoint's own `/segment` response rather than local
+// Punkt: only for non-English text, since prose (Vale's native library) is
+// more efficient for English.
+//
+// Both structural paragraph splitting (Compute, above) and a rule's own
+// sentence lookup (File.Sentences, by way of SegmentWith in prose.go) have to
+// make this same choice, so it lives in one place rather than two copies that
+// could drift apart.
+func usesRemoteSegmentation(n *Info) bool {
+	return n != nil && n.Endpoint != "" && n.Lang != "en"
 }
 
 // offsetOf locates piece within blk.Text and returns its offset in blk's
