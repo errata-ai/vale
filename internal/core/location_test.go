@@ -237,8 +237,8 @@ func locByScan(ctx string, begin, end, pad int) (int, []int) {
 	matchLen := nlp.StrLen(ctx[begin:end])
 
 	span := []int{col, col + matchLen - 1}
-	if span[1] <= 0 {
-		span[1] = 1
+	if span[1] < span[0] {
+		span[1] = span[0]
 	}
 
 	return line, span

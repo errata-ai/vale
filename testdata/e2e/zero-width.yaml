@@ -1,0 +1,115 @@
+# A pattern that matches without consuming text has a place but no text.
+name: zero-width
+files:
+  .vale.ini: |
+    StylesPath = styles
+    MinAlertLevel = suggestion
+
+    [*]
+    BasedOnStyles = Zero
+
+    [COMMIT_EDITMSG]
+    BasedOnStyles = Zero
+    View = Commit
+  styles/Zero/Type.yml: |
+    extends: existence
+    message: "The subject must start with a type: '%s'."
+    level: error
+    nonword: true
+    raw:
+      - '\A(?!(?:feat|fix)\b)'
+  styles/Zero/Gap.yml: |
+    extends: existence
+    message: "gap after 'a'"
+    level: warning
+    nonword: true
+    raw:
+      - '(?<=\ba)(?=\s)'
+  styles/config/views/Commit.yml: |
+    engine: textfsm
+    template: |
+      Value Subject (.+)
+      Value List Body (.*)
+
+      Start
+        ^${Subject} -> Body
+
+      Body
+        ^${Body}
+    scopes:
+      - name: subject
+        expr: Subject
+      - name: body
+        expr: Body
+  test.txt: |
+    Add a thing here
+
+    fix: a second
+  test.md: |
+    # Title
+
+    Add a thing here
+
+    fix: a second
+  COMMIT_EDITMSG: |
+    Add a thing here
+
+    Some body text with a gap.
+
+cases:
+  - name: text
+    about: "an empty match at offset 0 used to be read as a group that took
+      no part in the match and reported as (-1:-1)"
+    args: test.txt
+    exit: 1
+    want: |
+      test.txt:1:1:Zero.Type:The subject must start with a type: ''.
+      test.txt:1:6:Zero.Gap:gap after 'a'
+      test.txt:3:7:Zero.Gap:gap after 'a'
+
+  - name: markdown
+    about: "an anchored empty match keeps its column, so the heading's is
+      reported after the marker; only a measurement falls back to the start
+      of its block"
+    args: test.md
+    exit: 1
+    want: |
+      test.md:1:3:Zero.Type:The subject must start with a type: ''.
+      test.md:3:1:Zero.Type:The subject must start with a type: ''.
+      test.md:3:6:Zero.Gap:gap after 'a'
+      test.md:5:7:Zero.Gap:gap after 'a'
+
+  - name: view
+    files:
+      styles/Zero/Type.yml: |
+        extends: existence
+        message: "The subject must start with a type: '%s'."
+        level: error
+        scope: subject
+        nonword: true
+        raw:
+          - '\A(?!(?:feat|fix)\b)'
+    args: COMMIT_EDITMSG
+    exit: 1
+    want: |
+      COMMIT_EDITMSG:1:1:Zero.Type:The subject must start with a type: ''.
+      COMMIT_EDITMSG:1:6:Zero.Gap:gap after 'a'
+      COMMIT_EDITMSG:3:22:Zero.Gap:gap after 'a'
+
+  - name: view-error
+    about: "a rule that fails on one value of a View is reported, not
+      overwritten by the values linted after it"
+    files:
+      styles/Zero/Boom.yml: |
+        extends: script
+        message: "boom"
+        level: error
+        scope: subject
+        script: |
+          matches := []
+          x := 1
+          x()
+    args: COMMIT_EDITMSG
+    exit: 2
+    contains: |
+      Zero.Boom: Runtime Error: not callable: int

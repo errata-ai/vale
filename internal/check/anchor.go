@@ -39,6 +39,23 @@ func anchor(a *core.Alert, blk nlp.Block) {
 		// match is. The span reaches from the first byte to the last, markup
 		// between them included, because that is its extent in the file. See
 		// #502.
+		if lo == hi {
+			// An empty match has no last byte: it sits before the byte at lo,
+			// or after the final one when it is at the end.
+			at := blk.SourceOffset(lo)
+			if at < 0 && lo > 0 {
+				if p := blk.SourceOffset(lo - 1); p >= 0 {
+					at = p + 1
+				}
+			}
+			if at < 0 {
+				return
+			}
+			a.Span = []int{at, at}
+			a.HasByteOffsets = true
+			return
+		}
+
 		from, to := blk.SourceOffset(lo), blk.SourceOffset(hi-1)
 		if from < 0 || to < from {
 			return

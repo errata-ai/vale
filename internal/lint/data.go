@@ -104,6 +104,9 @@ func (l *Linter) lintScopedValues(f *core.File, values []core.ScopedValues) erro
 			default:
 				err = l.lintLines(f)
 			}
+			if err != nil {
+				return err
+			}
 
 			size := len(f.Alerts)
 			if size != last {

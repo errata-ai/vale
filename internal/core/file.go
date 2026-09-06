@@ -413,8 +413,8 @@ func locFromByteOffset(ctx string, starts []int, begin, end, pad int) (int, []in
 	matchLen := nlp.StrLen(ctx[begin:end])
 
 	span := []int{col, col + matchLen - 1}
-	if span[1] <= 0 {
-		span[1] = 1
+	if span[1] < span[0] {
+		span[1] = span[0]
 	}
 
 	return line, span
@@ -448,15 +448,17 @@ func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 	// We use blk.Context (the original document) rather than ctx, which may
 	// have been modified by ChkToCtx substitutions from earlier alerts.
 	switch {
+	case a.HasByteOffsets && a.Span[0] >= 0 && a.Span[1] <= len(blk.Context):
+		// Before the measurement case: a zero-width match has no text either,
+		// but it does have a place.
+		a.Line, a.Span = locFromByteOffset(
+			blk.Context, f.lineStarts(blk.Context), a.Span[0], a.Span[1], pad)
 	case a.Match == "" && blk.Line >= 0 && blk.Line < len(f.Lines):
 		// A measurement has no text to find. It is reported at the start of
 		// its block's first line: the file's for the summary, the heading's
 		// for a section, the paragraph's for a paragraph.
 		a.Line = blk.Line + 1
 		a.Span = []int{1, 1}
-	case a.HasByteOffsets && a.Span[0] >= 0 && a.Span[1] <= len(blk.Context):
-		a.Line, a.Span = locFromByteOffset(
-			blk.Context, f.lineStarts(blk.Context), a.Span[0], a.Span[1], pad)
 	case strings.HasPrefix(blk.Scope, "raw") && a.Match != "" &&
 		a.Span[0] >= 0 && a.Span[1] <= len(blk.Context) &&
 		blk.Context[a.Span[0]:a.Span[1]] == a.Match:

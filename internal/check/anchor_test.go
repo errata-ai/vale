@@ -148,6 +148,11 @@ func TestAnchorFromRuns(t *testing.T) {
 		{"before it", []int{0, 2}, []int{5, 7}, true},
 		{"after it", []int{3, 5}, []int{11, 13}, true},
 		{"past the last run", []int{0, 30}, nil, false},
+		// An empty match sits before the byte it names.
+		{"empty at the start", []int{0, 0}, []int{5, 5}, true},
+		{"empty before the markup", []int{3, 3}, []int{11, 11}, true},
+		{"empty at the end", []int{7, 7}, []int{19, 19}, true},
+		{"empty past the end", []int{8, 8}, nil, false},
 	}
 
 	for _, tt := range tests {

@@ -171,11 +171,14 @@ func (re *Regexp) FindAllStringSubmatchIndex(s string, n int) [][]int {
 		subs := make([]int, 0, len(groups)*2)
 		for i := range groups {
 			g := &groups[i]
-			idx, length := g.RuneIndex, g.RuneLength
-			if idx+length == 0 {
-				idx = -1
+			// An empty match at the start of the string also has index 0 and
+			// length 0, so only the capture list says whether the group took
+			// part.
+			if len(g.Captures) == 0 {
+				subs = append(subs, -1, -1)
+				continue
 			}
-			subs = append(subs, idx, idx+length)
+			subs = append(subs, g.RuneIndex, g.RuneIndex+g.RuneLength)
 		}
 		result = append(result, subs)
 	})
