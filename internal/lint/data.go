@@ -92,10 +92,16 @@ func (l *Linter) lintScopedValues(f *core.File, values []core.ScopedValues) erro
 				}
 			}
 
-			if strings.Contains(line, "\\n") {
+			if strings.Contains(line, "\\n") && !sv.Joined {
 				f.SetText(strings.ReplaceAll(v, "\n", " "))
 			} else {
 				f.SetText(v)
+			}
+			if sv.Joined {
+				// One element per source line: an alert's line within the
+				// value is its offset from the first, and there is no
+				// escaped newline to widen its column by.
+				line = ""
 			}
 			f.SetNormedExt(match.Format)
 

@@ -388,3 +388,75 @@ cases:
     exit: 2
     contains: |
       no View defines a scope named 'trailer'
+
+  - name: notebook
+    about: "a Markdown cell's source is a list of lines; `join` reads it as
+      one value, placed at its first line, so a sentence is counted across
+      the line break (14 words, where its first line alone has 9) and a
+      single-string cell still works; outputs and code are never seen"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.ipynb]
+        BasedOnStyles = Nb
+        View = Notebook
+      styles/config/views/Notebook.yml: |
+        engine: dasel
+        scopes:
+          - name: cell
+            expr: cells.all().filter(equal(cell_type,markdown)).source
+            join: ""
+            type: md
+      styles/Nb/Hedge.yml: |
+        extends: existence
+        message: "'%s' hedges"
+        level: error
+        tokens:
+          - worth noting
+      styles/Nb/Long.yml: |
+        extends: occurrence
+        message: "More than 9 words in a sentence."
+        level: warning
+        scope: sentence
+        max: 9
+        token: '\b\w+\b'
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": [
+            "# Title\n",
+            "\n",
+            "It is worth noting that this is the first\n",
+            "paragraph, split across lines.\n",
+            "\n",
+            "A second paragraph with `code` in it."
+           ]
+          },
+          {
+           "cell_type": "code",
+           "execution_count": 1,
+           "metadata": {},
+           "outputs": [{"name": "stdout", "output_type": "stream", "text": ["It is worth noting that outputs are skipped\n"]}],
+           "source": ["# It is worth noting that comments are code\n", "print(1)"]
+          },
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": "One string cell. It is worth noting that this form exists too."
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:9:6:Nb.Long:More than 9 words in a sentence.
+      demo.ipynb:9:12:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:25:38:Nb.Hedge:'worth noting' hedges

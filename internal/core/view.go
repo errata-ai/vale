@@ -29,6 +29,11 @@ type Scope struct {
 	Name string `yaml:"name"`
 	Expr string `yaml:"expr"`
 	Type string `yaml:"type"`
+
+	// Join, when set, is the separator a selected list of strings is
+	// joined with, so the list reads as one value rather than one value
+	// per element. A notebook cell's source is such a list.
+	Join *string `yaml:"join"`
 }
 
 // A View is a named, virtual representation of a subset of a file's
@@ -60,6 +65,10 @@ type ScopedValue struct {
 	Text   string
 	Line   int
 	Column int
+
+	// Joined marks a value made from a list, one element per source line,
+	// so its own line breaks are real ones and not an escape in a scalar.
+	Joined bool
 }
 
 // A ScopedValues is a value that has been assigned a scope.
@@ -203,14 +212,30 @@ func (b *View) Apply(f *File) ([]ScopedValues, error) {
 	resolver := newScalarResolver(scalars)
 	found := make([]ScopedValues, 0, len(b.Scopes))
 	for _, s := range b.Scopes {
-		strs, serr := selectStrings(value, s.Expr)
+		items, serr := selectValues(value, s.Expr)
 		if serr != nil {
 			return nil, fmt.Errorf("processing scope %q: %w", s.Name, serr)
 		}
-		values := make([]ScopedValue, 0, len(strs))
-		for _, str := range strs {
-			line, col := resolver.locate(str)
-			values = append(values, ScopedValue{Text: str, Line: line, Column: col})
+		values := make([]ScopedValue, 0, len(items))
+		for _, item := range items {
+			switch v := item.(type) {
+			case string:
+				line, col := resolver.locate(v)
+				values = append(values, ScopedValue{Text: v, Line: line, Column: col})
+			case []any:
+				parts, ok := stringList(v)
+				if !ok || s.Join == nil || len(parts) == 0 {
+					continue
+				}
+				line, col := resolver.locate(parts[0])
+				// The rest are spoken for: a later scope must not be placed
+				// on a line this value already covers.
+				for _, part := range parts[1:] {
+					resolver.locate(part)
+				}
+				values = append(values, ScopedValue{
+					Text: strings.Join(parts, *s.Join), Line: line, Column: col, Joined: true})
+			}
 		}
 		found = append(found, ScopedValues{
 			Scope:  s.Name,
@@ -222,17 +247,34 @@ func (b *View) Apply(f *File) ([]ScopedValues, error) {
 	return found, nil
 }
 
+// selectStrings returns the strings a selector lands on; anything else it
+// lands on is dropped.
 func selectStrings(value DaselValue, expr string) ([]string, error) {
+	items, err := selectValues(value, expr)
+	if err != nil {
+		return nil, err
+	}
+	results := make([]string, 0, len(items))
+	for _, v := range items {
+		if str, isStr := v.(string); isStr {
+			results = append(results, str)
+		}
+	}
+	return results, nil
+}
+
+// selectValues returns whatever a selector lands on, one item per hit.
+func selectValues(value DaselValue, expr string) ([]any, error) {
 	selected, _, err := dasel.Select(context.Background(), value, expr)
 	if err != nil {
 		// A selector may be written in either dialect, so a failure in both
 		// reports both: the user knows which one they meant.
-		strs, v2err := selectStringsV2(value, expr)
+		items, v2err := selectValuesV2(value, expr)
 		if v2err != nil {
 			return nil, fmt.Errorf("%s (as a v2 selector: %s)",
 				trimDaselError(err), trimDaselError(v2err))
 		}
-		return strs, nil
+		return items, nil
 	}
 
 	outer, isSlice := selected.([]any)
@@ -246,14 +288,20 @@ func selectStrings(value DaselValue, expr string) ([]string, error) {
 			outer = inner
 		}
 	}
+	return outer, nil
+}
 
-	results := make([]string, 0, len(outer))
-	for _, v := range outer {
-		if str, isStr := v.(string); isStr {
-			results = append(results, str)
+// stringList reports whether every element of a list is a string.
+func stringList(list []any) ([]string, bool) {
+	parts := make([]string, 0, len(list))
+	for _, v := range list {
+		str, ok := v.(string)
+		if !ok {
+			return nil, false
 		}
+		parts = append(parts, str)
 	}
-	return results, nil
+	return parts, true
 }
 
 // daselNoise is the wrapping dasel adds at every level of a selector as an
@@ -266,14 +314,14 @@ func trimDaselError(err error) string {
 	return daselNoise.ReplaceAllString(err.Error(), "")
 }
 
-func selectStringsV2(value DaselValue, expr string) ([]string, error) {
+func selectValuesV2(value DaselValue, expr string) ([]any, error) {
 	selected, err := v2dasel.Select(value, expr)
 	if err != nil {
 		return nil, err
 	}
-	results := make([]string, 0, len(selected))
+	results := make([]any, 0, len(selected))
 	for _, v := range selected {
-		results = append(results, v.String())
+		results = append(results, v.Interface())
 	}
 	return results, nil
 }

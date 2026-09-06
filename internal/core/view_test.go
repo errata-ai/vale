@@ -285,3 +285,46 @@ func TestFileToValueUnknownExtension(t *testing.T) {
 		t.Errorf("got %v, want [answered]", got)
 	}
 }
+
+// With `join`, a list of strings is one value at the first element's line.
+func TestApplyJoinsList(t *testing.T) {
+	src := `{
+ "cells": [
+  {"cell_type": "markdown", "source": [
+    "# Title\n",
+    "\n",
+    "A paragraph split\n",
+    "across lines."
+  ]},
+  {"cell_type": "code", "source": ["print(1)"]},
+  {"cell_type": "markdown", "source": "One string cell."}
+ ]
+}
+`
+	sep := ""
+	view := &View{Engine: "dasel", Scopes: []Scope{{
+		Name: "cell", Expr: "cells.all().filter(equal(cell_type,markdown)).source", Type: "md", Join: &sep,
+	}}}
+
+	found, err := view.Apply(&File{RealExt: ".ipynb", Content: src})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []ScopedValue{
+		{Text: "# Title\n\nA paragraph split\nacross lines.", Line: 4, Column: 6, Joined: true},
+		{Text: "One string cell.", Line: 10, Column: 40},
+	}
+	if !reflect.DeepEqual(found[0].Values, want) {
+		t.Errorf("values = %#v, want %#v", found[0].Values, want)
+	}
+
+	// Without `join`, the list is dropped and the string cell stays.
+	view.Scopes[0].Join = nil
+	found, err = view.Apply(&File{RealExt: ".ipynb", Content: src})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(found[0].Values) != 1 || found[0].Values[0].Text != "One string cell." {
+		t.Errorf("values = %#v, want the string cell alone", found[0].Values)
+	}
+}
