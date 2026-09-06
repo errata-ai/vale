@@ -1,6 +1,7 @@
 package check
 
 import (
+	"fmt"
 	"strings"
 
 	rx "github.com/vale-cli/vale/v3/internal/regex"
@@ -16,6 +17,9 @@ type Conditional struct {
 	patterns   []*rx.Regexp
 	First      string
 	Second     string
+	// In names the View scope Second is looked for in. Without it, Second
+	// is looked for in the same block as First.
+	In         string
 	exceptRe   *rx.Regexp
 	phraseRe   *rx.Regexp
 	Ignorecase bool
@@ -52,6 +56,11 @@ func NewConditional(cfg *core.Config, generic baseCheck, path string) (Condition
 		return rule, err
 	}
 
+	if rule.In != "" && !viewDefinesScope(cfg, rule.In) {
+		return rule, core.NewE201FromTarget(
+			fmt.Sprintf("no View defines a scope named '%s'", rule.In), "in", path)
+	}
+
 	re, err := updateExceptions(rule.Exceptions, cfg.AcceptedTokens, rule.Vocab)
 	if err != nil {
 		return rule, core.NewE201FromPosition(err.Error(), path, 1)
@@ -77,6 +86,18 @@ func NewConditional(cfg *core.Config, generic baseCheck, path string) (Condition
 	return rule, nil
 }
 
+// viewDefinesScope reports whether any View names a scope `name`.
+func viewDefinesScope(cfg *core.Config, name string) bool {
+	for _, view := range cfg.Views {
+		for _, s := range view.Scopes {
+			if s.Name == name {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // Run evaluates the given conditional statement.
 func (c Conditional) Run(blk nlp.Block, f *core.File, cfg *core.Config) ([]core.Alert, error) {
 	alerts := []core.Alert{}
@@ -94,13 +115,22 @@ func (c Conditional) Run(blk nlp.Block, f *core.File, cfg *core.Config) ([]core.
 		return alerts, nil
 	}
 
+	// The consequent is looked for in this block, or, with `in`, in the
+	// values of another of the View's scopes.
+	sources := []string{txt}
+	if c.In != "" {
+		sources = f.Scoped[c.In]
+	}
+
 	// When `Second` has no capture group, the rule is a plain presence check:
 	// if `First` appears, `Second` must appear somewhere in the same block. If
 	// it does, there's nothing to flag; otherwise every `First` match is a
 	// violation. See #1048.
 	if !c.secondHasGroup {
-		if c.patterns[0].MatchStringStd(txt) {
-			return alerts, nil
+		for _, src := range sources {
+			if c.patterns[0].MatchStringStd(src) {
+				return alerts, nil
+			}
 		}
 		return c.flagAntecedents(txt, cfg)
 	}
@@ -113,14 +143,15 @@ func (c Conditional) Run(blk nlp.Block, f *core.File, cfg *core.Config) ([]core.
 	//
 	// In other words: if "WHO" exists, it must also have a definition -- which
 	// we're currently looking for.
-	matches := c.patterns[0].FindAllStringSubmatch(txt, -1)
-	for _, mat := range matches {
-		if len(mat) > 1 {
-			// If we find one, we store it in a slice associated with this
-			// particular file.
-			for _, m := range mat[1:] {
-				if len(m) > 0 {
-					f.Sequences = append(f.Sequences, m)
+	for _, src := range sources {
+		for _, mat := range c.patterns[0].FindAllStringSubmatch(src, -1) {
+			if len(mat) > 1 {
+				// If we find one, we store it in a slice associated with
+				// this particular file.
+				for _, m := range mat[1:] {
+					if len(m) > 0 {
+						f.Sequences = append(f.Sequences, m)
+					}
 				}
 			}
 		}

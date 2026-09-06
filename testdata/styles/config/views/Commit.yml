@@ -2,7 +2,7 @@ engine: textfsm
 template: |
   Value Subject (.+)
   Value List Body (.*)
-  Value List Trailer ([A-Z][\w-]+: .+)
+  Value List Trailer ((?:BREAKING CHANGE|[A-Z][\w-]+): .+)
 
   Start
     ^${Subject} -> Body

@@ -151,7 +151,7 @@ cases:
         template: |
           Value Subject (.+)
           Value List Body (.*)
-          Value List Trailer ([A-Z][\w-]+: .+)
+          Value List Trailer ((?:BREAKING CHANGE|[A-Z][\w-]+): .+)
 
           Start
             ^${Subject} -> Body
@@ -265,3 +265,126 @@ cases:
     exit: 2
     contains: |
       chat.log: processing scope "assistant": unexpected type: expected map, got array
+
+  - name: across-values
+    about: "a fact about a line is a value for that line, and a `conditional`
+      with `in` looks for its consequent in another of the View's scopes"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.txt]
+        BasedOnStyles = Conv
+        View = Commit
+      styles/config/views/Commit.yml: |
+        engine: textfsm
+        template: |
+          Value Subject (.+)
+          Value Gap (.*)
+          Value List Body (.*)
+          Value List Trailer ((?:BREAKING CHANGE|[A-Z][\w-]+): .+)
+
+          Start
+            ^${Subject} -> Gap
+
+          Gap
+            ^${Gap} -> Body
+
+          Body
+            ^# -> Next
+            ^${Trailer}
+            ^${Body}
+        scopes:
+          - name: subject
+            expr: Subject
+          - name: gap
+            expr: Gap
+          - name: body
+            expr: Body
+          - name: trailer
+            expr: Trailer
+      styles/Conv/LeadingBlank.yml: |
+        extends: existence
+        message: "The body must be separated from the subject by a blank line."
+        level: error
+        scope: gap
+        nonword: true
+        raw:
+          - '\A\S'
+      styles/Conv/BreakingFooter.yml: |
+        extends: conditional
+        message: "A '!' in the subject needs a 'BREAKING CHANGE:' footer."
+        level: error
+        scope: subject
+        first: '^\w+(?:\([^)]*\))?!:'
+        second: '^BREAKING CHANGE: '
+        in: trailer
+      styles/Conv/BreakingBang.yml: |
+        extends: conditional
+        message: "A 'BREAKING CHANGE:' footer needs a '!' in the subject."
+        level: error
+        scope: trailer
+        first: '^BREAKING CHANGE: '
+        second: '^\w+(?:\([^)]*\))?!:'
+        in: subject
+      marked.txt: |
+        feat!: drop the flag
+
+        The flag is gone.
+
+        BREAKING CHANGE: the flag is gone
+      unmarked.txt: |
+        feat!: drop the flag
+
+        The flag is gone.
+      unflagged.txt: |
+        feat: drop the flag
+
+        BREAKING CHANGE: the flag is gone
+      crowded.txt: |
+        feat: add a thing
+        The body starts too soon.
+      plain.txt: |
+        feat: add a thing
+    args: marked.txt unmarked.txt unflagged.txt crowded.txt plain.txt
+    exit: 1
+    want: |
+      crowded.txt:2:1:Conv.LeadingBlank:The body must be separated from the subject by a blank line.
+      unflagged.txt:3:1:Conv.BreakingBang:A 'BREAKING CHANGE:' footer needs a '!' in the subject.
+      unmarked.txt:1:1:Conv.BreakingFooter:A '!' in the subject needs a 'BREAKING CHANGE:' footer.
+
+  - name: across-values-unknown
+    about: "an `in` that no View defines is an error at load"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.txt]
+        BasedOnStyles = Conv
+        View = Commit
+      styles/config/views/Commit.yml: |
+        engine: textfsm
+        template: |
+          Value Subject (.+)
+
+          Start
+            ^${Subject}
+        scopes:
+          - name: subject
+            expr: Subject
+      styles/Conv/Breaking.yml: |
+        extends: conditional
+        message: "needs a footer"
+        level: error
+        scope: subject
+        first: '!:'
+        second: '^BREAKING CHANGE: '
+        in: trailer
+      plain.txt: |
+        feat: add a thing
+    args: plain.txt
+    exit: 2
+    contains: |
+      no View defines a scope named 'trailer'

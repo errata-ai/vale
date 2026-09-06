@@ -66,6 +66,10 @@ type File struct {
 	simple     bool                       // -
 	Lookup     bool                       // -
 	MetaScope  string                     // extra scope context, e.g. a YAML key or comment
+
+	// Scoped holds the text of every value a View found, by scope name, so
+	// a rule can ask about a scope other than the one it runs in.
+	Scoped map[string][]string
 }
 
 // lineStarts returns the byte offset at which each line of ctx begins.

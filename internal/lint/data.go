@@ -49,6 +49,13 @@ func (l *Linter) lintScopedValues(f *core.File, values []core.ScopedValues) erro
 	srcLines := strings.Split(wholeFile, "\n")
 	last := 0
 
+	f.Scoped = make(map[string][]string, len(values))
+	for _, match := range values {
+		for _, sv := range match.Values {
+			f.Scoped[match.Scope] = append(f.Scoped[match.Scope], sv.Text)
+		}
+	}
+
 	for _, match := range values {
 		f.SetMetaScope(match.Scope)
 
