@@ -4,3 +4,7 @@ Zero matches leave no occurence to point at, but the scope has a
 position of its own.
 
 Signed-off-by: Joseph Kato <j@example.com>
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch occurence
