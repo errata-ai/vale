@@ -146,6 +146,39 @@ cases:
       test.md:9:6:write-good.E-Prime:Avoid using "is"
       test.md:9:28:vale.Spacing:Use exactly one space between sentences and clauses. Check 'e.A' for spacing problems.
 
+  - name: existence-raw-percent
+    about: "a raw pattern is joined into a printf template, so a `%` in it
+      was read as a verb and the rule never matched"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.md]
+        BasedOnStyles = Pct
+      styles/Pct/Sign.yml: |
+        extends: existence
+        message: "Write 'percent', not '%s'."
+        level: error
+        nonword: true
+        raw:
+          - '%'
+      styles/Pct/Placeholder.yml: |
+        extends: existence
+        message: "Placeholder '%s' left in text."
+        level: warning
+        nonword: true
+        raw:
+          - '%[sd]'
+      test.md: |
+        Save %s files. A 50% discount.
+    args: test.md
+    exit: 1
+    want: |
+      test.md:1:6:Pct.Placeholder:Placeholder '%s' left in text.
+      test.md:1:6:Pct.Sign:Write 'percent', not '%'.
+      test.md:1:20:Pct.Sign:Write 'percent', not '%'.
+
   - name: raw-caret-past-1k
     about: "#869"
     dir: RawCaret

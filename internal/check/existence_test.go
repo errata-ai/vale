@@ -73,3 +73,45 @@ func FuzzExistence(f *testing.F) {
 		_, _ = rule.Run(nlp.NewBlock("", s, ""), file, cfg)
 	})
 }
+
+// A raw pattern is joined into a printf template; a `%` in it must survive.
+func TestExistenceRawPercent(t *testing.T) {
+	cfg, err := core.NewConfig(&core.CLIFlags{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	file, err := core.NewFile("", cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cases := []struct {
+		raw  string
+		want int
+	}{
+		{"%", 2},
+		{"50%", 1},
+		{"%s", 1},
+		{"%[sd]", 1},
+	}
+
+	for _, c := range cases {
+		t.Run(c.raw, func(t *testing.T) {
+			def := baseCheck{"raw": []string{c.raw}, "nonword": true}
+			rule, rerr := NewExistence(cfg, def, "")
+			if rerr != nil {
+				t.Fatal(rerr)
+			}
+
+			blk := nlp.NewBlock("", "Save %s files. A 50% discount.", "")
+			alerts, aerr := rule.Run(blk, file, cfg)
+			if aerr != nil {
+				t.Fatal(aerr)
+			}
+			if len(alerts) != c.want {
+				t.Errorf("%q: got %d alerts, want %d", c.raw, len(alerts), c.want)
+			}
+		})
+	}
+}

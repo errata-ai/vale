@@ -372,10 +372,13 @@ func makeRegexp(
 		regex += nonwordTemplate
 	}
 
+	// The result is a format string the caller fills with its tokens, so a
+	// `%` in the raw text has to survive that step.
+	raw := strings.ReplaceAll(callback(), "%", "%%")
 	if shouldAppend {
-		regex += callback()
+		regex += raw
 	} else {
-		regex = callback() + regex
+		regex = raw + regex
 	}
 
 	if noCase {
