@@ -66,3 +66,70 @@ cases:
       transcript.txt:3:42:Vale.Spelling:Did you really mean 'occurence'?
     absent:
       - enuf
+
+  - name: selector-error
+    about: "a selector that fails is reported against the file it was applied
+      to, with the cause from both dasel dialects"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.yml]
+        BasedOnStyles = Chat
+        View = Chat
+      styles/Chat/Hedge.yml: |
+        extends: existence
+        message: "'%s' hedges"
+        level: error
+        scope: assistant
+        tokens:
+          - worth noting
+      styles/config/views/Chat.yml: |
+        engine: dasel
+        scopes:
+          - name: assistant
+            expr: 'messages.filter(role == "assistant").content'
+      chat.yml: |
+        messages:
+          - role: user
+            content: It is worth noting that I asked.
+          - role: assistant
+            content: It is worth noting that I answered.
+    args: chat.yml
+    exit: 2
+    contains: |
+      chat.yml: processing scope "assistant": unexpected type: expected map, got array (as a v2 selector: cannot use property selector on non map/struct types: slice: property not found: role == "assistant")
+
+  - name: selector-filter
+    about: "a filter selects only what it says"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.yml]
+        BasedOnStyles = Chat
+        View = Chat
+      styles/Chat/Hedge.yml: |
+        extends: existence
+        message: "'%s' hedges"
+        level: error
+        scope: assistant
+        tokens:
+          - worth noting
+      styles/config/views/Chat.yml: |
+        engine: dasel
+        scopes:
+          - name: assistant
+            expr: messages.all().filter(equal(role,assistant)).content
+      chat.yml: |
+        messages:
+          - role: user
+            content: It is worth noting that I asked.
+          - role: assistant
+            content: It is worth noting that I answered.
+    args: chat.yml
+    exit: 1
+    want: |
+      chat.yml:5:20:Chat.Hedge:'worth noting' hedges

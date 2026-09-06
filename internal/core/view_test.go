@@ -2,6 +2,7 @@ package core
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -171,5 +172,53 @@ func TestFileToValueLineContinuationFromIssue1018(t *testing.T) {
 	line, col := r.locate("Line 1 Line 2")
 	if line != 3 || col != 17 {
 		t.Errorf("description position = (%d,%d), want (3,17)", line, col)
+	}
+}
+
+// A selector that fails in both dialects reports both causes, without the
+// wrapping dasel adds at every level.
+func TestSelectStringsReportsBothDialects(t *testing.T) {
+	value := map[string]any{"messages": []any{
+		map[string]any{"role": "user", "content": "asked"},
+		map[string]any{"role": "assistant", "content": "answered"},
+	}}
+
+	_, err := selectStrings(value, `messages.filter(role == "assistant").content`)
+	if err == nil {
+		t.Fatal("expected an error")
+	}
+
+	msg := err.Error()
+	for _, want := range []string{
+		"unexpected type: expected map, got array",
+		"as a v2 selector: cannot use property selector on non map/struct types",
+	} {
+		if !strings.Contains(msg, want) {
+			t.Errorf("error %q lacks %q", msg, want)
+		}
+	}
+	if strings.Contains(msg, "ast.") {
+		t.Errorf("error %q still carries dasel's wrapping", msg)
+	}
+}
+
+// A selector in either dialect is accepted.
+func TestSelectStringsEitherDialect(t *testing.T) {
+	value := map[string]any{"messages": []any{
+		map[string]any{"role": "user", "content": "asked"},
+		map[string]any{"role": "assistant", "content": "answered"},
+	}}
+
+	for _, expr := range []string{
+		`messages.all().filter(equal(role,assistant)).content`,
+		`messages.filter($this.role == "assistant").map(content)`,
+	} {
+		got, err := selectStrings(value, expr)
+		if err != nil {
+			t.Fatalf("%s: %v", expr, err)
+		}
+		if len(got) != 1 || got[0] != "answered" {
+			t.Errorf("%s = %v, want [answered]", expr, got)
+		}
 	}
 }

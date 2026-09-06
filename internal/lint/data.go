@@ -30,7 +30,7 @@ func (l *Linter) lintData(f *core.File) error {
 			found, berr := view.Apply(f)
 			if berr != nil {
 				return core.NewE201FromTarget(
-					berr.Error(),
+					fmt.Sprintf("%s: %s", f.Path, berr),
 					fmt.Sprintf("[%s] View", syntax),
 					l.Manager.Config.RootINI,
 				)

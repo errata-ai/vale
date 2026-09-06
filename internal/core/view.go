@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/pelletier/go-toml/v2"
@@ -218,7 +219,14 @@ func (b *View) Apply(f *File) ([]ScopedValues, error) {
 func selectStrings(value DaselValue, expr string) ([]string, error) {
 	selected, _, err := dasel.Select(context.Background(), value, expr)
 	if err != nil {
-		return selectStringsV2(value, expr)
+		// A selector may be written in either dialect, so a failure in both
+		// reports both: the user knows which one they meant.
+		strs, v2err := selectStringsV2(value, expr)
+		if v2err != nil {
+			return nil, fmt.Errorf("%s (as a v2 selector: %s)",
+				trimDaselError(err), trimDaselError(v2err))
+		}
+		return strs, nil
 	}
 
 	outer, isSlice := selected.([]any)
@@ -240,6 +248,16 @@ func selectStrings(value DaselValue, expr string) ([]string, error) {
 		}
 	}
 	return results, nil
+}
+
+// daselNoise is the wrapping dasel adds at every level of a selector as an
+// error passes up through it.
+var daselNoise = regexp.MustCompile(
+	`error executing selector: |execution error when processing ast\.\w+: |error executing expression: `)
+
+// trimDaselError strips the per-level wrapping, leaving the cause.
+func trimDaselError(err error) string {
+	return daselNoise.ReplaceAllString(err.Error(), "")
 }
 
 func selectStringsV2(value DaselValue, expr string) ([]string, error) {
