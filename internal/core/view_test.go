@@ -222,3 +222,49 @@ func TestSelectStringsEitherDialect(t *testing.T) {
 		}
 	}
 }
+
+// A value the template never fills still yields its scope, as one empty
+// value at the top of the file, so a rule that requires text can report it.
+func TestApplyTemplateUnfilledValue(t *testing.T) {
+	view := &View{
+		Engine: "textfsm",
+		Template: `Value Subject (.+)
+Value List Trailer ([A-Z][\w-]+: .+)
+
+Start
+  ^${Trailer}
+  ^${Subject}
+`,
+		Scopes: []Scope{{Name: "subject", Expr: "Subject"}, {Name: "trailer", Expr: "Trailer"}},
+	}
+	if err := view.compileTemplate(); err != nil {
+		t.Fatal(err)
+	}
+
+	cases := []struct {
+		name, content string
+		want          []ScopedValue
+	}{
+		{"missing", "fix: a thing\n", []ScopedValue{{Text: "", Line: 1, Column: 1}}},
+		{"present", "fix: a thing\n\nSigned-off-by: J <j@x.y>\n",
+			[]ScopedValue{{Text: "Signed-off-by: J <j@x.y>", Line: 3, Column: 1}}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			found, err := view.applyTemplate(&File{Content: c.content})
+			if err != nil {
+				t.Fatal(err)
+			}
+			var trailer []ScopedValue
+			for _, sv := range found {
+				if sv.Scope == "trailer" {
+					trailer = sv.Values
+				}
+			}
+			if !reflect.DeepEqual(trailer, c.want) {
+				t.Errorf("trailer = %#v, want %#v", trailer, c.want)
+			}
+		})
+	}
+}

@@ -90,16 +90,20 @@ func (l *Linter) lintScopedValues(f *core.File, values []core.ScopedValues) erro
 			}
 			f.SetNormedExt(match.Format)
 
-			switch match.Format {
-			case "md":
+			switch {
+			case v == "":
+				// An empty value has nothing to parse, and parsing it yields no
+				// block at all; a rule that requires text needs one to run on.
+				err = l.lintLines(f)
+			case match.Format == "md":
 				err = l.lintMarkdown(f)
-			case "rst":
+			case match.Format == "rst":
 				err = l.lintRST(f)
-			case "html":
+			case match.Format == "html":
 				err = l.lintHTML(f)
-			case "org":
+			case match.Format == "org":
 				err = l.lintOrg(f)
-			case "adoc":
+			case match.Format == "adoc":
 				err = l.lintADoc(f)
 			default:
 				err = l.lintLines(f)

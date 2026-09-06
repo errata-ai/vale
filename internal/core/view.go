@@ -150,6 +150,12 @@ func (b *View) applyTemplate(f *File) ([]ScopedValues, error) {
 		for _, rec := range records {
 			values = append(values, joinCaptures(rec[s.Expr])...)
 		}
+		if len(values) == 0 {
+			// A value the template never filled is still a scope, so a rule
+			// that requires something of it can report that it is missing.
+			// Every other rule sees no text and stays quiet.
+			values = []ScopedValue{{Text: "", Line: 1, Column: 1}}
+		}
 		found = append(found, ScopedValues{Scope: s.Name, Values: values, Format: s.Type})
 	}
 

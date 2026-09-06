@@ -133,3 +133,78 @@ cases:
     exit: 1
     want: |
       chat.yml:5:20:Chat.Hedge:'worth noting' hedges
+
+  - name: presence
+    about: "a value the template never fills is an empty scope at the top of
+      the file, so `occurrence` with `min` reports what is missing and every
+      other rule stays quiet; a Markdown-typed scope is included"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.txt]
+        BasedOnStyles = Need
+        View = Commit
+      styles/config/views/Commit.yml: |
+        engine: textfsm
+        template: |
+          Value Subject (.+)
+          Value List Body (.*)
+          Value List Trailer ([A-Z][\w-]+: .+)
+
+          Start
+            ^${Subject} -> Body
+
+          Body
+            ^# -> Next
+            ^${Trailer}
+            ^${Body}
+        scopes:
+          - name: subject
+            expr: Subject
+          - name: body
+            expr: Body
+            type: md
+          - name: trailer
+            expr: Trailer
+      styles/Need/SignedOff.yml: |
+        extends: occurrence
+        message: "A commit needs a Signed-off-by trailer."
+        level: error
+        scope: trailer
+        min: 1
+        token: '^Signed-off-by: '
+      styles/Need/Body.yml: |
+        extends: occurrence
+        message: "A commit needs a body."
+        level: warning
+        scope: body
+        min: 1
+        token: '\S'
+      styles/Need/Hedge.yml: |
+        extends: existence
+        message: "'%s' hedges"
+        level: suggestion
+        scope: body
+        tokens:
+          - worth noting
+      subject-only.txt: |
+        fix: a thing
+      no-body.txt: |
+        fix: a thing
+
+        Signed-off-by: J <j@example.com>
+      complete.txt: |
+        fix: a thing
+
+        It is worth noting.
+
+        Signed-off-by: J <j@example.com>
+    args: subject-only.txt no-body.txt complete.txt
+    exit: 1
+    want: |
+      complete.txt:3:7:Need.Hedge:'worth noting' hedges
+      no-body.txt:1:1:Need.Body:A commit needs a body.
+      subject-only.txt:1:1:Need.Body:A commit needs a body.
+      subject-only.txt:1:1:Need.SignedOff:A commit needs a Signed-off-by trailer.
