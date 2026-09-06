@@ -208,3 +208,60 @@ cases:
       no-body.txt:1:1:Need.Body:A commit needs a body.
       subject-only.txt:1:1:Need.Body:A commit needs a body.
       subject-only.txt:1:1:Need.SignedOff:A commit needs a Signed-off-by trailer.
+
+  - name: any-extension
+    about: "a dasel View applies to whatever file its section matches; a
+      `.log` holding JSON was linted whole, and its selector never ran"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.log]
+        BasedOnStyles = Chat
+        View = Chat
+      styles/Chat/Hedge.yml: |
+        extends: existence
+        message: "'%s' hedges"
+        level: error
+        tokens:
+          - worth noting
+      styles/config/views/Chat.yml: |
+        engine: dasel
+        scopes:
+          - name: assistant
+            expr: all().filter(equal(role,assistant)).content
+      chat.log: |
+        [{"role":"user","content":"It is worth noting that I asked."},{"role":"assistant","content":"It is worth noting that I answered."}]
+    args: chat.log
+    exit: 1
+    want: |
+      chat.log:1:100:Chat.Hedge:'worth noting' hedges
+
+  - name: any-extension-error
+    about: "and a selector that fails on such a file is reported, not skipped"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.log]
+        BasedOnStyles = Chat
+        View = Chat
+      styles/Chat/Hedge.yml: |
+        extends: existence
+        message: "'%s' hedges"
+        level: error
+        tokens:
+          - worth noting
+      styles/config/views/Chat.yml: |
+        engine: dasel
+        scopes:
+          - name: assistant
+            expr: this.is.not.valid.[[[
+      chat.log: |
+        [{"role":"user","content":"It is worth noting that I asked."}]
+    args: chat.log
+    exit: 2
+    contains: |
+      chat.log: processing scope "assistant": unexpected type: expected map, got array

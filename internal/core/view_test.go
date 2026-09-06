@@ -268,3 +268,20 @@ Start
 		})
 	}
 }
+
+// A file a section matched is read whatever it is called; JSON is YAML.
+func TestFileToValueUnknownExtension(t *testing.T) {
+	f := &File{RealExt: ".log", Content: `{"messages":[{"role":"assistant","content":"answered"}]}`}
+
+	value, _, err := fileToValue(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := selectStrings(value, "messages.all().content")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 || got[0] != "answered" {
+		t.Errorf("got %v, want [answered]", got)
+	}
+}

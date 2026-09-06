@@ -246,9 +246,10 @@ func (l *Linter) lintFile(src string) lintResult {
 	// we actually have a View to apply.
 	hasViews := len(l.Manager.Config.Views) > 0
 
-	if !simple && l.hasTextView(file) { //nolint:gocritic
-		// A plain-text file a template reads: the view says what its prose
-		// is, whatever the file is called.
+	if !simple && l.hasView(file) { //nolint:gocritic
+		// A file a view reads: the view says what its prose is, whatever the
+		// file is called. Without this a `.jsonl` or `.log` the section
+		// matched was linted whole, and the view never ran.
 		err = l.lintData(file)
 	} else if file.Format == "markup" && !simple {
 		switch file.NormedExt {

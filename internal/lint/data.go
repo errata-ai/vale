@@ -8,10 +8,12 @@ import (
 	"github.com/vale-cli/vale/v3/internal/glob"
 )
 
-// hasTextView reports whether a `textfsm` view applies to the file.
-func (l *Linter) hasTextView(f *core.File) bool {
+// hasView reports whether a `textfsm` or `dasel` view applies to the file.
+// Either reads the whole file itself, so the file's own format does not
+// matter; a tree-sitter view is reached through the code path instead.
+func (l *Linter) hasView(f *core.File) bool {
 	for syntax, view := range l.Manager.Config.Views {
-		if view.Engine != "textfsm" {
+		if view.Engine == "tree-sitter" {
 			continue
 		}
 		if sec, err := glob.Compile(syntax); err == nil && sec.Match(f.Path) {

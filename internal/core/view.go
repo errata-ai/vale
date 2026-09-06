@@ -449,7 +449,14 @@ func fileToValue(f *File) (DaselValue, []scalarPos, error) {
 		if err := yaml.Unmarshal(contents, &node); err == nil {
 			scalars = walkYAMLScalars(&node, strings.Split(f.Content, "\n"))
 		}
-	case ".yml", ".yaml":
+	case ".toml":
+		if err := toml.Unmarshal(contents, &raw); err != nil {
+			return nil, nil, err
+		}
+	default:
+		// YAML, which reads JSON too, for `.yml`, `.yaml`, and anything
+		// the section matched that is not named for its format.
+		//
 		// Rewrite folded `>` indicators to literal `|` so the parsed
 		// value preserves newlines. Position-mapping into source then
 		// works on a line-for-line basis instead of having to guess
@@ -467,12 +474,6 @@ func fileToValue(f *File) (DaselValue, []scalarPos, error) {
 			return nil, nil, derr
 		}
 		scalars = walkYAMLScalars(&node, strings.Split(string(rewritten), "\n"))
-	case ".toml":
-		if err := toml.Unmarshal(contents, &raw); err != nil {
-			return nil, nil, err
-		}
-	default:
-		return nil, nil, errors.New("unsupported file type")
 	}
 
 	if raw == nil {
