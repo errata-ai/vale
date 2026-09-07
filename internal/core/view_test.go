@@ -25,7 +25,7 @@ func TestFileToValuePositions(t *testing.T) {
 			src:  "info:\n  description: \"Line 1\\\n    \\ Line 2\"\n",
 			// yaml.v3 reports the opening quote at col 16; the
 			// resolver advances past it to the first content char.
-			want: []scalarPos{{Value: "Line 1 Line 2", Line: 2, Column: 17}},
+			want: []scalarPos{{Value: "Line 1 Line 2", Line: 2, Column: 17, Quote: '"'}},
 		},
 		{
 			name: "literal block scalar",
@@ -47,7 +47,7 @@ func TestFileToValuePositions(t *testing.T) {
 			name: "single-quoted",
 			ext:  ".yaml",
 			src:  "title: 'sample'\n",
-			want: []scalarPos{{Value: "sample", Line: 1, Column: 9}},
+			want: []scalarPos{{Value: "sample", Line: 1, Column: 9, Quote: '\''}},
 		},
 	}
 
@@ -115,17 +115,17 @@ func TestScalarResolverConsumesInOrder(t *testing.T) {
 	}
 	r := newScalarResolver(scalars)
 
-	if line, col := r.locate("shared"); line != 1 || col != 5 {
-		t.Errorf("first 'shared' = (%d,%d), want (1,5)", line, col)
+	if sp, ok := r.locate("shared"); !ok || sp.Line != 1 || sp.Column != 5 {
+		t.Errorf("first 'shared' = %+v, want (1,5)", sp)
 	}
-	if line, col := r.locate("shared"); line != 3 || col != 5 {
-		t.Errorf("second 'shared' = (%d,%d), want (3,5)", line, col)
+	if sp, ok := r.locate("shared"); !ok || sp.Line != 3 || sp.Column != 5 {
+		t.Errorf("second 'shared' = %+v, want (3,5)", sp)
 	}
-	if line, col := r.locate("unique"); line != 2 || col != 5 {
-		t.Errorf("'unique' = (%d,%d), want (2,5)", line, col)
+	if sp, ok := r.locate("unique"); !ok || sp.Line != 2 || sp.Column != 5 {
+		t.Errorf("'unique' = %+v, want (2,5)", sp)
 	}
-	if line, col := r.locate("missing"); line != 0 || col != 0 {
-		t.Errorf("missing = (%d,%d), want (0,0)", line, col)
+	if sp, ok := r.locate("missing"); ok {
+		t.Errorf("missing = %+v, want not found", sp)
 	}
 }
 
@@ -169,9 +169,9 @@ func TestFileToValueLineContinuationFromIssue1018(t *testing.T) {
 	r := newScalarResolver(scalars)
 	// Walk past the openapi version scalar first.
 	r.locate("3.0.1")
-	line, col := r.locate("Line 1 Line 2")
-	if line != 3 || col != 17 {
-		t.Errorf("description position = (%d,%d), want (3,17)", line, col)
+	sp, ok := r.locate("Line 1 Line 2")
+	if !ok || sp.Line != 3 || sp.Column != 17 {
+		t.Errorf("description position = %+v, want (3,17)", sp)
 	}
 }
 
@@ -314,8 +314,22 @@ func TestApplyJoinsList(t *testing.T) {
 		{Text: "# Title\n\nA paragraph split\nacross lines.", Line: 4, Column: 6, Joined: true},
 		{Text: "One string cell.", Line: 10, Column: 40},
 	}
-	if !reflect.DeepEqual(found[0].Values, want) {
-		t.Errorf("values = %#v, want %#v", found[0].Values, want)
+	got := make([]ScopedValue, len(found[0].Values))
+	for i, v := range found[0].Values {
+		v.Parts = nil
+		got[i] = v
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("values = %#v, want %#v", got, want)
+	}
+
+	// Each element is a part of its own, on its own line.
+	lines := []int{}
+	for _, p := range found[0].Values[0].Parts {
+		lines = append(lines, p.Line)
+	}
+	if !reflect.DeepEqual(lines, []int{4, 5, 6, 7}) {
+		t.Errorf("part lines = %v, want [4 5 6 7]", lines)
 	}
 
 	// Without `join`, the list is dropped and the string cell stays.
@@ -326,5 +340,77 @@ func TestApplyJoinsList(t *testing.T) {
 	}
 	if len(found[0].Values) != 1 || found[0].Values[0].Text != "One string cell." {
 		t.Errorf("values = %#v, want the string cell alone", found[0].Values)
+	}
+}
+
+// Locate maps an offset in a value to the source: through the escapes of a
+// quoted scalar, across the elements of a joined list however they are laid
+// out, and down the lines of a block scalar.
+func TestLocate(t *testing.T) {
+	sep := ""
+	md := "md"
+	view := &View{Engine: "dasel", Scopes: []Scope{
+		{Name: "cell", Expr: "cells.all().source", Type: md, Join: &sep},
+		{Name: "note", Expr: "note"},
+	}}
+
+	src := `{
+ "cells": [
+  {"source": ["a \"quoted\" word\n", "\ttab \u00e9 end"]},
+  {"source": ["one", " line\n", "two"]}
+ ],
+ "note": "plain \\ back"
+}
+`
+	found, err := view.Apply(&File{RealExt: ".ipynb", Content: src})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		scope, what string
+		value       ScopedValue
+		off         int
+		line, col   int
+	}{
+		// Line 3, col 16 is the `a`; `word` is at col 29 in the source,
+		// after two escaped quotes, and at rune 11 in the value.
+		{"cell", "before an escape", found[0].Values[0], 0, 3, 16},
+		{"cell", "after two escapes", found[0].Values[0], 11, 3, 29},
+		// The second element starts on the same line, at col 39 after the
+		// closing quote, comma, space, and opening quote.
+		{"cell", "second element", found[0].Values[0], 16, 3, 39},
+		// `end` is rune 7 of the element: tab, "tab ", é, space; in the
+		// source, \t and \u00e9 are wider.
+		{"cell", "after unicode escapes", found[0].Values[0], 23, 3, 52},
+		// Three elements make two value lines; "two" is the third element.
+		{"cell", "element mid-line", found[0].Values[1], 3, 4, 23},
+		{"cell", "element on the next value line", found[0].Values[1], 9, 4, 34},
+		{"note", "escaped backslash", found[1].Values[0], 8, 6, 20},
+	}
+	for _, tt := range tests {
+		line, col := tt.value.Locate(tt.off)
+		if line != tt.line || col != tt.col {
+			t.Errorf("%s/%s: offset %d = (%d,%d), want (%d,%d)",
+				tt.scope, tt.what, tt.off, line, col, tt.line, tt.col)
+		}
+	}
+}
+
+// A block scalar's lines are source lines, each at the block's indentation.
+func TestLocateBlockScalar(t *testing.T) {
+	view := &View{Engine: "dasel", Scopes: []Scope{{Name: "d", Expr: "info.description"}}}
+	src := "info:\n  description: |\n    First line\n    Second line\n"
+
+	found, err := view.Apply(&File{RealExt: ".yaml", Content: src})
+	if err != nil {
+		t.Fatal(err)
+	}
+	v := found[0].Values[0]
+	if line, col := v.Locate(0); line != 3 || col != 5 {
+		t.Errorf("first line = (%d,%d), want (3,5)", line, col)
+	}
+	if line, col := v.Locate(18); line != 4 || col != 12 {
+		t.Errorf("second line = (%d,%d), want (4,12)", line, col)
 	}
 }

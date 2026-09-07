@@ -17,6 +17,11 @@ func updateQueries(f *core.File, views map[string]*core.View) ([]core.Scope, err
 	var found []core.Scope
 
 	for syntax, view := range views {
+		if view.Engine != "tree-sitter" {
+			// A data View's selectors are not queries; it reads the file
+			// itself, and may hand a cell of it here as code.
+			continue
+		}
 		sec, err := glob.Compile(syntax)
 		if err != nil {
 			return nil, err
@@ -60,7 +65,7 @@ func (l *Linter) lintCode(f *core.File) error {
 	}
 	wholeFile := f.Content
 
-	last := 0
+	last := len(f.Alerts) // the file may hold alerts from cells before this one
 	for _, comment := range comments {
 		f.SetMetaScope(comment.Scope)
 		if l.skipsComment(comment.Scope) {

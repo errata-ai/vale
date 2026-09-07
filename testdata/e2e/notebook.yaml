@@ -1,0 +1,399 @@
+# Jupyter notebooks, as a format of their own.
+#
+# A notebook is read cell by cell: a Markdown cell as Markdown, and a code
+# cell as the kernel's language, so that its comments are the prose. Raw
+# cells and outputs are neither. Every case starts from the same rules: one
+# for any prose, one for headings, and one for code comments.
+name: notebook
+
+files:
+  .vale.ini: |
+    StylesPath = styles
+    MinAlertLevel = suggestion
+
+    [*.ipynb]
+    BasedOnStyles = Nb
+  styles/Nb/Hedge.yml: |
+    extends: existence
+    message: "'%s' hedges"
+    level: error
+    tokens:
+      - worth noting
+  styles/Nb/Heading.yml: |
+    extends: existence
+    message: "'%s' should be capitalized"
+    level: warning
+    scope: heading
+    raw:
+      - '^[a-z].+'
+  styles/Nb/Comment.yml: |
+    extends: existence
+    message: "'%s' left in a comment"
+    level: warning
+    scope: comment
+    tokens:
+      - TODO
+
+cases:
+  - name: markdown
+    about: "a Markdown cell is Markdown: a heading reaches `scope: heading`,
+      a sentence is counted across the line break, and a fence, a code
+      span, an image, and inline or display math are markup, not prose"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": [
+            "# a lowercase title\n",
+            "\n",
+            "It is worth noting that this sentence\n",
+            "is split across lines.\n",
+            "\n",
+            "```python\n",
+            "# It is worth noting that fences are code\n",
+            "```\n",
+            "\n",
+            "Inline `worth noting` is code, and $worth noting$ is math.\n",
+            "\n",
+            "$$\n",
+            "worth noting\n",
+            "$$\n",
+            "\n",
+            "![a plot](attachment:worth-noting.png)"
+           ]
+          },
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": "## second heading\n\nA string cell, worth noting."
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:7:8:Nb.Heading:'a lowercase title' should be capitalized
+      demo.ipynb:9:12:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:28:18:Nb.Heading:'second heading' should be capitalized
+      demo.ipynb:28:51:Nb.Hedge:'worth noting' hedges
+
+  - name: code
+    about: "a code cell is code in the kernel's language: a comment is prose
+      with a `comment` scope, a string is not, and outputs are never read"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "code",
+           "execution_count": 1,
+           "metadata": {},
+           "outputs": [
+            {"name": "stdout", "output_type": "stream", "text": ["It is worth noting that this was printed\n"]}
+           ],
+           "source": [
+            "# TODO: it is worth noting that this is a comment\n",
+            "print('TODO: it is worth noting that this is a string')\n",
+            "x = 1  # and worth noting after code"
+           ]
+          }
+         ],
+         "metadata": {
+          "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}
+         },
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:11:8:Nb.Comment:'TODO' left in a comment
+      demo.ipynb:11:20:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:13:19:Nb.Hedge:'worth noting' hedges
+
+  - name: mixed
+    about: "cells of both kinds, in any order, are each placed on their own
+      lines: a comment's alert after a Markdown cell's does not move it"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {"cell_type": "markdown", "metadata": {}, "source": ["First, worth noting."]},
+          {"cell_type": "code", "metadata": {}, "outputs": [], "source": ["# Second, worth noting\n", "x = 1"]},
+          {"cell_type": "markdown", "metadata": {}, "source": ["Third, worth noting."]},
+          {"cell_type": "code", "metadata": {}, "outputs": [], "source": ["y = 2  # Fourth, worth noting"]}
+         ],
+         "metadata": {"kernelspec": {"language": "python", "name": "python3"}},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:3:64:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:4:78:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:5:64:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:6:85:Nb.Hedge:'worth noting' hedges
+
+  - name: kernels
+    about: "the language comes from the kernelspec, or language_info without
+      one; an editor may set a cell's own; and a kernel Vale has no grammar
+      for leaves its code cells unread"
+    files:
+      r.ipynb: |
+        {
+         "cells": [
+          {"cell_type": "code", "metadata": {}, "outputs": [], "source": ["# R, worth noting\n", "x <- 1"]},
+          {"cell_type": "code", "metadata": {"vscode": {"languageId": "javascript"}}, "outputs": [], "source": ["// JS, worth noting\n", "let x = 1"]}
+         ],
+         "metadata": {"kernelspec": {"display_name": "R", "language": "R", "name": "ir"}},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+      julia.ipynb: |
+        {
+         "cells": [
+          {"cell_type": "code", "metadata": {}, "outputs": [], "source": ["# Julia, worth noting\n", "x = 1"]}
+         ],
+         "metadata": {"language_info": {"name": "julia", "version": "1.10"}},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+      bash.ipynb: |
+        {
+         "cells": [
+          {"cell_type": "code", "metadata": {}, "outputs": [], "source": ["# bash, worth noting\n", "x=1"]},
+          {"cell_type": "markdown", "metadata": {}, "source": ["Prose is still read, worth noting."]}
+         ],
+         "metadata": {"kernelspec": {"display_name": "Bash", "language": "bash", "name": "bash"}},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: r.ipynb julia.ipynb bash.ipynb
+    exit: 1
+    want: |
+      bash.ipynb:4:78:Nb.Hedge:'worth noting' hedges
+      julia.ipynb:3:77:Nb.Hedge:'worth noting' hedges
+      r.ipynb:3:73:Nb.Hedge:'worth noting' hedges
+      r.ipynb:4:113:Nb.Hedge:'worth noting' hedges
+
+  - name: magic
+    about: "a `%%markdown` cell is prose, placed as if the magic line were
+      blank; any other cell magic leaves the cell as code"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "code",
+           "metadata": {},
+           "outputs": [],
+           "source": [
+            "%%markdown\n",
+            "# a heading\n",
+            "It is worth noting that this is prose."
+           ]
+          },
+          {
+           "cell_type": "code",
+           "metadata": {},
+           "outputs": [],
+           "source": [
+            "%%time\n",
+            "# It is worth noting that this is a comment\n",
+            "x = 1"
+           ]
+          }
+         ],
+         "metadata": {"kernelspec": {"language": "python", "name": "python3"}},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:9:8:Nb.Heading:'a heading' should be capitalized
+      demo.ipynb:10:12:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:19:14:Nb.Hedge:'worth noting' hedges
+
+  - name: nbformat3
+    about: "the layout before 2015: cells in worksheets, a heading as a cell
+      of its own with a level, code under `input`, and a language per cell"
+    files:
+      old.ipynb: |
+        {
+         "metadata": {"name": "old"},
+         "nbformat": 3,
+         "nbformat_minor": 0,
+         "worksheets": [
+          {
+           "cells": [
+            {"cell_type": "heading", "level": 2, "metadata": {}, "source": ["a heading"]},
+            {"cell_type": "markdown", "metadata": {}, "source": ["It is worth noting."]},
+            {"cell_type": "code", "collapsed": false, "input": ["# worth noting\n", "x = 1"], "language": "python", "metadata": {}, "outputs": []}
+           ],
+           "metadata": {}
+          }
+         ]
+        }
+    args: old.ipynb
+    exit: 1
+    want: |
+      old.ipynb:8:70:Nb.Heading:'a heading' should be capitalized
+      old.ipynb:9:65:Nb.Hedge:'worth noting' hedges
+      old.ipynb:10:60:Nb.Hedge:'worth noting' hedges
+
+  - name: minified
+    about: "a notebook saved on one line, as Colab and Kaggle write them, is
+      placed by each cell's own column"
+    files:
+      demo.ipynb: |
+        {"cells":[{"cell_type":"markdown","metadata":{},"source":["# Title\n","\n","It is worth noting."]},{"cell_type":"code","metadata":{},"outputs":[],"source":["# worth noting\n","x = 1"]},{"cell_type":"markdown","metadata":{},"source":"A \"quoted\" cell, worth noting."}],"metadata":{"kernelspec":{"language":"python","name":"python3"}},"nbformat":4,"nbformat_minor":5}
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:1:83:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:1:160:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:1:253:Nb.Hedge:'worth noting' hedges
+
+  - name: outputs
+    about: "nothing but a cell's source is read: tags, the kernel's display
+      name, a raw cell, and every kind of output -- a stream, a result, a
+      figure with its text fallback, and an error's traceback"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {"tags": ["worth noting"]},
+           "source": ["# Title"]
+          },
+          {
+           "cell_type": "raw",
+           "metadata": {},
+           "source": ["It is worth noting that this is raw."]
+          },
+          {
+           "cell_type": "code",
+           "execution_count": 1,
+           "metadata": {"tags": ["worth noting"]},
+           "outputs": [
+            {"name": "stdout", "output_type": "stream", "text": ["It is worth noting that this was printed\n"]},
+            {"data": {"text/plain": ["'It is worth noting that this was returned'"]}, "execution_count": 1, "metadata": {}, "output_type": "execute_result"},
+            {"data": {"image/png": "iVBORw0KGgo=", "text/plain": ["<Figure: worth noting>"]}, "metadata": {}, "output_type": "display_data"},
+            {"ename": "ValueError", "evalue": "worth noting", "output_type": "error", "traceback": ["It is worth noting that this failed"]}
+           ],
+           "source": ["raise ValueError('worth noting')"]
+          }
+         ],
+         "metadata": {
+          "kernelspec": {"display_name": "Python 3 (worth noting)", "language": "python", "name": "python3"},
+          "language_info": {"name": "python", "version": "3.12.0"}
+         },
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 0
+    want: ""
+
+  - name: empty
+    about: "no cells, no lines, an empty string, blank lines, and a code cell
+      with nothing to say are all fine"
+    files:
+      none.ipynb: |
+        {"cells": [], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+      blank.ipynb: |
+        {
+         "cells": [
+          {"cell_type": "markdown", "metadata": {}, "source": []},
+          {"cell_type": "markdown", "metadata": {}, "source": ""},
+          {"cell_type": "markdown", "metadata": {}, "source": ["\n", "\n"]},
+          {"cell_type": "code", "execution_count": null, "metadata": {}, "outputs": [], "source": []}
+         ],
+         "metadata": {"kernelspec": {"language": "python", "name": "python3"}},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: none.ipynb blank.ipynb
+    exit: 0
+    want: ""
+
+  - name: invalid
+    about: "a file that is not JSON is an error, not a silent pass"
+    files:
+      broken.ipynb: |
+        {
+         "cells": [
+    args: broken.ipynb
+    exit: 2
+    contains: "E100 [broken.ipynb] Runtime error"
+
+  - name: not-a-notebook
+    about: "and so is JSON with no cells in it"
+    files:
+      plain.ipynb: |
+        {"nbformat": 4, "metadata": {}}
+    args: plain.ipynb
+    exit: 2
+    contains: "a notebook has `cells` or `worksheets`"
+
+  - name: stdin
+    about: "`--ext` names the format of piped input"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {"cell_type": "markdown", "metadata": {}, "source": ["It is worth noting that this came from a pipe."]},
+          {"cell_type": "code", "metadata": {}, "outputs": [], "source": ["# worth noting\n", "x = 1"]}
+         ],
+         "metadata": {"kernelspec": {"language": "python", "name": "python3"}},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: "--ext=.ipynb"
+    stdin: demo.ipynb
+    exit: 1
+    want: |
+      stdin.ipynb:3:63:Nb.Hedge:'worth noting' hedges
+      stdin.ipynb:4:70:Nb.Hedge:'worth noting' hedges
+
+  - name: view-precedence
+    about: "a View on the section takes over: it says what the prose is, and
+      the code cells it does not select go unread"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.ipynb]
+        BasedOnStyles = Nb
+        View = Notebook
+      styles/config/views/Notebook.yml: |
+        engine: dasel
+        scopes:
+          - name: cell
+            expr: cells.all().filter(equal(cell_type,markdown)).source
+            join: ""
+            type: md
+      demo.ipynb: |
+        {
+         "cells": [
+          {"cell_type": "markdown", "metadata": {}, "source": ["It is worth noting."]},
+          {"cell_type": "code", "metadata": {}, "outputs": [], "source": ["# worth noting\n", "x = 1"]}
+         ],
+         "metadata": {"kernelspec": {"language": "python", "name": "python3"}},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:3:63:Nb.Hedge:'worth noting' hedges

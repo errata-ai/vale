@@ -1,0 +1,508 @@
+# Jupyter notebooks, read through a dasel View rather than as the format
+# Vale knows: a View on the file takes precedence, for anyone who wants a
+# different reading of it.
+#
+# A notebook is JSON: a list of cells, each with a `cell_type` and a `source`
+# that is either one string or a list of lines. Every case starts from the
+# same View, which selects the Markdown cells and joins each into one value.
+name: notebook-view
+
+files:
+  .vale.ini: |
+    StylesPath = styles
+    MinAlertLevel = suggestion
+
+    [*.ipynb]
+    BasedOnStyles = Nb
+    View = Notebook
+  styles/config/views/Notebook.yml: |
+    engine: dasel
+    scopes:
+      - name: cell
+        expr: cells.all().filter(equal(cell_type,markdown)).source
+        join: ""
+        type: md
+  styles/Nb/Hedge.yml: |
+    extends: existence
+    message: "'%s' hedges"
+    level: error
+    tokens:
+      - worth noting
+  styles/Nb/Heading.yml: |
+    extends: existence
+    message: "'%s' should be capitalized"
+    level: warning
+    scope: heading
+    raw:
+      - '^[a-z].+'
+
+cases:
+  - name: cells
+    about: "a Markdown cell's source is a list of lines; `join` reads it as
+      one value, placed at its first line, so a sentence is counted across
+      the line break (14 words, where its first line alone has 9) and a
+      single-string cell still works; outputs and code are never seen"
+    files:
+      styles/Nb/Long.yml: |
+        extends: occurrence
+        message: "More than 9 words in a sentence."
+        level: warning
+        scope: sentence
+        max: 9
+        token: '\b\w+\b'
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": [
+            "# Title\n",
+            "\n",
+            "It is worth noting that this is the first\n",
+            "paragraph, split across lines.\n",
+            "\n",
+            "A second paragraph with `code` in it."
+           ]
+          },
+          {
+           "cell_type": "code",
+           "execution_count": 1,
+           "metadata": {},
+           "outputs": [{"name": "stdout", "output_type": "stream", "text": ["It is worth noting that outputs are skipped\n"]}],
+           "source": ["# It is worth noting that comments are code\n", "print(1)"]
+          },
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": "One string cell. It is worth noting that this form exists too."
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:9:6:Nb.Long:More than 9 words in a sentence.
+      demo.ipynb:9:12:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:25:38:Nb.Hedge:'worth noting' hedges
+
+  - name: markup
+    about: "a cell is Markdown: a heading reaches `scope: heading`, and a
+      fenced block, inline code, and an image are markup, not prose. An
+      alert on a later line of a cell, or in a later cell, is placed on
+      that line of the file"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": [
+            "# a lowercase title\n",
+            "\n",
+            "Plain text here.\n",
+            "It is worth noting on line two.\n",
+            "\n",
+            "```python\n",
+            "# It is worth noting that fences are code\n",
+            "```\n",
+            "\n",
+            "Inline `worth noting` is code.\n",
+            "\n",
+            "![a plot](attachment:worth-noting.png)"
+           ]
+          },
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": [
+            "## second heading\n",
+            "\n",
+            "Last cell, worth noting."
+           ]
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:7:8:Nb.Heading:'a lowercase title' should be capitalized
+      demo.ipynb:10:12:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:25:9:Nb.Heading:'second heading' should be capitalized
+      demo.ipynb:27:17:Nb.Hedge:'worth noting' hedges
+
+  - name: escapes
+    about: "a column is a column of the file, not of the decoded cell: an
+      escaped quote or backslash before a match is two characters in the
+      source and one in the text"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": [
+            "A \"quoted\" word, a back\\slash, and then it is worth noting.\n",
+            "\tA tab, then it is worth noting."
+           ]
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:7:55:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:8:26:Nb.Hedge:'worth noting' hedges
+
+  - name: one-line
+    about: "a source written as one line, as a hand-edited or generated
+      notebook may be, is placed by each element's own column"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": ["# Title\n", "\n", "It is worth noting that this is one line.\n", "So is ", "this, worth noting."]
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:6:41:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:6:98:Nb.Hedge:'worth noting' hedges
+
+  - name: outputs
+    about: "nothing but a Markdown cell's source is prose: cell tags, the
+      kernel's display name, a code cell's comments, and every kind of
+      output -- a stream, a result, a figure with its text fallback, and
+      an error's traceback -- go unread"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {"tags": ["worth noting"]},
+           "source": ["# Title"]
+          },
+          {
+           "cell_type": "code",
+           "execution_count": 1,
+           "metadata": {"tags": ["worth noting"]},
+           "outputs": [
+            {"name": "stdout", "output_type": "stream", "text": ["It is worth noting that this was printed\n"]},
+            {"data": {"text/plain": ["'It is worth noting that this was returned'"]}, "execution_count": 1, "metadata": {}, "output_type": "execute_result"},
+            {"data": {"image/png": "iVBORw0KGgo=", "text/plain": ["<Figure: worth noting>"]}, "metadata": {}, "output_type": "display_data"},
+            {"ename": "ValueError", "evalue": "worth noting", "output_type": "error", "traceback": ["It is worth noting that this failed"]}
+           ],
+           "source": ["# It is worth noting that this is a comment\n", "raise ValueError('worth noting')"]
+          }
+         ],
+         "metadata": {
+          "kernelspec": {"display_name": "Python 3 (worth noting)", "language": "python", "name": "python3"},
+          "language_info": {"name": "python", "version": "3.12.0"}
+         },
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 0
+    want: ""
+
+  - name: code-cells
+    about: "a second scope opts code cells in. A rule with no `scope` runs
+      over every scope the View names, so a rule meant for code names its
+      scope, and one meant for prose names `cell`"
+    files:
+      styles/config/views/Notebook.yml: |
+        engine: dasel
+        scopes:
+          - name: cell
+            expr: cells.all().filter(equal(cell_type,markdown)).source
+            join: ""
+            type: md
+          - name: code
+            expr: cells.all().filter(equal(cell_type,code)).source
+            join: ""
+      styles/Nb/Hedge.yml: |
+        extends: existence
+        message: "'%s' hedges"
+        level: error
+        scope: cell
+        tokens:
+          - worth noting
+      styles/Nb/Print.yml: |
+        extends: existence
+        message: "'%s' left in a code cell"
+        level: warning
+        scope: code
+        tokens:
+          - print
+      styles/Nb/Anywhere.yml: |
+        extends: existence
+        message: "'%s' is in every scope"
+        level: suggestion
+        tokens:
+          - TODO
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": ["TODO: it is worth noting that print is a word here."]
+          },
+          {
+           "cell_type": "code",
+           "execution_count": 1,
+           "metadata": {},
+           "outputs": [],
+           "source": [
+            "# TODO: it is worth noting that this is code\n",
+            "print(1)"
+           ]
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:6:16:Nb.Anywhere:'TODO' is in every scope
+      demo.ipynb:6:28:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:14:8:Nb.Anywhere:'TODO' is in every scope
+      demo.ipynb:15:6:Nb.Print:'print' left in a code cell
+
+  - name: code-type
+    about: "a scope typed as a language is read as that language, so its
+      comments are the prose and its code is not; the comment's own scope
+      is there for a rule to name"
+    files:
+      styles/config/views/Notebook.yml: |
+        engine: dasel
+        scopes:
+          - name: code
+            expr: cells.all().filter(equal(cell_type,code)).source
+            join: ""
+            type: py
+      styles/Nb/Comment.yml: |
+        extends: existence
+        message: "'%s' left in a comment"
+        level: warning
+        scope: comment
+        tokens:
+          - TODO
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "code",
+           "execution_count": 1,
+           "metadata": {},
+           "outputs": [],
+           "source": [
+            "# TODO: it is worth noting that this is a comment\n",
+            "print('TODO: it is worth noting that this is a string')\n",
+            "x = 1  # and worth noting after code"
+           ]
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:9:8:Nb.Comment:'TODO' left in a comment
+      demo.ipynb:9:20:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:11:19:Nb.Hedge:'worth noting' hedges
+
+  - name: raw-cells
+    about: "a raw cell is neither prose nor code and the default View skips
+      it; a scope of its own reads it. The scope is not named `raw`: that is
+      Vale's name for the whole file, and a rule on it would report twice"
+    files:
+      styles/config/views/Notebook.yml: |
+        engine: dasel
+        scopes:
+          - name: cell
+            expr: cells.all().filter(equal(cell_type,markdown)).source
+            join: ""
+            type: md
+          - name: rawcell
+            expr: cells.all().filter(equal(cell_type,raw)).source
+            join: ""
+      styles/Nb/Raw.yml: |
+        extends: existence
+        message: "'%s' in a raw cell"
+        level: warning
+        scope: rawcell
+        tokens:
+          - TODO
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "raw",
+           "metadata": {"format": "text/restructuredtext"},
+           "source": [
+            ".. TODO: raw cells hold front matter or reST.\n",
+            "It is worth noting that a raw cell is not Markdown."
+           ]
+          },
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": ["TODO: it is worth noting that this one is."]
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:7:9:Nb.Raw:'TODO' in a raw cell
+      demo.ipynb:8:12:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:14:28:Nb.Hedge:'worth noting' hedges
+
+  - name: empty
+    about: "a notebook with no cells, a cell with no lines, one with an empty
+      string, and one of blank lines are all fine: nothing to read, nothing
+      to report"
+    files:
+      none.ipynb: |
+        {"cells": [], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+      blank.ipynb: |
+        {
+         "cells": [
+          {"cell_type": "markdown", "metadata": {}, "source": []},
+          {"cell_type": "markdown", "metadata": {}, "source": ""},
+          {"cell_type": "markdown", "metadata": {}, "source": ["\n", "\n"]},
+          {"cell_type": "code", "execution_count": null, "metadata": {}, "outputs": [], "source": []}
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: none.ipynb blank.ipynb
+    exit: 0
+    want: ""
+
+  - name: no-join
+    about: "without `join`, a source that is a list is dropped rather than
+      read one line at a time, and only a single-string cell is seen"
+    files:
+      styles/config/views/Notebook.yml: |
+        engine: dasel
+        scopes:
+          - name: cell
+            expr: cells.all().filter(equal(cell_type,markdown)).source
+            type: md
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": ["It is worth noting that this cell is a list.\n", "So is its second line."]
+          },
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": "It is worth noting that this cell is a string."
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: demo.ipynb
+    exit: 1
+    want: |
+      demo.ipynb:11:21:Nb.Hedge:'worth noting' hedges
+
+  - name: invalid
+    about: "a notebook that is not JSON is an error against the View, not
+      a silent pass"
+    files:
+      broken.ipynb: |
+        {
+         "cells": [
+    args: broken.ipynb
+    exit: 2
+    contains: "E201:broken.ipynb:"
+
+  - name: stdin
+    about: "`--ext` names the format of piped input, and the section for it
+      brings the View"
+    files:
+      demo.ipynb: |
+        {
+         "cells": [
+          {
+           "cell_type": "markdown",
+           "metadata": {},
+           "source": [
+            "# Title\n",
+            "\n",
+            "It is worth noting that this came from a pipe."
+           ]
+          }
+         ],
+         "metadata": {},
+         "nbformat": 4,
+         "nbformat_minor": 5
+        }
+    args: "--ext=.ipynb"
+    stdin: demo.ipynb
+    exit: 1
+    want: |
+      stdin.ipynb:9:12:Nb.Hedge:'worth noting' hedges
+
+  - name: checkpoints
+    about: "Jupyter keeps an autosaved copy of each notebook under
+      `.ipynb_checkpoints/`, and a walk of the directory reads it too"
+    files:
+      demo.ipynb: |
+        {"cells": [{"cell_type": "markdown", "metadata": {}, "source": "It is worth noting."}], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+      .ipynb_checkpoints/demo-checkpoint.ipynb: |
+        {"cells": [{"cell_type": "markdown", "metadata": {}, "source": "It is worth noting."}], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+    args: .
+    exit: 1
+    want: |
+      .ipynb_checkpoints/demo-checkpoint.ipynb:1:71:Nb.Hedge:'worth noting' hedges
+      demo.ipynb:1:71:Nb.Hedge:'worth noting' hedges
+
+  - name: checkpoints-glob
+    about: "a negated glob leaves the autosaved copy out"
+    files:
+      demo.ipynb: |
+        {"cells": [{"cell_type": "markdown", "metadata": {}, "source": "It is worth noting."}], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+      .ipynb_checkpoints/demo-checkpoint.ipynb: |
+        {"cells": [{"cell_type": "markdown", "metadata": {}, "source": "It is worth noting."}], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+    args: "--glob=!.ipynb_checkpoints/* ."
+    exit: 1
+    want: |
+      demo.ipynb:1:71:Nb.Hedge:'worth noting' hedges

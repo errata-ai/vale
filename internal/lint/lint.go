@@ -275,6 +275,8 @@ func (l *Linter) lintFile(src string) lintResult {
 			err = l.lintDITA(file)
 		case ".html":
 			err = l.lintHTML(file)
+		case ".ipynb":
+			err = l.lintNotebook(file)
 		case ".org":
 			err = l.lintOrg(file)
 		}

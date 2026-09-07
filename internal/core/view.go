@@ -14,6 +14,7 @@ import (
 	"github.com/tomwright/dasel/v3"
 	"gopkg.in/yaml.v3"
 
+	"github.com/vale-cli/vale/v3/internal/nlp"
 	"github.com/vale-cli/vale/v3/internal/textfsm"
 )
 
@@ -66,9 +67,104 @@ type ScopedValue struct {
 	Line   int
 	Column int
 
-	// Joined marks a value made from a list, one element per source line,
-	// so its own line breaks are real ones and not an escape in a scalar.
+	// Joined marks a value made from a list, so its own line breaks are
+	// real ones and not an escape in a scalar.
 	Joined bool
+
+	// Parts maps the value back to the scalars it was decoded from. It is
+	// empty when the parser gave no positions.
+	Parts []Part
+}
+
+// A Part is the run of a value that came from one scalar: where it starts
+// in the value and in the source, and the source text it was decoded from.
+type Part struct {
+	Offset int // rune offset in the value
+	Line   int
+	Column int
+
+	// Quote is the scalar's quote character, or 0 for a plain or block
+	// scalar. A quoted scalar decodes escapes, so a column in its text is
+	// not a column in the source.
+	Quote byte
+
+	// Raw is the source line from Column on; the walk through its escapes
+	// stops there, so a quoted scalar folded over several lines is placed
+	// by its first.
+	Raw string
+}
+
+// Locate maps a rune offset in the value to its line and column in the
+// source.
+func (v ScopedValue) Locate(off int) (int, int) {
+	if len(v.Parts) == 0 {
+		return v.Line, v.Column + off
+	}
+	p := v.Parts[0]
+	for _, q := range v.Parts[1:] {
+		if q.Offset > off {
+			break
+		}
+		p = q
+	}
+	d := max(off-p.Offset, 0)
+
+	if p.Quote != 0 {
+		return p.Line, p.Column + rawWidth(p.Raw, p.Quote, d)
+	}
+
+	// A plain or block scalar spans source lines as its text does, and every
+	// line of a block starts at the indentation of its first.
+	text := []rune(v.Text)
+	if p.Offset+d > len(text) {
+		d = len(text) - p.Offset
+	}
+	seg := string(text[p.Offset : p.Offset+d])
+	if nl := strings.LastIndex(seg, "\n"); nl >= 0 {
+		return p.Line + strings.Count(seg, "\n"), p.Column + nlp.StrLen(seg[nl+1:])
+	}
+	return p.Line, p.Column + d
+}
+
+// rawWidth returns how many runes of a quoted scalar's source text decode
+// to its first d runes. An escape is several runes in the source and one in
+// the value; a doubled quote in a single-quoted scalar is two and one.
+func rawWidth(raw string, quote byte, d int) int {
+	runes := []rune(raw)
+	i, decoded := 0, 0
+	for i < len(runes) && decoded < d {
+		switch r := runes[i]; {
+		case quote == '\'' && r == '\'':
+			if i+1 < len(runes) && runes[i+1] == '\'' {
+				i += 2
+			} else {
+				return i // the closing quote
+			}
+		case quote == '"' && r == '"':
+			return i
+		case quote == '"' && r == '\\' && i+1 < len(runes):
+			i += escapeWidth(runes[i+1:])
+		default:
+			i++
+		}
+		decoded++
+	}
+	return i
+}
+
+// escapeWidth returns the width of the escape whose kind is at the start of
+// runes, counting the backslash before it.
+func escapeWidth(runes []rune) int {
+	switch runes[0] {
+	case 'x':
+		return 4
+	case 'u':
+		return 6
+	case 'U':
+		return 10
+	default:
+		return 2
+	}
 }
 
 // A ScopedValues is a value that has been assigned a scope.
@@ -210,6 +306,9 @@ func (b *View) Apply(f *File) ([]ScopedValues, error) {
 	}
 
 	resolver := newScalarResolver(scalars)
+	srcLines := strings.Split(f.Content, "\n")
+	part := func(sp scalarPos, offset int) Part { return newPart(srcLines, sp, offset) }
+
 	found := make([]ScopedValues, 0, len(b.Scopes))
 	for _, s := range b.Scopes {
 		items, serr := selectValues(value, s.Expr)
@@ -220,21 +319,37 @@ func (b *View) Apply(f *File) ([]ScopedValues, error) {
 		for _, item := range items {
 			switch v := item.(type) {
 			case string:
-				line, col := resolver.locate(v)
-				values = append(values, ScopedValue{Text: v, Line: line, Column: col})
+				sv := ScopedValue{Text: v}
+				if sp, ok := resolver.locate(v); ok {
+					sv.Line, sv.Column = sp.Line, sp.Column
+					sv.Parts = []Part{part(sp, 0)}
+				}
+				values = append(values, sv)
 			case []any:
 				parts, ok := stringList(v)
 				if !ok || s.Join == nil || len(parts) == 0 {
 					continue
 				}
-				line, col := resolver.locate(parts[0])
-				// The rest are spoken for: a later scope must not be placed
-				// on a line this value already covers.
-				for _, part := range parts[1:] {
-					resolver.locate(part)
+				// Each element is placed on its own, so the list may be
+				// written one per line or all on one; and each is consumed,
+				// so a later scope is not placed on a line this value covers.
+				sv := ScopedValue{Text: strings.Join(parts, *s.Join), Joined: true}
+				offset := 0
+				for i, p := range parts {
+					if sp, found := resolver.locate(p); found {
+						if i == 0 {
+							sv.Line, sv.Column = sp.Line, sp.Column
+						}
+						sv.Parts = append(sv.Parts, part(sp, offset))
+					}
+					offset += nlp.StrLen(p) + nlp.StrLen(*s.Join)
 				}
-				values = append(values, ScopedValue{
-					Text: strings.Join(parts, *s.Join), Line: line, Column: col, Joined: true})
+				if len(sv.Parts) > 0 && sv.Parts[0].Offset != 0 {
+					// The first element was not found; the value has no
+					// place of its own, so it is searched for instead.
+					sv.Parts = nil
+				}
+				values = append(values, sv)
 			}
 		}
 		found = append(found, ScopedValues{
@@ -326,11 +441,24 @@ func selectValuesV2(value DaselValue, expr string) ([]any, error) {
 	return results, nil
 }
 
-// scalarPos records a single scalar value's source position.
+// scalarPos records a single scalar value's source position, and the quote
+// it was written with, if any.
 type scalarPos struct {
 	Value  string
 	Line   int
 	Column int
+	Quote  byte
+}
+
+// newPart places one scalar's run of a value in the source.
+func newPart(srcLines []string, sp scalarPos, offset int) Part {
+	raw := ""
+	if sp.Line-1 < len(srcLines) {
+		if runes := []rune(srcLines[sp.Line-1]); sp.Column-1 < len(runes) {
+			raw = string(runes[sp.Column-1:])
+		}
+	}
+	return Part{Offset: offset, Line: sp.Line, Column: sp.Column, Quote: sp.Quote, Raw: raw}
 }
 
 // scalarResolver maps extracted string values back to source positions by
@@ -344,12 +472,11 @@ func newScalarResolver(scalars []scalarPos) *scalarResolver {
 	return &scalarResolver{scalars: scalars, used: map[int]bool{}}
 }
 
-// locate returns the (line, column) of the first unconsumed scalar matching
-// value. Returns (0, 0) when nothing matches — callers must fall back to a
-// textual search in that case.
-func (r *scalarResolver) locate(value string) (int, int) {
+// locate returns the first unconsumed scalar matching value, and false when
+// nothing matches -- callers must fall back to a textual search in that case.
+func (r *scalarResolver) locate(value string) (scalarPos, bool) {
 	if r == nil {
-		return 0, 0
+		return scalarPos{}, false
 	}
 	for i, s := range r.scalars {
 		if r.used[i] {
@@ -357,10 +484,10 @@ func (r *scalarResolver) locate(value string) (int, int) {
 		}
 		if s.Value == value {
 			r.used[i] = true
-			return s.Line, s.Column
+			return s, true
 		}
 	}
-	return 0, 0
+	return scalarPos{}, false
 }
 
 // walkYAMLScalars flattens a yaml.v3 node tree into a document-ordered list
@@ -392,22 +519,32 @@ func walkYAMLScalars(n *yaml.Node, srcLines []string) []scalarPos {
 				walk(c)
 			}
 		case yaml.ScalarNode:
-			line, col := node.Line, node.Column
-			switch {
-			case node.Style&(yaml.LiteralStyle|yaml.FoldedStyle) != 0:
-				line, col = blockScalarContentStart(srcLines, node.Line)
-			case node.Style&(yaml.DoubleQuotedStyle|yaml.SingleQuotedStyle) != 0:
-				// Step past the opening quote so callers point at
-				// the first content character.
-				col++
-			}
-			out = append(out, scalarPos{Value: node.Value, Line: line, Column: col})
+			out = append(out, scalarAt(node, srcLines))
 		case yaml.AliasNode:
 			walk(node.Alias)
 		}
 	}
 	walk(n)
 	return out
+}
+
+// scalarAt records where a scalar's content starts.
+func scalarAt(node *yaml.Node, srcLines []string) scalarPos {
+	line, col := node.Line, node.Column
+	var quote byte
+	switch {
+	case node.Style&(yaml.LiteralStyle|yaml.FoldedStyle) != 0:
+		line, col = blockScalarContentStart(srcLines, node.Line)
+	case node.Style&yaml.DoubleQuotedStyle != 0:
+		// Step past the opening quote so callers point at
+		// the first content character.
+		col++
+		quote = '"'
+	case node.Style&yaml.SingleQuotedStyle != 0:
+		col++
+		quote = '\''
+	}
+	return scalarPos{Value: node.Value, Line: line, Column: col, Quote: quote}
 }
 
 // foldedToLiteral parses src once with yaml.v3, finds every folded (`>`)
