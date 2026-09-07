@@ -4,6 +4,12 @@
 # and must not be protected. `pull_request_target` runs with the base
 # branch's permissions so the check works for forks; the PR's code is never
 # checked out here.
+#
+# The action counts a comment as a signature only when its whole body, after
+# trimming and lowercasing, equals the sign sentence. GitHub's Reply button
+# quotes the parent comment, so the instructions ask for a new comment. The
+# job filter below uses `contains` so a near miss still runs and fails
+# visibly instead of being skipped in silence.
 name: cla
 
 on:
@@ -20,7 +26,7 @@ permissions:
 
 jobs:
   cla:
-    if: github.event_name == 'pull_request_target' || github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA and I agree to it'
+    if: github.event_name == 'pull_request_target' || github.event.comment.body == 'recheck' || contains(github.event.comment.body, 'I have read the CLA and I agree to it')
     runs-on: ubuntu-latest
     steps:
       - uses: contributor-assistant/github-action@v2.6.1
@@ -34,9 +40,12 @@ jobs:
           create-file-commit-message: 'chore: create the CLA signature file'
           signed-commit-message: 'chore: $contributorName agreed to the CLA in #$pullRequestNo'
           custom-pr-sign-comment: 'I have read the CLA and I agree to it'
+          # Only `$you` is substituted in this template, so the link is spelled out.
           custom-notsigned-prcomment: >-
             Before this can be merged, please read Vale's
-            [contributor license agreement]($pathToCLADocument), which is four short
-            points, and reply to this comment with the sentence below. This is once per
-            person, not per pull request.
+            [contributor license agreement](https://github.com/vale-cli/vale/blob/v3/.github/CLA.md),
+            which is four short points, and post a new comment on this pull request
+            whose entire text is the sentence below, with no quote, no extra words, and
+            no trailing period. Don't use the Reply button, which quotes this comment.
+            This is once per person, not per pull request.
           custom-allsigned-prcomment: 'The license agreement is signed.'

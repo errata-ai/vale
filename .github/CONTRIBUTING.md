@@ -202,7 +202,7 @@ You may use whatever tools you like to write a contribution, with these conditio
 
 ## License Agreement
 
-The first time you open a pull request, a bot will ask you to agree to Vale's [contributor license agreement](CLA.md). It's a few sentences, you agree by replying to a comment, and it's once per person, not per pull request.
+The first time you open a pull request, a bot will ask you to agree to Vale's [contributor license agreement](CLA.md). It's a few sentences, you agree by posting a comment with the exact sentence the bot asks for, and it's once per person, not per pull request.
 
 What it says: you wrote the change or have the right to contribute it, and you let the project use it under its current license and any other license it adopts later. You keep the copyright to your work.
 
