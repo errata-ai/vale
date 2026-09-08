@@ -93,13 +93,11 @@ $ vale docs/
 
 <a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/organizations.svg?width=890" alt="Organizations sponsoring Vale on Open Collective"></a>
 
-### Individuals
-
-<a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/individuals.svg?width=890" alt="Individuals sponsoring Vale on Open Collective"></a>
+Everyone who funds Vale, individuals included, is listed on the [sponsors page](https://vale.sh/sponsor).
 
 ### Infrastructure
 
-Thanks to [DigitalOcean](https://www.digitalocean.com/open-source/credits-for-projects) for the hosting credits behind [Vale Studio](https://studio.vale.sh).
+Thanks to [DigitalOcean](https://www.digitalocean.com/open-source/credits-for-projects) for the hosting credits behind [Vale Studio](https://studio.vale.sh), and to [GitBook](https://www.gitbook.com/solutions/open-source) for hosting the [documentation](https://docs.vale.sh).
 
 <a href="https://www.digitalocean.com/?refcode=dc0864bb87fd&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge"><img src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%202.svg" alt="DigitalOcean referral badge"></a>
 
@@ -116,16 +114,15 @@ Most tools see text. Vale sees a document.
 
 ## Install
 
-A package manager puts `vale` on your `PATH` and keeps it current:
+| | |
+| :-- | :-- |
+| **macOS** | `brew install vale` |
+| **Windows** | `choco install vale` &nbsp;·&nbsp; `winget install -e --id errata-ai.Vale` |
+| **Linux** | `sudo snap install vale` &nbsp;·&nbsp; `sudo pacman -S vale` &nbsp;·&nbsp; `sudo apt install vale` |
+| **Docker** | `docker pull jdkato/vale` |
+| **Go** | `go install github.com/vale-cli/vale/v3/cmd/vale@latest` |
 
-```bash
-brew install vale            # macOS
-choco install vale           # Windows
-sudo snap install vale       # Linux
-docker pull jdkato/vale      # anywhere
-```
-
-Debian, Arch, FreeBSD, WinGet, Scoop, conda-forge, and more are on the [installation page](https://docs.vale.sh/topics/installation), along with [prebuilt binaries](https://github.com/vale-cli/vale/releases) for every release.
+Every release also ships [prebuilt binaries](https://github.com/vale-cli/vale/releases) for each platform. Scoop, MacPorts, FreeBSD ports, conda-forge, the APT archive, and the rest are on the [installation page](https://docs.vale.sh/topics/installation).
 
 ## Quickstart
 
