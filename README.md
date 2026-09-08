@@ -99,7 +99,11 @@ Everyone who funds Vale, individuals included, is listed on the [sponsors page](
 
 Thanks to [DigitalOcean](https://www.digitalocean.com/open-source/credits-for-projects) for the hosting credits behind [Vale Studio](https://studio.vale.sh), and to [GitBook](https://www.gitbook.com/solutions/open-source) for hosting the [documentation](https://docs.vale.sh).
 
-<a href="https://www.digitalocean.com/?refcode=dc0864bb87fd&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge"><img src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%202.svg" alt="DigitalOcean referral badge"></a>
+<p>
+  <a href="https://www.digitalocean.com/?refcode=dc0864bb87fd&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge"><img src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%202.svg" alt="Powered by DigitalOcean" height="40"></a>
+  &nbsp;
+  <a href="https://docs.vale.sh"><img src="https://img.shields.io/badge/Docs%20hosted%20by-GitBook-3884FF?style=for-the-badge&logo=gitbook&logoColor=white" alt="Docs hosted by GitBook" height="40"></a>
+</p>
 
 ## Why Vale
 
