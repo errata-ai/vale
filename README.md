@@ -1,29 +1,56 @@
-# Vale: Your style, our editor [![Test](https://github.com/vale-cli/vale/actions/workflows/test.yml/badge.svg?branch=v3)](https://github.com/vale-cli/vale/actions/workflows/test.yml) [![GitHub All Releases](https://img.shields.io/github/downloads/vale-cli/vale/total?logo=GitHub&color=ff69b4)](https://github.com/vale-cli/vale/releases) [![Docker Pulls](https://img.shields.io/docker/pulls/jdkato/vale?color=orange&logo=docker&logoColor=white)](https://hub.docker.com/r/jdkato/vale) [![Chocolatey](https://img.shields.io/chocolatey/dt/vale?color=white&label=chocolatey&logo=chocolatey)](https://community.chocolatey.org/packages/vale) [![Homebrew](https://img.shields.io/homebrew/installs/dy/vale?color=yellow&label=homebrew&logo=homebrew)](https://formulae.brew.sh/formula/vale) [![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20Vale%20Guru-006BFF)](https://gurubase.io/g/vale)
-
-<p align="center">
-  <b>Vale</b> is a command-line tool that brings code-like linting to prose. It's <b><a href="#mag-at-a-glance-vale-vs-">fast</a></b>, <b>cross-platform</b> (Windows, macOS, and Linux), and <b>highly customizable</b>.
-</p>
-
-<p align="center">
-  <img width="75%" alt="A demo screenshot." src="https://vale.sh/media/mac.png">
-</p>
-
 <div align="center">
-<table>
-<thead>
-<tr>
-<th><a href="https://docs.vale.sh/topics/installation">Docs</a></th>
-<th><a href="https://studio.vale.sh/">Vale Studio</a></th>
-<th><a href="https://vale.sh/explorer">Package Explorer</a></th>
-<th><a href="https://vale.sh/generator">Config Generator</a></th>
-<th><a href="https://cms.vale.sh">Vale CMS</a></th>
-</tr>
-</thead>
-</table>
+  <a href="https://vale.sh">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://vale.sh/brand/vale-logo-white.svg">
+      <img src="https://vale.sh/brand/vale-logo.svg" alt="Vale" width="200">
+    </picture>
+  </a>
+  <h3>Your style, our editor.</h3>
+  <p>
+    A command-line linter for prose. Turn your team's writing guidelines into checks that run<br>
+    in your editor, in CI, and alongside your code&mdash;on macOS, Windows, and Linux, entirely offline.
+  </p>
+  <p>
+    <a href="https://github.com/vale-cli/vale/actions/workflows/test.yml"><img alt="Test" src="https://github.com/vale-cli/vale/actions/workflows/test.yml/badge.svg?branch=v3"></a>
+    <a href="https://github.com/vale-cli/vale/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/vale-cli/vale?label=release&color=62A527"></a>
+    <a href="https://github.com/vale-cli/vale/releases"><img alt="GitHub downloads" src="https://img.shields.io/github/downloads/vale-cli/vale/total?logo=GitHub&label=downloads&color=333"></a>
+    <a href="https://hub.docker.com/r/jdkato/vale"><img alt="Docker pulls" src="https://img.shields.io/docker/pulls/jdkato/vale?logo=docker&logoColor=white&color=1D63ED"></a>
+    <a href="https://formulae.brew.sh/formula/vale"><img alt="Homebrew installs" src="https://img.shields.io/homebrew/installs/dy/vale?logo=homebrew&label=homebrew&color=FBB040"></a>
+    <a href="https://community.chocolatey.org/packages/vale"><img alt="Chocolatey downloads" src="https://img.shields.io/chocolatey/dt/vale?logo=chocolatey&label=chocolatey&color=80B5E3"></a>
+  </p>
+  <p>
+    <a href="https://docs.vale.sh">Docs</a> ·
+    <a href="https://docs.vale.sh/topics/quickstart">Quickstart</a> ·
+    <a href="https://vale.sh/explorer">Package Explorer</a> ·
+    <a href="https://studio.vale.sh">Vale Studio</a> ·
+    <a href="https://cms.vale.sh">Vale CMS</a> ·
+    <a href="https://vale.sh/blog">Blog</a>
+  </p>
 </div>
 
-> [!TIP]
-> **Try [Vale CMS](https://cms.vale.sh)**: the hosted authoring layer for Vale. Build and maintain your style guide in the browser -- config, rules, vocabularies, dictionaries, filters, views, and templates -- with the real Vale engine linting live before you ship changes back to your repository.
+<p align="center">
+  <img width="80%" alt="Vale reporting alerts for a directory of Markdown files in a terminal." src="https://vale.sh/media/mac.png">
+</p>
+
+Vale doesn't ship opinions of its own. It's a framework for enforcing _your_ style: a published guide like Microsoft's or Google's, an in-house set of terms, or both. It's run by teams at AWS, NVIDIA, Microsoft, GitLab, and Red Hat, [among others who publish their configs](https://vale.sh/adopters).
+
+```console
+$ vale sync
+ SUCCESS  Synced 2 package(s) to 'styles'.
+
+$ vale docs/
+
+ docs/configure.md
+ 3:7   suggestion  Consider using 'use' instead of 'utilize'.              Microsoft.Wordiness
+ 3:44  suggestion  'are loaded' looks like passive voice.                  Microsoft.Passive
+ 9:12  error       Use 'Vale CLI' instead of 'Vale cli'.                   Docs.Terms
+
+ docs/install.md
+ 3:40  warning     Use 'select' instead of the input-specific verb 'Click'. Microsoft.UIVerbs
+ 4:28  error       Did you really mean 'existant'?                         Vale.Spelling
+
+✖ 2 errors, 1 warning and 2 suggestions in 2 files.
+```
 
 ## :heart: Sponsors
 
@@ -60,111 +87,88 @@
 </table>
 </div>
 
-> Sponsors at $1,000 and above get a dedicated page on [vale.sh](https://vale.sh).
+> Sponsors at $1,000 and above get a dedicated page on [vale.sh](https://vale.sh/sponsor).
 
 ### Organizations
 
-<a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/organizations.svg?width=890"></a>
-
-### Other
-
-> Thanks to [DigitalOcean][1] for providing hosting credits for [Vale Studio][2].
-
-<p>
-  <a href="https://www.digitalocean.com/?refcode=dc0864bb87fd&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge"><img src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%202.svg" alt="DigitalOcean Referral Badge" /></a>
-</p>
-
-[Deploy now on DigitalOcean](https://m.do.co/c/dc0864bb87fd) and get $200 in free credits!
+<a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/organizations.svg?width=890" alt="Organizations sponsoring Vale on Open Collective"></a>
 
 ### Individuals
 
-<a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/individuals.svg?width=890"></a>
+<a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/individuals.svg?width=890" alt="Individuals sponsoring Vale on Open Collective"></a>
 
-## :boom: Key Features
+### Infrastructure
 
-- [x] **Support for markup**: Vale has a rich understanding of many [markup formats](https://docs.vale.sh/formats), allowing it to avoid syntax-related false positives and intelligently exclude code snippets from prose-related rules.
+Thanks to [DigitalOcean](https://www.digitalocean.com/open-source/credits-for-projects) for the hosting credits behind [Vale Studio](https://studio.vale.sh).
 
-- [x] A **highly customizable** [extension system](https://docs.vale.sh/topics/styles): Vale is capable of enforcing _your style_&mdash;be it a standard [editorial style guide](https://vale.sh/explorer) or a custom in-house set of rules (see [examples][6]).
+<a href="https://www.digitalocean.com/?refcode=dc0864bb87fd&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge"><img src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%202.svg" alt="DigitalOcean referral badge"></a>
 
-- [x] **Easy-to-install**, stand-alone binaries: Unlike other tools, Vale doesn't require you to install and configure a particular programming language and its related tooling (such as Python/pip or Node.js/npm).
+## Why Vale
 
-See the [documentation](https://vale.sh) for more information.
+Most tools see text. Vale sees a document.
 
-## :mag: At a Glance: Vale vs. `<...>`
+- **It parses your markup instead of guessing at it.** Markdown, AsciiDoc, reStructuredText, HTML, and [every other format](https://docs.vale.sh/formats) go through a real parser. A rule can target headings, lists, or table cells, and code spans, URLs, and fenced blocks are skipped before a rule ever runs. See [Scopes](https://docs.vale.sh/topics/scopes).
+- **Your comments are documentation too.** Vale lifts comments and docstrings out of source code with tree-sitter grammars, so a comment marker inside a string literal stays code. The Markdown in a Rust doc comment, or the reStructuredText in a Python docstring, is linted as though it were its own file. See [Code](https://docs.vale.sh/formats/code).
+- **It finds prose in files that aren't prose.** A [View](https://docs.vale.sh/topics/views) says where the writing is in an OpenAPI description, a notebook cell, or a commit message, so Vale lints that and passes over the rest.
+- **Rules are files, and they read grammar.** [Extension points](https://docs.vale.sh/checks/existence) in YAML run from a token list to part-of-speech patterns, cross-file relationships, readability formulas, and scripts. A rule can [carry its own fix](https://docs.vale.sh/topics/actions), which an editor applies with one keystroke and an agent applies without deciding anything.
+- **One binary, nothing alongside it.** Written in Go, with no runtime to install and files linted in parallel. See [the benchmark](https://vale.sh/features/speed) on GitLab's documentation.
+- **Private by design.** Nothing leaves your machine: no account, no upload, and no training on your writing.
 
-> **NOTE**: While all of the options listed below are open-source (CLI-based) linters for prose, their implementations and features vary significantly. And so, the "best" option will depends on your specific needs and preferences.
+## Install
 
-### Functionality
+A package manager puts `vale` on your `PATH` and keeps it current:
 
-| Tool       | Extensible           | Checks          | Supports Markup                                                         | Built With | License      |
-| ---------- | -------------------- | --------------- | ----------------------------------------------------------------------- | ---------- | ------------ |
-| Vale       | Yes (via YAML)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, XML, Org)              | Go         | MIT          |
-| textlint   | Yes (via JavaScript) | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, HTML, Re:VIEW)               | JavaScript | MIT          |
-| RedPen     | Yes (via Java)       | spelling, style | Yes (Markdown, AsciiDoc, reStructuredText, Textile, Re:VIEW, and LaTeX) | Java       | Apache-2.0   |
-| write-good | Yes (via JavaScript) | style           | No                                                                      | JavaScript | MIT          |
-| proselint  | No                   | style           | No                                                                      | Python     | BSD 3-Clause |
-| Joblint    | No                   | style           | No                                                                      | JavaScript | MIT          |
-| alex       | No                   | style           | Yes (Markdown)                                                          | JavaScript | MIT          |
-
-The exact definition of "Supports Markup" varies by tool but, in general, it means that the format is understood at a higher level than a regular plain-text file (for example, features like excluding code blocks from spell check).
-
-Extensibility means that there's a built-in means of creating your own rules without modifying the original source code.
-
-### Benchmarks
-
-<table>
-    <tr>
-        <td width="50%">
-            <a href="https://user-images.githubusercontent.com/8785025/97052257-809aa300-1535-11eb-83cd-65a52b29d6de.png">
-                <img src="https://user-images.githubusercontent.com/8785025/97052257-809aa300-1535-11eb-83cd-65a52b29d6de.png" width="100%">
-            </a>
-        </td>
-        <td width="50%">
-            <a href="https://user-images.githubusercontent.com/8785025/97051175-91e2b000-1533-11eb-9a57-9d44d6def4c3.png">
-                <img src="https://user-images.githubusercontent.com/8785025/97051175-91e2b000-1533-11eb-9a57-9d44d6def4c3.png" width="100%">
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td width="50%">
-          This benchmark has all three tools configured to use their implementations of the <code>write-good</code> rule set and Unix-style output.
-        </td>
-        <td width="50%">This benchmark runs Vale's implementation of <code>proselint</code>'s rule set against the original. Both tools are configured to use JSON output.</td>
-    </tr>
-    <tr>
-        <td width="50%">
-            <a href="https://user-images.githubusercontent.com/8785025/97053402-c5bfd480-1537-11eb-815b-a33ab13a59cf.png">
-                <img src="https://user-images.githubusercontent.com/8785025/97053402-c5bfd480-1537-11eb-815b-a33ab13a59cf.png" width="100%">
-            </a>
-        </td>
-        <td width="50%">
-            <a href="https://user-images.githubusercontent.com/8785025/97055850-7b8d2200-153c-11eb-86fa-d882ce6babf8.png">
-                <img src="https://user-images.githubusercontent.com/8785025/97055850-7b8d2200-153c-11eb-86fa-d882ce6babf8.png" width="100%">
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td width="50%">
-          This benchmark runs Vale's implementation of Joblint's rule set against the original. Both tools are configured to use JSON output.
-        </td>
-        <td width="50%">This benchmark has all three tools configured to perform only English spell checking using their default output styles.</td>
-    </tr>
-</table>
-
-All benchmarking was performed using the open-source [hyperfine](https://github.com/sharkdp/hyperfine) tool on a MacBook Pro (2.9 GHz Intel Core i7):
-
-```
-hyperfine --warmup 3 '<command>'
+```bash
+brew install vale            # macOS
+choco install vale           # Windows
+sudo snap install vale       # Linux
+docker pull jdkato/vale      # anywhere
 ```
 
-The corpus IDs in the above plots&mdash;`gitlab` and `ydkjs`&mdash;correspond to the following files:
+Debian, Arch, FreeBSD, WinGet, Scoop, conda-forge, and more are on the [installation page](https://docs.vale.sh/topics/installation), along with [prebuilt binaries](https://github.com/vale-cli/vale/releases) for every release.
 
-- A [snapshot][7] of GitLab's open-source documentation (1,500 Markdown files).
+## Quickstart
 
-- A [chapter][8] from the open-source book _You Don't Know JS_.
+Vale needs a configuration file that says where to keep styles and which to apply. Create one at the root of your project:
 
-[1]: https://www.digitalocean.com/open-source/credits-for-projects
-[2]: https://studio.vale.sh/
-[6]: https://vale.sh/#adopters
-[7]: https://gitlab.com/gitlab-org/gitlab/-/tree/7d6a4025a0346f1f50d2825c85742e5a27b39a8b/doc
-[8]: https://raw.githubusercontent.com/getify/You-Dont-Know-JS/1st-ed/es6%20%26%20beyond/ch2.md
+```ini
+StylesPath = styles
+MinAlertLevel = suggestion
+
+Packages = Microsoft
+
+[*.md]
+BasedOnStyles = Vale, Microsoft
+```
+
+Then download the styles and lint something:
+
+```bash
+vale sync
+vale README.md
+```
+
+The [Quickstart](https://docs.vale.sh/topics/quickstart) walks through each step. To skip the reading, open a chat already pointed at [vale.sh/AGENTS.md](https://vale.sh/AGENTS.md) and have an assistant set it up.
+
+## Styles
+
+A style is a folder of YAML rules. Start from one that's published&mdash;Microsoft, Google, Red Hat, and more are one line in your config away&mdash;and browse them all in the [Package Explorer](https://vale.sh/explorer). Or write your own:
+
+```yaml
+# styles/Docs/Terms.yml
+extends: substitution
+message: "Use '%s' instead of '%s'."
+level: error
+swap:
+  'Vale cli|vale-cli': Vale CLI
+```
+
+That's the whole rule. See [Styles](https://docs.vale.sh/topics/styles) for the rest, and [Vale CMS](https://cms.vale.sh) to author a full project&mdash;config, rules, vocabularies, and tests&mdash;in the browser, with the real engine linting live.
+
+## Contributing
+
+Bug reports, feature requests, documentation fixes, and pull requests are all welcome. Start with the [contributing guide](.github/CONTRIBUTING.md), which covers setting up a development environment, testing, benchmarking, and the [contributor license agreement](.github/CLA.md). This project follows a [code of conduct](.github/CODE_OF_CONDUCT.md).
+
+## License
+
+[MIT](LICENSE)
