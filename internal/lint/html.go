@@ -21,7 +21,13 @@ func (l *Linter) lintHTML(f *core.File) error {
 	if l.Manager.Config.Flags.Built != "" {
 		return l.lintTxtToHTML(f)
 	}
-	return l.lintHTMLTokens(f, []byte(f.Content), 0)
+
+	s, err := l.Transform(f)
+	if err != nil {
+		return err
+	}
+
+	return l.lintHTMLTokens(f, []byte(s), 0)
 }
 
 type extensionConfig struct {
@@ -46,8 +52,12 @@ func (e extensionConfig) match(sec glob.Glob) bool {
 	return sec.Match(e.Real) || (e.RealPath != "" && sec.Match(e.RealPath))
 }
 
+// blockDelimiters wrap a BlockIgnores match in the format's block code
+// delimiter. HTML has no source-level one, so a match is wrapped in the
+// element the others are converted to.
 var blockDelimiters = map[string]string{
 	".adoc": "\n----\n$1\n----\n",
+	".html": "<pre>$1</pre>",
 	".md":   "\n```\n$1\n```\n",
 	".mdx":  "\n```\n$1\n```\n",
 	".myst": "\n```\n$1\n```\n",
@@ -104,6 +114,7 @@ func applyBlockPatterns(c *core.Config, exts extensionConfig, content string) (s
 
 var inlineDelimiters = map[string]string{
 	".adoc": "`$1`",
+	".html": "<code>$1</code>",
 	".md":   "`$1`",
 	".mdx":  "`$1`",
 	".myst": "`$1`",

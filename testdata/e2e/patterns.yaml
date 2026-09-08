@@ -57,6 +57,50 @@ cases:
       test3.html:30:75:write-good.We:Try to avoid using first-person plural like 'us'.
       test3.html:33:64:write-good.We:Try to avoid using first-person plural like 'us'.
 
+  - name: html-template
+    about: "Text with no element of its own -- a template language's tags --
+      is excluded by pattern. A BlockIgnores match is wrapped in `<pre>` and a
+      TokenIgnores match in `<code>`, so the prose around them is linted and
+      the tags, and any string inside one, are not."
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.html]
+        BasedOnStyles = T
+        BlockIgnores = (?s)({%\s*comment\s*%}.*?{%\s*endcomment\s*%})
+        TokenIgnores = ({{.*?}}), ({%.*?%}), ({#.*?#})
+      styles/T/Tok.yml: |
+        extends: existence
+        message: "'%s' found"
+        level: error
+        nonword: true
+        raw:
+          - (?:ZQX|QQV|\{[{%#]|[}%#]\})
+      page.html: |
+        {% comment %}A ZQX could look like this.{% endcomment %}
+        {# Or like this, ZQX. #}
+        <p>And some QQV content</p>
+        <p>With a {{ variable.ZQX.somewhere }}.</p>
+        <p>{% translate "Or translated ZQX content" %}</p>
+        <p>
+          {% blocktranslate %}
+            For longer stuff or if there's {{ ZQX }}.
+            QQV.
+          {% endblocktranslate %}
+        </p>
+        <p>
+          And the final QQV I'll pull from the docs directly:
+          {% some_tag _("Page not ZQX") value|yesno:_("yes,no") %}
+        </p>
+    args: page.html
+    exit: 1
+    want: |
+      page.html:3:13:T.Tok:'QQV' found
+      page.html:9:5:T.Tok:'QQV' found
+      page.html:13:17:T.Tok:'QQV' found
+
   - name: python
     args: test.py
     exit: 1

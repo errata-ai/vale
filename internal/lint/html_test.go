@@ -149,6 +149,39 @@ This is a comment
 			},
 			expected: "Intro.\n\n\n```\nBEGIN\nskipped\nEND\n```\n\n",
 		},
+		{
+			description: "block ignore in HTML",
+			content:     "{% comment %}\nskipped\n{% endcomment %}\n<p>Kept.</p>\n",
+			conf: core.Config{
+				BlockIgnores: map[string][]string{
+					"*.html": {`(?s)({%\s*comment\s*%}.*?{%\s*endcomment\s*%})`},
+				},
+			},
+			exts:     extensionConfig{Normed: ".html", Real: ".html"},
+			expected: "<pre>{% comment %}\nskipped\n{% endcomment %}</pre>\n<p>Kept.</p>\n",
+		},
+		{
+			description: "token ignore in HTML",
+			content:     "<p>With a {{ variable }} here.</p>\n",
+			conf: core.Config{
+				TokenIgnores: map[string][]string{
+					"*.html": {`({{.*?}})`},
+				},
+			},
+			exts:     extensionConfig{Normed: ".html", Real: ".html"},
+			expected: "<p>With a <code>{{ variable }}</code> here.</p>\n",
+		},
+		{
+			description: "token ignore in HTML keyed on the real extension",
+			content:     "<p>With a {{ variable }} here.</p>\n",
+			conf: core.Config{
+				TokenIgnores: map[string][]string{
+					"*.htm": {`({{.*?}})`},
+				},
+			},
+			exts:     extensionConfig{Normed: ".html", Real: ".htm"},
+			expected: "<p>With a <code>{{ variable }}</code> here.</p>\n",
+		},
 	}
 
 	for _, c := range cases {
