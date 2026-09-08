@@ -22,6 +22,27 @@ func TestLeadingSpace(t *testing.T) {
 	}
 }
 
+func TestTrailingSpace(t *testing.T) {
+	cases := []struct {
+		raw, want string
+	}{
+		{"", ""},
+		{"text", ""},
+		{"text —", ""},
+		{"text ", " "},
+		{"text\t", " "},
+		{"text\n", "\n"},
+		{"text\r\n", "\n"},
+		{"text  \n", "\n"},
+		{" ", " "},
+	}
+	for _, c := range cases {
+		if got := trailingSpace(c.raw); got != c.want {
+			t.Errorf("trailingSpace(%q) = %q, want %q", c.raw, got, c.want)
+		}
+	}
+}
+
 // TestClean covers the whitespace at an inline-markup boundary: the source's
 // own separator is kept after a closed element (#1111, #1119, #1174), while
 // text inside an element is padded unless it opens with punctuation (#1052,

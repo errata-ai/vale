@@ -61,6 +61,10 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 	// Only then does the next text node's leading whitespace faithfully
 	// reflect the source, since `walk` trims it away before we see it.
 	var closedInline bool
+	// trailing is the whitespace that ended the block's last text node, as
+	// the source had it before `walk` trimmed it: what separated that text
+	// from an inline element opening after it.
+	var trailing string
 
 	buf := bytes.NewBufferString("")
 
@@ -232,8 +236,10 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 				// follows a tight boundary -- an opening bracket (a link in
 				// parentheses, `([HNSW](...))`, #1056) or a dash
 				// (`Triggers—**Article**`, #1029) -- the space is spurious and
-				// produces false positives like ` —` / `( ACRONYM)`.
-				if strings.HasPrefix(txt, " ") && endsWithTightBoundary(buf) {
+				// produces false positives like ` —` / `( ACRONYM)`. Unless
+				// the source put whitespace there: `Text — **bold**` keeps
+				// its space, or a rule asking for one reports `—b` (#1177).
+				if strings.HasPrefix(txt, " ") && trailing == "" && endsWithTightBoundary(buf) {
 					txt = txt[1:]
 				}
 				// Record where this run came from before it loses its identity
@@ -260,6 +266,11 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 						open[j].text += txt
 					}
 				}
+			}
+			if !inBlock && !f.Comments["off"] {
+				// A whitespace-only node counts: `<b>x</b> <i>y</i>` puts a
+				// space between its elements.
+				trailing = trailingSpace(tok.Data)
 			}
 		}
 
@@ -548,6 +559,21 @@ func leadingSpace(s string) string {
 		return ""
 	}
 	switch s[0] {
+	case '\n', '\r':
+		return "\n"
+	case ' ', '\t':
+		return " "
+	}
+	return ""
+}
+
+// trailingSpace returns the separator the source put after s, the way
+// leadingSpace reads the one before it.
+func trailingSpace(s string) string {
+	if s == "" {
+		return ""
+	}
+	switch s[len(s)-1] {
 	case '\n', '\r':
 		return "\n"
 	case ' ', '\t':

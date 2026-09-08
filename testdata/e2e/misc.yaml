@@ -265,12 +265,20 @@ cases:
       test.md:50:11:Markup.SentSpacing:"d.A" must contain one and only one space.
 
   - name: inline-dashes
-    about: "#1029"
+    about: "A dash beside inline markup keeps the source's spacing: none where
+      the source had none (#1029), a space where it had one (#1177)."
     dir: misc/dashes
     args: .
     exit: 1
     want: |
       test.md:1:24:Test.Dashes:Remove the spaces around the dash.
+      test.md:3:14:Test.Unspaced:Add spaces around 'm—'.
+      test.md:5:11:Test.Unspaced:Add spaces around 'm—'.
+      test.md:7:12:Test.Unspaced:Add spaces around 's—'.
+      test.md:9:5:Test.Dashes:Remove the spaces around the dash.
+      test.md:11:5:Test.Dashes:Remove the spaces around the dash.
+      test.md:13:5:Test.Dashes:Remove the spaces around the dash.
+      test.md:15:5:Test.Dashes:Remove the spaces around the dash.
 
   - name: spelling
     dir: spelling
