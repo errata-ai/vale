@@ -1,4 +1,4 @@
-[cC]onfig
+[cC]onfigs?
 alex
 api
 apos
@@ -9,6 +9,7 @@ backreferences
 choco
 commercetools
 dita
+docstrings?
 docutils
 endcode
 endhint
