@@ -2,7 +2,9 @@ package lint
 
 import (
 	"bytes"
+	"index/suffixarray"
 	"net/url"
+	"sort"
 	"strings"
 	"unicode/utf8"
 	"unsafe"
@@ -35,6 +37,17 @@ type walker struct {
 
 	idx int
 	z   *html.Tokenizer
+
+	// index finds text in the context without scanning it: a suffix array
+	// over the bytes as they were before any masking, and, per text asked
+	// about, its occurrences in order and how many are already masked. A
+	// small context is cheaper to scan, and has no index.
+	index *suffixarray.Index
+	occ   map[string]*occurrences
+
+	// nlOff and nlCount are where the last line count stopped and what it
+	// reached, so the next one counts from there rather than from the top.
+	nlOff, nlCount int
 
 	// cursor is how far into the context we have already emitted blocks.
 	//
@@ -111,8 +124,18 @@ type walker struct {
 	ext string
 }
 
+// indexMin is the size from which a context is indexed rather than scanned.
+const indexMin = 16 << 10
+
+// An occurrences is where one text occurs in the context, in order, and how
+// many of those masking has already removed.
+type occurrences struct {
+	at   []int
+	next int
+}
+
 func newWalker(f *core.File, raw []byte, offset int) *walker {
-	return &walker{
+	w := &walker{
 		lines: len(f.Lines) + offset,
 		// We keep a private, writable copy of the content so that `sub` can
 		// overwrite already-processed segments in place. We must not alias
@@ -122,10 +145,63 @@ func newWalker(f *core.File, raw []byte, offset int) *walker {
 		z:       html.NewTokenizer(bytes.NewReader(raw)),
 		ext:     f.NormedExt,
 	}
+	if len(f.Content) >= indexMin {
+		w.index = suffixarray.New([]byte(f.Content))
+	}
+	return w
+}
+
+// first returns where needle first occurs in the context as it is now, with
+// consumed text masked -- what strings.Index reports -- without scanning
+// the masked prefix each time, which made every search a pass over the
+// consumed document. Masking only removes occurrences, so the first one
+// still present never moves back, and each text keeps its place in its own
+// list.
+func (w *walker) first(needle string) int {
+	ctx := byteSlice2String(w.context)
+	if w.index == nil || needle == "" {
+		return strings.Index(ctx, needle)
+	}
+
+	o, ok := w.occ[needle]
+	if !ok {
+		at := w.index.Lookup([]byte(needle), -1)
+		sort.Ints(at)
+		o = &occurrences{at: at}
+		if w.occ == nil {
+			w.occ = map[string]*occurrences{}
+		}
+		w.occ[needle] = o
+	}
+
+	for o.next < len(o.at) {
+		if p := o.at[o.next]; ctx[p:p+len(needle)] == needle {
+			return p
+		}
+		o.next++
+	}
+	return -1
+}
+
+// lineAt counts the newlines before pos, from where the last count stopped.
+func (w *walker) lineAt(pos int) int {
+	ctx := w.getCtx()
+	if pos >= w.nlOff {
+		w.nlCount += strings.Count(ctx[w.nlOff:pos], "\n")
+	} else {
+		w.nlCount -= strings.Count(ctx[pos:w.nlOff], "\n")
+	}
+	w.nlOff = pos
+	return w.nlCount
 }
 
 func (w *walker) sub(sub string, char rune) bool {
-	return subInplace(w.context, sub, char)
+	idx := w.first(sub)
+	if idx < 0 {
+		return false
+	}
+	maskAt(w.context, idx, sub, char)
+	return true
 }
 
 func (w *walker) update(txt string, tokt html.TokenType) {
@@ -547,21 +623,9 @@ func (w *walker) replaceToks(tok html.Token) {
 // one was computed and discarded. On a 118 KB file that made this function a
 // fifth of the whole run.
 //
-// The remaining search still starts at the beginning of the document, so cost
-// still grows faster than length. Three ways out were tried and measured:
-//
-//   - Skipping the masked prefix. `sub` overwrites consumed text with '@', but
-//     never touches the markup around it, so the first unmasked byte is the
-//     '#' of the first heading and the watermark cannot move.
-//   - Resuming from the previous match. Extraction rewrites text often enough
-//     that the forward search misses, and the fallback made the common path
-//     two scans instead of one: 47% slower at 112 KB.
-//   - Taking the line from the offset `locate` already found. This does remove
-//     the search -- string matching drops from 30% of the profile to 4% -- but
-//     `locate` gives where a block *starts* and this gives where it *ends*, and
-//     the change to blk.Line makes alert placement in core.assignLoc do much
-//     more work: 38% slower overall. Worth revisiting with assignLoc rather
-//     than on its own; the two are coupled.
+// The search is for the first occurrence in the masked context, from the
+// top: it is what keeps a block's line right when the cursors that place
+// blocks have run ahead. The index serves it without the scan.
 //
 // The line this returns is a fallback, and core.assignLoc has a standing NOTE
 // saying so. It matters less than it did: an alert in a block holding inline
@@ -570,14 +634,12 @@ func (w *walker) replaceToks(tok html.Token) {
 // `testdata/e2e/frontmatter.yaml` out of a literal block and onto the prose it
 // belongs to. What still comes through here is a block no run could place.
 func (w *walker) advance(text string) int {
-	ctx := w.getCtx()
-
 	last := text
 	if i := strings.LastIndexByte(text, '\n'); i >= 0 {
 		last = text[i+1:]
 	}
 
-	pos := strings.Index(ctx, last)
+	pos := w.first(last)
 	if pos < 0 {
 		// Extraction rewrites text, so a line is not always a substring of the
 		// source; a single word from it usually still is. The longest word,
@@ -591,12 +653,12 @@ func (w *walker) advance(text string) int {
 			}
 		}
 		if longest != "" {
-			pos = strings.Index(ctx, longest)
+			pos = w.first(longest)
 		}
 	}
 
 	if pos >= 0 {
-		if l := strings.Count(ctx[:pos], "\n"); l > w.idx {
+		if l := w.lineAt(pos); l > w.idx {
 			return l
 		}
 	}
@@ -659,7 +721,13 @@ func subInplace(ctx []byte, sub string, char rune) bool {
 	if idx < 0 {
 		return false
 	}
+	maskAt(ctx, idx, sub, char)
+	return true
+}
 
+// maskAt overwrites the occurrence of sub at idx, byte for byte, leaving
+// newlines and multibyte runes in place.
+func maskAt(ctx []byte, idx int, sub string, char rune) {
 	mask := byte(char)
 	for _, r := range sub {
 		if r != '\n' && utf8.RuneLen(r) == 1 {
@@ -667,5 +735,4 @@ func subInplace(ctx []byte, sub string, char rune) bool {
 		}
 		idx += utf8.RuneLen(r)
 	}
-	return true
 }

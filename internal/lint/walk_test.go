@@ -1,6 +1,8 @@
 package lint
 
 import (
+	"index/suffixarray"
+	"strings"
 	"testing"
 )
 
@@ -195,5 +197,54 @@ func TestWalkerFlush(t *testing.T) {
 				t.Errorf("pending = %v, want nil", w.pending)
 			}
 		})
+	}
+}
+
+// The index must answer exactly what a scan of the masked context answers,
+// as masks accumulate: the first occurrence still present, or none.
+func TestFirstMatchesScan(t *testing.T) {
+	src := strings.Repeat("Click **Click here** to continue. Übung macht den Meister. ", 40) +
+		"a\n\nb\n\nx y z\n" + strings.Repeat("the end of the line\n", 20)
+	w := &walker{context: []byte(src), index: suffixarray.New([]byte(src))}
+
+	needles := []string{"Click", "Click here", "Übung", "Meister.", "the", "line", "x y z", "nope", "", "\n\n"}
+	check := func(step string) {
+		ctx := string(w.context)
+		for _, n := range needles {
+			if got, want := w.first(n), strings.Index(ctx, n); got != want {
+				t.Fatalf("%s: first(%q) = %d, want %d", step, n, got, want)
+			}
+		}
+	}
+
+	check("before masking")
+	for i := 0; i < 60; i++ {
+		for _, n := range []string{"Click here", "Click", "Übung macht den Meister.", "the end", "line"} {
+			w.sub(n, '@')
+			check("after masking " + n)
+		}
+	}
+}
+
+// A walker with an index and one without place the same lines.
+func TestAdvanceWithIndexMatchesScan(t *testing.T) {
+	src := strings.Repeat("one two three\n\nfour five\n\n", 30)
+	plain := &walker{context: []byte(src)}
+	indexed := &walker{context: []byte(src), index: suffixarray.New([]byte(src))}
+
+	for i := 0; i < 30; i++ {
+		for _, text := range []string{"one two three", "four five", "six"} {
+			a, b := plain.advance(text), indexed.advance(text)
+			if a != b {
+				t.Fatalf("advance(%q) = %d with index, %d without", text, b, a)
+			}
+			if a >= 0 {
+				plain.idx, indexed.idx = a, a
+			}
+			plain.reset()
+			indexed.reset()
+			plain.append(text)
+			indexed.append(text)
+		}
 	}
 }
