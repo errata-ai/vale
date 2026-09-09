@@ -1,6 +1,7 @@
 package check
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/vale-cli/vale/v3/internal/core"
@@ -113,5 +114,37 @@ func TestExistenceRawPercent(t *testing.T) {
 				t.Errorf("%q: got %d alerts, want %d", c.raw, len(alerts), c.want)
 			}
 		})
+	}
+}
+
+// Every match in a block is anchored at its own byte offset, however many
+// there are and whatever precedes it.
+func TestExistenceManyMatches(t *testing.T) {
+	rule, err := makeExistence([]string{"simply"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, prefix := range []string{"", "Ünd so: "} {
+		unit := "This is simply a test. "
+		blk := nlp.NewBlock("", prefix+strings.Repeat(unit, 3000), "text")
+
+		alerts, rerr := rule.Run(blk, &core.File{}, &core.Config{})
+		if rerr != nil {
+			t.Fatal(rerr)
+		}
+		if len(alerts) != 3000 {
+			t.Fatalf("%q: got %d alerts, want 3000", prefix, len(alerts))
+		}
+		for i, a := range alerts {
+			lo := len(prefix) + i*len(unit) + len("This is ")
+			if !a.HasByteOffsets || a.Span[0] != lo || a.Span[1] != lo+len("simply") {
+				t.Fatalf("%q: alert %d at %v (anchored: %v), want [%d %d]",
+					prefix, i, a.Span, a.HasByteOffsets, lo, lo+len("simply"))
+			}
+			if blk.Text[a.Span[0]:a.Span[1]] != "simply" {
+				t.Fatalf("%q: alert %d points at %q", prefix, i, blk.Text[a.Span[0]:a.Span[1]])
+			}
+		}
 	}
 }

@@ -1,8 +1,6 @@
 package check
 
 import (
-	"unicode/utf8"
-
 	"github.com/vale-cli/vale/v3/internal/core"
 	"github.com/vale-cli/vale/v3/internal/nlp"
 )
@@ -27,7 +25,7 @@ func anchor(a *core.Alert, blk nlp.Block) {
 		return
 	}
 
-	lo, hi, ok := runeSpanToBytes(blk.Text, a.Span[0], a.Span[1])
+	lo, hi, ok := blk.ByteSpan(a.Span[0], a.Span[1])
 	if !ok {
 		return
 	}
@@ -78,51 +76,8 @@ func anchor(a *core.Alert, blk nlp.Block) {
 	a.HasByteOffsets = true
 }
 
-// runeSpanToBytes converts a rune-indexed span into byte offsets.
-//
-// regexp2 reports positions in runes; everything downstream of the check
-// addresses the document in bytes.
+// runeSpanToBytes converts a rune-indexed span into byte offsets by walking
+// s. A block converts its own spans without the walk; see nlp.Block.ByteSpan.
 func runeSpanToBytes(s string, from, to int) (int, int, bool) {
-	if from < 0 || to < from {
-		return 0, 0, false
-	}
-
-	var (
-		runes  int
-		lo, hi = -1, -1
-		i      int
-	)
-	for i = 0; i < len(s); {
-		if runes == from && lo < 0 {
-			lo = i
-		}
-		if runes == to {
-			hi = i
-			break
-		}
-
-		// Decoding is only needed past ASCII, and prose is mostly ASCII. This
-		// runs for every match and again for every alert, so the call is worth
-		// avoiding in the common case.
-		if s[i] < utf8.RuneSelf {
-			i++
-		} else {
-			_, size := utf8.DecodeRuneInString(s[i:])
-			i += size
-		}
-		runes++
-	}
-
-	// A span reaching the end of the string ends past the final rune.
-	if runes == from && lo < 0 {
-		lo = i
-	}
-	if runes == to && hi < 0 {
-		hi = i
-	}
-
-	if lo < 0 || hi < 0 || hi < lo {
-		return 0, 0, false
-	}
-	return lo, hi, true
+	return nlp.RuneSpanToBytes(s, from, to)
 }

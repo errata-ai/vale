@@ -202,23 +202,22 @@ func formatMessages(msg string, desc string, subs ...string) (string, string) {
 // NOTE: We need to do this because regexp2, the library we use for extended
 // syntax, returns its locatons in *rune* offsets.
 //
-// The span is walked out to byte offsets rather than converting the string to
-// []rune: the conversion costs an allocation the size of the whole block on
-// every match, and this is called for each match and again for each alert.
-// Slicing the original instead shares its bytes, so the result is free.
-func re2Loc(s string, loc []int) (string, error) {
-	lo, hi, ok := runeSpanToBytes(s, loc[0], loc[1])
+// The block converts the span to byte offsets from an index it builds once, and
+// the text is a slice of the original: this is called for every match and
+// again for every alert, so neither a walk nor a copy per call is affordable.
+func re2Loc(blk nlp.Block, loc []int) (string, error) {
+	lo, hi, ok := blk.ByteSpan(loc[0], loc[1])
 	if !ok {
 		msg := fmt.Errorf("%d (%d:%d)",
-			utf8.RuneCountInString(s), loc[0], loc[1])
+			utf8.RuneCountInString(blk.Text), loc[0], loc[1])
 		return "", core.NewE100("re2loc: bounds", msg)
 	}
 
-	return s[lo:hi], nil
+	return blk.Text[lo:hi], nil
 }
 
-func makeAlert(chk Definition, loc []int, txt string, cfg *core.Config) (core.Alert, error) {
-	match, err := re2Loc(txt, loc)
+func makeAlert(chk Definition, loc []int, blk nlp.Block, cfg *core.Config) (core.Alert, error) {
+	match, err := re2Loc(blk, loc)
 	if err != nil {
 		return core.Alert{}, err
 	}

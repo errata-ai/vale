@@ -292,3 +292,56 @@ func TestLineStartsRebuildsOnNewContext(t *testing.T) {
 		t.Fatalf("lineStarts back = %v, want 2 entries", got)
 	}
 }
+
+// The running column count must agree with counting from the line's start,
+// whether alerts arrive in order along a line, jump back, or change lines.
+func TestByteLocMatchesScan(t *testing.T) {
+	inputs := []string{
+		"one line",
+		"héllo\nwörld\n日本語\n👍🏽 emoji",
+		"a\nb\nc",
+		"win\r\nline\r\nendings",
+	}
+
+	for _, ctx := range inputs {
+		f := &File{}
+		var begins []int
+		for begin := 0; begin <= len(ctx); begin++ {
+			begins = append(begins, begin)
+		}
+		// Forward, then backward, then forward again: every branch of the
+		// cache in one context.
+		order := append([]int{}, begins...)
+		for i := len(begins) - 1; i >= 0; i-- {
+			order = append(order, begins[i])
+		}
+		order = append(order, begins...)
+
+		for _, begin := range order {
+			end := min(begin+2, len(ctx))
+			for _, pad := range []int{0, 3} {
+				wantLine, wantSpan := locByScan(ctx, begin, end, pad)
+				gotLine, gotSpan := f.byteLoc(ctx, begin, end, pad)
+
+				if gotLine != wantLine {
+					t.Fatalf("ctx=%q begin=%d: line = %d, want %d",
+						ctx, begin, gotLine, wantLine)
+				}
+				if gotSpan[0] != wantSpan[0] || gotSpan[1] != wantSpan[1] {
+					t.Fatalf("ctx=%q begin=%d end=%d: span = %v, want %v",
+						ctx, begin, end, gotSpan, wantSpan)
+				}
+			}
+		}
+	}
+}
+
+// A new context restarts the count even when a position repeats.
+func TestByteLocAcrossContexts(t *testing.T) {
+	f := &File{}
+
+	f.byteLoc("aaaa", 3, 4, 0)
+	if _, span := f.byteLoc("éééé", 4, 6, 0); span[0] != 3 {
+		t.Fatalf("got column %d, want 3", span[0])
+	}
+}

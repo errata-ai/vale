@@ -176,7 +176,7 @@ func (s Substitution) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]core
 			if mat != -1 && idx > 0 && idx%2 == 0 {
 				loc := []int{mat, submat[idx+1]}
 
-				converted, err := re2Loc(txt, loc)
+				converted, err := re2Loc(blk, loc)
 				if err != nil {
 					return alerts, err
 				}

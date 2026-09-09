@@ -132,7 +132,7 @@ func (c Conditional) Run(blk nlp.Block, f *core.File, cfg *core.Config) ([]core.
 				return alerts, nil
 			}
 		}
-		return c.flagAntecedents(txt, cfg)
+		return c.flagAntecedents(blk, cfg)
 	}
 
 	// We first look for the consequent of the conditional statement.
@@ -160,7 +160,7 @@ func (c Conditional) Run(blk nlp.Block, f *core.File, cfg *core.Config) ([]core.
 	// Now we look for the antecedent.
 	locs := c.patterns[1].FindAllStringIndex(txt, -1)
 	for _, loc := range locs {
-		s, err := re2Loc(txt, loc)
+		s, err := re2Loc(blk, loc)
 		if err != nil {
 			return alerts, err
 		}
@@ -168,7 +168,7 @@ func (c Conditional) Run(blk nlp.Block, f *core.File, cfg *core.Config) ([]core.
 		if !core.StringInSlice(s, f.Sequences) && !isMatch(c.exceptRe, s) && !withinPhrase(c.phraseRe, txt, loc) {
 			// If we've found one (e.g., "WHO") and we haven't marked it as
 			// being defined previously, send an Alert.
-			a, erra := makeAlert(c.Definition, loc, txt, cfg)
+			a, erra := makeAlert(c.Definition, loc, blk, cfg)
 			if erra != nil {
 				return alerts, erra
 			}
@@ -182,10 +182,11 @@ func (c Conditional) Run(blk nlp.Block, f *core.File, cfg *core.Config) ([]core.
 // flagAntecedents reports every `First` match as a violation (used by the
 // presence check when `Second` is absent), honoring the rule's exceptions and
 // accepted phrases.
-func (c Conditional) flagAntecedents(txt string, cfg *core.Config) ([]core.Alert, error) {
+func (c Conditional) flagAntecedents(blk nlp.Block, cfg *core.Config) ([]core.Alert, error) {
 	alerts := []core.Alert{}
+	txt := blk.Text
 	for _, loc := range c.patterns[1].FindAllStringIndex(txt, -1) {
-		s, err := re2Loc(txt, loc)
+		s, err := re2Loc(blk, loc)
 		if err != nil {
 			return alerts, err
 		}
@@ -193,7 +194,7 @@ func (c Conditional) flagAntecedents(txt string, cfg *core.Config) ([]core.Alert
 			continue
 		}
 
-		a, erra := makeAlert(c.Definition, loc, txt, cfg)
+		a, erra := makeAlert(c.Definition, loc, blk, cfg)
 		if erra != nil {
 			return alerts, erra
 		}

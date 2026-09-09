@@ -110,7 +110,7 @@ func (o Consistency) Run(blk nlp.Block, f *core.File, cfg *core.Config) ([]core.
 			// has always reported. Anchoring would promote that leftover into
 			// the output. The rule fires at most once per block, so there is
 			// nothing to gain by it either.
-			a, err := makeAlert(o.Definition, loc, txt, cfg)
+			a, err := makeAlert(o.Definition, loc, blk, cfg)
 			if err != nil {
 				return alerts, err
 			}

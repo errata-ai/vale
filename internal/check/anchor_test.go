@@ -107,7 +107,7 @@ func TestRe2LocMatchesReference(t *testing.T) {
 				loc := []int{from, to}
 
 				want, wantOK := re2LocReference(s, loc)
-				got, err := re2Loc(s, loc)
+				got, err := re2Loc(nlp.NewBlock("", s, "text"), loc)
 
 				if wantOK != (err == nil) {
 					t.Fatalf("re2Loc(%q, %v): ok = %v, want %v (err: %v)",

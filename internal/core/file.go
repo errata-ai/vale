@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/jdkato/prose/v3/summarize"
 	"github.com/jdkato/prose/v3/tag"
@@ -66,6 +67,13 @@ type File struct {
 	simple     bool                       // -
 	Lookup     bool                       // -
 	MetaScope  string                     // extra scope context, e.g. a YAML key or comment
+
+	// The running column count byteLoc keeps: the context and line start it
+	// was taken in, the byte offset it reached, and the runes up to there.
+	colCtx   string
+	colLine  int
+	colAt    int
+	colRunes int
 
 	// Scoped holds the text of every value a View found, by scope name, so
 	// a rule can ask about a scope other than the one it runs in.
@@ -413,15 +421,41 @@ func locFromByteOffset(ctx string, starts []int, begin, end, pad int) (int, []in
 	line := sort.Search(len(starts), func(i int) bool { return starts[i] > begin })
 	lineStart := starts[line-1]
 
-	col := nlp.StrLen(ctx[lineStart:begin]) + 1 + pad
-	matchLen := nlp.StrLen(ctx[begin:end])
+	return line, spanAt(ctx, nlp.StrLen(ctx[lineStart:begin])+1+pad, begin, end)
+}
 
-	span := []int{col, col + matchLen - 1}
+// byteLoc is locFromByteOffset with the file's line index and a running column
+// count. Alerts arrive in document order, so on a long line each count picks
+// up where the last one stopped; counting from the line's start every time is
+// quadratic on a paragraph written as one line.
+func (f *File) byteLoc(ctx string, begin, end, pad int) (int, []int) {
+	if begin > len(ctx) {
+		begin = len(ctx)
+	}
+
+	starts := f.lineStarts(ctx)
+	line := sort.Search(len(starts), func(i int) bool { return starts[i] > begin })
+	lineStart := starts[line-1]
+
+	// A count can only continue from a rune boundary: split inside one, the
+	// two halves each count as a rune.
+	if f.colCtx != ctx || f.colLine != lineStart || begin < f.colAt ||
+		(f.colAt < len(ctx) && !utf8.RuneStart(ctx[f.colAt])) {
+		f.colCtx, f.colLine, f.colAt, f.colRunes = ctx, lineStart, lineStart, 0
+	}
+	f.colRunes += nlp.StrLen(ctx[f.colAt:begin])
+	f.colAt = begin
+
+	return line, spanAt(ctx, f.colRunes+1+pad, begin, end)
+}
+
+// spanAt is the span of a match at column col that runs from begin to end.
+func spanAt(ctx string, col, begin, end int) []int {
+	span := []int{col, col + nlp.StrLen(ctx[begin:end]) - 1}
 	if span[1] < span[0] {
 		span[1] = span[0]
 	}
-
-	return line, span
+	return span
 }
 
 // SetText updates the file's content, lines, and history.
@@ -455,8 +489,7 @@ func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 	case a.HasByteOffsets && a.Span[0] >= 0 && a.Span[1] <= len(blk.Context):
 		// Before the measurement case: a zero-width match has no text either,
 		// but it does have a place.
-		a.Line, a.Span = locFromByteOffset(
-			blk.Context, f.lineStarts(blk.Context), a.Span[0], a.Span[1], pad)
+		a.Line, a.Span = f.byteLoc(blk.Context, a.Span[0], a.Span[1], pad)
 	case a.Match == "" && blk.Line >= 0 && blk.Line < len(f.Lines):
 		// A measurement has no text to find. It is reported at the start of
 		// its block's first line: the file's for the summary, the heading's
@@ -473,8 +506,7 @@ func (f *File) AddAlert(a Alert, blk nlp.Block, lines, pad int, lookup bool) {
 		// earlier occurrence; this replaces the capped word-masking heuristic
 		// that mislocated `^`-anchored matches once the document exceeded 1k
 		// bytes. See #869.
-		a.Line, a.Span = locFromByteOffset(
-			blk.Context, f.lineStarts(blk.Context), a.Span[0], a.Span[1], pad)
+		a.Line, a.Span = f.byteLoc(blk.Context, a.Span[0], a.Span[1], pad)
 	default:
 		// For non-raw scopes the block text differs from the source, so the
 		// span isn't a usable byte offset; fall back to a text search. When

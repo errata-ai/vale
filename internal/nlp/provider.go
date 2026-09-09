@@ -45,6 +45,9 @@ type Block struct {
 	// and the block is nowhere in Context as a whole. Its pieces are, though,
 	// and each was placed as it was read. See #502.
 	Runs []Run
+
+	// runes converts positions in Text from runes to bytes; see ByteSpan.
+	runes *runeIndex
 }
 
 // A Run is a piece of a block's text and where it came from: At indexes the
@@ -108,7 +111,8 @@ func NewLinedBlock(ctx, txt, sel string, line int) Block {
 		Scope:   sel,
 		Parent:  sel,
 		Line:    line,
-		Offset:  offset}
+		Offset:  offset,
+		runes:   &runeIndex{text: txt}}
 }
 
 // at returns a copy of blk positioned at the given offset within its context.

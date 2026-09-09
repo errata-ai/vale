@@ -74,7 +74,7 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]core.A
 				Link: o.Link}
 
 			if word := reFirstWord.FindAllStringIndex(txt, 1); len(word) == 1 {
-				a, err = makeAlert(o.Definition, word[0], txt, cfg)
+				a, err = makeAlert(o.Definition, word[0], blk, cfg)
 				if err != nil {
 					return alerts, err
 				}
@@ -92,7 +92,7 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]core.A
 			// We also can't use the entire scope (`txt`) without risking
 			// having to fall back to string matching.
 			for _, loc := range locs {
-				m, rErr := re2Loc(txt, loc)
+				m, rErr := re2Loc(blk, loc)
 				if rErr != nil || strings.TrimSpace(m) == "" {
 					continue
 				} else if !core.IsCode(m) {
@@ -108,7 +108,7 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]core.A
 				return alerts, nil
 			}
 
-			a, err = makeAlert(o.Definition, span, txt, cfg)
+			a, err = makeAlert(o.Definition, span, blk, cfg)
 			if err != nil {
 				return alerts, err
 			}

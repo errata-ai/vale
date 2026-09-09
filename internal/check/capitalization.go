@@ -126,7 +126,7 @@ func (c Capitalization) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]co
 		}
 		pos := []int{0, nlp.StrLen(blk.Text)}
 
-		a, err := makeAlert(c.Definition, pos, blk.Text, cfg)
+		a, err := makeAlert(c.Definition, pos, blk, cfg)
 		if err != nil {
 			return alerts, err
 		}

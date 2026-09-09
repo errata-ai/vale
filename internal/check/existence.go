@@ -136,7 +136,7 @@ func groupCounts(expr string) (int, int) {
 
 // groupsFor returns the capture groups of whichever token matched, in that
 // token's own numbering, or nil when the token has none.
-func (e Existence) groupsFor(txt string, sub []int) []string {
+func (e Existence) groupsFor(blk nlp.Block, sub []int) []string {
 	for _, span := range e.groups {
 		indices := make([]int, 0, span.unnamedCount+span.namedCount)
 		for k := 1; k <= span.unnamedCount; k++ {
@@ -154,7 +154,7 @@ func (e Existence) groupsFor(txt string, sub []int) []string {
 				groups = append(groups, "")
 				continue
 			}
-			text, err := re2Loc(txt, []int{lo, hi})
+			text, err := re2Loc(blk, []int{lo, hi})
 			if err != nil {
 				return nil
 			}
@@ -185,7 +185,7 @@ func (e Existence) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]core.Al
 
 	for _, sub := range e.pattern.FindAllStringSubmatchIndex(blk.Text, -1) {
 		loc := sub[:2]
-		converted, err := re2Loc(blk.Text, loc)
+		converted, err := re2Loc(blk, loc)
 		if err != nil {
 			return alerts, err
 		}
@@ -193,7 +193,7 @@ func (e Existence) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]core.Al
 		observed := strings.TrimSpace(converted)
 		if !isMatch(e.exceptRe, observed) && !withinPhrase(e.phraseRe, blk.Text, loc) {
 			a, erra := alertWithGroups(e.Definition, loc, converted,
-				e.groupsFor(blk.Text, sub), cfg)
+				e.groupsFor(blk, sub), cfg)
 			if erra != nil {
 				return alerts, erra
 			}
