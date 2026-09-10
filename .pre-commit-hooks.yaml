@@ -4,3 +4,12 @@
   entry: vale
   language: golang
   types: [text]
+
+# The message comes in on stdin, and --path names the [COMMIT_EDITMSG]
+# section that applies, since the file has no name of its own.
+- id: vale-commit-msg
+  name: vale (commit message)
+  description: Run vale on the commit message
+  entry: sh -c 'vale --path=COMMIT_EDITMSG < "$1"' --
+  language: golang
+  stages: [commit-msg]

@@ -210,7 +210,7 @@ Why it exists: Vale has been MIT-licensed since 2016 and there are no plans to c
 
 ## Git Commit Message Guidelines
 
-Vale follows a modified version of the [AngularJS Commit Guidelines](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#-git-commit-guidelines). A commit message should take the following form:
+Vale follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), with the types [commitlint](https://commitlint.js.org/) accepts. A commit message should take the following form:
 
 ```text
 <type>: <subject>
@@ -220,7 +220,7 @@ Vale follows a modified version of the [AngularJS Commit Guidelines](https://git
 <footer>
 ```
 
-with `<body>` and `<footer>` being optional. `<type>` should be one of the following:
+with `<body>` and `<footer>` being optional, and `<type>(<scope>):` allowed where a scope helps (`fix(spell): ...`). The subject is a command in lower case with no period at the end. `<type>` should be one of the following:
 
 - `feat`: A new feature
 - `fix`: A bug fix
@@ -229,7 +229,10 @@ with `<body>` and `<footer>` being optional. `<type>` should be one of the follo
 - `refactor`: A code change that neither fixes a bug nor adds a feature
 - `perf`: A code change that improves performance (in this case, please include relevant benchmark(s))
 - `test`: Adding missing or correcting existing tests
-- `chore`: Changes to the build process or auxiliary tools
+- `build`: Changes to the build or dependencies
+- `ci`: Changes to the workflows
+- `chore`: Changes to auxiliary tools
+- `revert`: Reverts an earlier commit
 
 An example would be something like:
 
@@ -239,6 +242,18 @@ refactor: make "warning" the default lint level
 Also demotes `Annotations` and `PassiveVoice` to "suggestions."
 
 Related to #30.
+```
+
+Vale checks the message itself, with the [Commits](https://github.com/jdkato/commits) package that [`.vale.ini`](../.vale.ini) names. To run that on every commit, point Git at the tracked hook once per clone:
+
+```bash
+git config core.hooksPath .github/hooks
+```
+
+The hook syncs the styles on its first run and reads each message before the commit lands. A missing or unknown type, a capital or a period on the subject, or a body line past 100 characters stops the commit; a subject that isn't a command (`Added`, `Fixes`) is a warning. The same check runs on every commit of a pull request in [`commits.yml`](workflows/commits.yml). To try a message without committing:
+
+```bash
+./bin/vale --path=COMMIT_EDITMSG < message.txt
 ```
 
 ## Terminology

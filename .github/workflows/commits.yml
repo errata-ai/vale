@@ -1,0 +1,42 @@
+# Lint every commit message on a pull request with the same hook a clone
+# runs locally, so a clone that skipped the hook setup is caught here.
+name: Commits
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  messages:
+    name: runner / commit messages
+    runs-on: ubuntu-latest
+    env:
+      CGO_ENABLED: "1" # required for the tree-sitter parsers
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # every commit on the pull request
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.7"
+
+      - name: Build
+        run: go build -o bin/vale ./cmd/vale
+
+      # The checkout is the merge commit, so walk the pull request's own
+      # commits from its base to its head.
+      - name: Lint commit messages
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          failed=0
+          for sha in $(git rev-list --no-merges "$BASE..$HEAD"); do
+            echo "== $(git log -1 --format='%h %s' "$sha")"
+            git log -1 --format=%B "$sha" > /tmp/message
+            .github/hooks/commit-msg /tmp/message || failed=1
+          done
+          exit "$failed"

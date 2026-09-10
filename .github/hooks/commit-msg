@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+# Lint a commit message with Vale, using the Commits package and the
+# [COMMIT_EDITMSG] section in .vale.ini. Git passes the path of the message;
+# an error-level alert exits non-zero and the commit stops.
+#
+# Messages Git writes itself are left alone: merges, reverts, and the
+# fixup!/squash!/amend! prefixes autosquash reads.
+#
+# On a fresh clone the styles are not there yet, so the first run syncs them.
+#
+# Install once per clone:
+#
+#   git config core.hooksPath .github/hooks
+case "$(sed -n '1p' "$1")" in
+"Merge "* | "Revert "* | "Reapply "* | "fixup! "* | "squash! "* | "amend! "*) exit 0 ;;
+esac
+
+# Prefer the binary `make build` wrote, then whatever is on PATH.
+vale=${VALE:-vale}
+for built in bin/vale bin/vale.exe; do
+	if [ -x "$built" ]; then
+		vale=./$built
+		break
+	fi
+done
+
+styles=$(sed -n 's/^StylesPath *= *//p' .vale.ini 2>/dev/null)
+if [ -n "$styles" ] && [ ! -d "$styles/Commits" ]; then
+	"$vale" sync || exit 2
+fi
+
+exec "$vale" --path=COMMIT_EDITMSG < "$1"
