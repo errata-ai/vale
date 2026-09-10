@@ -124,6 +124,83 @@ cases:
     exit: 0
     contains: 3 passed, 0 failed
 
+  - name: view
+    about: "`view:` reads an isolated case through a View, so a rule scoped to
+      a part of a file with no markup keeps its cases beside it"
+    files:
+      styles/config/views/Commit.yml: |
+        engine: textfsm
+        template: |
+          Value Subject (.+)
+          Value List Body (.*)
+
+          Start
+            ^${Subject} -> Body
+
+          Body
+            ^${Body}
+        scopes:
+          - name: subject
+            expr: Subject
+          - name: body
+            expr: Body
+      styles/T/Period.yml: |
+        extends: existence
+        message: "A subject does not end with a period."
+        level: error
+        scope: subject
+        nonword: true
+        raw:
+          - '\.$'
+        tests:
+          - name: fires on the subject
+            format: COMMIT_EDITMSG
+            view: Commit
+            input: |
+              Fix the thing.
+
+              The body ends with a period too.
+            want: |
+              1:14:T.Period:A subject does not end with a period.
+
+          - name: never on the body
+            format: COMMIT_EDITMSG
+            view: Commit
+            input: |
+              Fix the thing
+
+              A body line ending with a period.
+            want: ""
+
+          - name: without the view there is no subject
+            format: COMMIT_EDITMSG
+            input: |
+              Fix the thing.
+            want: ""
+    args: test styles/T/Period.yml
+    exit: 0
+    contains: |
+      3 passed, 0 failed
+
+  - name: view not found
+    files:
+      styles/T/Period.yml: |
+        extends: existence
+        message: "A subject does not end with a period."
+        level: error
+        scope: subject
+        raw:
+          - '\.$'
+        tests:
+          - name: fires
+            view: Missing
+            input: Fix the thing.
+            contains: T.Period
+    args: test styles/T/Period.yml
+    exit: 2
+    contains: |
+      view 'Missing' not found under config/views on the search path
+
   - name: no cases found
     about: an empty run is a mistake worth reporting, not a pass
     files:

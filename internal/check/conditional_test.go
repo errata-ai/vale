@@ -100,3 +100,34 @@ func TestConditionalSameBlock(t *testing.T) {
 		t.Errorf("got %d alerts, want 1", len(alerts))
 	}
 }
+
+// A `(` inside a character class or behind an escape is not a group. Reading
+// one as a group turned a presence check into a definition check, and a
+// `second` written as `^\w+(?:\([^()]*\))?!:` never matched.
+func TestHasCaptureGroup(t *testing.T) {
+	cases := []struct {
+		pattern string
+		want    bool
+	}{
+		{`(x)`, true},
+		{`(?<name>x)`, true},
+		{`(?P<name>x)`, true},
+		{`(?:x)`, false},
+		{`(?=x)`, false},
+		{`(?<=x)`, false},
+		{`(?<!x)`, false},
+		{`(?i)x`, false},
+		{`\(x\)`, false},
+		{`[(]`, false},
+		{`[^()]`, false},
+		{`^\w+(?:\([^()]*\))?!:`, false},
+		{`^\w+(?:\([^)]*\))?!:`, false},
+		{`\[(x)\]`, true},
+		{`[a-z](\d)`, true},
+	}
+	for _, c := range cases {
+		if got := hasCaptureGroup(c.pattern); got != c.want {
+			t.Errorf("hasCaptureGroup(%q) = %v, want %v", c.pattern, got, c.want)
+		}
+	}
+}

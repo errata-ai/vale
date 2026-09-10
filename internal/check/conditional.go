@@ -36,9 +36,39 @@ type Conditional struct {
 // hasCaptureGroup reports whether `pattern` contains a capturing group -- an
 // unescaped `(` that doesn't begin a non-capturing/extension group `(?...)`.
 func hasCaptureGroup(pattern string) bool {
-	opens := strings.Count(pattern, "(")
-	noncap := strings.Count(pattern, "(?") + strings.Count(pattern, `\(`)
-	return opens > noncap
+	inClass := false
+	for i := 0; i < len(pattern); i++ {
+		switch pattern[i] {
+		case '\\':
+			// An escape takes the next character with it: `\(` is a literal
+			// paren, and `\[` never opens a class.
+			i++
+		case '[':
+			inClass = true
+		case ']':
+			inClass = false
+		case '(':
+			if inClass {
+				// A paren inside a character class, `[^()]`, is a member of
+				// the class and not a group.
+				continue
+			}
+			if i+1 < len(pattern) && pattern[i+1] == '?' {
+				// `(?:`, `(?=`, `(?<=`, `(?i)`: not captures. A named group,
+				// `(?<name>` or `(?P<name>`, is one.
+				rest := pattern[i+2:]
+				if strings.HasPrefix(rest, "P<") {
+					return true
+				}
+				if strings.HasPrefix(rest, "<") && !strings.HasPrefix(rest, "<=") && !strings.HasPrefix(rest, "<!") {
+					return true
+				}
+				continue
+			}
+			return true
+		}
+	}
+	return false
 }
 
 // NewConditional creates a new `conditional`-based rule.

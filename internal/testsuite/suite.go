@@ -36,6 +36,14 @@ type Case struct {
 	// Defaults to `md`.
 	Format string `yaml:"format"`
 
+	// View names a View, found under a search path's `config/views`, to
+	// read Input through. An isolated case loads nothing from the project's
+	// configuration, and that includes the View that gives a rule its scope:
+	// a rule scoped to `subject` sees no subject without one. With it, the
+	// case runs the way the project's section would run it, and the cases
+	// of a View's rules can live beside them.
+	View string `yaml:"view"`
+
 	// Rule isolates the case to a single rule, named by a path relative to the
 	// test file. Nothing else is loaded -- not the rest of the style, not the
 	// project's configuration -- so the case says exactly what the rule does

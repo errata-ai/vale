@@ -147,6 +147,22 @@ func isolate(c Case, search []string) (*lint.Linter, error) {
 		cfg.AddStylesPath(sp)
 	}
 
+	// A View is attached to every file of the case's format, which is what
+	// a section would do; it has to be there before the rule compiles, since
+	// a rule's `in` is checked against the Views that exist.
+	if c.View != "" {
+		viewPath := core.FindConfigAsset(cfg, c.View+".yml", core.ViewDir)
+		if viewPath == "" {
+			return nil, fmt.Errorf("%s: %q: view '%s' not found under config/views on the search path",
+				filepath.Base(c.Path), c.Name, c.View)
+		}
+		view, vErr := core.NewView(viewPath)
+		if vErr != nil {
+			return nil, vErr
+		}
+		cfg.Views["*"+c.Ext()] = view
+	}
+
 	linter, err := lint.NewLinter(cfg)
 	if err != nil {
 		return nil, err
