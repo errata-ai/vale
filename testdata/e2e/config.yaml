@@ -866,6 +866,7 @@ cases:
       page.txt: |
         Push to github, then set apiVersion and created_at in kubernetes on vSphere, not githbu.
     args: --output=JSON page.md page.rst page.txt
+    requires: rst2html
     exit: 1
     want: |
       {
