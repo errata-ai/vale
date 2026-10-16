@@ -2,8 +2,11 @@ package lint
 
 import (
 	"index/suffixarray"
+	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/vale-cli/vale/v3/internal/nlp"
 )
 
 func TestSubInplace(t *testing.T) {
@@ -246,5 +249,34 @@ func TestAdvanceWithIndexMatchesScan(t *testing.T) {
 			plain.append(text)
 			indexed.append(text)
 		}
+	}
+}
+
+// A block whose lines wrap into indented or quoted source lines is placed
+// by runs, one per line, and the first copy found is its own, not a later
+// unindented copy of the same text.
+func TestWrappedRuns(t *testing.T) {
+	ctx := "- The item opens. The report was\n  generated last night.\n\nThe report was\ngenerated last night.\n"
+	text := "The report was\ngenerated last night."
+
+	runs, end := wrappedRuns(text, ctx, 0)
+	want := []nlp.Run{{At: 0, Src: 18, N: 14}, {At: 15, Src: 35, N: 21}}
+	if !reflect.DeepEqual(runs, want) || end != 56 {
+		t.Fatalf("wrappedRuns = %v, %d; want %v, 56", runs, end, want)
+	}
+	for _, r := range runs {
+		if got := ctx[r.Src : r.Src+r.N]; got != text[r.At:r.At+r.N] {
+			t.Errorf("run %v places %q", r, got)
+		}
+	}
+
+	quoted := "> The report was\n> generated last night.\n"
+	runs, _ = wrappedRuns(text, quoted, 0)
+	if wantQuoted := []nlp.Run{{At: 0, Src: 2, N: 14}, {At: 15, Src: 19, N: 21}}; !reflect.DeepEqual(runs, wantQuoted) {
+		t.Errorf("quoted: wrappedRuns = %v, want %v", runs, wantQuoted)
+	}
+
+	if runs, _ = wrappedRuns("not here\nat all", ctx, 0); runs != nil {
+		t.Errorf("absent text was placed: %v", runs)
 	}
 }

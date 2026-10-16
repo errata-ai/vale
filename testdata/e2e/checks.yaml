@@ -526,6 +526,41 @@ cases:
       test.md:13:14:T.Seq:Sequence matched 'default'.
       test.md:13:22:T.Seq:Sequence matched 'database'.
 
+  - name: sequence-wrapped-repeat
+    about: "#1203 -- a match that wraps into a list item's indented line, or
+      a blockquote's quoted one, is placed at that block when the same words
+      appear later without the indentation; it used to be placed on the later
+      copy and merged with that copy's own alert"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.md]
+        BasedOnStyles = Demo
+      styles/Demo/Passive.yml: |
+        extends: sequence
+        message: "Passive voice: %s"
+        level: error
+        tokens:
+          - pattern: (?:is|was)
+          - tag: VBN
+      test.md: |
+        - The item opens. The report was
+          generated last night.
+
+        > The quote opens. The report was
+        > generated last night.
+
+        The paragraph opens. The report was
+        generated last night.
+    args: test.md
+    exit: 1
+    want: |
+      test.md:1:30:Demo.Passive:Passive voice: was
+      test.md:4:31:Demo.Passive:Passive voice: was
+      test.md:7:33:Demo.Passive:Passive voice: was
+
   - name: sequence/min
     about: "#899 -- `min` asks for repeated occurrences of a token, each with
       its own `skip` window: a pronoun preceded by two or more nouns, not

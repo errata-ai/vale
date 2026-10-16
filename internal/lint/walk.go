@@ -485,9 +485,82 @@ func (w *walker) block(text, scope string, shift int) nlp.Block {
 	// place a match inside it. See #502.
 	if b.Offset < 0 {
 		b.Runs = w.runs(shift, len(text))
+		if len(b.Runs) == 0 {
+			b.Runs = w.locateWrapped(text)
+		}
 	}
 
 	return b
+}
+
+// locateWrapped places a block whose lines are in the source but whose line
+// breaks are followed there by a list item's indentation or a blockquote's
+// `>`, which the text does not carry. Each line becomes a run, so a match
+// across the break is placed by its bytes. Without this the block is found
+// by searching for its text, and a copy of the same text written without
+// the indentation -- a paragraph after the list -- takes the alert. See #1203.
+func (w *walker) locateWrapped(text string) []nlp.Run {
+	if !strings.Contains(text, "\n") || isMask(text) {
+		return nil
+	}
+	ctx := w.getCtx()
+	if w.cursor > len(ctx) {
+		return nil
+	}
+
+	runs, end := wrappedRuns(text, ctx, w.cursor)
+	if runs == nil {
+		return nil
+	}
+	w.cursor = end
+	return runs
+}
+
+// wrappedRuns finds text in ctx at or after from, allowing each of its line
+// breaks to be followed in ctx by indentation or `>` markers, and returns the
+// runs placing each line, plus the index just past the match.
+func wrappedRuns(text, ctx string, from int) ([]nlp.Run, int) {
+	lines := strings.Split(text, "\n")
+	for start := from; start <= len(ctx); {
+		i := strings.Index(ctx[start:], lines[0])
+		if i < 0 {
+			return nil, -1
+		}
+		at := start + i
+		if runs, end, ok := matchWrapped(lines, ctx, at); ok {
+			return runs, end
+		}
+		start = at + 1
+	}
+	return nil, -1
+}
+
+// matchWrapped matches lines against ctx from at, each after the first
+// preceded by a newline and any indentation or quote markers.
+func matchWrapped(lines []string, ctx string, at int) ([]nlp.Run, int, bool) {
+	var runs []nlp.Run
+	src, txt := at, 0
+	for i, line := range lines {
+		if i > 0 {
+			if src >= len(ctx) || ctx[src] != '\n' {
+				return nil, 0, false
+			}
+			src++
+			txt++ // the text's own newline
+			for src < len(ctx) && (ctx[src] == ' ' || ctx[src] == '\t' || ctx[src] == '>') {
+				src++
+			}
+		}
+		if !strings.HasPrefix(ctx[src:], line) {
+			return nil, 0, false
+		}
+		if line != "" {
+			runs = append(runs, nlp.Run{At: txt, Src: src, N: len(line)})
+		}
+		src += len(line)
+		txt += len(line)
+	}
+	return runs, src, true
 }
 
 // isMask reports whether text is nothing but mask characters, as the text
