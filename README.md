@@ -89,6 +89,10 @@ $ vale docs/
 
 > Sponsors at $1,000 and above get a dedicated page on [vale.sh](https://vale.sh/sponsor).
 
+### Grants
+
+Vale received a $10,000 grant from [FLOSS/fund](https://floss.fund/blog/second-tranche-2025-anniversary/) in its second 2025 tranche, alongside FFmpeg, Zig, Wireshark, and Blender.
+
 ### Organizations
 
 <a href="https://opencollective.com/vale"><img src="https://opencollective.com/vale/organizations.svg?width=890" alt="Organizations sponsoring Vale on Open Collective"></a>
