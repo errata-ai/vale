@@ -41,8 +41,24 @@ func (l *Linter) skipsComment(scope string) bool {
 		core.StringInSlice(scope, ignored)
 }
 
-func (l *Linter) lintCode(f *core.File) error {
+// languageFor returns the tree-sitter grammar for a file. When the file's own
+// extension has none, a `[formats]` association (`mjs = js`) supplies it, so a
+// mapped file is parsed like the format it is mapped to.
+func (l *Linter) languageFor(f *core.File) (*code.Language, error) {
 	lang, err := code.GetLanguageFromExt(f.RealExt)
+	if err == nil {
+		return lang, nil
+	}
+	if mapped, ok := l.Manager.Config.Formats[strings.TrimPrefix(f.RealExt, ".")]; ok {
+		if lang, mappedErr := code.GetLanguageFromExt("." + mapped); mappedErr == nil {
+			return lang, nil
+		}
+	}
+	return nil, err
+}
+
+func (l *Linter) lintCode(f *core.File) error {
+	lang, err := l.languageFor(f)
 	if err != nil {
 		// No tree-sitter grammar available for this file type.
 		return l.lintCodeOld(f)

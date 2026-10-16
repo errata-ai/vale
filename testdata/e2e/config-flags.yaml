@@ -134,3 +134,32 @@ cases:
     exit: 1
     want: |
       COMMIT_EDITMSG:1:30:Test.Term:Use 'flag' instead of 'option'.
+
+  - name: formats-code-grammar
+    about: a `[formats]` key that maps an extension to a code format reads its
+      comments with that format's grammar; `.mjs` has none of its own and was
+      read by the regex fallback, which found no comments at all
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [formats]
+        mjs = js
+
+        [*.mjs]
+        BasedOnStyles = Test
+      styles/Test/Term.yml: |
+        extends: existence
+        message: "Use 'flag' instead of '%s'."
+        level: error
+        tokens:
+          - option
+      test.mjs: |
+        // Read the option first.
+        const a = 1; /* and this option */
+    args: test.mjs
+    exit: 1
+    want: |
+      test.mjs:1:13:Test.Term:Use 'flag' instead of 'option'.
+      test.mjs:2:26:Test.Term:Use 'flag' instead of 'option'.
