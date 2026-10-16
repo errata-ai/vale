@@ -561,6 +561,190 @@ cases:
     want: |
       test.md:1:30:T.Ambiguous:Avoid ambiguous pronouns.
 
+  - name: sequence-inline-markup
+    about: "#1202 -- a sequence match holding inline markup is placed through
+      the block's runs, at the same span an existence rule reports, instead
+      of being searched for as rewritten text and falling back to the whole
+      line; a repeated sentence places each match at its own position"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.md]
+        BasedOnStyles = T
+      styles/T/Passive.yml: |
+        extends: sequence
+        message: "Passive: %s"
+        level: error
+        tokens:
+          - pattern: (?:is|was)
+          - tag: VBN
+      styles/T/Exist.yml: |
+        extends: existence
+        message: "Existence: %s"
+        level: error
+        nonword: true
+        tokens:
+          - (?:is|was) \*{0,2}\w+ed\*{0,2}
+      test.md: |
+        The report is generated every night.
+
+        Some words come first. Then the report is *generated* every night.
+
+        Some words come first. Then the report is **generated** every night. The report is **generated** again.
+    args: --output=JSON test.md
+    exit: 1
+    want: |
+      {
+        "test.md": [
+          {
+            "Action": {
+              "Name": "",
+              "Params": null
+            },
+            "Suggestions": [],
+            "Span": [
+              12,
+              23
+            ],
+            "Check": "T.Passive",
+            "Description": "",
+            "Link": "",
+            "Message": "Passive: is",
+            "Severity": "error",
+            "Match": "is generated",
+            "Line": 1
+          },
+          {
+            "Action": {
+              "Name": "",
+              "Params": null
+            },
+            "Suggestions": [],
+            "Span": [
+              12,
+              23
+            ],
+            "Check": "T.Exist",
+            "Description": "",
+            "Link": "",
+            "Message": "Existence: is generated",
+            "Severity": "error",
+            "Match": "is generated",
+            "Line": 1
+          },
+          {
+            "Action": {
+              "Name": "",
+              "Params": null
+            },
+            "Suggestions": [],
+            "Span": [
+              40,
+              52
+            ],
+            "Check": "T.Passive",
+            "Description": "",
+            "Link": "",
+            "Message": "Passive: is",
+            "Severity": "error",
+            "Match": "is generated",
+            "Line": 3
+          },
+          {
+            "Action": {
+              "Name": "",
+              "Params": null
+            },
+            "Suggestions": [],
+            "Span": [
+              40,
+              52
+            ],
+            "Check": "T.Exist",
+            "Description": "",
+            "Link": "",
+            "Message": "Existence: is generated",
+            "Severity": "error",
+            "Match": "is generated",
+            "Line": 3
+          },
+          {
+            "Action": {
+              "Name": "",
+              "Params": null
+            },
+            "Suggestions": [],
+            "Span": [
+              40,
+              53
+            ],
+            "Check": "T.Passive",
+            "Description": "",
+            "Link": "",
+            "Message": "Passive: is",
+            "Severity": "error",
+            "Match": "is generated",
+            "Line": 5
+          },
+          {
+            "Action": {
+              "Name": "",
+              "Params": null
+            },
+            "Suggestions": [],
+            "Span": [
+              40,
+              53
+            ],
+            "Check": "T.Exist",
+            "Description": "",
+            "Link": "",
+            "Message": "Existence: is generated",
+            "Severity": "error",
+            "Match": "is generated",
+            "Line": 5
+          },
+          {
+            "Action": {
+              "Name": "",
+              "Params": null
+            },
+            "Suggestions": [],
+            "Span": [
+              81,
+              94
+            ],
+            "Check": "T.Passive",
+            "Description": "",
+            "Link": "",
+            "Message": "Passive: is",
+            "Severity": "error",
+            "Match": "is generated",
+            "Line": 5
+          },
+          {
+            "Action": {
+              "Name": "",
+              "Params": null
+            },
+            "Suggestions": [],
+            "Span": [
+              81,
+              94
+            ],
+            "Check": "T.Exist",
+            "Description": "",
+            "Link": "",
+            "Message": "Existence: is generated",
+            "Severity": "error",
+            "Match": "is generated",
+            "Line": 5
+          }
+        ]
+      }
+
   - name: sequence
     dir: Sequence
     args: .
