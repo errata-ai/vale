@@ -89,7 +89,7 @@ func (l *Linter) lintCode(f *core.File) error {
 
 		size := len(f.Alerts)
 		if size != last {
-			f.Alerts = adjustAlerts(f.Alerts, last, comment, lang)
+			f.Alerts = adjustAlerts(f.Alerts, last, comment)
 		}
 		last = size
 	}

@@ -18,11 +18,9 @@ type Comment struct {
 	Offset int
 	Scope  string
 	// Strip records, for each line of Text, how many bytes were taken off the
-	// front of the matching Source line. An alert's column is meaningful in
-	// Text; putting it back in Source means adding this.
-	//
-	// Empty for a comment that was never dedented, in which case the caller
-	// falls back to measuring the source line itself.
+	// front of the matching Source line: the opener, the dedent, and a line
+	// comment's own decoration. An alert's column is meaningful in Text;
+	// putting it back in Source means adding this.
 	//
 	// Not serialised: this is bookkeeping for putting an alert back where it
 	// came from, not part of what a comment is.
@@ -130,7 +128,18 @@ func coalesce(comments []Comment) []Comment {
 			flush()
 			joined = append(joined, comment)
 		} else {
-			tBuf.WriteString(appendLine(comment.Text))
+			// The run's Source lines each begin at their own delimiter, so
+			// what came off this one is its opener plus the space appendLine
+			// trims.
+			text := appendLine(comment.Text)
+			trimmed := len(comment.Text) - len(strings.TrimLeft(comment.Text, " "))
+			strip := trimmed
+			if n, ok := comment.StripAt(1); ok {
+				strip += n
+			}
+			joined[len(joined)-1].Strip = append(joined[len(joined)-1].Strip, strip)
+
+			tBuf.WriteString(text)
 			sBuf.WriteString(appendLine(comment.Source))
 			// The declaration follows the run's last line, so its name
 			// belongs to the run.

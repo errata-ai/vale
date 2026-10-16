@@ -96,12 +96,18 @@ func (qe *QueryEngine) run(meta, format string, q *sitter.Query, source []byte) 
 				rText = trimmed
 			}
 
-			cText := rText
+			// opener is what stripDelims takes off the front: the first
+			// line's Text begins that far into its Source.
+			cText, opener := rText, 0
 			if !prose {
 				cText = qe.stripDelims(rText)
+				opener = qe.openerLen(rText)
 			}
 
-			var strip []int
+			// One entry per line of Text: how far into the matching Source
+			// line that line begins. An alert's column is meaningful in Text;
+			// putting it back in Source means adding this, and nothing else.
+			strip := []int{opener}
 
 			scope := "text.comment" + meta + ".line"
 			// A trailing newline is part of some grammars' tokens; only a
@@ -143,6 +149,9 @@ func (qe *QueryEngine) run(meta, format string, q *sitter.Query, source []byte) 
 					// the source line is what makes a non-whitespace cutset
 					// report the wrong column.
 					strip[i] = len(line) - len(out)
+					if i == 0 {
+						strip[i] += opener
+					}
 
 					buf.WriteString(out)
 					buf.WriteString("\n")
@@ -180,6 +189,18 @@ func (qe *QueryEngine) run(meta, format string, q *sitter.Query, source []byte) 
 // Markdown heading, the `//` of a URL -- is content, and stripping it shifted
 // every alert to its right by its width. Per-line decoration inside a block
 // is blankPrefixes's job.
+// openerLen is how many bytes stripDelims takes off the front of s.
+func (qe *QueryEngine) openerLen(s string) int {
+	n := 0
+	for {
+		loc := qe.delims.FindStringIndex(s[n:])
+		if loc == nil || loc[0] != 0 || loc[1] == 0 {
+			return n
+		}
+		n += loc[1]
+	}
+}
+
 func (qe *QueryEngine) stripDelims(s string) string {
 	// The opener, repeated so a doubled marker comes off whole.
 	for {

@@ -47,6 +47,63 @@ cases:
       test2.rs:409:38:Vale.Spelling:Did you really mean 'RGArg'?
       test2.rs:2860:34:Vale.Spelling:Did you really mean 'conlicts'?
 
+  - name: comment-columns
+    about: "#1206 -- an alert in a comment is placed by what extraction took
+      off the front of its line, recorded as it was taken: the opener, the
+      indentation, a line comment's own space. Rebuilding the opener's width
+      afterwards put `/**` alerts two columns early."
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*]
+        T.Z = YES
+      styles/T/Z.yml: |
+        extends: existence
+        message: "'%s'"
+        level: error
+        tokens:
+          - ZEBRA
+      test.js: |
+        /** one ZEBRA here */
+            /** two ZEBRA here */
+        /** three ZEBRA
+         * four ZEBRA
+         */
+        x();
+            // five ZEBRA
+            //   six ZEBRA
+        y();
+      test.ts: |
+        /** one ZEBRA here */
+            /** two ZEBRA here */
+        /** three ZEBRA
+         */
+        x();
+      test.py: |
+        def f():
+            """One ZEBRA here.
+
+            Two ZEBRA here.
+            """
+            x = 1  # three ZEBRA
+    args: test.js test.ts test.py
+    exit: 1
+    want: |
+      test.js:1:9:T.Z:'ZEBRA'
+      test.js:2:13:T.Z:'ZEBRA'
+      test.js:3:11:T.Z:'ZEBRA'
+      test.js:4:9:T.Z:'ZEBRA'
+      test.js:7:13:T.Z:'ZEBRA'
+      test.js:8:14:T.Z:'ZEBRA'
+      test.py:2:12:T.Z:'ZEBRA'
+      test.py:4:9:T.Z:'ZEBRA'
+      test.py:6:20:T.Z:'ZEBRA'
+      test.ts:1:9:T.Z:'ZEBRA'
+      test.ts:2:13:T.Z:'ZEBRA'
+      test.ts:3:11:T.Z:'ZEBRA'
+
   - name: blank-comment-line
     about: |
       #1022: a blank line comment produced two lines in the extracted text
