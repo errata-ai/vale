@@ -137,7 +137,7 @@ cases:
 
   - name: formats-code-grammar
     about: a `[formats]` key that maps an extension to a code format reads its
-      comments with that format's grammar; `.mjs` has none of its own and was
+      comments with that format's grammar; `.es` has none of its own and was
       read by the regex fallback, which found no comments at all
     files:
       .vale.ini: |
@@ -145,9 +145,9 @@ cases:
         MinAlertLevel = suggestion
 
         [formats]
-        mjs = js
+        es = js
 
-        [*.mjs]
+        [*.es]
         BasedOnStyles = Test
       styles/Test/Term.yml: |
         extends: existence
@@ -155,11 +155,11 @@ cases:
         level: error
         tokens:
           - option
-      test.mjs: |
+      test.es: |
         // Read the option first.
         const a = 1; /* and this option */
-    args: test.mjs
+    args: test.es
     exit: 1
     want: |
-      test.mjs:1:13:Test.Term:Use 'flag' instead of 'option'.
-      test.mjs:2:26:Test.Term:Use 'flag' instead of 'option'.
+      test.es:1:13:Test.Term:Use 'flag' instead of 'option'.
+      test.es:2:26:Test.Term:Use 'flag' instead of 'option'.

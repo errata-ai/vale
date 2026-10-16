@@ -42,17 +42,16 @@ func (l *Linter) skipsComment(scope string) bool {
 }
 
 // languageFor returns the tree-sitter grammar for a file. When the file's own
-// extension has none, a `[formats]` association (`mjs = js`) supplies it, so a
-// mapped file is parsed like the format it is mapped to.
+// extension has none, the format it is read as supplies it: `NormedExt` holds
+// what `[formats]` or `--ext` resolved the file to, so `es = js` parses a
+// `.es` file as JavaScript.
 func (l *Linter) languageFor(f *core.File) (*code.Language, error) {
 	lang, err := code.GetLanguageFromExt(f.RealExt)
 	if err == nil {
 		return lang, nil
 	}
-	if mapped, ok := l.Manager.Config.Formats[strings.TrimPrefix(f.RealExt, ".")]; ok {
-		if lang, mappedErr := code.GetLanguageFromExt("." + mapped); mappedErr == nil {
-			return lang, nil
-		}
+	if mapped, mappedErr := code.GetLanguageFromExt(f.NormedExt); mappedErr == nil {
+		return mapped, nil
 	}
 	return nil, err
 }

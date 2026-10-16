@@ -1882,6 +1882,42 @@ cases:
       test.pl:5:21:vale.Annotations:'XXX' left in text
       test.pl:8:7:vale.Annotations:'TODO' left in text
 
+  - name: javascript-modules
+    about: "`.mjs` and `.cjs` are JavaScript, and `.mts` and `.cts` are
+      TypeScript, with no mapping needed"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*]
+        T.Tok = YES
+      styles/T/Tok.yml: |
+        extends: existence
+        message: "'%s' found"
+        level: error
+        tokens:
+          - ZQX
+      a.mjs: |
+        // ZQX in a comment
+        export const s = "ZQX in a string";
+      b.cjs: |
+        /* ZQX in a block */
+        module.exports = "ZQX in a string";
+      c.mts: |
+        // ZQX in a comment
+        export const s: string = `ZQX in a template`;
+      d.cts: |
+        // ZQX in a comment
+        const s: string = "ZQX in a string";
+    args: a.mjs b.cjs c.mts d.cts
+    exit: 1
+    want: |
+      a.mjs:1:4:T.Tok:'ZQX' found
+      b.cjs:1:4:T.Tok:'ZQX' found
+      c.mts:1:4:T.Tok:'ZQX' found
+      d.cts:1:4:T.Tok:'ZQX' found
+
   - name: php
     args: test.php
     exit: 0
