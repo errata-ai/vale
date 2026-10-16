@@ -184,15 +184,16 @@ func goDocName(n *sitter.Node, src []byte) string {
 	return ""
 }
 
-// Masked reports whether the position -- a 1-based line of the comment's
-// text and a 1-based column in runes, as an alert carries them -- falls in
-// one of the comment's masks.
-func (c Comment) Masked(line, col int) bool {
+// Masked reports whether a match -- a 1-based line of the comment's text and
+// a 1-based rune span within it, as an alert carries them -- lies wholly in
+// one of the comment's masks. A match that only starts in one and runs on
+// into the prose, a phrase opening with a `{@link}`, is prose.
+func (c Comment) Masked(line, from, to int) bool {
 	if len(c.Masks) == 0 {
 		return false
 	}
 
-	// The byte offset of the position.
+	// The byte offset of the line.
 	at, ln := 0, 1
 	for ln < line {
 		nl := strings.IndexByte(c.Text[at:], '\n')
@@ -202,13 +203,19 @@ func (c Comment) Masked(line, col int) bool {
 		at += nl + 1
 		ln++
 	}
-	for i := 1; i < col && at < len(c.Text); i++ {
-		_, n := utf8.DecodeRuneInString(c.Text[at:])
-		at += n
+
+	// The byte offsets of the span's ends.
+	lo, hi := at, at
+	for i := 1; i < to && hi < len(c.Text); i++ {
+		_, n := utf8.DecodeRuneInString(c.Text[hi:])
+		hi += n
+		if i < from {
+			lo = hi
+		}
 	}
 
 	for _, m := range c.Masks {
-		if at >= m[0] && at < m[1] {
+		if lo >= m[0] && lo < m[1] && hi <= m[1] {
 			return true
 		}
 	}

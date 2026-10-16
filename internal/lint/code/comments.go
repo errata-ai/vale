@@ -31,8 +31,8 @@ type Comment struct {
 	// Doc is the name the comment is expected to open with, when it
 	// documents a declaration. See Language.DocName.
 	Doc string `json:"-"`
-	// Masks are the ranges of Text that hold no prose; an alert inside one
-	// is dropped. See doc.go.
+	// Masks are the ranges of Text that hold no prose; an alert whose match
+	// lies inside one is dropped. See doc.go.
 	Masks []Mask `json:"-"`
 }
 

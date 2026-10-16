@@ -147,6 +147,48 @@ cases:
       test.proto:5:4:T.Eror:Found 'Eror'.
       test.proto:7:4:T.Eror:Found 'Eror'.
 
+  - name: doc-mask-partial-match
+    about: "#1207 -- a doc comment's masks drop an alert whose match lies
+      inside them, like one on the symbol a `{@link}` names; a match that
+      only starts in a mask and runs on into the prose is kept"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.ts]
+        BasedOnStyles = T
+      styles/T/Phrase.yml: |
+        extends: existence
+        message: "Found '%s'."
+        level: error
+        nonword: true
+        tokens:
+          - '\{@link Foo\} runs on'
+      styles/T/Symbol.yml: |
+        extends: existence
+        message: "Found '%s'."
+        level: error
+        tokens:
+          - Foo
+      styles/T/Tag.yml: |
+        extends: existence
+        message: "Found '%s'."
+        level: error
+        nonword: true
+        tokens:
+          - '@link'
+      test.ts: |
+        /**
+         * See {@link Foo} runs on every call. Foo again.
+         */
+        export function f() {}
+    args: test.ts
+    exit: 1
+    want: |
+      test.ts:2:8:T.Phrase:Found '{@link Foo} runs on'.
+      test.ts:2:40:T.Symbol:Found 'Foo'.
+
   - name: tab-indented-block
     about: |
       #1130: only spaces were stripped when dedenting a block comment, so one
