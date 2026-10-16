@@ -109,9 +109,27 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 		raw = marked
 	}
 
+	// promoted counts, by name, the open elements read as inline because
+	// they opened inside one: an element inside a link or an emphasis is
+	// phrasing content whatever it is called. Read as a block, an unknown
+	// `<foo>` in a link's text flushed the paragraph mid-link, and the
+	// link's capture then reached past the emptied buffer. See #1210.
+	promoted := map[string]int{}
+
 	walker := newWalker(f, raw, offset)
 	for {
 		tokt, tok, txt := walker.walk()
+
+		isInline := core.StringInSlice(txt, inlineTags)
+		switch {
+		case tokt == html.StartTagToken && !isInline && !core.StringInSlice(txt, voidTags) &&
+			insideInline(walker.tagHistory):
+			promoted[txt]++
+			isInline = true
+		case tokt == html.EndTagToken && !isInline && promoted[txt] > 0:
+			promoted[txt]--
+			isInline = true
+		}
 
 		walker.addCls(txt, tokt == html.StartTagToken)
 		closed := walker.canClose()
@@ -119,14 +137,14 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 		class = getAttribute(tok, "class")
 		skipClass = checkClasses(class, skipClasses)
 
-		if tokt == html.StartTagToken && !core.StringInSlice(txt, inlineTags) &&
+		if tokt == html.StartTagToken && !isInline &&
 			!core.StringInSlice(txt, voidTags) {
 			walker.enclose(txt, class, getAttribute(tok, markAttr))
-		} else if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
+		} else if tokt == html.EndTagToken && !isInline {
 			walker.unclose(txt)
 		}
 
-		blockSkip := skipClass && !core.StringInSlice(txt, inlineTags)
+		blockSkip := skipClass && !isInline
 		if tokt == html.ErrorToken { //nolint:gocritic
 			// Text with no element around it -- a fragment that is a bare
 			// paragraph, as a Javadoc description is -- is flushed by the
@@ -137,14 +155,14 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 				}
 			}
 			break
-		} else if tokt == html.StartTagToken && !core.StringInSlice(txt, inlineTags) &&
+		} else if tokt == html.StartTagToken && !isInline &&
 			(core.StringInSlice(txt, skipTags) || blockSkip) {
 			walker.setCls(txt, blockSkip)
 			inBlock = true
 			f.Metrics[txt]++
 			walker.count(txt)
 		} else if inBlock && (closed || tokt == html.EndTagToken &&
-			!core.StringInSlice(txt, inlineTags) && core.StringInSlice(txt, skipTags)) {
+			!isInline && core.StringInSlice(txt, skipTags)) {
 			// Only a block's own end tag closes it: the `<code>` inside a
 			// `<pre>` must not, when both are skipped (#1198).
 			inBlock = false
@@ -158,7 +176,7 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 			// left in the buffer it fuses with the child's first item, an
 			// end-anchored rule sees the child's ending, and the parent item
 			// never reaches `list`-scoped rules on its own. See #791.
-			if !core.StringInSlice(txt, inlineTags) && !core.StringInSlice(txt, voidTags) &&
+			if !isInline && !core.StringInSlice(txt, voidTags) &&
 				strings.TrimSpace(buf.String()) != "" {
 				if err := l.lintScope(f, walker, buf.String()); err != nil {
 					return err
@@ -173,7 +191,7 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 			// A void element mid-sentence, `<source>` or `<wbr>`, separates
 			// the words around it as an inline one does; without this the
 			// text on either side fused, `The <source> is` as `Theis`.
-			inline = core.StringInSlice(txt, inlineTags) || core.StringInSlice(txt, voidTags)
+			inline = isInline || core.StringInSlice(txt, voidTags)
 			// An inline element named in SkippedScopes is masked like an
 			// ignored one, rather than dropped: `where <code>x</code> is`
 			// must not read as `where is` (#1173), nor `in <code/> for` as
@@ -187,7 +205,7 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 				open = append(open, inlineCapture{tag: txt, scope: scope, masked: skip, begin: buf.Len()})
 			}
 			walker.addTag(txt, class, getAttribute(tok, markAttr))
-		} else if tokt == html.EndTagToken && core.StringInSlice(txt, inlineTags) {
+		} else if tokt == html.EndTagToken && isInline {
 			walker.popTag(txt)
 			walker.activeTag = ""
 			closedInline = true
@@ -205,7 +223,7 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 						text: body, begin: begin, end: done.begin + len(strings.TrimRight(written, " \n"))})
 				}
 			}
-		} else if tokt == html.SelfClosingTagToken && core.StringInSlice(txt, inlineTags) {
+		} else if tokt == html.SelfClosingTagToken && isInline {
 			// `<br/>` separates the words around it just as `<br>` does, but
 			// arrives as its own token type and matched no branch at all --
 			// so `sentence.<br/><br/>This` fused into `sentence.This`.
@@ -315,7 +333,7 @@ func (l *Linter) lintHTMLTokens(f *core.File, raw []byte, offset int) error { //
 			}
 		}
 
-		if tokt == html.EndTagToken && !core.StringInSlice(txt, inlineTags) {
+		if tokt == html.EndTagToken && !isInline {
 			content := buf.String()
 			if strings.TrimSpace(content) != "" {
 				err := l.lintScope(f, walker, content)
@@ -745,4 +763,15 @@ func getAttribute(tok html.Token, key string) string {
 		}
 	}
 	return ""
+}
+
+// insideInline reports whether an inline element is open: one is in the
+// history until its end tag pops it.
+func insideInline(history []string) bool {
+	for _, tag := range history {
+		if core.StringInSlice(tag, inlineTags) {
+			return true
+		}
+	}
+	return false
 }

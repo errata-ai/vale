@@ -361,6 +361,44 @@ cases:
       test.adoc:9:4:Test.Headings:'second heading lowercase' should use title-style capitalization.
       test.adoc:13:4:Test.Headings:'third heading lowercase' should use title-style capitalization.
 
+  - name: link-with-unknown-tag
+    about: "#1210 -- a tag inside a link's text, `<foo>`, is phrasing content
+      like anything inside an inline element; read as a block it flushed the
+      paragraph mid-link and the link's capture reached past the buffer, which
+      crashed. The link scope and the paragraph both still see their text."
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.md]
+        BasedOnStyles = T
+      styles/T/Link.yml: |
+        extends: existence
+        message: "link: %s"
+        level: error
+        scope: link
+        tokens:
+          - b
+      styles/T/Text.yml: |
+        extends: existence
+        message: "text: %s"
+        level: error
+        tokens:
+          - Text
+          - after
+      test.md: |
+        Text [a.<foo>.b](/x) after.
+
+        Some *em <bar>x</bar> em* after.
+    args: test.md
+    exit: 1
+    want: |
+      test.md:1:1:T.Text:text: Text
+      test.md:1:10:T.Link:link: b
+      test.md:1:22:T.Text:text: after
+      test.md:3:27:T.Text:text: after
+
   - name: table
     args: .
     requires: asciidoctor, rst2html
