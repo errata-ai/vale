@@ -159,6 +159,36 @@ cases:
       test.adoc:79:6:vale.Annotations:'NOTE' left in text
       test.adoc:86:6:vale.Annotations:'NOTE' left in text
 
+  - name: asciidoc/xref-without-text
+    about: a cross-reference the author gave no text renders as an empty
+      link. Asciidoctor otherwise invents text for it, the target's title or
+      `[refid]` or the file path, which a chapter of a book linted on its own
+      gets for every reference into another chapter, and none of it is in the
+      source. Authored text is still linted.
+    requires: asciidoctor
+    files:
+      .vale.ini: |
+        MinAlertLevel = suggestion
+
+        [*.adoc]
+        BasedOnStyles = Vale
+      ch1.adoc: |
+        = Chapter 1
+
+        See <<zorbblat>>, <<quxelate.adoc#zorbblat>>, xref:quxelate.adoc#zorbblat[],
+        xref:quxelate.adoc[], and xref:setup[a custum label].
+
+        Also <<setup>>.
+
+        [[setup]]
+        == Setup
+
+        Text.
+    args: ch1.adoc
+    exit: 1
+    want: |
+      ch1.adoc:4:40:Vale.Spelling:Did you really mean 'custum'?
+
   - name: python
     args: test.py
     exit: 0

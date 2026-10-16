@@ -3,6 +3,7 @@ package lint
 import (
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -91,12 +92,27 @@ var (
 
 )
 
+// adocConverter renders a cross-reference the author gave no text as an
+// empty link. Asciidoctor otherwise invents text for it: the target's title
+// when it resolves, and `[refid]` or the file path when it doesn't, as every
+// reference into another chapter of a book does when a chapter is linted on
+// its own. None of that is in the source, so none of it is prose to lint.
+const adocConverter = `class ValeHtml5 < (Asciidoctor::Converter.for "html5")
+  register_for "html5"
+  def convert_inline_anchor node
+    return %(<a href="#{node.target}"></a>) if node.type == :xref && node.text.nil?
+    super
+  end
+end
+`
+
 const adocServer = `Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 $stdin.binmode
 $stdout.binmode
 
 require "asciidoctor"
+` + adocConverter + `
 
 attrs = {}
 ARGV.each { |a| k, _, v = a.partition("="); attrs[k] = v }
@@ -265,11 +281,32 @@ func (l *Linter) callAdoc(text, exe string, attrs map[string]string) (string, er
 	}
 
 	args := adocArgs
+	if conv := adocConverterFile(); conv != "" {
+		args = append(args, "-r", conv)
+	}
 
 	args = append(args, parseAttributes(attrs)...)
 	args = append(args, []string{"--safe-mode", "secure", "-"}...)
 
 	return system.ExecuteWithInput(exe, text, args...)
+}
+
+var (
+	adocConvOnce sync.Once
+	adocConvPath string
+)
+
+// adocConverterFile writes the converter where the `asciidoctor` executable
+// can require it, once, and returns its path; "" when it couldn't be written,
+// in which case the executable runs without it.
+func adocConverterFile() string {
+	adocConvOnce.Do(func() {
+		path := filepath.Join(os.TempDir(), "vale-asciidoctor.rb")
+		if err := os.WriteFile(path, []byte(adocConverter), 0o600); err == nil {
+			adocConvPath = path
+		}
+	})
+	return adocConvPath
 }
 
 // adocDirectAttrs mirrors adocArgs for the API, which takes a hash rather than
