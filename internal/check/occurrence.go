@@ -1,6 +1,7 @@
 package check
 
 import (
+	"strconv"
 	"strings"
 
 	rx "github.com/vale-cli/vale/v3/internal/regex"
@@ -117,11 +118,12 @@ func (o Occurrence) Run(blk nlp.Block, _ *core.File, cfg *core.Config) ([]core.A
 			anchor(&a, blk)
 		}
 
-		// Pass the count as an int (not a string) so messages can use either
-		// `%d` or `%s` for it; a string `%d` would otherwise render as
-		// `%!d(string=0)`. See #1048.
-		a.Message = core.CondSprintf(o.Message, occurrences)
-		a.Description = core.CondSprintf(o.Description, occurrences)
+		// The count stands in for `%s` or `%d`, as documented. Go's fmt
+		// accepts only one of them per type, so the count is passed as text
+		// and `%d` is read as `%s`. See #1048 and #1199.
+		count := strconv.Itoa(occurrences)
+		a.Message = core.CondSprintf(strings.ReplaceAll(o.Message, "%d", "%s"), count)
+		a.Description = core.CondSprintf(strings.ReplaceAll(o.Description, "%d", "%s"), count)
 		alerts = append(alerts, a)
 	}
 

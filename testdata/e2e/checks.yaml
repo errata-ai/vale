@@ -46,6 +46,46 @@ cases:
       test3.md:11:4:demo.CharCount:Topic titles should use fewer than 70 characters.
       test3.md:27:6:demo.CharCount:Topic titles should use fewer than 70 characters.
 
+  - name: occurrence-count-verbs
+    about: "#1199 -- the count fills `%s` or `%d`, whichever the message
+      uses, including when it is zero"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.md]
+        BasedOnStyles = T
+      styles/T/Few.yml: |
+        extends: occurrence
+        message: "Found %s apple(s); need at least 2."
+        level: error
+        scope: text
+        min: 2
+        token: apple
+      styles/T/Many.yml: |
+        extends: occurrence
+        message: "Found %d pear(s); at most 1 allowed."
+        level: error
+        scope: text
+        max: 1
+        token: pear
+      styles/T/None.yml: |
+        extends: occurrence
+        message: "No plum (%s found)."
+        level: error
+        scope: text
+        min: 1
+        token: plum
+      test.md: |
+        One apple, a pear, and a pear.
+    args: test.md
+    exit: 1
+    want: |
+      test.md:1:1:T.None:No plum (0 found).
+      test.md:1:5:T.Few:Found 1 apple(s); need at least 2.
+      test.md:1:14:T.Many:Found 2 pear(s); at most 1 allowed.
+
   - name: sentence-case
     dir: SentenceCase
     args: .
