@@ -49,6 +49,68 @@ cases:
     contains: |
       Style 'proselint' isn't on the StylesPath
 
+  - name: dot-config
+    about: "`.config/vale.ini` is found from any level of the search, and its
+      relative paths resolve against `.config/`; see #1212"
+    files:
+      .config/vale.ini: |
+        StylesPath = vale
+        MinAlertLevel = suggestion
+
+        [*]
+        BasedOnStyles = T
+      .config/vale/T/W.yml: |
+        extends: existence
+        message: "'%s'"
+        level: error
+        tokens:
+          - very
+    args: test.md
+    exit: 1
+    want: |
+      test.md:1:11:T.W:'very'
+
+  - name: dot-config-root-wins
+    about: "a root-level config file is read before `.config/vale.ini`"
+    files:
+      .vale.ini: |
+        MinAlertLevel = suggestion
+
+        [*]
+        BasedOnStyles = Vale
+      .config/vale.ini: |
+        MinAlertLevel = suggestion
+
+        [*]
+        BasedOnStyles = T
+    args: test.md
+    exit: 1
+    want: |
+      test.md:1:66:Vale.Spelling:Use 'JavaScript' instead of 'javascript'.
+      test.md:1:77:Vale.Spelling:Did you really mean 'agendize'?
+
+  - name: config-flag-is-the-root
+    about: "an error in the file `--config` names points at that file, not at
+      one the search would have found"
+    files:
+      .vale.ini: |
+        MinAlertLevel = suggestion
+
+        [*]
+        BasedOnStyles = Vale
+      other/vale.ini: |
+        MinAlertLevel = suggestion
+        BlockIgnores = (?s)x
+
+        [*]
+        BasedOnStyles = Vale
+    args: --config=other/vale.ini test.md
+    exit: 2
+    contains: |
+      other/vale.ini
+    absent:
+      - .vale.ini
+
   - name: unknown-style-points-at-config
     about: "an unknown style is reported at the BasedOnStyles line that names
       it, not at a comment that mentions it"

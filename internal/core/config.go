@@ -79,6 +79,12 @@ var configNames = []string{
 	"_vale.ini",
 }
 
+// nestedConfigNames are checked at each level of the search after
+// configNames, so a root-level file wins. See #1212.
+var nestedConfigNames = []string{
+	filepath.Join(".config", "vale.ini"),
+}
+
 // FindConfigAsset tries to locate a Vale-related resource by looking in the
 // user-defined StylesPath(s).
 func FindConfigAsset(cfg *Config, name, dir string) string {
@@ -224,6 +230,7 @@ type Config struct {
 	CommentDelimiters map[string][2]string         // Strings to treat as comment delimiters. Indicates the start and end delimiters.
 	WordTemplate      string                       // The template used in YAML -> regexp list conversions
 	RootINI           string                       // the path to the project's .vale.ini file
+	RootDir           string                       // the directory the search found RootINI at
 	Paths             []string                     // A list of paths to search for styles
 	ConfigFiles       []string                     // A list of configuration files to load
 
@@ -305,10 +312,21 @@ func (c *Config) AddStylesPath(path string) {
 	}
 }
 
+// setRoot records the config file a run is reading and its project root: the
+// file's own directory. The search sets both itself, since a `.config/vale.ini`
+// is found a level above its directory.
+func (c *Config) setRoot(file string) {
+	if abs, err := filepath.Abs(file); err == nil {
+		file = abs
+	}
+	c.RootINI = file
+	c.RootDir = filepath.Dir(file)
+}
+
 // ConfigFile returns the last configuration file in the list.
 //
-// This represents the user's project-agnostic configuration file -- i.e., the
-// last one that was added.
+// The user's project-agnostic file is added first, so this is the project's
+// own file when a run has one.
 func (c *Config) ConfigFile() string {
 	if len(c.ConfigFiles) > 0 {
 		return c.ConfigFiles[len(c.ConfigFiles)-1]

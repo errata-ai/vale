@@ -47,3 +47,25 @@ func TestDeterminePath(t *testing.T) {
 		}
 	}
 }
+
+func TestRelInside(t *testing.T) {
+	base := t.TempDir()
+
+	cases := []struct {
+		path   string
+		want   string
+		inside bool
+	}{
+		{filepath.Join(base, "docs", "a.md"), filepath.Join("docs", "a.md"), true},
+		{base, ".", true},
+		{filepath.Join(base, "..foo", "a.md"), filepath.Join("..foo", "a.md"), true},
+		{filepath.Dir(base), filepath.Dir(base), false},
+		{filepath.Join(filepath.Dir(base), "other.md"), filepath.Join(filepath.Dir(base), "other.md"), false},
+	}
+	for _, c := range cases {
+		got, inside := RelInside(base, c.path)
+		if got != c.want || inside != c.inside {
+			t.Errorf("RelInside(%q) = %q, %v; want %q, %v", c.path, got, inside, c.want, c.inside)
+		}
+	}
+}

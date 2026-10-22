@@ -68,3 +68,38 @@ func TestConditionErrors(t *testing.T) {
 		}
 	}
 }
+
+// TestRelToRoot tests that `.Path` is relative to the project root: the
+// directory the search found the config at when there is one, otherwise the
+// config file's own directory.
+func TestRelToRoot(t *testing.T) {
+	root := t.TempDir()
+	doc := filepath.Join(root, "docs", "a.md")
+
+	cfg := &Config{RootINI: filepath.Join(root, ".config", "vale.ini"), RootDir: root}
+	if got := filepath.ToSlash(relToRoot(doc, cfg)); got != "docs/a.md" {
+		t.Fatalf("with RootDir: got %q", got)
+	}
+
+	cfg = &Config{RootINI: filepath.Join(root, ".vale.ini")}
+	if got := filepath.ToSlash(relToRoot(doc, cfg)); got != "docs/a.md" {
+		t.Fatalf("from RootINI: got %q", got)
+	}
+}
+
+// TestSectionAppliesSeparators tests that a section glob written with forward
+// slashes matches a path written with the OS separator.
+func TestSectionAppliesSeparators(t *testing.T) {
+	cfg, err := NewConfig(&CLIFlags{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	path := filepath.Join("docs", "guide", "a.md")
+	if !cfg.SectionApplies("docs/**/*.md", nil, path) {
+		t.Fatalf("[docs/**/*.md] should match %q", path)
+	}
+	if cfg.SectionApplies("src/*.md", nil, path) {
+		t.Fatalf("[src/*.md] should not match %q", path)
+	}
+}

@@ -72,3 +72,18 @@ func DeterminePath(configPath string, keyPath string) string {
 
 	return abs
 }
+
+// RelInside returns path relative to base when it lies inside base. A path
+// outside base, or one that can't be made relative, is returned as given with
+// false.
+func RelInside(base, path string) (string, bool) {
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return path, false
+	}
+	rel, err := filepath.Rel(base, abs)
+	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return path, false
+	}
+	return rel, true
+}

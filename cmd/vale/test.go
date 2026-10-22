@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/pterm/pterm"
 
 	"github.com/vale-cli/vale/v3/internal/core"
+	"github.com/vale-cli/vale/v3/internal/system"
 	"github.com/vale-cli/vale/v3/internal/testsuite"
 )
 
@@ -255,11 +255,7 @@ func relPath(path string) string {
 		return path
 	}
 
-	rel, err := filepath.Rel(wd, path)
-	if err != nil || strings.HasPrefix(rel, "..") {
-		return path
-	}
-
+	rel, _ := system.RelInside(wd, path)
 	return rel
 }
 

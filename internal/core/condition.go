@@ -12,6 +12,7 @@ import (
 	"github.com/expr-lang/expr/vm"
 
 	"github.com/vale-cli/vale/v3/internal/glob"
+	"github.com/vale-cli/vale/v3/internal/system"
 )
 
 // condSep splits a section header into its glob and its condition, the way a
@@ -97,7 +98,7 @@ func heldConditions(path, content string, cfg *Config) (map[string]bool, error) 
 	var matched []string
 	meta := false
 	for sec, cond := range cfg.SecToCond {
-		if pat, found := cfg.SecToPat[sec]; found && pat.Match(path) {
+		if pat, found := cfg.SecToPat[sec]; found && globMatches(pat, path) {
 			matched = append(matched, sec)
 			meta = meta || cond.meta
 		}
@@ -134,11 +135,17 @@ func (c *Config) SectionApplies(sec string, held map[string]bool, names ...strin
 		pat = compiled
 	}
 	for _, n := range names {
-		if n != "" && pat.Match(n) {
+		if n != "" && globMatches(pat, n) {
 			return true
 		}
 	}
 	return false
+}
+
+// globMatches reports whether pat matches name as given or with forward
+// slashes, so `[docs/*.md]` matches a path written with the OS separator.
+func globMatches(pat glob.Glob, name string) bool {
+	return pat.Match(name) || pat.Match(filepath.ToSlash(name))
 }
 
 // missingIsFalse reads a field used as a condition as false when it's
@@ -168,19 +175,16 @@ func orFalse(n ast.Node) ast.Node {
 	return n
 }
 
-// relToRoot makes path relative to the directory of the root .vale.ini.
+// relToRoot makes path relative to the project root: the directory the
+// search found the .vale.ini at, or the file's own directory.
 func relToRoot(path string, cfg *Config) string {
-	root := cfg.RootINI
+	root := cfg.RootDir
+	if root == "" && cfg.RootINI != "" {
+		root = filepath.Dir(cfg.RootINI)
+	}
 	if root == "" {
 		return path
 	}
-	abs, err := filepath.Abs(path)
-	if err != nil {
-		return path
-	}
-	rel, err := filepath.Rel(filepath.Dir(root), abs)
-	if err != nil || strings.HasPrefix(rel, "..") {
-		return path
-	}
+	rel, _ := system.RelInside(root, path)
 	return rel
 }

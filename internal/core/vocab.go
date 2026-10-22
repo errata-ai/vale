@@ -180,9 +180,7 @@ func (e *vocabEntry) patterns(expand ExpandFunc) ([]string, error) {
 // it, so an error names a file as the user would.
 func RelToWD(path string) string {
 	if wd, err := os.Getwd(); err == nil {
-		if rel, relErr := filepath.Rel(wd, path); relErr == nil && !strings.HasPrefix(rel, "..") {
-			return rel
-		}
+		path, _ = system.RelInside(wd, path)
 	}
 	return path
 }

@@ -147,6 +147,12 @@ func TestFlagBase(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// The root is the file `--config` named, not one found by searching.
+	want, _ := filepath.Abs(knownConfig)
+	if cfg.RootINI != want || cfg.RootDir != filepath.Dir(want) {
+		t.Fatalf("root = %q at %q; want %q", cfg.RootINI, cfg.RootDir, want)
+	}
 }
 
 // TestEnvBase tests that we respect the `VALE_CONFIG_PATH` option for setting
@@ -205,5 +211,44 @@ func TestPipelineStylesPathDropped(t *testing.T) {
 	}
 	if got := cfg.GBaseStyles; len(got) != 1 || got[0] != "A" {
 		t.Errorf("the package's other settings should still load; got %v", got)
+	}
+}
+
+// TestNestedConfig tests that `.config/vale.ini` is found from a subdirectory
+// and that the project root is the directory holding `.config`, not `.config`
+// itself. A root-level file wins. See #1212.
+func TestNestedConfig(t *testing.T) {
+	root := t.TempDir()
+
+	nested := filepath.Join(root, ".config", "vale.ini")
+	if err := os.MkdirAll(filepath.Dir(nested), os.ModePerm); err != nil {
+		t.Fatal(err)
+	} else if err = os.WriteFile(nested, []byte("MinAlertLevel = error\n"), 0o644); err != nil { //nolint:gosec
+		t.Fatal(err)
+	}
+
+	sub := filepath.Join(root, "docs")
+	if err := os.Mkdir(sub, os.ModePerm); err != nil {
+		t.Fatal(err)
+	}
+	t.Chdir(sub)
+
+	found, dir, err := loadConfig(configNames)
+	if err != nil {
+		t.Fatal(err)
+	} else if found != nested || dir != root {
+		t.Fatalf("got %q at %q; want %q at %q", found, dir, nested, root)
+	}
+
+	top := filepath.Join(root, ".vale.ini")
+	if err = os.WriteFile(top, []byte("MinAlertLevel = error\n"), 0o644); err != nil { //nolint:gosec
+		t.Fatal(err)
+	}
+
+	found, dir, err = loadConfig(configNames)
+	if err != nil {
+		t.Fatal(err)
+	} else if found != top || dir != root {
+		t.Fatalf("got %q at %q; want %q at %q", found, dir, top, root)
 	}
 }
