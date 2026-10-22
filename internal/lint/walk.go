@@ -121,7 +121,14 @@ type walker struct {
 	// masking the attribute leaves the text token to find its string somewhere
 	// else in the document -- and `idx`, which only moves forward, then places
 	// every later block on that line. See #847.
-	pending []string
+	//
+	// Each value is a list of the forms it may take in the source: a link
+	// target as the converter wrote it and, when it differs, decoded, since a
+	// converter percent-encodes a space or a non-ASCII character the author
+	// wrote as is. The first form found whole is masked; a form that isn't
+	// there must not be masked word by word, since its words land on prose
+	// elsewhere in the document. See #1218.
+	pending [][]string
 
 	begin int
 	end   int
@@ -201,12 +208,13 @@ func (w *walker) lineAt(pos int) int {
 	return w.nlCount
 }
 
-func (w *walker) sub(sub string, char rune) bool {
+// sub masks the first occurrence of sub still present in the context.
+func (w *walker) sub(sub string) bool {
 	idx := w.first(sub)
 	if idx < 0 {
 		return false
 	}
-	maskAt(w.context, idx, sub, char)
+	maskAt(w.context, idx, sub, '@')
 	return true
 }
 
@@ -214,10 +222,10 @@ func (w *walker) update(txt string, tokt html.TokenType) {
 	var found bool
 	if (tokt == html.TextToken || tokt == html.CommentToken) && txt != "" {
 		for _, s := range strings.Split(txt, "\n") {
-			found = w.sub(s, '@')
+			found = w.sub(s)
 			if !found && w.ext != ".adoc" {
 				for _, f := range strings.Fields(s) {
-					_ = w.sub(f, '@')
+					_ = w.sub(f)
 				}
 			}
 		}
@@ -230,9 +238,19 @@ func (w *walker) update(txt string, tokt html.TokenType) {
 // is dropped rather than masked, because the two are one run of source and
 // masking it twice consumes an occurrence that belongs to something else.
 func (w *walker) flush(text string) {
-	for _, val := range w.pending {
-		if val != text {
-			w.update(val, html.TextToken)
+	for _, forms := range w.pending {
+		if core.StringInSlice(text, forms) {
+			continue
+		}
+		found := false
+		for _, form := range forms {
+			if w.sub(form) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			w.update(forms[0], html.TextToken)
 		}
 	}
 	w.pending = nil
@@ -717,10 +735,13 @@ func (w *walker) replaceToks(tok html.Token) {
 		}
 		for _, a := range tok.Attr {
 			if core.StringInSlice(a.Key, names) {
+				forms := []string{a.Val}
 				if a.Key == "href" {
-					a.Val, _ = url.QueryUnescape(a.Val)
+					if decoded, err := url.PathUnescape(a.Val); err == nil && decoded != a.Val {
+						forms = append(forms, decoded)
+					}
 				}
-				w.pending = append(w.pending, a.Val)
+				w.pending = append(w.pending, forms)
 			}
 		}
 	}

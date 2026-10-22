@@ -1694,6 +1694,54 @@ cases:
     want: |
       test.md:3:2:Vale.Terms:Use 'GitHub' instead of 'github'.
 
+  - name: encoded-link-target
+    about: "#1218 -- a link target written percent-encoded, or with a `+`,
+      is masked as written. It was decoded first, and the decoded form,
+      absent from the source, was masked word by word onto prose elsewhere,
+      which dropped a later alert. A target the author wrote with a space
+      is still found by its decoded form."
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.md]
+        BasedOnStyles = T
+      styles/T/Dash.yml: |
+        extends: existence
+        message: "dash"
+        level: error
+        nonword: true
+        tokens:
+          - '—'
+      encoded.md: |
+        Intro — see the
+        [a b](a%20b.md)
+
+        Then one — and two — see the [a b](a%20b.md).
+      plus.md: |
+        Intro — see the
+        [a b](a+b.md)
+
+        Then one — and two — see the [a b](a+b.md).
+      spaced.md: |
+        Intro — see the
+        [a b](<a b.md>)
+
+        Then one — and two — see the [a b](<a b.md>).
+    args: --output=line encoded.md plus.md spaced.md
+    exit: 1
+    want: |
+      encoded.md:1:7:T.Dash:dash
+      encoded.md:4:10:T.Dash:dash
+      encoded.md:4:20:T.Dash:dash
+      plus.md:1:7:T.Dash:dash
+      plus.md:4:10:T.Dash:dash
+      plus.md:4:20:T.Dash:dash
+      spaced.md:1:7:T.Dash:dash
+      spaced.md:4:10:T.Dash:dash
+      spaced.md:4:20:T.Dash:dash
+
   - name: dita-token-ignores
     about: "#407 -- ignore patterns apply to DITA. The toolkit reads its
       input from disk, so the patterns are applied to a copy written

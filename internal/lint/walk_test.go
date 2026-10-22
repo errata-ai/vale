@@ -160,36 +160,59 @@ func TestWalkerClasses(t *testing.T) {
 // attribute first sent the text's search to the next copy of that URL, wherever
 // in the document it happened to be. See #847.
 func TestWalkerFlush(t *testing.T) {
+	const src = "http://github.com here\nand http://github.com there\n"
+
 	tests := []struct {
 		name    string
-		pending []string
+		src     string
+		pending [][]string
 		text    string
 		want    string
 	}{
 		{
 			name:    "autolink keeps its own bytes",
-			pending: []string{"http://github.com"},
+			pending: [][]string{{"http://github.com"}},
 			text:    "http://github.com",
 			want:    "http://github.com here\nand http://github.com there\n",
 		},
 		{
 			name:    "a link target is masked",
-			pending: []string{"http://github.com"},
+			pending: [][]string{{"http://github.com"}},
 			text:    "read this",
 			want:    "@@@@@@@@@@@@@@@@@ here\nand http://github.com there\n",
 		},
 		{
 			name:    "no text of its own",
-			pending: []string{"http://github.com"},
+			pending: [][]string{{"http://github.com"}},
 			text:    "",
 			want:    "@@@@@@@@@@@@@@@@@ here\nand http://github.com there\n",
 		},
+		// A link target is masked by whichever of its forms the source
+		// holds; a form that isn't there is never masked word by word. See
+		// #1218.
+		{
+			name:    "an encoded target is masked as written",
+			src:     "see [a b](a%20b.md) and a b here\n",
+			pending: [][]string{{"a%20b.md", "a b.md"}},
+			text:    "a b",
+			want:    "see [a b](@@@@@@@@) and a b here\n",
+		},
+		{
+			name:    "a spaced target is masked by its decoded form",
+			src:     "see [a b](<a b.md>) and a b here\n",
+			pending: [][]string{{"a%20b.md", "a b.md"}},
+			text:    "a b",
+			want:    "see [a b](<@@@@@@>) and a b here\n",
+		},
 	}
 
-	const src = "http://github.com here\nand http://github.com there\n"
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			w := &walker{context: []byte(src), pending: tt.pending}
+			text := tt.src
+			if text == "" {
+				text = src
+			}
+			w := &walker{context: []byte(text), pending: tt.pending}
 
 			w.flush(tt.text)
 
@@ -223,7 +246,7 @@ func TestFirstMatchesScan(t *testing.T) {
 	check("before masking")
 	for i := 0; i < 60; i++ {
 		for _, n := range []string{"Click here", "Click", "Übung macht den Meister.", "the end", "line"} {
-			w.sub(n, '@')
+			w.sub(n)
 			check("after masking " + n)
 		}
 	}
