@@ -3,6 +3,29 @@ name: views
 dir: fixtures/views
 
 cases:
+  - name: tsx
+    about: "#1216 -- a `.tsx` file is read with the TSX grammar, so a View can
+      query JSX; it was parsed as TypeScript, which has no `jsx_text` node"
+    files:
+      .vale.ini: |
+        StylesPath = styles
+        MinAlertLevel = suggestion
+
+        [*.tsx]
+        BasedOnStyles = Vale
+        View = Screens
+      styles/config/views/Screens.yml: |
+        engine: tree-sitter
+        scopes:
+          - name: screen
+            expr: (jsx_text) @prose
+      page.tsx: |
+        export const Page = () => <h1>Texts started agian</h1>;
+    args: page.tsx
+    exit: 1
+    want: |
+      page.tsx:1:45:Vale.Spelling:Did you really mean 'agian'?
+
   - name: yaml
     args: .
     exit: 1

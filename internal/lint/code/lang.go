@@ -3,6 +3,7 @@ package code
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"sync"
 
 	sitter "github.com/smacker/go-tree-sitter"
@@ -53,11 +54,11 @@ type Language struct {
 // one, and a compiled query is cached against it (see compiledQuery). A
 // fresh grammar handle per call made that cache miss every time.
 func GetLanguageFromExt(ext string) (*Language, error) {
-	lang, err := newLanguage(ext)
+	lang, key, err := newLanguage(ext)
 	if err != nil {
 		return nil, err
 	}
-	lang.Parser = sharedGrammar(core.GetNormedExt(ext), lang.Parser)
+	lang.Parser = sharedGrammar(key, lang.Parser)
 	return lang, nil
 }
 
@@ -72,55 +73,72 @@ func sharedGrammar(ext string, fresh *sitter.Language) *sitter.Language {
 	return g.(*sitter.Language) //nolint:errcheck // only *sitter.Language is stored
 }
 
-func newLanguage(ext string) (*Language, error) {
-	switch core.GetNormedExt(ext) {
+// newLanguage returns the language for ext and the extension it was found
+// under: ext itself when a grammar is specific to it, as the TSX grammar is
+// to `.tsx`, else the normed extension it shares with others.
+func newLanguage(ext string) (*Language, string, error) {
+	ext = strings.ToLower(ext)
+	if lang := languageFor(ext); lang != nil {
+		return lang, ext, nil
+	}
+	if normed := core.GetNormedExt(ext); normed != "" {
+		if lang := languageFor(normed); lang != nil {
+			return lang, normed, nil
+		}
+	}
+	return nil, "", fmt.Errorf("unsupported extension: '%s'", ext)
+}
+
+// languageFor returns the language whose grammar reads ext, or nil.
+func languageFor(ext string) *Language {
+	switch ext {
 	case ".go":
-		return Go(), nil
+		return Go()
 	case ".rs":
-		return Rust(), nil
+		return Rust()
 	case ".py":
-		return Python(), nil
+		return Python()
 	case ".rb":
-		return Ruby(), nil
+		return Ruby()
 	case ".ex":
-		return Elixir(), nil
+		return Elixir()
 	case ".cpp":
-		return Cpp(), nil
+		return Cpp()
 	case ".c":
-		return C(), nil
+		return C()
 	case ".cs":
-		return CSharp(), nil
+		return CSharp()
 	case ".js", ".jsx":
-		return JavaScript(), nil
+		return JavaScript()
 	case ".hs":
-		return Haskell(), nil
+		return Haskell()
 	case ".jl":
-		return Julia(), nil
+		return Julia()
 	case ".java":
-		return Java(), nil
+		return Java()
 	case ".kt":
-		return Kotlin(), nil
+		return Kotlin()
 	case ".lua":
-		return Lua(), nil
+		return Lua()
 	case ".php":
-		return PHP(), nil
+		return PHP()
 	case ".ts":
-		return TypeScript(), nil
+		return TypeScript()
 	case ".tsx":
-		return Tsx(), nil
+		return Tsx()
 	case ".proto":
-		return Protobuf(), nil
+		return Protobuf()
 	case ".qml":
-		return QML(), nil
+		return QML()
 	case ".r":
-		return R(), nil
+		return R()
 	case ".yml", ".yaml":
-		return YAML(), nil
+		return YAML()
 	case ".toml":
-		return TOML(), nil
+		return TOML()
 	case ".css":
-		return CSS(), nil
+		return CSS()
 	default:
-		return nil, fmt.Errorf("unsupported extension: '%s'", ext)
+		return nil
 	}
 }
