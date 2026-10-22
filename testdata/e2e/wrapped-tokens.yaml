@@ -1,0 +1,67 @@
+# A phrase in a rule matches across a line wrap: a space in a token or a
+# swap key matches the whitespace a wrapped paragraph puts there. See #1215.
+name: wrapped-tokens
+
+files:
+  .vale.ini: |
+    StylesPath = styles
+    MinAlertLevel = suggestion
+
+    [*.md]
+    BasedOnStyles = T
+  styles/T/Phrase.yml: |
+    extends: existence
+    message: "found '%s'"
+    level: warning
+    ignorecase: true
+    tokens:
+      - for example
+  styles/T/Swap.yml: |
+    extends: substitution
+    message: "use '%s' instead of '%s'"
+    level: warning
+    ignorecase: true
+    swap:
+      in order to: to
+  styles/T/Spaces.yml: |
+    extends: existence
+    message: "double space in '%s'"
+    level: warning
+    nonword: true
+    tokens:
+      - '\S {2,}\S'
+  wrap.md: |
+    One line: a team, for example Sales.
+
+    Wrapped: a team, for
+    example Sales.
+  swap.md: |
+    One line: we wait in order to see.
+
+    Wrapped: we wait in order
+    to see.
+  spaces.md: |
+    Two  words here.
+
+cases:
+  - name: existence and substitution
+    args: --output=line wrap.md swap.md
+    exit: 0
+    want: |
+      swap.md:1:19:T.Swap:use 'to' instead of 'in order to'
+      swap.md:3:18:T.Swap:use 'to' instead of 'in order to'
+      wrap.md:1:19:T.Phrase:found 'for example'
+      wrap.md:3:18:T.Phrase:found 'for example'
+
+  - name: a quantified space keeps its meaning
+    about: "`{2,}` after a space quantifies the space; it is not a line wrap"
+    args: --output=line spaces.md
+    exit: 0
+    want: |
+      spaces.md:1:3:T.Spaces:double space in 'o  w'
+
+  - name: the message shows the phrase on one line
+    args: --output=JSON wrap.md
+    exit: 0
+    contains: |
+      "Message": "found 'for example'",

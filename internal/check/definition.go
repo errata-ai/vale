@@ -260,6 +260,9 @@ func newRule(cfg *core.Config, generic baseCheck, path string) (Rule, error) {
 }
 
 func formatMessages(msg string, desc string, subs ...string) (string, string) {
+	for i, sub := range subs {
+		subs[i] = unwrap(sub)
+	}
 	return core.FormatMessage(msg, subs...), core.FormatMessage(desc, subs...)
 }
 

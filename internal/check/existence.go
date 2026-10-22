@@ -72,7 +72,7 @@ func NewExistence(cfg *core.Config, generic baseCheck, path string) (Existence, 
 	parsed := []string{}
 	for _, token := range rule.Tokens {
 		if strings.TrimSpace(token) != "" {
-			parsed = append(parsed, token)
+			parsed = append(parsed, wrapSpaces(token))
 		}
 	}
 	regex = fmt.Sprintf(regex, strings.Join(parsed, "|"))
