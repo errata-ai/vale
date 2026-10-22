@@ -98,6 +98,8 @@ func addExceptions(s *Spelling, generic baseCheck, cfg *core.Config) error { //n
 			term = `\b` + term + `\b`
 		}
 		s.Exceptions = append(s.Exceptions, term)
+	}
+	if len(s.Exceptions) > 0 {
 		s.exceptRe = rx.MustCompile(
 			ignoreCase + strings.Join(s.Exceptions, "|"))
 	}
